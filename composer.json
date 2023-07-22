@@ -1,0 +1,15 @@
+{
+    "name": "the7ofdiamonds.tech/thfw-users",
+    "description": "UX/UI for users",
+    "autoload": {
+        "psr-4": {
+            "The7ofdiamondsTech\\ThfwUsers\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "THE7OFDIAMONDS.TECH"
+        }
+    ],
+    "require": {}
+}

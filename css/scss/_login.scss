@@ -1,0 +1,57 @@
+#loginform {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    width: 100%;
+
+   p {
+    width: 100%;
+
+    label {
+        margin: 0;
+    }
+
+    .button {
+        cursor: pointer;
+        border: none;
+        padding: .5rem;
+        font-size: 1.25rem;
+        letter-spacing: 0.25rem;
+    }
+   }
+}
+  
+.signin-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1rem;
+    background-color: transparent;
+    width: 100%;
+
+    .apple,
+    .google,
+    .microsoft {
+        display: grid;
+        grid-template-columns: 3rem 15rem;
+        padding: .5rem;
+        text-align: center;
+        align-items: center;
+        height: 3rem;
+        column-gap: .25rem;
+        
+        img {
+            height: 2rem;
+            width: 2rem;
+            justify-self: flex-start;
+        }
+
+        h3 {
+            letter-spacing: 0;
+            justify-self: flex-start;
+        }
+    }
+}
+

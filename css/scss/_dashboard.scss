@@ -1,0 +1,21 @@
+.dashboard-card {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    padding: .5rem;
+    gap: .25rem;
+
+    label {
+        align-self: flex-start;
+    }
+
+    .dashboard-section {
+        display: flex;
+        flex-direction: row;
+        gap: .25rem;
+
+        .dashboard-button {
+            box-shadow: none;
+        }
+    }
+}

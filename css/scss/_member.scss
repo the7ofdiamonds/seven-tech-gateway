@@ -1,0 +1,24 @@
+.card.member-card {
+    max-width: 20rem;
+    padding: .5rem;
+}
+
+.member-photo.photo-link{
+    width: 100%;
+
+    img {
+        width: 100%;
+    }
+}
+
+.member-name.card {
+    max-width: fit-content;
+}
+
+.member-social {
+    width: 50rem;
+}
+
+@media screen and (max-width: 320px) {
+
+}

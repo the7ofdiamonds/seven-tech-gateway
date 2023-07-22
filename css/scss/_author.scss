@@ -1,0 +1,90 @@
+.author-nav.card {
+    flex-direction: row;
+    justify-content: space-between;
+    position: fixed;
+    z-index: 900;
+    top: 4rem;
+    left: 50%;
+    transform: translateX(-50%);
+
+    a {
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+}
+
+.author-intro {
+    margin-top: 0;
+    justify-content: center;
+
+    .author-photo {
+        max-width: 500px;
+    }
+
+    .author-card {
+        max-width: 750px;
+
+        .author-greeting {
+            font-size: 1.5rem;
+            line-height: 2;
+        }    
+    }
+}
+
+.author-info.card {
+    display: grid;
+    grid-template-areas: "Left Right";
+    grid-template-columns: 1fr 2fr;
+    height: fit-content;
+
+    .left {
+        grid-area: Left;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        img {
+            width: 100%;
+            max-width: 15rem;
+            height: auto;
+        }
+
+        .author-social {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+
+            i {
+                font-size: 1.5rem;
+                color: black;
+            }
+        }
+    }
+
+    .right {
+        grid-area: Right;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.5rem;
+        height: 100%;
+        padding: 0.5rem;
+
+        h3.about-title {
+            text-align: left;
+            font-weight: 700;
+        }
+
+        p {
+            text-align: left;
+        }
+
+        button {
+            align-self: center;
+        }
+    }
+}

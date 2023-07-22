@@ -1,0 +1,254 @@
+.dashboard-card {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  padding: 0.5rem;
+  gap: 0.25rem;
+}
+.dashboard-card label {
+  align-self: flex-start;
+}
+.dashboard-card .dashboard-section {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+}
+.dashboard-card .dashboard-section .dashboard-button {
+  box-shadow: none;
+}
+
+.hero-card {
+  max-width: fit-content;
+}
+.hero-card p {
+  margin: 1rem;
+}
+
+#loginform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+#loginform p {
+  width: 100%;
+}
+#loginform p label {
+  margin: 0;
+}
+#loginform p .button {
+  cursor: pointer;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.25rem;
+}
+
+.signin-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 1rem;
+  background-color: transparent;
+  width: 100%;
+}
+.signin-options .apple,
+.signin-options .google,
+.signin-options .microsoft {
+  display: grid;
+  grid-template-columns: 3rem 15rem;
+  padding: 0.5rem;
+  text-align: center;
+  align-items: center;
+  height: 3rem;
+  column-gap: 0.25rem;
+}
+.signin-options .apple img,
+.signin-options .google img,
+.signin-options .microsoft img {
+  height: 2rem;
+  width: 2rem;
+  justify-self: flex-start;
+}
+.signin-options .apple h3,
+.signin-options .google h3,
+.signin-options .microsoft h3 {
+  letter-spacing: 0;
+  justify-self: flex-start;
+}
+
+.card.member-card {
+  max-width: 20rem;
+  padding: 0.5rem;
+}
+
+.member-photo.photo-link {
+  width: 100%;
+}
+.member-photo.photo-link img {
+  width: 100%;
+}
+
+.member-name.card {
+  max-width: fit-content;
+}
+
+.member-social {
+  width: 50rem;
+}
+
+.modal {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  z-index: 900;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  overflow: auto;
+}
+.modal button,
+.modal .card {
+  box-shadow: none;
+}
+
+.show.modal,
+.show {
+  display: flex;
+}
+
+.authentication {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding-top: 4rem;
+  width: 100%;
+}
+.authentication .show.login-card,
+.authentication .show.signup-card,
+.authentication .show.reset-card {
+  display: flex;
+}
+.authentication .hide {
+  display: none;
+}
+.authentication .hide.login-card,
+.authentication .hide.signup-card,
+.authentication .hide.reset-card {
+  display: none;
+}
+
+.modal-close {
+  cursor: pointer;
+  background-color: black;
+  height: 2rem;
+  width: 2rem;
+  line-height: 1rem;
+  border-radius: 50%;
+  text-align: center;
+}
+.modal-close h2 {
+  color: white;
+  letter-spacing: 0;
+}
+
+.team {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.card.login-card,
+.card.signup-card,
+.card.reset-card {
+  max-width: 30rem;
+}
+
+.author-nav.card {
+  flex-direction: row;
+  justify-content: space-between;
+  position: fixed;
+  z-index: 900;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.author-nav.card a {
+  text-decoration: none;
+}
+.author-nav.card a:hover {
+  text-decoration: underline;
+}
+
+.author-intro {
+  margin-top: 0;
+  justify-content: center;
+}
+.author-intro .author-photo {
+  max-width: 500px;
+}
+.author-intro .author-card {
+  max-width: 750px;
+}
+.author-intro .author-card .author-greeting {
+  font-size: 1.5rem;
+  line-height: 2;
+}
+
+.author-info.card {
+  display: grid;
+  grid-template-areas: "Left Right";
+  grid-template-columns: 1fr 2fr;
+  height: fit-content;
+}
+.author-info.card .left {
+  grid-area: Left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.author-info.card .left img {
+  width: 100%;
+  max-width: 15rem;
+  height: auto;
+}
+.author-info.card .left .author-social {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.author-info.card .left .author-social i {
+  font-size: 1.5rem;
+  color: black;
+}
+.author-info.card .right {
+  grid-area: Right;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 0.5rem;
+}
+.author-info.card .right h3.about-title {
+  text-align: left;
+  font-weight: 700;
+}
+.author-info.card .right p {
+  text-align: left;
+}
+.author-info.card .right button {
+  align-self: center;
+}
+
+/*# sourceMappingURL=thfw-users.css.map */
