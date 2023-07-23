@@ -4,18 +4,31 @@
   "description": "UX/UI for the convience of users",
   "main": "src/index.js",
   "dependencies": {
+    "@wordpress/scripts": "^26.9.0",
+    "axios": "^1.4.0",
+    "dotenv": "^16.3.1",
     "esbuild": "^0.18.15",
     "fsevents": "^2.3.2",
     "nanoid": "^3.3.6",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.27",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.2",
     "rollup": "^3.26.3",
     "source-map-js": "^1.0.2",
-    "vite": "^4.4.6"
+    "wp-scripts": "^0.0.1-security"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "wp-build": "wp-scripts build",
+    "build": "vite build",
+    "dev": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-prod": "git push thfw-users production"
   },
   "author": "THE7OFDIAMONDS.TECH",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.3",
+    "vite": "^4.4.6"
+  }
 }

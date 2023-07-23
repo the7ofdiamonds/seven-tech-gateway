@@ -1,0 +1,51 @@
+{
+  "_Navigation-eab3e479.js": {
+    "file": "Navigation-eab3e479.js",
+    "imports": [
+      "src/index.js"
+    ]
+  },
+  "src/index.js": {
+    "dynamicImports": [
+      "src/views/Login.jsx",
+      "src/views/Logout.jsx",
+      "src/views/Signup.jsx",
+      "src/views/Forgot.jsx"
+    ],
+    "file": "index-cc573b88.js",
+    "isEntry": true,
+    "src": "src/index.js"
+  },
+  "src/views/Forgot.jsx": {
+    "file": "Forgot-8e4e6522.js",
+    "imports": [
+      "src/index.js",
+      "_Navigation-eab3e479.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/views/Forgot.jsx"
+  },
+  "src/views/Login.jsx": {
+    "file": "Login-2187bfda.js",
+    "imports": [
+      "src/index.js",
+      "_Navigation-eab3e479.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/views/Login.jsx"
+  },
+  "src/views/Logout.jsx": {
+    "file": "Logout-7cb43379.js",
+    "isDynamicEntry": true,
+    "src": "src/views/Logout.jsx"
+  },
+  "src/views/Signup.jsx": {
+    "file": "Signup-86014ce3.js",
+    "imports": [
+      "src/index.js",
+      "_Navigation-eab3e479.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/views/Signup.jsx"
+  }
+}

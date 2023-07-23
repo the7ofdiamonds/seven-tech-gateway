@@ -1,24 +1,14 @@
-<?php get_header();?>
+<?php
+if (is_user_logged_in()) {
+    header('Location: /logout');
+}
 
-    <main class="login">
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-        <div class="signInOptions">
+get_header();
 
-            <a href="/sign-up">
-                <button class="registerBtn" id="signupBtnSwitch">
-                    <h3>SIGNUP</h3>
-                </button>
-            </a>
+include THFW_USERS . 'includes/part-login.php';
 
-            <a href="/reset">
-                <button class="resetBtn" id="resetBtnSwitch">
-                    <h3>RESET</h3>
-                </button>
-            </a>
-        </div>
-
-        <?php include WP_PLUGIN_DIR . '/thfw-users/includes/part-login.php'; ?>
-
-    </main>
-
-<?php get_footer();?>
+get_footer();

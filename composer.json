@@ -3,7 +3,7 @@
     "description": "UX/UI for users",
     "autoload": {
         "psr-4": {
-            "The7ofdiamondsTech\\ThfwUsers\\": "src/"
+            "THFW_Users\\": ""
         }
     },
     "authors": [
