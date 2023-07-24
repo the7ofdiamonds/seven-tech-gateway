@@ -1,5 +1,13 @@
-<?php get_header(); ?>
+<?php 
+if (!is_user_logged_in()) {
+    header('Location: /login');
+}
 
-<?php include THFW_USERS . 'includes/part-logout.php'; ?>
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+get_header();
 
-<?php get_footer(); ?>
+include THFW_USERS . 'includes/part-logout.php';
+
+get_footer();

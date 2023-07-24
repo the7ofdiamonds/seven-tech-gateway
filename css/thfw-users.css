@@ -17,66 +17,25 @@
   box-shadow: none;
 }
 
-.hero-card {
-  max-width: fit-content;
-}
-.hero-card p {
-  margin: 1rem;
-}
-
-#loginform {
+.options {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-}
-#loginform p {
-  width: 100%;
-}
-#loginform p label {
-  margin: 0;
-}
-#loginform p .button {
-  cursor: pointer;
-  border: none;
-  padding: 0.5rem;
-  font-size: 1.25rem;
-  letter-spacing: 0.25rem;
-}
-
-.signin-options {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-  row-gap: 1rem;
-  background-color: transparent;
+  align-items: center;
+  gap: 0.75em;
+}
+
+.login.card {
+  padding: 0.5rem;
+  min-width: 17.5rem;
+}
+.login.card form {
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
-.signin-options .apple,
-.signin-options .google,
-.signin-options .microsoft {
-  display: grid;
-  grid-template-columns: 3rem 15rem;
-  padding: 0.5rem;
-  text-align: center;
-  align-items: center;
-  height: 3rem;
-  column-gap: 0.25rem;
-}
-.signin-options .apple img,
-.signin-options .google img,
-.signin-options .microsoft img {
-  height: 2rem;
-  width: 2rem;
-  justify-self: flex-start;
-}
-.signin-options .apple h3,
-.signin-options .google h3,
-.signin-options .microsoft h3 {
-  letter-spacing: 0;
-  justify-self: flex-start;
+.login.card form table {
+  border-spacing: 0.75em;
 }
 
 .card.member-card {

@@ -1,7 +1,7 @@
 import {
     sendPasswordResetEmail,
     getAuth
-} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+} from "firebase/auth";
 
 export const forgot = async (Email) => {
     const auth = getAuth();

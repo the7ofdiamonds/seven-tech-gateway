@@ -1,8 +1,10 @@
-<?php auth_redirect();?>
-<?php get_header();?>
+<?php
+if (!is_user_logged_in()) {
+    header('Location: /login');
+}
 
-    <section class="dashboard">
-    
-        <?php include WP_PLUGIN_DIR . '/thfw-users/includes/part-dashboard.php';?>
-    </section>
-<?php get_footer();?>
+get_header();
+
+include THFW_USERS . 'includes/part-dashboard.php';
+
+get_footer();

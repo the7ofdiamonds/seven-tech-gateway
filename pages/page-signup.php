@@ -1,5 +1,6 @@
-<?php get_header(); ?>
-        
-<?php include THFW_USERS . 'includes/part-signup.php'; ?>
+<?php
+get_header();
 
-<?php get_footer(); ?>
+include THFW_USERS . 'includes/part-signup.php';
+
+get_footer();

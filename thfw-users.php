@@ -23,6 +23,8 @@ define('THFW_USERS_URL', WP_PLUGIN_URL . '/thfw-users/');
 
 require_once THFW_USERS . 'vendor/autoload.php';
 
+use THFW_Users\API\API;
+use THFW_Users\CSS\CSS;
 use THFW_Users\JS\JS;
 use THFW_Users\Pages\Pages;
 use THFW_Users\Templates\Templates;
@@ -34,8 +36,8 @@ class THFW_Users
         add_action('wp_enqueue_scripts', [$this, 'load_css_js']);
 
         // new Admin;
-        // new API;
-        // new CSS;
+        new API;
+        new CSS;
         new JS;
         new Pages;
         // new Shortcodes;

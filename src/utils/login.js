@@ -4,20 +4,22 @@ import {
     setPersistence,
     signInWithEmailAndPassword,
     getAuth
-} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+} from "firebase/auth";
+
+import { projectAuth } from '../services/firebase/config.js';
 
 export const login = async (Email, Password) => {
-    const auth = getAuth();
+const auth = getAuth();
 
     try {
         await signInWithEmailAndPassword(auth, Email, Password);
         await setPersistence(auth, browserSessionPersistence);
 
-        auth.onAuthStateChanged(async (user) => {
+        projectAuth.onAuthStateChanged(async (user) => {
             if (user) {
                 user.getIdToken().then(async (token) => {
                     const data = { 'idToken': token, 'user_password': Password };
-                    await axios.post('/wp-json/thfw/v1/login', data)
+                    await axios.post('/wp-json/thfw/users/v1/login', data)
                         .then(() => {
                             sessionStorage.setItem('idToken', token)
                         })

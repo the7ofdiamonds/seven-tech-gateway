@@ -8,14 +8,13 @@ class JS
     public function __construct()
     {
         add_action('wp_head', [$this, 'load_js']);
-        add_action('wp_enqueue_scripts', [$this, 'load_react']);
-        add_action('wp_enqueue_scripts', [$this, 'load_firebase']);
+        add_action('wp_footer', [$this, 'load_react']);
+        add_filter('script_loader_tag', [$this, 'set_script_type_to_module'], 10, 2);
+        // add_action('wp_enqueue_scripts', [$this, 'load_firebase']);
     }
 
-    //Load Plugin JS
     function load_js()
     {
-
         wp_register_script('thfw_users_js', THFW_USERS_URL . 'JS/thfw-users.js', array('jquery'), false, false);
         wp_enqueue_script('thfw_users_js');
     }
@@ -35,15 +34,26 @@ class JS
 
     function load_react()
     {
-        $directory = THFW_USERS . 'JS/React/';
-        $jsFiles = $this->get_js_files($directory);
+        $directory = THFW_USERS . 'build';
+        
+        if (is_page('login') | is_page('logout') | is_page('signup') | is_page('forgot')) {
+
+            $jsFiles = $this->get_js_files($directory);
+        }
 
         foreach ($jsFiles as $jsFile) {
-            $handle = 'orb_services_react_' . basename($jsFile);
-?>
-            <script type="module" src=<?php echo THFW_USERS_URL . 'JS/React/' . $jsFile ?> id="<?php echo $handle ?>"></script>
-        <?php
+            $handle = 'thfw_users_react_' . basename($jsFile);
+
+            wp_enqueue_script($handle, THFW_USERS_URL . 'build/' . $jsFile, array('react', 'react-dom', 'wp-element'), "1.0.0", true);
         }
+    }
+
+    function set_script_type_to_module($tag, $handle)
+    {
+        if (strpos($handle, 'thfw_users_react_') === 0) {
+            $tag = str_replace('type=\'text/javascript\'', 'type=\'module\'', $tag);
+        }
+        return $tag;
     }
 
     function load_firebase()
@@ -52,6 +62,9 @@ class JS
             import {
                 initializeApp
             } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+            import {
+                getAuth
+            } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 
             const firebaseConfig = {
                 apiKey: "AIzaSyBu0CCToizQh2SORCP-4dAmXHJpzB6tU6k",
@@ -64,7 +77,9 @@ class JS
                 measurementId: "G-09W10PNNF0"
             };
 
-            const firebase = initializeApp(firebaseConfig);
+            initializeApp(firebaseConfig);
+
+            const projectAuth = getAuth();
         </script>
 <?php }
 }

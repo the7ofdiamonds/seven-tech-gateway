@@ -1,7 +1,6 @@
 import {
-    createUserWithEmailAndPassword,
-    getAuth
-} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+    createUserWithEmailAndPassword, getAuth
+} from "firebase/auth";
 
 export const signup = async (Email, Password) => {
     const auth = getAuth();
