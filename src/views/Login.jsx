@@ -1,12 +1,13 @@
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
 import NavigationComponent from './Navigation';
-
 import { login } from '../utils/login';
+import { displayStatus, displayStatusType } from '../utils/DisplayStatus';
 
 function LoginComponent() {
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
     if (e.target.name === 'email') {
@@ -18,15 +19,17 @@ function LoginComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const response = await login(Email, Password);
 
-    login(Email, Password);
+    setMessage(displayStatus(response));
+    setMessageType(displayStatusType(response));
   };
 
   return (
     <>
       <NavigationComponent />
       <div className="login card">
-        <form>
+        <form onSubmit={handleSubmit}>
           <table>
             <thead></thead>
             <tbody>
@@ -55,7 +58,7 @@ function LoginComponent() {
             </tbody>
             <tfoot>
               <td>
-                <button type="submit" onClick={handleSubmit}>
+                <button type="submit">
                   <h3>LOGIN</h3>
                 </button>
               </td>
@@ -63,6 +66,12 @@ function LoginComponent() {
           </table>
         </form>
       </div>
+
+      {message !== '' && (
+        <div className="status-bar card">
+          <span className={`${messageType}`}>{message}</span>
+        </div>
+      )}
     </>
   );
 }

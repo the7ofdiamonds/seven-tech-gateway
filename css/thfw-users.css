@@ -210,4 +210,18 @@
   align-self: center;
 }
 
+.options {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.options a button {
+  padding: 0.5em;
+}
+.options a.active button {
+  background-color: white;
+  color: black;
+  box-shadow: none;
+}
+
 /*# sourceMappingURL=thfw-users.css.map */

@@ -17,7 +17,7 @@ function LogOutComponent() {
         .then(() => {
           setTimeout(() => {
             window.location = '/';
-          }, 10000);
+          }, 5000);
         })
         .catch((error) => {
           console.error('Error occurred while logging out:', error);

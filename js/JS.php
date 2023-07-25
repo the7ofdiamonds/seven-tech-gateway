@@ -35,16 +35,16 @@ class JS
     function load_react()
     {
         $directory = THFW_USERS . 'build';
-        
+
         if (is_page('login') | is_page('logout') | is_page('signup') | is_page('forgot')) {
 
             $jsFiles = $this->get_js_files($directory);
-        }
 
-        foreach ($jsFiles as $jsFile) {
-            $handle = 'thfw_users_react_' . basename($jsFile);
+            foreach ($jsFiles as $jsFile) {
+                $handle = 'thfw_users_react_' . basename($jsFile);
 
-            wp_enqueue_script($handle, THFW_USERS_URL . 'build/' . $jsFile, array('react', 'react-dom', 'wp-element'), "1.0.0", true);
+                wp_enqueue_script($handle, THFW_USERS_URL . 'build/' . $jsFile, array('react', 'react-dom', 'wp-element'), "1.0.0", true);
+            }
         }
     }
 
