@@ -65,21 +65,6 @@ class JS
             import {
                 getAuth
             } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-
-            const firebaseConfig = {
-                apiKey: "AIzaSyBu0CCToizQh2SORCP-4dAmXHJpzB6tU6k",
-                authDomain: "theorb-f3a48.firebaseapp.com",
-                databaseURL: "https://theorb-f3a48.firebaseio.com",
-                projectId: "theorb-f3a48",
-                storageBucket: "theorb-f3a48.appspot.com",
-                messagingSenderId: "1073451047758",
-                appId: "1:1073451047758:web:ae958815b1fd677e071c1f",
-                measurementId: "G-09W10PNNF0"
-            };
-
-            initializeApp(firebaseConfig);
-
-            const projectAuth = getAuth();
         </script>
 <?php }
 }

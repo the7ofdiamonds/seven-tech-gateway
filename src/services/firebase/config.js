@@ -1,7 +1,8 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
+import { initializeApp } from 'firebase/app';
+import 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyBu0CCToizQh2SORCP-4dAmXHJpzB6tU6k",
     authDomain: "theorb-f3a48.firebaseapp.com",
     databaseURL: "https://theorb-f3a48.firebaseio.com",
@@ -12,8 +13,8 @@ const firebaseConfig = {
     measurementId: "G-YMC4WY6W9H"
 };
 
-firebase.initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
-const projectAuth = firebase.auth();
+const projectAuth = getAuth();
 
-export { projectAuth };
+export { projectAuth }

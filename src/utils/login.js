@@ -8,7 +8,7 @@ import {
 
 import { projectAuth } from '../services/firebase/config.js';
 
-export const login = async (Email, Password) => {
+export const login = async ( Email, Password) => {
   const auth = getAuth();
 
   try {
@@ -30,7 +30,6 @@ export const login = async (Email, Password) => {
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = error.message;
-    console.error(`Error (${errorCode}): ${errorMessage}`);
 
     return `Error (${errorCode}): ${errorMessage}`;
   }

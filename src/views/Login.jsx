@@ -7,7 +7,7 @@ function LoginComponent() {
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
   const [messageType, setMessageType] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('Enter your email and password to log in.');
 
   const handleChange = (e) => {
     if (e.target.name === 'email') {
@@ -19,10 +19,23 @@ function LoginComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await login(Email, Password);
+    await login(Email, Password)
+      .then((response) => {
+        setMessage(displayStatus(response));
+        setMessageType(displayStatusType(response));
+      })
+      .then(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirectTo');
 
-    setMessage(displayStatus(response));
-    setMessageType(displayStatusType(response));
+        setTimeout(() => {
+          if (redirectTo === null) {
+            window.location.href = '/';
+          } else {
+            window.location.href = redirectTo;
+          }
+        }, 5000);
+      });
   };
 
   return (

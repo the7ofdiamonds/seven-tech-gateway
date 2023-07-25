@@ -6,16 +6,10 @@ class Templates
 {
     public function __construct()
     {
-        // add_filter('login_url', [$this, 'custom_login_url']);
         add_filter('page_template', [$this, 'get_custom_login_page_template']);
         add_filter('page_template', [$this, 'get_custom_signup_page_template']);
         add_filter('page_template', [$this, 'get_custom_forgot_page_template']);
         add_filter('page_template', [$this, 'get_custom_logout_page_template']);
-    }
-
-    function custom_login_url()
-    {
-        return home_url('/login');
     }
 
     function get_custom_login_page_template($page_template)

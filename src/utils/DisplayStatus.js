@@ -15,7 +15,9 @@ export const displayStatus = (status) => {
 };
 
 export const displayStatusType = (status) => {
-  if (status === 'You have been logged in') {
+  if (status === 'You have been logged in' ||
+    status === 'twins!!' ||
+    status === 'You are now a user.') {
     return 'success';
   }
 

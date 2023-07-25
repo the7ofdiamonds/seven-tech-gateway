@@ -8,8 +8,11 @@ export const forgot = async (Email) => {
 
     try {
         await sendPasswordResetEmail(auth, Email);
-        console.log('An email has been sent with a link to reset your password.');
+        return 'An email has been sent with a link to reset your password.';
     } catch (error) {
-        console.log('This email has not been registered yet.', error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        return `Error (${errorCode}): ${errorMessage}`;
     }
 };

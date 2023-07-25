@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
+import './services/firebase/config';
+
 window.onload = function () {
   const thfw = document.getElementById('thfw');
 

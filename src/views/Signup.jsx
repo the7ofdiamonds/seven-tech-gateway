@@ -1,25 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import NavigationComponent from './Navigation';
 
-function SignUpComponent() {
+import { displayStatus, displayStatusType } from '../utils/DisplayStatus';
+import { signup } from '../utils/signup';
 
+function SignUpComponent() {
+  const [UserName, setUserName] = useState('');
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
   const [ConfirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState(
+    'Enter the username, email, and password of your choice to sign up.'
+  );
+  const [messageType, setMessageType] = useState('');
 
-  if(Password !== '' && ConfirmPassword !== '' && Password === ConfirmPassword){
-    console.log('twins!!!')
-  }
+  useEffect(() => {
+    if (
+      Password !== '' &&
+      ConfirmPassword !== '' &&
+      Password === ConfirmPassword
+    ) {
+      const msg = 'You have successfully entered your password twice.';
+      setMessage(displayStatus(msg));
+      setMessageType(displayStatusType(msg));
+    } else if (
+      Password !== '' &&
+      Password !== ConfirmPassword
+    ) {
+      const msg = 'You have not entered your password twice.';
+      setMessage(displayStatus(msg));
+      setMessageType(displayStatusType(msg));
+    }
+  }, [Password, ConfirmPassword]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    signup(Email, Password);
+    signup(UserName, Email, Password)
+      .then((response) => {
+        setMessage(displayStatus(response));
+        setMessageType(displayStatusType(response));
+      })
+      .then(() => {
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 5000);
+      })
+      .catch((error) => {
+        console.log(error.message);
+        setMessage(displayStatus(error.message));
+        setMessageType(displayStatusType(error.message));
+      });
   };
 
   const handleChange = (e) => {
-    if (e.target.name === 'email') {
+    if (e.target.name === 'user-name') {
+      setUserName(e.target.value);
+    } else if (e.target.name === 'email') {
       setEmail(e.target.value);
     } else if (e.target.name === 'password') {
       setPassword(e.target.value);
@@ -36,6 +73,17 @@ function SignUpComponent() {
           <table>
             <thead></thead>
             <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    name="user-name"
+                    placeholder="User Name"
+                    onChange={handleChange}
+                    required
+                  />
+                </td>
+              </tr>
               <tr>
                 <td>
                   <input
@@ -80,6 +128,12 @@ function SignUpComponent() {
           </table>
         </form>
       </div>
+
+      {message !== '' && (
+        <div className="status-bar card">
+          <span className={`${messageType}`}>{message}</span>
+        </div>
+      )}
     </>
   );
 }

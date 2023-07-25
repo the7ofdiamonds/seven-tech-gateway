@@ -7,6 +7,12 @@ class Pages
 
     public function __construct()
     {
+        add_filter('login_url', [$this, 'custom_login_url']);
+    }
+
+    function custom_login_url()
+    {
+        return home_url('/login');
     }
 
     function add_pages()
