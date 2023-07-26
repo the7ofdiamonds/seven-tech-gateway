@@ -25,7 +25,7 @@ export const login = async ( Email, Password) => {
     await axios.post('/wp-json/thfw/users/v1/login', data);
 
     sessionStorage.setItem('idToken', token);
-
+    sessionStorage.setItem('user_email', Email);
     return 'Login successful';
   } catch (error) {
     const errorCode = error.code;

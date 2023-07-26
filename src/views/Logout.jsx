@@ -35,7 +35,7 @@ function LogOutComponent() {
   return (
     <>
       <button onClick={handleClick()}>
-        <h3>LOGOUT</h3>
+        <h3>LOG OUT</h3>
       </button>
 
       {message !== '' && (

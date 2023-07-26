@@ -145,7 +145,7 @@ function LogOutComponent() {
   };
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
     onClick: handleClick()
-  }, /*#__PURE__*/React.createElement("h3", null, "LOGOUT")), message !== '' && /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h3", null, "LOG OUT")), message !== '' && /*#__PURE__*/React.createElement("div", {
     className: "status-bar card"
   }, /*#__PURE__*/React.createElement("span", {
     className: "".concat(messageType)

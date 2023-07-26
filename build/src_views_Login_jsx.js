@@ -91,18 +91,19 @@ var login = /*#__PURE__*/function () {
           return axios__WEBPACK_IMPORTED_MODULE_2__["default"].post('/wp-json/thfw/users/v1/login', data);
         case 15:
           sessionStorage.setItem('idToken', token);
+          sessionStorage.setItem('user_email', Email);
           return _context.abrupt("return", 'Login successful');
-        case 19:
-          _context.prev = 19;
+        case 20:
+          _context.prev = 20;
           _context.t0 = _context["catch"](1);
           errorCode = _context.t0.code;
           errorMessage = _context.t0.message;
           return _context.abrupt("return", "Error (".concat(errorCode, "): ").concat(errorMessage));
-        case 24:
+        case 25:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[1, 19]]);
+    }, _callee, null, [[1, 20]]);
   }));
   return function login(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -213,7 +214,7 @@ function LoginComponent() {
     required: true
   })))), /*#__PURE__*/React.createElement("tfoot", null, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", {
     type: "submit"
-  }, /*#__PURE__*/React.createElement("h3", null, "LOGIN"))))))), message !== '' && /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h3", null, "LOG IN"))))))), message !== '' && /*#__PURE__*/React.createElement("div", {
     className: "status-bar card"
   }, /*#__PURE__*/React.createElement("span", {
     className: "".concat(messageType)
@@ -240,9 +241,9 @@ function NavigationComponent() {
     className: "options"
   }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
     to: "/login"
-  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "LOGIN"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
+  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "LOG IN"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
     to: '/signup'
-  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "SIGNUP"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
+  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "SIGN UP"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
     to: '/forgot'
   }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "FORGOT")))));
 }

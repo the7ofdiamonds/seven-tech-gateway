@@ -121,9 +121,9 @@ function NavigationComponent() {
     className: "options"
   }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
     to: "/login"
-  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "LOGIN"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
+  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "LOG IN"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
     to: '/signup'
-  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "SIGNUP"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
+  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "SIGN UP"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
     to: '/forgot'
   }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "FORGOT")))));
 }
@@ -264,7 +264,7 @@ function SignUpComponent() {
   })))), /*#__PURE__*/React.createElement("tfoot", null, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", {
     type: "submit",
     onClick: handleSubmit
-  }, /*#__PURE__*/React.createElement("h3", null, "SIGNUP"))))))), message !== '' && /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h3", null, "SIGN UP"))))))), message !== '' && /*#__PURE__*/React.createElement("div", {
     className: "status-bar card"
   }, /*#__PURE__*/React.createElement("span", {
     className: "".concat(messageType)

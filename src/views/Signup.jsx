@@ -121,7 +121,7 @@ function SignUpComponent() {
             <tfoot>
               <td>
                 <button type="submit" onClick={handleSubmit}>
-                  <h3>SIGNUP</h3>
+                  <h3>SIGN UP</h3>
                 </button>
               </td>
             </tfoot>

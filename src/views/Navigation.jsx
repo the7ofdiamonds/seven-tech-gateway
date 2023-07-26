@@ -6,13 +6,13 @@ function NavigationComponent() {
       <div className="options">
         <NavLink to={`/login`}>
           <button>
-            <h3>LOGIN</h3>
+            <h3>LOG IN</h3>
           </button>
         </NavLink>
 
         <NavLink to={'/signup'}>
           <button>
-            <h3>SIGNUP</h3>
+            <h3>SIGN UP</h3>
           </button>
         </NavLink>
 
