@@ -30,7 +30,7 @@ function LoginComponent() {
 
         setTimeout(() => {
           if (redirectTo === null) {
-            window.location.href = '/';
+            window.location.href = '/dashboard';
           } else {
             window.location.href = redirectTo;
           }

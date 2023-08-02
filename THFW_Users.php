@@ -1,5 +1,7 @@
 <?php
+
 namespace THFW_Users;
+
 /**
  * @package THFW Users
  */
@@ -26,6 +28,7 @@ require_once THFW_USERS . 'vendor/autoload.php';
 use THFW_Users\API\API;
 use THFW_Users\CSS\CSS;
 use THFW_Users\JS\JS;
+use THFW_Users\Menus\Menus;
 use THFW_Users\Pages\Pages;
 use THFW_Users\Templates\Templates;
 
@@ -75,6 +78,8 @@ class THFW_Users
 $thfw_users = new THFW_Users();
 register_activation_hook(__FILE__, array($thfw_users, 'activate'));
 register_activation_hook(__FILE__, array($thfw_users, 'add_roles'));
+
+register_activation_hook(__FILE__, array(new Menus(), 'create_mobile_menu'));
 
 $thfw_users_pages = new Pages();
 register_activation_hook(__FILE__, array($thfw_users_pages, 'add_pages'));

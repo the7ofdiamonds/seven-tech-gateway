@@ -180,7 +180,7 @@ function LoginComponent() {
               var redirectTo = urlParams.get('redirectTo');
               setTimeout(function () {
                 if (redirectTo === null) {
-                  window.location.href = '/';
+                  window.location.href = '/dashboard';
                 } else {
                   window.location.href = redirectTo;
                 }

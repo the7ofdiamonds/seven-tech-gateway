@@ -23,7 +23,8 @@ class Pages
             'LOGIN',
             'SIGNUP',
             'FORGOT',
-            'LOGOUT'
+            'LOGOUT',
+            'DASHBOARD'
         ];
 
         foreach ($page_titles as $page_title) {
