@@ -2,32 +2,29 @@
 
 namespace THFW_Users\Pages;
 
+use WP_Query;
+
 class Pages
 {
+    private $page_titles;
 
     public function __construct()
     {
-        add_filter('login_url', [$this, 'custom_login_url']);
-    }
-
-    function custom_login_url()
-    {
-        return home_url('/login');
-    }
-
-    function add_pages()
-    {
-        global $wpdb;
-
-        $page_titles = [
+        $this->page_titles = [
             'LOGIN',
             'SIGNUP',
             'FORGOT',
             'LOGOUT',
             'DASHBOARD'
         ];
+        add_action('init', [$this, 'react_rewrite_rules']);
+    }
 
-        foreach ($page_titles as $page_title) {
+    public function add_pages()
+    {
+        global $wpdb;
+
+        foreach ($this->page_titles as $page_title) {
             $page_exists = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = 'page'", $page_title));
 
             if (!$page_exists) {
@@ -40,6 +37,24 @@ class Pages
 
                 wp_insert_post($page_data);
             }
+        }
+    }
+
+    public function react_rewrite_rules()
+    {
+        foreach ($this->page_titles as $page_title) {
+            $args = array(
+                'post_type' => 'page',
+                'post_title' => $page_title,
+                'posts_per_page' => 1
+            );
+            $query = new WP_Query($args);
+
+            if ($query->have_posts()) {
+                $query->the_post();
+                add_rewrite_rule('^' . $query->post->post_name, 'index.php?page_id=' . $query->post->ID, 'top');
+            }
+            wp_reset_postdata();
         }
     }
 }
