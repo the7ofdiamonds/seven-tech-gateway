@@ -24,10 +24,7 @@ function SignUpComponent() {
       const msg = 'You have successfully entered your password twice.';
       setMessage(displayStatus(msg));
       setMessageType(displayStatusType(msg));
-    } else if (
-      Password !== '' &&
-      Password !== ConfirmPassword
-    ) {
+    } else if (Password !== '' && Password !== ConfirmPassword) {
       const msg = 'You have not entered your password twice.';
       setMessage(displayStatus(msg));
       setMessageType(displayStatusType(msg));
@@ -130,8 +127,8 @@ function SignUpComponent() {
       </div>
 
       {message !== '' && (
-        <div className="status-bar card">
-          <span className={`${messageType}`}>{message}</span>
+        <div className={`status-bar card ${messageType}`}>
+          <span>{message}</span>
         </div>
       )}
     </>

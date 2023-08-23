@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import NavigationComponent from './Navigation';
 import { login } from '../utils/login';
 import { displayStatus, displayStatusType } from '../utils/DisplayStatus';
@@ -7,7 +7,9 @@ function LoginComponent() {
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
   const [messageType, setMessageType] = useState('');
-  const [message, setMessage] = useState('Enter your email and password to log in.');
+  const [message, setMessage] = useState(
+    'Enter your email and password to log in.'
+  );
 
   const handleChange = (e) => {
     if (e.target.name === 'email') {
@@ -81,8 +83,8 @@ function LoginComponent() {
       </div>
 
       {message !== '' && (
-        <div className="status-bar card">
-          <span className={`${messageType}`}>{message}</span>
+        <div className={`status-bar card ${messageType}`}>
+          <span>{message}</span>
         </div>
       )}
     </>

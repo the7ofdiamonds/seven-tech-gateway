@@ -13,9 +13,10 @@ class API
   function __construct()
   {
     $factory = (new Factory)->withServiceAccount(THFW_USERS . 'API/serviceAccount.json');
-
-    new Signup($factory);
-    new Login($factory);
-    new Logout($factory);
+    $auth = $factory->createAuth();
+    
+    new Signup($auth);
+    new Login($auth);
+    new Logout();
   }
 }

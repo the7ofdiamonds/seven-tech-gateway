@@ -25,7 +25,7 @@ var displayStatus = function displayStatus(status) {
   return status;
 };
 var displayStatusType = function displayStatusType(status) {
-  if (status === 'You have been logged in' || status === 'twins!!' || status === 'You are now a user.') {
+  if (status === 'Login successful' || status === 'twins!!' || status === 'You are now a user.') {
     return 'success';
   }
   if (status === 'Error (auth/user-not-found): Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found).' || status === 'Error (auth/wrong-password): Firebase: The password is invalid or the user does not have a password. (auth/wrong-password).') {
@@ -265,10 +265,8 @@ function SignUpComponent() {
     type: "submit",
     onClick: handleSubmit
   }, /*#__PURE__*/React.createElement("h3", null, "SIGN UP"))))))), message !== '' && /*#__PURE__*/React.createElement("div", {
-    className: "status-bar card"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "".concat(messageType)
-  }, message)));
+    className: "status-bar card ".concat(messageType)
+  }, /*#__PURE__*/React.createElement("span", null, message)));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SignUpComponent);
 

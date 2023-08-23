@@ -70,7 +70,6 @@ class THFW_Users
     //Add Roles
     function add_roles()
     {
-
         add_role('founder/managing member', 'Founder/Managing Member', get_role('administrator')->capabilities);
     }
 }

@@ -209,4 +209,26 @@
   box-shadow: none;
 }
 
+.status-bar.card {
+  background-color: var(--thfw-color-primary);
+}
+.status-bar.card.info {
+  background-color: var(--thfw-color-info);
+}
+.status-bar.card.caution {
+  background-color: var(--thfw-color-caution);
+}
+.status-bar.card.error {
+  background-color: var(--thfw-color-error);
+}
+.status-bar.card.success {
+  background-color: var(--thfw-color-success);
+}
+.status-bar.card span {
+  color: var(--thfw-color-secondary);
+}
+.status-bar.card span h4 {
+  padding: 0.5em;
+}
+
 /*# sourceMappingURL=thfw-users.css.map */

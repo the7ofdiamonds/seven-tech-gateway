@@ -27,6 +27,7 @@ function ForgotComponent() {
       }, 5000);
 
       setMessage(displayStatus(`Check your inbox and spam for ${Email}`));
+      setMessageType('info');
     });
   };
 
@@ -68,8 +69,8 @@ function ForgotComponent() {
       </div>
 
       {message !== '' && (
-        <div className="status-bar card">
-          <span className={`${messageType}`}>{message}</span>
+        <div className={`status-bar card ${messageType}`}>
+          <span>{message}</span>
         </div>
       )}
     </>

@@ -17,7 +17,7 @@ class Templates
     {
 
         if (is_page('login')) {
-            $page_template = THFW_USERS . 'pages/page-login.php';
+            $page_template = THFW_USERS . 'Pages/page-login.php';
         }
 
         return $page_template;
@@ -27,7 +27,7 @@ class Templates
     {
 
         if (is_page('signup')) {
-            $page_template = THFW_USERS . 'pages/page-signup.php';
+            $page_template = THFW_USERS . 'Pages/page-signup.php';
         }
 
         return $page_template;
@@ -37,7 +37,7 @@ class Templates
     {
 
         if (is_page('forgot')) {
-            $page_template = THFW_USERS . 'pages/page-forgot.php';
+            $page_template = THFW_USERS . 'Pages/page-forgot.php';
         }
 
         return $page_template;
@@ -47,7 +47,7 @@ class Templates
     {
 
         if (is_page('logout')) {
-            $page_template = THFW_USERS . 'pages/page-logout.php';
+            $page_template = THFW_USERS . 'Pages/page-logout.php';
         }
 
         return $page_template;
@@ -57,7 +57,7 @@ class Templates
     {
 
         if (is_page('dashboard')) {
-            $page_template = THFW_USERS . 'pages/page-dashboard.php';
+            $page_template = THFW_USERS . 'Pages/page-dashboard.php';
         }
 
         return $page_template;

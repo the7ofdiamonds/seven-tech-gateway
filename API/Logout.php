@@ -2,17 +2,10 @@
 
 namespace THFW_Users\API;
 
-use WP_REST_Request;
-use WP_Error;
-
 class Logout
 {
-    private $auth;
-
-    public function __construct($factory)
+    public function __construct()
     {
-        $this->auth = $factory->createAuth();
-
         add_action('rest_api_init', function () {
             register_rest_route('thfw/users/v1', '/logout', array(
                 'methods' => 'POST',
@@ -22,14 +15,21 @@ class Logout
         });
     }
 
-    public function logout(WP_REST_Request $request)
+    public function logout()
     {
-        $this->auth->logout;
         wp_logout();
-        $_SESSION['idToken'] = '';
 
         if (!is_user_logged_in()) {
-            return rest_ensure_response('You have been logged out');
+            $response = rest_ensure_response('You have been logged out');
+            $response->set_status(200);
+            return $response;
+        } else {
+            $messsage = [
+                'message' => 'Logout failed'
+            ];
+            $response = rest_ensure_response($messsage);
+            $response->set_status(400);
+            return $response;
         }
     }
 }

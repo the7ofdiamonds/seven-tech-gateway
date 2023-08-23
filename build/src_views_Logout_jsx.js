@@ -25,7 +25,7 @@ var displayStatus = function displayStatus(status) {
   return status;
 };
 var displayStatusType = function displayStatusType(status) {
-  if (status === 'You have been logged in' || status === 'twins!!' || status === 'You are now a user.') {
+  if (status === 'Login successful' || status === 'twins!!' || status === 'You are now a user.') {
     return 'success';
   }
   if (status === 'Error (auth/user-not-found): Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found).' || status === 'Error (auth/wrong-password): Firebase: The password is invalid or the user does not have a password. (auth/wrong-password).') {
@@ -114,7 +114,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
 function LogOutComponent() {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
     _useState2 = _slicedToArray(_useState, 2),
@@ -125,31 +124,28 @@ function LogOutComponent() {
     message = _useState4[0],
     setMessage = _useState4[1];
   var handleClick = function handleClick() {
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-      (0,_utils_logout__WEBPACK_IMPORTED_MODULE_1__.logout)().then(function (responseMessage) {
-        setMessage(responseMessage);
-      }).then(function () {
-        setTimeout(function () {
-          window.location = '/';
-        }, 5000);
-      })["catch"](function (error) {
-        console.error('Error occurred while logging out:', error);
-        setMessage('Error occurred while logging out.');
-        setMessageType('error');
-      });
-    }, []);
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-      (0,_utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_2__.displayStatus)(message);
-      setMessageType((0,_utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_2__.displayStatusType)(message));
-    }, [message]);
+    (0,_utils_logout__WEBPACK_IMPORTED_MODULE_1__.logout)().then(function (responseMessage) {
+      setMessage(responseMessage);
+      setTimeout(function () {
+        window.location.href = '/';
+      }, 5000);
+    })["catch"](function (error) {
+      console.error('Error occurred while logging out:', error);
+      setMessage('Error occurred while logging out.');
+      setMessageType('error');
+    });
   };
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (message !== '') {
+      (0,_utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_2__.displayStatus)(message);
+      setMessageType('error');
+    }
+  }, [message]);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
-    onClick: handleClick()
+    onClick: handleClick
   }, /*#__PURE__*/React.createElement("h3", null, "LOG OUT")), message !== '' && /*#__PURE__*/React.createElement("div", {
-    className: "status-bar card"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "".concat(messageType)
-  }, message)));
+    className: "status-bar card ".concat(messageType)
+  }, /*#__PURE__*/React.createElement("span", null, message)));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LogOutComponent);
 

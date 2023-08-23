@@ -1,0 +1,22 @@
+.status-bar.card {
+  background-color: var(--thfw-color-primary);
+  &.info {
+    background-color: var(--thfw-color-info);
+  }
+  &.caution {
+    background-color: var(--thfw-color-caution);
+  }
+  &.error {
+    background-color: var(--thfw-color-error);
+  }
+  &.success {
+    background-color: var(--thfw-color-success);
+  }
+  span {
+    color: var(--thfw-color-secondary);
+
+    h4 {
+      padding: 0.5em;
+    }
+  }
+}
