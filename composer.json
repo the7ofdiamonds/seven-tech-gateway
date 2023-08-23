@@ -1,10 +1,9 @@
 {
-    "name": "the7ofdiamonds.tech/thfw-users",
-    "description": "UX/UI for users",
-    "type": "project",
+    "name": "jamellyons/thfw-users",
     "authors": [
         {
-            "name": "THE7OFDIAMONDS.TECH"
+            "name": "Jamel Lyons",
+            "email": "32249473+the7ofdiamonds@users.noreply.github.com"
         }
     ],
     "require": {
