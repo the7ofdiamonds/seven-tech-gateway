@@ -19,11 +19,12 @@ Text Domain: thfw-users
 /*
 Licensing Info Here
 */
+
+require_once 'vendor/autoload.php';
+
 defined('ABSPATH') or die('Hey, what are you doing here? You silly human!');
 define('THFW_USERS', WP_PLUGIN_DIR . '/thfw-users/');
 define('THFW_USERS_URL', WP_PLUGIN_URL . '/thfw-users/');
-
-require_once THFW_USERS . 'vendor/autoload.php';
 
 use THFW_Users\API\API;
 use THFW_Users\CSS\CSS;

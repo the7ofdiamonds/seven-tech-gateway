@@ -2,94 +2,95 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/@firebase/auth/dist/esm2017/index-e24386e7.js":
+/***/ "./node_modules/@firebase/auth/dist/esm2017/index-9a76d29a.js":
 /*!********************************************************************!*\
-  !*** ./node_modules/@firebase/auth/dist/esm2017/index-e24386e7.js ***!
+  !*** ./node_modules/@firebase/auth/dist/esm2017/index-9a76d29a.js ***!
   \********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $: () => (/* binding */ signInWithCredential),
+/* harmony export */   $: () => (/* binding */ signInAnonymously),
 /* harmony export */   A: () => (/* binding */ ActionCodeOperation),
-/* harmony export */   B: () => (/* binding */ signOut),
-/* harmony export */   C: () => (/* binding */ deleteUser),
-/* harmony export */   D: () => (/* binding */ debugErrorMap),
-/* harmony export */   E: () => (/* binding */ prodErrorMap),
+/* harmony export */   B: () => (/* binding */ updateCurrentUser),
+/* harmony export */   C: () => (/* binding */ signOut),
+/* harmony export */   D: () => (/* binding */ deleteUser),
+/* harmony export */   E: () => (/* binding */ debugErrorMap),
 /* harmony export */   F: () => (/* binding */ FactorId),
-/* harmony export */   G: () => (/* binding */ AUTH_ERROR_CODES_MAP_DO_NOT_USE_INTERNALLY),
-/* harmony export */   H: () => (/* binding */ initializeAuth),
-/* harmony export */   I: () => (/* binding */ connectAuthEmulator),
-/* harmony export */   J: () => (/* binding */ AuthCredential),
-/* harmony export */   K: () => (/* binding */ EmailAuthCredential),
-/* harmony export */   L: () => (/* binding */ OAuthCredential),
-/* harmony export */   M: () => (/* binding */ PhoneAuthCredential),
-/* harmony export */   N: () => (/* binding */ inMemoryPersistence),
+/* harmony export */   G: () => (/* binding */ prodErrorMap),
+/* harmony export */   H: () => (/* binding */ AUTH_ERROR_CODES_MAP_DO_NOT_USE_INTERNALLY),
+/* harmony export */   I: () => (/* binding */ initializeAuth),
+/* harmony export */   J: () => (/* binding */ connectAuthEmulator),
+/* harmony export */   K: () => (/* binding */ AuthCredential),
+/* harmony export */   L: () => (/* binding */ EmailAuthCredential),
+/* harmony export */   M: () => (/* binding */ OAuthCredential),
+/* harmony export */   N: () => (/* binding */ PhoneAuthCredential),
 /* harmony export */   O: () => (/* binding */ OperationType),
 /* harmony export */   P: () => (/* binding */ PhoneAuthProvider),
-/* harmony export */   Q: () => (/* binding */ EmailAuthProvider),
+/* harmony export */   Q: () => (/* binding */ inMemoryPersistence),
 /* harmony export */   R: () => (/* binding */ RecaptchaVerifier),
 /* harmony export */   S: () => (/* binding */ SignInMethod),
 /* harmony export */   T: () => (/* binding */ TotpMultiFactorGenerator),
-/* harmony export */   U: () => (/* binding */ FacebookAuthProvider),
-/* harmony export */   V: () => (/* binding */ GoogleAuthProvider),
-/* harmony export */   W: () => (/* binding */ GithubAuthProvider),
-/* harmony export */   X: () => (/* binding */ OAuthProvider),
-/* harmony export */   Y: () => (/* binding */ SAMLAuthProvider),
-/* harmony export */   Z: () => (/* binding */ TwitterAuthProvider),
-/* harmony export */   _: () => (/* binding */ signInAnonymously),
+/* harmony export */   U: () => (/* binding */ EmailAuthProvider),
+/* harmony export */   V: () => (/* binding */ FacebookAuthProvider),
+/* harmony export */   W: () => (/* binding */ GoogleAuthProvider),
+/* harmony export */   X: () => (/* binding */ GithubAuthProvider),
+/* harmony export */   Y: () => (/* binding */ OAuthProvider),
+/* harmony export */   Z: () => (/* binding */ SAMLAuthProvider),
+/* harmony export */   _: () => (/* binding */ TwitterAuthProvider),
 /* harmony export */   a: () => (/* binding */ browserSessionPersistence),
-/* harmony export */   a0: () => (/* binding */ linkWithCredential),
-/* harmony export */   a1: () => (/* binding */ reauthenticateWithCredential),
-/* harmony export */   a2: () => (/* binding */ signInWithCustomToken),
-/* harmony export */   a3: () => (/* binding */ sendPasswordResetEmail),
-/* harmony export */   a4: () => (/* binding */ confirmPasswordReset),
-/* harmony export */   a5: () => (/* binding */ applyActionCode),
-/* harmony export */   a6: () => (/* binding */ checkActionCode),
-/* harmony export */   a7: () => (/* binding */ verifyPasswordResetCode),
-/* harmony export */   a8: () => (/* binding */ createUserWithEmailAndPassword),
-/* harmony export */   a9: () => (/* binding */ signInWithEmailAndPassword),
-/* harmony export */   aA: () => (/* binding */ _assert),
-/* harmony export */   aB: () => (/* binding */ AuthEventManager),
-/* harmony export */   aC: () => (/* binding */ _getInstance),
-/* harmony export */   aD: () => (/* binding */ _persistenceKeyName),
-/* harmony export */   aE: () => (/* binding */ _getRedirectResult),
-/* harmony export */   aF: () => (/* binding */ _overrideRedirectResult),
-/* harmony export */   aG: () => (/* binding */ _clearRedirectOutcomes),
-/* harmony export */   aH: () => (/* binding */ _castAuth),
-/* harmony export */   aI: () => (/* binding */ UserImpl),
-/* harmony export */   aJ: () => (/* binding */ AuthImpl),
-/* harmony export */   aK: () => (/* binding */ _getClientVersion),
-/* harmony export */   aL: () => (/* binding */ _generateEventId),
-/* harmony export */   aM: () => (/* binding */ AuthPopup),
-/* harmony export */   aN: () => (/* binding */ FetchProvider),
-/* harmony export */   aO: () => (/* binding */ SAMLAuthCredential),
-/* harmony export */   aa: () => (/* binding */ sendSignInLinkToEmail),
-/* harmony export */   ab: () => (/* binding */ isSignInWithEmailLink),
-/* harmony export */   ac: () => (/* binding */ signInWithEmailLink),
-/* harmony export */   ad: () => (/* binding */ fetchSignInMethodsForEmail),
-/* harmony export */   ae: () => (/* binding */ sendEmailVerification),
-/* harmony export */   af: () => (/* binding */ verifyBeforeUpdateEmail),
-/* harmony export */   ag: () => (/* binding */ ActionCodeURL),
-/* harmony export */   ah: () => (/* binding */ parseActionCodeURL),
-/* harmony export */   ai: () => (/* binding */ updateProfile),
-/* harmony export */   aj: () => (/* binding */ updateEmail),
-/* harmony export */   ak: () => (/* binding */ updatePassword),
-/* harmony export */   al: () => (/* binding */ getIdToken),
-/* harmony export */   am: () => (/* binding */ getIdTokenResult),
-/* harmony export */   an: () => (/* binding */ unlink),
-/* harmony export */   ao: () => (/* binding */ getAdditionalUserInfo),
-/* harmony export */   ap: () => (/* binding */ reload),
-/* harmony export */   aq: () => (/* binding */ getMultiFactorResolver),
-/* harmony export */   ar: () => (/* binding */ multiFactor),
-/* harmony export */   as: () => (/* binding */ debugAssert),
-/* harmony export */   at: () => (/* binding */ _isIOS),
-/* harmony export */   au: () => (/* binding */ _isAndroid),
-/* harmony export */   av: () => (/* binding */ _fail),
-/* harmony export */   aw: () => (/* binding */ _getRedirectUrl),
-/* harmony export */   ax: () => (/* binding */ _getProjectConfig),
-/* harmony export */   ay: () => (/* binding */ _isIOS7Or8),
-/* harmony export */   az: () => (/* binding */ _createError),
+/* harmony export */   a0: () => (/* binding */ signInWithCredential),
+/* harmony export */   a1: () => (/* binding */ linkWithCredential),
+/* harmony export */   a2: () => (/* binding */ reauthenticateWithCredential),
+/* harmony export */   a3: () => (/* binding */ signInWithCustomToken),
+/* harmony export */   a4: () => (/* binding */ sendPasswordResetEmail),
+/* harmony export */   a5: () => (/* binding */ confirmPasswordReset),
+/* harmony export */   a6: () => (/* binding */ applyActionCode),
+/* harmony export */   a7: () => (/* binding */ checkActionCode),
+/* harmony export */   a8: () => (/* binding */ verifyPasswordResetCode),
+/* harmony export */   a9: () => (/* binding */ createUserWithEmailAndPassword),
+/* harmony export */   aA: () => (/* binding */ _createError),
+/* harmony export */   aB: () => (/* binding */ _assert),
+/* harmony export */   aC: () => (/* binding */ AuthEventManager),
+/* harmony export */   aD: () => (/* binding */ _getInstance),
+/* harmony export */   aE: () => (/* binding */ _persistenceKeyName),
+/* harmony export */   aF: () => (/* binding */ _getRedirectResult),
+/* harmony export */   aG: () => (/* binding */ _overrideRedirectResult),
+/* harmony export */   aH: () => (/* binding */ _clearRedirectOutcomes),
+/* harmony export */   aI: () => (/* binding */ _castAuth),
+/* harmony export */   aJ: () => (/* binding */ UserImpl),
+/* harmony export */   aK: () => (/* binding */ AuthImpl),
+/* harmony export */   aL: () => (/* binding */ _getClientVersion),
+/* harmony export */   aM: () => (/* binding */ _generateEventId),
+/* harmony export */   aN: () => (/* binding */ AuthPopup),
+/* harmony export */   aO: () => (/* binding */ FetchProvider),
+/* harmony export */   aP: () => (/* binding */ SAMLAuthCredential),
+/* harmony export */   aa: () => (/* binding */ signInWithEmailAndPassword),
+/* harmony export */   ab: () => (/* binding */ sendSignInLinkToEmail),
+/* harmony export */   ac: () => (/* binding */ isSignInWithEmailLink),
+/* harmony export */   ad: () => (/* binding */ signInWithEmailLink),
+/* harmony export */   ae: () => (/* binding */ fetchSignInMethodsForEmail),
+/* harmony export */   af: () => (/* binding */ sendEmailVerification),
+/* harmony export */   ag: () => (/* binding */ verifyBeforeUpdateEmail),
+/* harmony export */   ah: () => (/* binding */ ActionCodeURL),
+/* harmony export */   ai: () => (/* binding */ parseActionCodeURL),
+/* harmony export */   aj: () => (/* binding */ updateProfile),
+/* harmony export */   ak: () => (/* binding */ updateEmail),
+/* harmony export */   al: () => (/* binding */ updatePassword),
+/* harmony export */   am: () => (/* binding */ getIdToken),
+/* harmony export */   an: () => (/* binding */ getIdTokenResult),
+/* harmony export */   ao: () => (/* binding */ unlink),
+/* harmony export */   ap: () => (/* binding */ getAdditionalUserInfo),
+/* harmony export */   aq: () => (/* binding */ reload),
+/* harmony export */   ar: () => (/* binding */ getMultiFactorResolver),
+/* harmony export */   as: () => (/* binding */ multiFactor),
+/* harmony export */   at: () => (/* binding */ debugAssert),
+/* harmony export */   au: () => (/* binding */ _isIOS),
+/* harmony export */   av: () => (/* binding */ _isAndroid),
+/* harmony export */   aw: () => (/* binding */ _fail),
+/* harmony export */   ax: () => (/* binding */ _getRedirectUrl),
+/* harmony export */   ay: () => (/* binding */ _getProjectConfig),
+/* harmony export */   az: () => (/* binding */ _isIOS7Or8),
 /* harmony export */   b: () => (/* binding */ browserLocalPersistence),
 /* harmony export */   c: () => (/* binding */ signInWithPopup),
 /* harmony export */   d: () => (/* binding */ linkWithPopup),
@@ -110,16 +111,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   s: () => (/* binding */ signInWithPhoneNumber),
 /* harmony export */   t: () => (/* binding */ initializeRecaptchaConfig),
 /* harmony export */   u: () => (/* binding */ updatePhoneNumber),
-/* harmony export */   v: () => (/* binding */ onIdTokenChanged),
-/* harmony export */   w: () => (/* binding */ beforeAuthStateChanged),
-/* harmony export */   x: () => (/* binding */ onAuthStateChanged),
-/* harmony export */   y: () => (/* binding */ useDeviceLanguage),
-/* harmony export */   z: () => (/* binding */ updateCurrentUser)
+/* harmony export */   v: () => (/* binding */ validatePassword),
+/* harmony export */   w: () => (/* binding */ onIdTokenChanged),
+/* harmony export */   x: () => (/* binding */ beforeAuthStateChanged),
+/* harmony export */   y: () => (/* binding */ onAuthStateChanged),
+/* harmony export */   z: () => (/* binding */ useDeviceLanguage)
 /* harmony export */ });
 /* harmony import */ var _firebase_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @firebase/util */ "./node_modules/@firebase/util/dist/index.esm2017.js");
 /* harmony import */ var _firebase_app__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @firebase/app */ "./node_modules/@firebase/app/dist/esm/index.esm2017.js");
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.mjs");
 /* harmony import */ var _firebase_logger__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @firebase/logger */ "./node_modules/@firebase/logger/dist/esm/index.esm2017.js");
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.mjs");
 /* harmony import */ var _firebase_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @firebase/component */ "./node_modules/@firebase/component/dist/esm/index.esm2017.js");
 
 
@@ -225,6 +226,50 @@ const ActionCodeOperation = {
     /** The email verification action. */
     VERIFY_EMAIL: 'VERIFY_EMAIL'
 };
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function isV2(grecaptcha) {
+    return (grecaptcha !== undefined &&
+        grecaptcha.getResponse !== undefined);
+}
+function isEnterprise(grecaptcha) {
+    return (grecaptcha !== undefined &&
+        grecaptcha.enterprise !== undefined);
+}
+class RecaptchaConfig {
+    constructor(response) {
+        /**
+         * The reCAPTCHA site key.
+         */
+        this.siteKey = '';
+        /**
+         * The reCAPTCHA enablement status of the {@link EmailAuthProvider} for the current tenant.
+         */
+        this.emailPasswordEnabled = false;
+        if (response.recaptchaKey === undefined) {
+            throw new Error('recaptchaKey undefined');
+        }
+        // Example response.recaptchaKey: "projects/proj123/keys/sitekey123"
+        this.siteKey = response.recaptchaKey.split('/')[3];
+        this.emailPasswordEnabled = response.recaptchaEnforcementState.some(enforcementState => enforcementState.provider === 'EMAIL_PASSWORD_PROVIDER' &&
+            enforcementState.enforcementState !== 'OFF');
+    }
+}
 
 /**
  * @license
@@ -396,7 +441,9 @@ function _debugErrorMap() {
         ["missing-client-type" /* AuthErrorCode.MISSING_CLIENT_TYPE */]: 'The reCAPTCHA client type is missing when sending request to the backend.',
         ["missing-recaptcha-version" /* AuthErrorCode.MISSING_RECAPTCHA_VERSION */]: 'The reCAPTCHA version is missing when sending request to the backend.',
         ["invalid-req-type" /* AuthErrorCode.INVALID_REQ_TYPE */]: 'Invalid request parameters.',
-        ["invalid-recaptcha-version" /* AuthErrorCode.INVALID_RECAPTCHA_VERSION */]: 'The reCAPTCHA version is invalid when sending request to the backend.'
+        ["invalid-recaptcha-version" /* AuthErrorCode.INVALID_RECAPTCHA_VERSION */]: 'The reCAPTCHA version is invalid when sending request to the backend.',
+        ["unsupported-password-policy-schema-version" /* AuthErrorCode.UNSUPPORTED_PASSWORD_POLICY_SCHEMA_VERSION */]: 'The password policy received from the backend uses a schema version that is not supported by this version of the Firebase SDK.',
+        ["password-does-not-meet-requirements" /* AuthErrorCode.PASSWORD_DOES_NOT_MEET_REQUIREMENTS */]: 'The password does not meet the requirements.'
     };
 }
 function _prodErrorMap() {
@@ -910,6 +957,7 @@ const SERVER_ERROR_MAP = {
     ["USER_NOT_FOUND" /* ServerError.USER_NOT_FOUND */]: "user-token-expired" /* AuthErrorCode.TOKEN_EXPIRED */,
     // Other errors.
     ["TOO_MANY_ATTEMPTS_TRY_LATER" /* ServerError.TOO_MANY_ATTEMPTS_TRY_LATER */]: "too-many-requests" /* AuthErrorCode.TOO_MANY_ATTEMPTS_TRY_LATER */,
+    ["PASSWORD_DOES_NOT_MEET_REQUIREMENTS" /* ServerError.PASSWORD_DOES_NOT_MEET_REQUIREMENTS */]: "password-does-not-meet-requirements" /* AuthErrorCode.PASSWORD_DOES_NOT_MEET_REQUIREMENTS */,
     // Phone Auth related errors.
     ["INVALID_CODE" /* ServerError.INVALID_CODE */]: "invalid-verification-code" /* AuthErrorCode.INVALID_CODE */,
     ["INVALID_SESSION_INFO" /* ServerError.INVALID_SESSION_INFO */]: "invalid-verification-id" /* AuthErrorCode.INVALID_SESSION_INFO */,
@@ -1092,6 +1140,29 @@ function _makeTaggedError(auth, code, response) {
     // We know customData is defined on error because errorParams is defined
     error.customData._tokenResponse = response;
     return error;
+}
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+async function getRecaptchaParams(auth) {
+    return ((await _performApiRequest(auth, "GET" /* HttpMethod.GET */, "/v1/recaptchaParams" /* Endpoint.GET_RECAPTCHA_PARAM */)).recaptchaSiteKey || '');
+}
+async function getRecaptchaConfig(auth, request) {
+    return _performApiRequest(auth, "GET" /* HttpMethod.GET */, "/v2/recaptchaConfig" /* Endpoint.GET_RECAPTCHA_CONFIG */, _addTidIfNecessary(auth, request));
 }
 
 /**
@@ -2216,238 +2287,6 @@ function _getClientVersion(clientPlatform, frameworks = []) {
 
 /**
  * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-async function getRecaptchaParams(auth) {
-    return ((await _performApiRequest(auth, "GET" /* HttpMethod.GET */, "/v1/recaptchaParams" /* Endpoint.GET_RECAPTCHA_PARAM */)).recaptchaSiteKey || '');
-}
-async function getRecaptchaConfig(auth, request) {
-    return _performApiRequest(auth, "GET" /* HttpMethod.GET */, "/v2/recaptchaConfig" /* Endpoint.GET_RECAPTCHA_CONFIG */, _addTidIfNecessary(auth, request));
-}
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-function isV2(grecaptcha) {
-    return (grecaptcha !== undefined &&
-        grecaptcha.getResponse !== undefined);
-}
-function isEnterprise(grecaptcha) {
-    return (grecaptcha !== undefined &&
-        grecaptcha.enterprise !== undefined);
-}
-class RecaptchaConfig {
-    constructor(response) {
-        /**
-         * The reCAPTCHA site key.
-         */
-        this.siteKey = '';
-        /**
-         * The reCAPTCHA enablement status of the {@link EmailAuthProvider} for the current tenant.
-         */
-        this.emailPasswordEnabled = false;
-        if (response.recaptchaKey === undefined) {
-            throw new Error('recaptchaKey undefined');
-        }
-        // Example response.recaptchaKey: "projects/proj123/keys/sitekey123"
-        this.siteKey = response.recaptchaKey.split('/')[3];
-        this.emailPasswordEnabled = response.recaptchaEnforcementState.some(enforcementState => enforcementState.provider === 'EMAIL_PASSWORD_PROVIDER' &&
-            enforcementState.enforcementState !== 'OFF');
-    }
-}
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-function getScriptParentElement() {
-    var _a, _b;
-    return (_b = (_a = document.getElementsByTagName('head')) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : document;
-}
-function _loadJS(url) {
-    // TODO: consider adding timeout support & cancellation
-    return new Promise((resolve, reject) => {
-        const el = document.createElement('script');
-        el.setAttribute('src', url);
-        el.onload = resolve;
-        el.onerror = e => {
-            const error = _createError("internal-error" /* AuthErrorCode.INTERNAL_ERROR */);
-            error.customData = e;
-            reject(error);
-        };
-        el.type = 'text/javascript';
-        el.charset = 'UTF-8';
-        getScriptParentElement().appendChild(el);
-    });
-}
-function _generateCallbackName(prefix) {
-    return `__${prefix}${Math.floor(Math.random() * 1000000)}`;
-}
-
-/* eslint-disable @typescript-eslint/no-require-imports */
-const RECAPTCHA_ENTERPRISE_URL = 'https://www.google.com/recaptcha/enterprise.js?render=';
-const RECAPTCHA_ENTERPRISE_VERIFIER_TYPE = 'recaptcha-enterprise';
-const FAKE_TOKEN = 'NO_RECAPTCHA';
-class RecaptchaEnterpriseVerifier {
-    /**
-     *
-     * @param authExtern - The corresponding Firebase {@link Auth} instance.
-     *
-     */
-    constructor(authExtern) {
-        /**
-         * Identifies the type of application verifier (e.g. "recaptcha-enterprise").
-         */
-        this.type = RECAPTCHA_ENTERPRISE_VERIFIER_TYPE;
-        this.auth = _castAuth(authExtern);
-    }
-    /**
-     * Executes the verification process.
-     *
-     * @returns A Promise for a token that can be used to assert the validity of a request.
-     */
-    async verify(action = 'verify', forceRefresh = false) {
-        async function retrieveSiteKey(auth) {
-            if (!forceRefresh) {
-                if (auth.tenantId == null && auth._agentRecaptchaConfig != null) {
-                    return auth._agentRecaptchaConfig.siteKey;
-                }
-                if (auth.tenantId != null &&
-                    auth._tenantRecaptchaConfigs[auth.tenantId] !== undefined) {
-                    return auth._tenantRecaptchaConfigs[auth.tenantId].siteKey;
-                }
-            }
-            return new Promise(async (resolve, reject) => {
-                getRecaptchaConfig(auth, {
-                    clientType: "CLIENT_TYPE_WEB" /* RecaptchaClientType.WEB */,
-                    version: "RECAPTCHA_ENTERPRISE" /* RecaptchaVersion.ENTERPRISE */
-                })
-                    .then(response => {
-                    if (response.recaptchaKey === undefined) {
-                        reject(new Error('recaptcha Enterprise site key undefined'));
-                    }
-                    else {
-                        const config = new RecaptchaConfig(response);
-                        if (auth.tenantId == null) {
-                            auth._agentRecaptchaConfig = config;
-                        }
-                        else {
-                            auth._tenantRecaptchaConfigs[auth.tenantId] = config;
-                        }
-                        return resolve(config.siteKey);
-                    }
-                })
-                    .catch(error => {
-                    reject(error);
-                });
-            });
-        }
-        function retrieveRecaptchaToken(siteKey, resolve, reject) {
-            const grecaptcha = window.grecaptcha;
-            if (isEnterprise(grecaptcha)) {
-                grecaptcha.enterprise.ready(() => {
-                    grecaptcha.enterprise
-                        .execute(siteKey, { action })
-                        .then(token => {
-                        resolve(token);
-                    })
-                        .catch(() => {
-                        resolve(FAKE_TOKEN);
-                    });
-                });
-            }
-            else {
-                reject(Error('No reCAPTCHA enterprise script loaded.'));
-            }
-        }
-        return new Promise((resolve, reject) => {
-            retrieveSiteKey(this.auth)
-                .then(siteKey => {
-                if (!forceRefresh && isEnterprise(window.grecaptcha)) {
-                    retrieveRecaptchaToken(siteKey, resolve, reject);
-                }
-                else {
-                    if (typeof window === 'undefined') {
-                        reject(new Error('RecaptchaVerifier is only supported in browser'));
-                        return;
-                    }
-                    _loadJS(RECAPTCHA_ENTERPRISE_URL + siteKey)
-                        .then(() => {
-                        retrieveRecaptchaToken(siteKey, resolve, reject);
-                    })
-                        .catch(error => {
-                        reject(error);
-                    });
-                }
-            })
-                .catch(error => {
-                reject(error);
-            });
-        });
-    }
-}
-async function injectRecaptchaFields(auth, request, action, captchaResp = false) {
-    const verifier = new RecaptchaEnterpriseVerifier(auth);
-    let captchaResponse;
-    try {
-        captchaResponse = await verifier.verify(action);
-    }
-    catch (error) {
-        captchaResponse = await verifier.verify(action, true);
-    }
-    const newRequest = Object.assign({}, request);
-    if (!captchaResp) {
-        Object.assign(newRequest, { captchaResponse });
-    }
-    else {
-        Object.assign(newRequest, { 'captchaResp': captchaResponse });
-    }
-    Object.assign(newRequest, { 'clientType': "CLIENT_TYPE_WEB" /* RecaptchaClientType.WEB */ });
-    Object.assign(newRequest, {
-        'recaptchaVersion': "RECAPTCHA_ENTERPRISE" /* RecaptchaVersion.ENTERPRISE */
-    });
-    return newRequest;
-}
-
-/**
- * @license
  * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -2529,6 +2368,182 @@ class AuthMiddlewareQueue {
 
 /**
  * @license
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Fetches the password policy for the currently set tenant or the project if no tenant is set.
+ *
+ * @param auth Auth object.
+ * @param request Password policy request.
+ * @returns Password policy response.
+ */
+async function _getPasswordPolicy(auth, request = {}) {
+    return _performApiRequest(auth, "GET" /* HttpMethod.GET */, "/v2/passwordPolicy" /* Endpoint.GET_PASSWORD_POLICY */, _addTidIfNecessary(auth, request));
+}
+
+/**
+ * @license
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// Minimum min password length enforced by the backend, even if no minimum length is set.
+const MINIMUM_MIN_PASSWORD_LENGTH = 6;
+/**
+ * Stores password policy requirements and provides password validation against the policy.
+ *
+ * @internal
+ */
+class PasswordPolicyImpl {
+    constructor(response) {
+        var _a, _b, _c, _d;
+        // Only include custom strength options defined in the response.
+        const responseOptions = response.customStrengthOptions;
+        this.customStrengthOptions = {};
+        // TODO: Remove once the backend is updated to include the minimum min password length instead of undefined when there is no minimum length set.
+        this.customStrengthOptions.minPasswordLength =
+            (_a = responseOptions.minPasswordLength) !== null && _a !== void 0 ? _a : MINIMUM_MIN_PASSWORD_LENGTH;
+        if (responseOptions.maxPasswordLength) {
+            this.customStrengthOptions.maxPasswordLength =
+                responseOptions.maxPasswordLength;
+        }
+        if (responseOptions.containsLowercaseCharacter !== undefined) {
+            this.customStrengthOptions.containsLowercaseLetter =
+                responseOptions.containsLowercaseCharacter;
+        }
+        if (responseOptions.containsUppercaseCharacter !== undefined) {
+            this.customStrengthOptions.containsUppercaseLetter =
+                responseOptions.containsUppercaseCharacter;
+        }
+        if (responseOptions.containsNumericCharacter !== undefined) {
+            this.customStrengthOptions.containsNumericCharacter =
+                responseOptions.containsNumericCharacter;
+        }
+        if (responseOptions.containsNonAlphanumericCharacter !== undefined) {
+            this.customStrengthOptions.containsNonAlphanumericCharacter =
+                responseOptions.containsNonAlphanumericCharacter;
+        }
+        this.enforcementState = response.enforcementState;
+        if (this.enforcementState === 'ENFORCEMENT_STATE_UNSPECIFIED') {
+            this.enforcementState = 'OFF';
+        }
+        // Use an empty string if no non-alphanumeric characters are specified in the response.
+        this.allowedNonAlphanumericCharacters =
+            (_c = (_b = response.allowedNonAlphanumericCharacters) === null || _b === void 0 ? void 0 : _b.join('')) !== null && _c !== void 0 ? _c : '';
+        this.forceUpgradeOnSignin = (_d = response.forceUpgradeOnSignin) !== null && _d !== void 0 ? _d : false;
+        this.schemaVersion = response.schemaVersion;
+    }
+    validatePassword(password) {
+        var _a, _b, _c, _d, _e, _f;
+        const status = {
+            isValid: true,
+            passwordPolicy: this
+        };
+        // Check the password length and character options.
+        this.validatePasswordLengthOptions(password, status);
+        this.validatePasswordCharacterOptions(password, status);
+        // Combine the status into single isValid property.
+        status.isValid && (status.isValid = (_a = status.meetsMinPasswordLength) !== null && _a !== void 0 ? _a : true);
+        status.isValid && (status.isValid = (_b = status.meetsMaxPasswordLength) !== null && _b !== void 0 ? _b : true);
+        status.isValid && (status.isValid = (_c = status.containsLowercaseLetter) !== null && _c !== void 0 ? _c : true);
+        status.isValid && (status.isValid = (_d = status.containsUppercaseLetter) !== null && _d !== void 0 ? _d : true);
+        status.isValid && (status.isValid = (_e = status.containsNumericCharacter) !== null && _e !== void 0 ? _e : true);
+        status.isValid && (status.isValid = (_f = status.containsNonAlphanumericCharacter) !== null && _f !== void 0 ? _f : true);
+        return status;
+    }
+    /**
+     * Validates that the password meets the length options for the policy.
+     *
+     * @param password Password to validate.
+     * @param status Validation status.
+     */
+    validatePasswordLengthOptions(password, status) {
+        const minPasswordLength = this.customStrengthOptions.minPasswordLength;
+        const maxPasswordLength = this.customStrengthOptions.maxPasswordLength;
+        if (minPasswordLength) {
+            status.meetsMinPasswordLength = password.length >= minPasswordLength;
+        }
+        if (maxPasswordLength) {
+            status.meetsMaxPasswordLength = password.length <= maxPasswordLength;
+        }
+    }
+    /**
+     * Validates that the password meets the character options for the policy.
+     *
+     * @param password Password to validate.
+     * @param status Validation status.
+     */
+    validatePasswordCharacterOptions(password, status) {
+        // Assign statuses for requirements even if the password is an empty string.
+        this.updatePasswordCharacterOptionsStatuses(status, 
+        /* containsLowercaseCharacter= */ false, 
+        /* containsUppercaseCharacter= */ false, 
+        /* containsNumericCharacter= */ false, 
+        /* containsNonAlphanumericCharacter= */ false);
+        let passwordChar;
+        for (let i = 0; i < password.length; i++) {
+            passwordChar = password.charAt(i);
+            this.updatePasswordCharacterOptionsStatuses(status, 
+            /* containsLowercaseCharacter= */ passwordChar >= 'a' &&
+                passwordChar <= 'z', 
+            /* containsUppercaseCharacter= */ passwordChar >= 'A' &&
+                passwordChar <= 'Z', 
+            /* containsNumericCharacter= */ passwordChar >= '0' &&
+                passwordChar <= '9', 
+            /* containsNonAlphanumericCharacter= */ this.allowedNonAlphanumericCharacters.includes(passwordChar));
+        }
+    }
+    /**
+     * Updates the running validation status with the statuses for the character options.
+     * Expected to be called each time a character is processed to update each option status
+     * based on the current character.
+     *
+     * @param status Validation status.
+     * @param containsLowercaseCharacter Whether the character is a lowercase letter.
+     * @param containsUppercaseCharacter Whether the character is an uppercase letter.
+     * @param containsNumericCharacter Whether the character is a numeric character.
+     * @param containsNonAlphanumericCharacter Whether the character is a non-alphanumeric character.
+     */
+    updatePasswordCharacterOptionsStatuses(status, containsLowercaseCharacter, containsUppercaseCharacter, containsNumericCharacter, containsNonAlphanumericCharacter) {
+        if (this.customStrengthOptions.containsLowercaseLetter) {
+            status.containsLowercaseLetter || (status.containsLowercaseLetter = containsLowercaseCharacter);
+        }
+        if (this.customStrengthOptions.containsUppercaseLetter) {
+            status.containsUppercaseLetter || (status.containsUppercaseLetter = containsUppercaseCharacter);
+        }
+        if (this.customStrengthOptions.containsNumericCharacter) {
+            status.containsNumericCharacter || (status.containsNumericCharacter = containsNumericCharacter);
+        }
+        if (this.customStrengthOptions.containsNonAlphanumericCharacter) {
+            status.containsNonAlphanumericCharacter || (status.containsNonAlphanumericCharacter = containsNonAlphanumericCharacter);
+        }
+    }
+}
+
+/**
+ * @license
  * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -2557,6 +2572,7 @@ class AuthImpl {
         this.beforeStateQueue = new AuthMiddlewareQueue(this);
         this.redirectUser = null;
         this.isProactiveRefreshEnabled = false;
+        this.EXPECTED_PASSWORD_POLICY_SCHEMA_VERSION = 1;
         // Any network calls will set this to true and prevent subsequent emulator
         // initialization
         this._canInitEmulator = true;
@@ -2567,6 +2583,8 @@ class AuthImpl {
         this._errorFactory = _DEFAULT_AUTH_ERROR_FACTORY;
         this._agentRecaptchaConfig = null;
         this._tenantRecaptchaConfigs = {};
+        this._projectPasswordPolicy = null;
+        this._tenantPasswordPolicies = {};
         // Tracks the last notified UID for state change listeners to prevent
         // repeated calls to the callbacks. Undefined means it's never been
         // called, whereas null means it's been called with a signed out user
@@ -2786,29 +2804,44 @@ class AuthImpl {
             await this.assertedPersistence.setPersistence(_getInstance(persistence));
         });
     }
-    async initializeRecaptchaConfig() {
-        const response = await getRecaptchaConfig(this, {
-            clientType: "CLIENT_TYPE_WEB" /* RecaptchaClientType.WEB */,
-            version: "RECAPTCHA_ENTERPRISE" /* RecaptchaVersion.ENTERPRISE */
-        });
-        const config = new RecaptchaConfig(response);
-        if (this.tenantId == null) {
-            this._agentRecaptchaConfig = config;
-        }
-        else {
-            this._tenantRecaptchaConfigs[this.tenantId] = config;
-        }
-        if (config.emailPasswordEnabled) {
-            const verifier = new RecaptchaEnterpriseVerifier(this);
-            void verifier.verify();
-        }
-    }
     _getRecaptchaConfig() {
         if (this.tenantId == null) {
             return this._agentRecaptchaConfig;
         }
         else {
             return this._tenantRecaptchaConfigs[this.tenantId];
+        }
+    }
+    async validatePassword(password) {
+        if (!this._getPasswordPolicyInternal()) {
+            await this._updatePasswordPolicy();
+        }
+        // Password policy will be defined after fetching.
+        const passwordPolicy = this._getPasswordPolicyInternal();
+        // Check that the policy schema version is supported by the SDK.
+        // TODO: Update this logic to use a max supported policy schema version once we have multiple schema versions.
+        if (passwordPolicy.schemaVersion !==
+            this.EXPECTED_PASSWORD_POLICY_SCHEMA_VERSION) {
+            return Promise.reject(this._errorFactory.create("unsupported-password-policy-schema-version" /* AuthErrorCode.UNSUPPORTED_PASSWORD_POLICY_SCHEMA_VERSION */, {}));
+        }
+        return passwordPolicy.validatePassword(password);
+    }
+    _getPasswordPolicyInternal() {
+        if (this.tenantId === null) {
+            return this._projectPasswordPolicy;
+        }
+        else {
+            return this._tenantPasswordPolicies[this.tenantId];
+        }
+    }
+    async _updatePasswordPolicy() {
+        const response = await _getPasswordPolicy(this);
+        const passwordPolicy = new PasswordPolicyImpl(response);
+        if (this.tenantId === null) {
+            this._projectPasswordPolicy = passwordPolicy;
+        }
+        else {
+            this._tenantPasswordPolicies[this.tenantId] = passwordPolicy;
         }
     }
     _getPersistence() {
@@ -2929,18 +2962,32 @@ class AuthImpl {
         const cb = typeof nextOrObserver === 'function'
             ? nextOrObserver
             : nextOrObserver.next.bind(nextOrObserver);
+        let isUnsubscribed = false;
         const promise = this._isInitialized
             ? Promise.resolve()
             : this._initializationPromise;
         _assert(promise, this, "internal-error" /* AuthErrorCode.INTERNAL_ERROR */);
         // The callback needs to be called asynchronously per the spec.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        promise.then(() => cb(this.currentUser));
+        promise.then(() => {
+            if (isUnsubscribed) {
+                return;
+            }
+            cb(this.currentUser);
+        });
         if (typeof nextOrObserver === 'function') {
-            return subscription.addObserver(nextOrObserver, error, completed);
+            const unsubscribe = subscription.addObserver(nextOrObserver, error, completed);
+            return () => {
+                isUnsubscribed = true;
+                unsubscribe();
+            };
         }
         else {
-            return subscription.addObserver(nextOrObserver);
+            const unsubscribe = subscription.addObserver(nextOrObserver);
+            return () => {
+                isUnsubscribed = true;
+                unsubscribe();
+            };
         }
     }
     /**
@@ -3043,6 +3090,189 @@ class Subscription {
     get next() {
         _assert(this.observer, this.auth, "internal-error" /* AuthErrorCode.INTERNAL_ERROR */);
         return this.observer.next.bind(this.observer);
+    }
+}
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function getScriptParentElement() {
+    var _a, _b;
+    return (_b = (_a = document.getElementsByTagName('head')) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : document;
+}
+function _loadJS(url) {
+    // TODO: consider adding timeout support & cancellation
+    return new Promise((resolve, reject) => {
+        const el = document.createElement('script');
+        el.setAttribute('src', url);
+        el.onload = resolve;
+        el.onerror = e => {
+            const error = _createError("internal-error" /* AuthErrorCode.INTERNAL_ERROR */);
+            error.customData = e;
+            reject(error);
+        };
+        el.type = 'text/javascript';
+        el.charset = 'UTF-8';
+        getScriptParentElement().appendChild(el);
+    });
+}
+function _generateCallbackName(prefix) {
+    return `__${prefix}${Math.floor(Math.random() * 1000000)}`;
+}
+
+/* eslint-disable @typescript-eslint/no-require-imports */
+const RECAPTCHA_ENTERPRISE_URL = 'https://www.google.com/recaptcha/enterprise.js?render=';
+const RECAPTCHA_ENTERPRISE_VERIFIER_TYPE = 'recaptcha-enterprise';
+const FAKE_TOKEN = 'NO_RECAPTCHA';
+class RecaptchaEnterpriseVerifier {
+    /**
+     *
+     * @param authExtern - The corresponding Firebase {@link Auth} instance.
+     *
+     */
+    constructor(authExtern) {
+        /**
+         * Identifies the type of application verifier (e.g. "recaptcha-enterprise").
+         */
+        this.type = RECAPTCHA_ENTERPRISE_VERIFIER_TYPE;
+        this.auth = _castAuth(authExtern);
+    }
+    /**
+     * Executes the verification process.
+     *
+     * @returns A Promise for a token that can be used to assert the validity of a request.
+     */
+    async verify(action = 'verify', forceRefresh = false) {
+        async function retrieveSiteKey(auth) {
+            if (!forceRefresh) {
+                if (auth.tenantId == null && auth._agentRecaptchaConfig != null) {
+                    return auth._agentRecaptchaConfig.siteKey;
+                }
+                if (auth.tenantId != null &&
+                    auth._tenantRecaptchaConfigs[auth.tenantId] !== undefined) {
+                    return auth._tenantRecaptchaConfigs[auth.tenantId].siteKey;
+                }
+            }
+            return new Promise(async (resolve, reject) => {
+                getRecaptchaConfig(auth, {
+                    clientType: "CLIENT_TYPE_WEB" /* RecaptchaClientType.WEB */,
+                    version: "RECAPTCHA_ENTERPRISE" /* RecaptchaVersion.ENTERPRISE */
+                })
+                    .then(response => {
+                    if (response.recaptchaKey === undefined) {
+                        reject(new Error('recaptcha Enterprise site key undefined'));
+                    }
+                    else {
+                        const config = new RecaptchaConfig(response);
+                        if (auth.tenantId == null) {
+                            auth._agentRecaptchaConfig = config;
+                        }
+                        else {
+                            auth._tenantRecaptchaConfigs[auth.tenantId] = config;
+                        }
+                        return resolve(config.siteKey);
+                    }
+                })
+                    .catch(error => {
+                    reject(error);
+                });
+            });
+        }
+        function retrieveRecaptchaToken(siteKey, resolve, reject) {
+            const grecaptcha = window.grecaptcha;
+            if (isEnterprise(grecaptcha)) {
+                grecaptcha.enterprise.ready(() => {
+                    grecaptcha.enterprise
+                        .execute(siteKey, { action })
+                        .then(token => {
+                        resolve(token);
+                    })
+                        .catch(() => {
+                        resolve(FAKE_TOKEN);
+                    });
+                });
+            }
+            else {
+                reject(Error('No reCAPTCHA enterprise script loaded.'));
+            }
+        }
+        return new Promise((resolve, reject) => {
+            retrieveSiteKey(this.auth)
+                .then(siteKey => {
+                if (!forceRefresh && isEnterprise(window.grecaptcha)) {
+                    retrieveRecaptchaToken(siteKey, resolve, reject);
+                }
+                else {
+                    if (typeof window === 'undefined') {
+                        reject(new Error('RecaptchaVerifier is only supported in browser'));
+                        return;
+                    }
+                    _loadJS(RECAPTCHA_ENTERPRISE_URL + siteKey)
+                        .then(() => {
+                        retrieveRecaptchaToken(siteKey, resolve, reject);
+                    })
+                        .catch(error => {
+                        reject(error);
+                    });
+                }
+            })
+                .catch(error => {
+                reject(error);
+            });
+        });
+    }
+}
+async function injectRecaptchaFields(auth, request, action, captchaResp = false) {
+    const verifier = new RecaptchaEnterpriseVerifier(auth);
+    let captchaResponse;
+    try {
+        captchaResponse = await verifier.verify(action);
+    }
+    catch (error) {
+        captchaResponse = await verifier.verify(action, true);
+    }
+    const newRequest = Object.assign({}, request);
+    if (!captchaResp) {
+        Object.assign(newRequest, { captchaResponse });
+    }
+    else {
+        Object.assign(newRequest, { 'captchaResp': captchaResponse });
+    }
+    Object.assign(newRequest, { 'clientType': "CLIENT_TYPE_WEB" /* RecaptchaClientType.WEB */ });
+    Object.assign(newRequest, {
+        'recaptchaVersion': "RECAPTCHA_ENTERPRISE" /* RecaptchaVersion.ENTERPRISE */
+    });
+    return newRequest;
+}
+async function _initializeRecaptchaConfig(auth) {
+    const authInternal = _castAuth(auth);
+    const response = await getRecaptchaConfig(authInternal, {
+        clientType: "CLIENT_TYPE_WEB" /* RecaptchaClientType.WEB */,
+        version: "RECAPTCHA_ENTERPRISE" /* RecaptchaVersion.ENTERPRISE */
+    });
+    const config = new RecaptchaConfig(response);
+    if (authInternal.tenantId == null) {
+        authInternal._agentRecaptchaConfig = config;
+    }
+    else {
+        authInternal._tenantRecaptchaConfigs[authInternal.tenantId] = config;
+    }
+    if (config.emailPasswordEnabled) {
+        const verifier = new RecaptchaEnterpriseVerifier(authInternal);
+        void verifier.verify();
     }
 }
 
@@ -5404,6 +5634,25 @@ function _setActionCodeSettingsOnRequest(auth, request, actionCodeSettings) {
  * limitations under the License.
  */
 /**
+ * Updates the password policy cached in the {@link Auth} instance if a policy is already
+ * cached for the project or tenant.
+ *
+ * @remarks
+ * We only fetch the password policy if the password did not meet policy requirements and
+ * there is an existing policy cached. A developer must call validatePassword at least
+ * once for the cache to be automatically updated.
+ *
+ * @param auth - The {@link Auth} instance.
+ *
+ * @private
+ */
+async function recachePasswordPolicy(auth) {
+    const authInternal = _castAuth(auth);
+    if (authInternal._getPasswordPolicyInternal()) {
+        await authInternal._updatePasswordPolicy();
+    }
+}
+/**
  * Sends a password reset email to the given email address.
  *
  * @remarks
@@ -5483,6 +5732,13 @@ async function confirmPasswordReset(auth, oobCode, newPassword) {
     await resetPassword((0,_firebase_util__WEBPACK_IMPORTED_MODULE_0__.getModularInstance)(auth), {
         oobCode,
         newPassword
+    })
+        .catch(async (error) => {
+        if (error.code ===
+            `auth/${"password-does-not-meet-requirements" /* AuthErrorCode.PASSWORD_DOES_NOT_MEET_REQUIREMENTS */}`) {
+            void recachePasswordPolicy(auth);
+        }
+        throw error;
     });
     // Do not return the email.
 }
@@ -5601,13 +5857,14 @@ async function createUserWithEmailAndPassword(auth, email, password) {
                 const requestWithRecaptcha = await injectRecaptchaFields(authInternal, request, "signUpPassword" /* RecaptchaActionName.SIGN_UP_PASSWORD */);
                 return signUp(authInternal, requestWithRecaptcha);
             }
-            else {
-                return Promise.reject(error);
-            }
+            throw error;
         });
     }
     const response = await signUpResponse.catch(error => {
-        return Promise.reject(error);
+        if (error.code === `auth/${"password-does-not-meet-requirements" /* AuthErrorCode.PASSWORD_DOES_NOT_MEET_REQUIREMENTS */}`) {
+            void recachePasswordPolicy(auth);
+        }
+        throw error;
     });
     const userCredential = await UserCredentialImpl._fromIdTokenResponse(authInternal, "signIn" /* OperationType.SIGN_IN */, response);
     await authInternal._updateCurrentUser(userCredential.user);
@@ -5630,7 +5887,12 @@ async function createUserWithEmailAndPassword(auth, email, password) {
  * @public
  */
 function signInWithEmailAndPassword(auth, email, password) {
-    return signInWithCredential((0,_firebase_util__WEBPACK_IMPORTED_MODULE_0__.getModularInstance)(auth), EmailAuthProvider.credential(email, password));
+    return signInWithCredential((0,_firebase_util__WEBPACK_IMPORTED_MODULE_0__.getModularInstance)(auth), EmailAuthProvider.credential(email, password)).catch(async (error) => {
+        if (error.code === `auth/${"password-does-not-meet-requirements" /* AuthErrorCode.PASSWORD_DOES_NOT_MEET_REQUIREMENTS */}`) {
+            void recachePasswordPolicy(auth);
+        }
+        throw error;
+    });
 }
 
 /**
@@ -6245,8 +6507,34 @@ function setPersistence(auth, persistence) {
  * @public
  */
 function initializeRecaptchaConfig(auth) {
+    return _initializeRecaptchaConfig(auth);
+}
+/**
+ * Validates the password against the password policy configured for the project or tenant.
+ *
+ * @remarks
+ * If no tenant ID is set on the `Auth` instance, then this method will use the password
+ * policy configured for the project. Otherwise, this method will use the policy configured
+ * for the tenant. If a password policy has not been configured, then the default policy
+ * configured for all projects will be used.
+ *
+ * If an auth flow fails because a submitted password does not meet the password policy
+ * requirements and this method has previously been called, then this method will use the
+ * most recent policy available when called again.
+ *
+ * @example
+ * ```javascript
+ * validatePassword(auth, 'some-password');
+ * ```
+ *
+ * @param auth The {@link Auth} instance.
+ * @param password The password to validate.
+ *
+ * @public
+ */
+async function validatePassword(auth, password) {
     const authInternal = _castAuth(auth);
-    return authInternal.initializeRecaptchaConfig();
+    return authInternal.validatePassword(password);
 }
 /**
  * Adds an observer for changes to the signed-in user's ID token.
@@ -10054,7 +10342,7 @@ function _isEmptyString(input) {
 }
 
 var name = "@firebase/auth";
-var version = "1.1.0";
+var version = "1.3.0";
 
 /**
  * @license
@@ -10275,7 +10563,7 @@ function getAuth(app = (0,_firebase_app__WEBPACK_IMPORTED_MODULE_1__.getApp)()) 
 registerAuth("Browser" /* ClientPlatform.BROWSER */);
 
 
-//# sourceMappingURL=index-e24386e7.js.map
+//# sourceMappingURL=index-9a76d29a.js.map
 
 
 /***/ }),
@@ -10288,90 +10576,91 @@ registerAuth("Browser" /* ClientPlatform.BROWSER */);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ActionCodeOperation: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.A),
-/* harmony export */   ActionCodeURL: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ag),
-/* harmony export */   AuthCredential: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.J),
-/* harmony export */   AuthErrorCodes: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.G),
-/* harmony export */   EmailAuthCredential: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.K),
-/* harmony export */   EmailAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.Q),
-/* harmony export */   FacebookAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.U),
-/* harmony export */   FactorId: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.F),
-/* harmony export */   GithubAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.W),
-/* harmony export */   GoogleAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.V),
-/* harmony export */   OAuthCredential: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.L),
-/* harmony export */   OAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.X),
-/* harmony export */   OperationType: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.O),
-/* harmony export */   PhoneAuthCredential: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.M),
-/* harmony export */   PhoneAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.P),
-/* harmony export */   PhoneMultiFactorGenerator: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.m),
-/* harmony export */   ProviderId: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.p),
-/* harmony export */   RecaptchaVerifier: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.R),
-/* harmony export */   SAMLAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.Y),
-/* harmony export */   SignInMethod: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.S),
-/* harmony export */   TotpMultiFactorGenerator: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.T),
-/* harmony export */   TotpSecret: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.n),
-/* harmony export */   TwitterAuthProvider: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.Z),
-/* harmony export */   applyActionCode: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a5),
-/* harmony export */   beforeAuthStateChanged: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.w),
-/* harmony export */   browserLocalPersistence: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.b),
-/* harmony export */   browserPopupRedirectResolver: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.k),
-/* harmony export */   browserSessionPersistence: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a),
-/* harmony export */   checkActionCode: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a6),
-/* harmony export */   confirmPasswordReset: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a4),
-/* harmony export */   connectAuthEmulator: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.I),
-/* harmony export */   createUserWithEmailAndPassword: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a8),
-/* harmony export */   debugErrorMap: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.D),
-/* harmony export */   deleteUser: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.C),
-/* harmony export */   fetchSignInMethodsForEmail: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ad),
-/* harmony export */   getAdditionalUserInfo: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ao),
-/* harmony export */   getAuth: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.o),
-/* harmony export */   getIdToken: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.al),
-/* harmony export */   getIdTokenResult: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.am),
-/* harmony export */   getMultiFactorResolver: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.aq),
-/* harmony export */   getRedirectResult: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.j),
-/* harmony export */   inMemoryPersistence: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.N),
-/* harmony export */   indexedDBLocalPersistence: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.i),
-/* harmony export */   initializeAuth: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.H),
-/* harmony export */   initializeRecaptchaConfig: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.t),
-/* harmony export */   isSignInWithEmailLink: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ab),
-/* harmony export */   linkWithCredential: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a0),
-/* harmony export */   linkWithPhoneNumber: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.l),
-/* harmony export */   linkWithPopup: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.d),
-/* harmony export */   linkWithRedirect: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.g),
-/* harmony export */   multiFactor: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ar),
-/* harmony export */   onAuthStateChanged: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.x),
-/* harmony export */   onIdTokenChanged: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.v),
-/* harmony export */   parseActionCodeURL: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ah),
-/* harmony export */   prodErrorMap: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.E),
-/* harmony export */   reauthenticateWithCredential: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a1),
-/* harmony export */   reauthenticateWithPhoneNumber: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.r),
-/* harmony export */   reauthenticateWithPopup: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.e),
-/* harmony export */   reauthenticateWithRedirect: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.h),
-/* harmony export */   reload: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ap),
-/* harmony export */   sendEmailVerification: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ae),
-/* harmony export */   sendPasswordResetEmail: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a3),
-/* harmony export */   sendSignInLinkToEmail: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.aa),
-/* harmony export */   setPersistence: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.q),
-/* harmony export */   signInAnonymously: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__._),
-/* harmony export */   signInWithCredential: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.$),
-/* harmony export */   signInWithCustomToken: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a2),
-/* harmony export */   signInWithEmailAndPassword: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a9),
-/* harmony export */   signInWithEmailLink: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ac),
-/* harmony export */   signInWithPhoneNumber: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.s),
-/* harmony export */   signInWithPopup: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.c),
-/* harmony export */   signInWithRedirect: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.f),
-/* harmony export */   signOut: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.B),
-/* harmony export */   unlink: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.an),
-/* harmony export */   updateCurrentUser: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.z),
-/* harmony export */   updateEmail: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.aj),
-/* harmony export */   updatePassword: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ak),
-/* harmony export */   updatePhoneNumber: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.u),
-/* harmony export */   updateProfile: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.ai),
-/* harmony export */   useDeviceLanguage: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.y),
-/* harmony export */   verifyBeforeUpdateEmail: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.af),
-/* harmony export */   verifyPasswordResetCode: () => (/* reexport safe */ _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__.a7)
+/* harmony export */   ActionCodeOperation: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.A),
+/* harmony export */   ActionCodeURL: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ah),
+/* harmony export */   AuthCredential: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.K),
+/* harmony export */   AuthErrorCodes: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.H),
+/* harmony export */   EmailAuthCredential: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.L),
+/* harmony export */   EmailAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.U),
+/* harmony export */   FacebookAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.V),
+/* harmony export */   FactorId: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.F),
+/* harmony export */   GithubAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.X),
+/* harmony export */   GoogleAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.W),
+/* harmony export */   OAuthCredential: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.M),
+/* harmony export */   OAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.Y),
+/* harmony export */   OperationType: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.O),
+/* harmony export */   PhoneAuthCredential: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.N),
+/* harmony export */   PhoneAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.P),
+/* harmony export */   PhoneMultiFactorGenerator: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.m),
+/* harmony export */   ProviderId: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.p),
+/* harmony export */   RecaptchaVerifier: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.R),
+/* harmony export */   SAMLAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.Z),
+/* harmony export */   SignInMethod: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.S),
+/* harmony export */   TotpMultiFactorGenerator: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.T),
+/* harmony export */   TotpSecret: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.n),
+/* harmony export */   TwitterAuthProvider: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__._),
+/* harmony export */   applyActionCode: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a6),
+/* harmony export */   beforeAuthStateChanged: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.x),
+/* harmony export */   browserLocalPersistence: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.b),
+/* harmony export */   browserPopupRedirectResolver: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.k),
+/* harmony export */   browserSessionPersistence: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a),
+/* harmony export */   checkActionCode: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a7),
+/* harmony export */   confirmPasswordReset: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a5),
+/* harmony export */   connectAuthEmulator: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.J),
+/* harmony export */   createUserWithEmailAndPassword: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a9),
+/* harmony export */   debugErrorMap: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.E),
+/* harmony export */   deleteUser: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.D),
+/* harmony export */   fetchSignInMethodsForEmail: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ae),
+/* harmony export */   getAdditionalUserInfo: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ap),
+/* harmony export */   getAuth: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.o),
+/* harmony export */   getIdToken: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.am),
+/* harmony export */   getIdTokenResult: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.an),
+/* harmony export */   getMultiFactorResolver: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ar),
+/* harmony export */   getRedirectResult: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.j),
+/* harmony export */   inMemoryPersistence: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.Q),
+/* harmony export */   indexedDBLocalPersistence: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.i),
+/* harmony export */   initializeAuth: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.I),
+/* harmony export */   initializeRecaptchaConfig: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.t),
+/* harmony export */   isSignInWithEmailLink: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ac),
+/* harmony export */   linkWithCredential: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a1),
+/* harmony export */   linkWithPhoneNumber: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.l),
+/* harmony export */   linkWithPopup: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.d),
+/* harmony export */   linkWithRedirect: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.g),
+/* harmony export */   multiFactor: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.as),
+/* harmony export */   onAuthStateChanged: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.y),
+/* harmony export */   onIdTokenChanged: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.w),
+/* harmony export */   parseActionCodeURL: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ai),
+/* harmony export */   prodErrorMap: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.G),
+/* harmony export */   reauthenticateWithCredential: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a2),
+/* harmony export */   reauthenticateWithPhoneNumber: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.r),
+/* harmony export */   reauthenticateWithPopup: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.e),
+/* harmony export */   reauthenticateWithRedirect: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.h),
+/* harmony export */   reload: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.aq),
+/* harmony export */   sendEmailVerification: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.af),
+/* harmony export */   sendPasswordResetEmail: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a4),
+/* harmony export */   sendSignInLinkToEmail: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ab),
+/* harmony export */   setPersistence: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.q),
+/* harmony export */   signInAnonymously: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.$),
+/* harmony export */   signInWithCredential: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a0),
+/* harmony export */   signInWithCustomToken: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a3),
+/* harmony export */   signInWithEmailAndPassword: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.aa),
+/* harmony export */   signInWithEmailLink: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ad),
+/* harmony export */   signInWithPhoneNumber: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.s),
+/* harmony export */   signInWithPopup: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.c),
+/* harmony export */   signInWithRedirect: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.f),
+/* harmony export */   signOut: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.C),
+/* harmony export */   unlink: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ao),
+/* harmony export */   updateCurrentUser: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.B),
+/* harmony export */   updateEmail: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ak),
+/* harmony export */   updatePassword: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.al),
+/* harmony export */   updatePhoneNumber: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.u),
+/* harmony export */   updateProfile: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.aj),
+/* harmony export */   useDeviceLanguage: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.z),
+/* harmony export */   validatePassword: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.v),
+/* harmony export */   verifyBeforeUpdateEmail: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.ag),
+/* harmony export */   verifyPasswordResetCode: () => (/* reexport safe */ _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__.a8)
 /* harmony export */ });
-/* harmony import */ var _index_e24386e7_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index-e24386e7.js */ "./node_modules/@firebase/auth/dist/esm2017/index-e24386e7.js");
+/* harmony import */ var _index_9a76d29a_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index-9a76d29a.js */ "./node_modules/@firebase/auth/dist/esm2017/index-9a76d29a.js");
 /* harmony import */ var _firebase_util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @firebase/util */ "./node_modules/@firebase/util/dist/index.esm2017.js");
 /* harmony import */ var _firebase_app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @firebase/app */ "./node_modules/@firebase/app/dist/esm/index.esm2017.js");
 /* harmony import */ var _firebase_logger__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @firebase/logger */ "./node_modules/@firebase/logger/dist/esm/index.esm2017.js");
@@ -12617,12 +12906,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   normalizePathname: () => (/* binding */ normalizePathname),
 /* harmony export */   parsePath: () => (/* binding */ parsePath),
 /* harmony export */   redirect: () => (/* binding */ redirect),
+/* harmony export */   redirectDocument: () => (/* binding */ redirectDocument),
 /* harmony export */   resolvePath: () => (/* binding */ resolvePath),
 /* harmony export */   resolveTo: () => (/* binding */ resolveTo),
 /* harmony export */   stripBasename: () => (/* binding */ stripBasename)
 /* harmony export */ });
 /**
- * @remix-run/router v1.7.2
+ * @remix-run/router v1.8.0
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -12827,6 +13117,15 @@ function createHashHistory(options) {
       search = "",
       hash = ""
     } = parsePath(window.location.hash.substr(1));
+    // Hash URL should always have a leading / just like window.location.pathname
+    // does, so if an app ends up at a route like /#something then we add a
+    // leading slash so all of our path-matching behaves the same as if it would
+    // in a browser router.  This is particularly important when there exists a
+    // root splat route (<Route path="*">) since that matches internally against
+    // "/*" and we'd expect /#something to 404 in a hash router app.
+    if (!pathname.startsWith("/") && !pathname.startsWith(".")) {
+      pathname = "/" + pathname;
+    }
     return createLocation("", {
       pathname,
       search,
@@ -13789,6 +14088,16 @@ const redirect = function redirect(url, init) {
   return new Response(null, _extends({}, responseInit, {
     headers
   }));
+};
+/**
+ * A redirect response that will force a document reload to the new location.
+ * Sets the status code and the `Location` header.
+ * Defaults to "302 Found".
+ */
+const redirectDocument = (url, init) => {
+  let response = redirect(url, init);
+  response.headers.set("X-Remix-Reload-Document", "true");
+  return response;
 };
 /**
  * @private
@@ -14869,11 +15178,20 @@ function createRouter(init) {
       _isFetchActionRedirect: true
     } : {}));
     invariant(redirectLocation, "Expected a location on the redirect navigation");
-    // Check if this an absolute external redirect that goes to a new origin
-    if (ABSOLUTE_URL_REGEX.test(redirect.location) && isBrowser) {
-      let url = init.history.createURL(redirect.location);
-      let isDifferentBasename = stripBasename(url.pathname, basename) == null;
-      if (routerWindow.location.origin !== url.origin || isDifferentBasename) {
+    if (isBrowser) {
+      let isDocumentReload = false;
+      if (redirect.reloadDocument) {
+        // Hard reload if the response contained X-Remix-Reload-Document
+        isDocumentReload = true;
+      } else if (ABSOLUTE_URL_REGEX.test(redirect.location)) {
+        const url = init.history.createURL(redirect.location);
+        isDocumentReload =
+        // Hard reload if it's an absolute URL to a new origin
+        url.origin !== routerWindow.location.origin ||
+        // Hard reload if it's an absolute URL that does not match our basename
+        stripBasename(url.pathname, basename) == null;
+      }
+      if (isDocumentReload) {
         if (replace) {
           routerWindow.location.replace(redirect.location);
         } else {
@@ -15380,7 +15698,7 @@ function createStaticHandler(routes, opts) {
       // it to bail out and then return or throw here based on whether the user
       // returned or threw
       if (isQueryRouteResponse(e)) {
-        if (e.type === ResultType.error && !isRedirectResponse(e.response)) {
+        if (e.type === ResultType.error) {
           throw e.response;
         }
         return e.response;
@@ -16040,18 +16358,19 @@ async function callLoaderOrAction(type, request, match, matches, manifest, mapRo
         type: ResultType.redirect,
         status,
         location,
-        revalidate: result.headers.get("X-Remix-Revalidate") !== null
+        revalidate: result.headers.get("X-Remix-Revalidate") !== null,
+        reloadDocument: result.headers.get("X-Remix-Reload-Document") !== null
       };
     }
     // For SSR single-route requests, we want to hand Responses back directly
     // without unwrapping.  We do this with the QueryRouteResponse wrapper
     // interface so we can know whether it was returned or thrown
     if (opts.isRouteRequest) {
-      // eslint-disable-next-line no-throw-literal
-      throw {
-        type: resultType || ResultType.data,
+      let queryRouteResponse = {
+        type: resultType === ResultType.error ? ResultType.error : ResultType.data,
         response: result
       };
+      throw queryRouteResponse;
     }
     let data;
     let contentType = result.headers.get("Content-Type");
@@ -16397,7 +16716,7 @@ function isRedirectResponse(result) {
   return status >= 300 && status <= 399 && location != null;
 }
 function isQueryRouteResponse(obj) {
-  return obj && isResponse(obj.response) && (obj.type === ResultType.data || ResultType.error);
+  return obj && isResponse(obj.response) && (obj.type === ResultType.data || obj.type === ResultType.error);
 }
 function isValidMethod(method) {
   return validRequestMethods.has(method.toLowerCase());
@@ -16768,6 +17087,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   matchRoutes: () => (/* reexport safe */ react_router__WEBPACK_IMPORTED_MODULE_1__.matchRoutes),
 /* harmony export */   parsePath: () => (/* reexport safe */ react_router__WEBPACK_IMPORTED_MODULE_1__.parsePath),
 /* harmony export */   redirect: () => (/* reexport safe */ react_router__WEBPACK_IMPORTED_MODULE_1__.redirect),
+/* harmony export */   redirectDocument: () => (/* reexport safe */ react_router__WEBPACK_IMPORTED_MODULE_1__.redirectDocument),
 /* harmony export */   renderMatches: () => (/* reexport safe */ react_router__WEBPACK_IMPORTED_MODULE_2__.renderMatches),
 /* harmony export */   resolvePath: () => (/* reexport safe */ react_router__WEBPACK_IMPORTED_MODULE_1__.resolvePath),
 /* harmony export */   unstable_HistoryRouter: () => (/* binding */ HistoryRouter),
@@ -16806,7 +17126,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/dist/index.js");
 /* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @remix-run/router */ "./node_modules/@remix-run/router/dist/router.js");
 /**
- * React Router DOM v6.14.2
+ * React Router DOM v6.15.0
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -16905,13 +17225,18 @@ function createSearchParams(init) {
 function getSearchParamsForLocation(locationSearch, defaultSearchParams) {
   let searchParams = createSearchParams(locationSearch);
   if (defaultSearchParams) {
-    for (let key of defaultSearchParams.keys()) {
+    // Use `defaultSearchParams.forEach(...)` here instead of iterating of
+    // `defaultSearchParams.keys()` to work-around a bug in Firefox related to
+    // web extensions. Relevant Bugzilla tickets:
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1414602
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1023984
+    defaultSearchParams.forEach((_, key) => {
       if (!searchParams.has(key)) {
         defaultSearchParams.getAll(key).forEach(value => {
           searchParams.append(key, value);
         });
       }
-    }
+    });
   }
   return searchParams;
 }
@@ -17615,17 +17940,15 @@ function useFormAction(action, _temp2) {
     relative
   }));
   // Previously we set the default action to ".". The problem with this is that
-  // `useResolvedPath(".")` excludes search params and the hash of the resolved
-  // URL. This is the intended behavior of when "." is specifically provided as
+  // `useResolvedPath(".")` excludes search params of the resolved URL. This is
+  // the intended behavior of when "." is specifically provided as
   // the form action, but inconsistent w/ browsers when the action is omitted.
   // https://github.com/remix-run/remix/issues/927
   let location = (0,react_router__WEBPACK_IMPORTED_MODULE_2__.useLocation)();
   if (action == null) {
-    // Safe to write to these directly here since if action was undefined, we
+    // Safe to write to this directly here since if action was undefined, we
     // would have called useResolvedPath(".") which will never include a search
-    // or hash
     path.search = location.search;
-    path.hash = location.hash;
     // When grabbing search params from the URL, remove the automatically
     // inserted ?index param so we match the useResolvedPath search behavior
     // which would not include ?index
@@ -17863,20 +18186,23 @@ function usePrompt(_ref8) {
   } = _ref8;
   let blocker = (0,react_router__WEBPACK_IMPORTED_MODULE_2__.unstable_useBlocker)(when);
   react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
-    if (blocker.state === "blocked" && !when) {
-      blocker.reset();
-    }
-  }, [blocker, when]);
-  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
     if (blocker.state === "blocked") {
       let proceed = window.confirm(message);
       if (proceed) {
+        // This timeout is needed to avoid a weird "race" on POP navigations
+        // between the `window.history` revert navigation and the result of
+        // `window.confirm`
         setTimeout(blocker.proceed, 0);
       } else {
         blocker.reset();
       }
     }
   }, [blocker, message]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (blocker.state === "blocked" && !when) {
+      blocker.reset();
+    }
+  }, [blocker, when]);
 }
 //#endregion
 
@@ -17924,6 +18250,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   matchRoutes: () => (/* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_1__.matchRoutes),
 /* harmony export */   parsePath: () => (/* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_1__.parsePath),
 /* harmony export */   redirect: () => (/* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_1__.redirect),
+/* harmony export */   redirectDocument: () => (/* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_1__.redirectDocument),
 /* harmony export */   renderMatches: () => (/* binding */ renderMatches),
 /* harmony export */   resolvePath: () => (/* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_1__.resolvePath),
 /* harmony export */   unstable_useBlocker: () => (/* binding */ useBlocker),
@@ -17952,7 +18279,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _remix_run_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @remix-run/router */ "./node_modules/@remix-run/router/dist/router.js");
 /**
- * React Router v6.14.2
+ * React Router v6.15.0
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -18538,14 +18865,13 @@ function _renderMatches(matches, parentMatches, dataRouterState) {
     }) : getChildren();
   }, null);
 }
-var DataRouterHook;
-(function (DataRouterHook) {
+var DataRouterHook = /*#__PURE__*/function (DataRouterHook) {
   DataRouterHook["UseBlocker"] = "useBlocker";
   DataRouterHook["UseRevalidator"] = "useRevalidator";
   DataRouterHook["UseNavigateStable"] = "useNavigate";
-})(DataRouterHook || (DataRouterHook = {}));
-var DataRouterStateHook;
-(function (DataRouterStateHook) {
+  return DataRouterHook;
+}(DataRouterHook || {});
+var DataRouterStateHook = /*#__PURE__*/function (DataRouterStateHook) {
   DataRouterStateHook["UseBlocker"] = "useBlocker";
   DataRouterStateHook["UseLoaderData"] = "useLoaderData";
   DataRouterStateHook["UseActionData"] = "useActionData";
@@ -18556,7 +18882,8 @@ var DataRouterStateHook;
   DataRouterStateHook["UseRevalidator"] = "useRevalidator";
   DataRouterStateHook["UseNavigateStable"] = "useNavigate";
   DataRouterStateHook["UseRouteId"] = "useRouteId";
-})(DataRouterStateHook || (DataRouterStateHook = {}));
+  return DataRouterStateHook;
+}(DataRouterStateHook || {});
 function getDataRouterConsoleError(hookName) {
   return hookName + " must be used within a data router.  See https://reactrouter.com/routers/picking-a-router.";
 }
@@ -18607,10 +18934,10 @@ function useNavigation() {
 function useRevalidator() {
   let dataRouterContext = useDataRouterContext(DataRouterHook.UseRevalidator);
   let state = useDataRouterState(DataRouterStateHook.UseRevalidator);
-  return {
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
     revalidate: dataRouterContext.router.revalidate,
     state: state.revalidation
-  };
+  }), [dataRouterContext.router.revalidate, state.revalidation]);
 }
 
 /**
@@ -19095,12 +19422,12 @@ function Await(_ref7) {
     errorElement: errorElement
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(ResolveAwait, null, children));
 }
-var AwaitRenderStatus;
-(function (AwaitRenderStatus) {
+var AwaitRenderStatus = /*#__PURE__*/function (AwaitRenderStatus) {
   AwaitRenderStatus[AwaitRenderStatus["pending"] = 0] = "pending";
   AwaitRenderStatus[AwaitRenderStatus["success"] = 1] = "success";
   AwaitRenderStatus[AwaitRenderStatus["error"] = 2] = "error";
-})(AwaitRenderStatus || (AwaitRenderStatus = {}));
+  return AwaitRenderStatus;
+}(AwaitRenderStatus || {});
 const neverSettledPromise = new Promise(() => {});
 class AwaitErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
   constructor(props) {
@@ -19427,7 +19754,7 @@ function isVersionServiceProvider(provider) {
 }
 
 const name$o = "@firebase/app";
-const version$1 = "0.9.15";
+const version$1 = "0.9.17";
 
 /**
  * @license
@@ -19494,7 +19821,7 @@ const name$2 = "@firebase/firestore";
 const name$1 = "@firebase/firestore-compat";
 
 const name = "firebase";
-const version = "10.1.0";
+const version = "10.3.0";
 
 /**
  * @license
@@ -20999,7 +21326,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var name = "firebase";
-var version = "10.1.0";
+var version = "10.3.0";
 
 /**
  * @license
@@ -21111,6 +21438,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updatePhoneNumber: () => (/* reexport safe */ _firebase_auth__WEBPACK_IMPORTED_MODULE_0__.updatePhoneNumber),
 /* harmony export */   updateProfile: () => (/* reexport safe */ _firebase_auth__WEBPACK_IMPORTED_MODULE_0__.updateProfile),
 /* harmony export */   useDeviceLanguage: () => (/* reexport safe */ _firebase_auth__WEBPACK_IMPORTED_MODULE_0__.useDeviceLanguage),
+/* harmony export */   validatePassword: () => (/* reexport safe */ _firebase_auth__WEBPACK_IMPORTED_MODULE_0__.validatePassword),
 /* harmony export */   verifyBeforeUpdateEmail: () => (/* reexport safe */ _firebase_auth__WEBPACK_IMPORTED_MODULE_0__.verifyBeforeUpdateEmail),
 /* harmony export */   verifyPasswordResetCode: () => (/* reexport safe */ _firebase_auth__WEBPACK_IMPORTED_MODULE_0__.verifyPasswordResetCode)
 /* harmony export */ });
@@ -21774,7 +22102,7 @@ function __classPrivateFieldIn(state, receiver) {
 
 function __addDisposableResource(env, value, async) {
   if (value !== null && value !== void 0) {
-    if (typeof value !== "object") throw new TypeError("Object expected.");
+    if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
     var dispose;
     if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
