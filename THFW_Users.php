@@ -17,7 +17,7 @@ Text Domain: thfw-users
 */
 
 /*
-Licensing Info Here
+Licensing Info is needed
 */
 
 require_once 'vendor/autoload.php';
