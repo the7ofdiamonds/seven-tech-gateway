@@ -33,14 +33,19 @@ use THFW_Users\Menus\Menus;
 use THFW_Users\Pages\Pages;
 use THFW_Users\Templates\Templates;
 
+use Kreait\Firebase\Factory;
+
 class THFW_Users
 {
     public function __construct()
     {
         add_action('wp_enqueue_scripts', [$this, 'load_css_js']);
-
+        
+        $factory = (new Factory)->withServiceAccount(THFW_USERS . 'API/serviceAccount.json');
+        $auth = $factory->createAuth();
+    
         // new Admin;
-        new API;
+        new API($auth);
         new CSS;
         new JS;
         new Pages;

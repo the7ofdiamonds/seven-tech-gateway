@@ -1,17 +1,234 @@
-/* Error: Can't find stylesheet to import.
- *   ,
- * 9 | @use '_status-bar.scss';
- *   | ^^^^^^^^^^^^^^^^^^^^^^^
- *   '
- *   CSS/scss/main.scss 9:1  root stylesheet */
-
-body::before {
-  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
-      "Droid Sans Mono", monospace, monospace;
-  white-space: pre;
-  display: block;
-  padding: 1em;
-  margin-bottom: 1em;
-  border-bottom: 2px solid black;
-  content: "Error: Can't find stylesheet to import.\a   \2577 \a 9 \2502  @use '_status-bar.scss';\a   \2502  ^^^^^^^^^^^^^^^^^^^^^^^\a   \2575 \a   CSS/scss/main.scss 9:1  root stylesheet";
+.options {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75em;
 }
+
+.login.card {
+  padding: 0.5rem;
+  min-width: 17.5rem;
+}
+.login.card form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.login.card form table {
+  border-spacing: 0.75em;
+}
+
+.member-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 20rem;
+  padding: 0.5rem;
+}
+
+.member-photo {
+  width: 100%;
+}
+.member-photo img {
+  width: 100%;
+  border-radius: 50%;
+}
+
+.member-name.card {
+  max-width: fit-content;
+}
+
+.member-social {
+  width: 50rem;
+}
+
+.modal {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  z-index: 900;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  overflow: auto;
+}
+.modal button,
+.modal .card {
+  box-shadow: none;
+}
+
+.show.modal,
+.show {
+  display: flex;
+}
+
+.authentication {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding-top: 4rem;
+  width: 100%;
+}
+.authentication .show.login-card,
+.authentication .show.signup-card,
+.authentication .show.reset-card {
+  display: flex;
+}
+.authentication .hide {
+  display: none;
+}
+.authentication .hide.login-card,
+.authentication .hide.signup-card,
+.authentication .hide.reset-card {
+  display: none;
+}
+
+.modal-close {
+  cursor: pointer;
+  background-color: black;
+  height: 2rem;
+  width: 2rem;
+  line-height: 1rem;
+  border-radius: 50%;
+  text-align: center;
+}
+.modal-close h2 {
+  color: white;
+  letter-spacing: 0;
+}
+
+.team {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.card.login-card,
+.card.signup-card,
+.card.reset-card {
+  max-width: 30rem;
+}
+
+.author-nav.card {
+  flex-direction: row;
+  justify-content: space-between;
+  position: fixed;
+  z-index: 900;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.author-nav.card a {
+  text-decoration: none;
+}
+.author-nav.card a:hover {
+  text-decoration: underline;
+}
+
+.author-intro {
+  margin-top: 0;
+  justify-content: center;
+}
+.author-intro .author-photo {
+  max-width: 500px;
+}
+.author-intro .author-card {
+  max-width: 750px;
+}
+.author-intro .author-card .author-greeting {
+  font-size: 1.5rem;
+  line-height: 2;
+}
+
+.author-info.card {
+  display: grid;
+  grid-template-areas: "Left Right";
+  grid-template-columns: 1fr 2fr;
+  height: fit-content;
+}
+.author-info.card .left {
+  grid-area: Left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.author-info.card .left img {
+  width: 100%;
+  max-width: 15rem;
+  height: auto;
+}
+.author-info.card .left .author-social {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.author-info.card .left .author-social i {
+  font-size: 1.5rem;
+  color: black;
+}
+.author-info.card .right {
+  grid-area: Right;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 0.5rem;
+}
+.author-info.card .right h3.about-title {
+  text-align: left;
+  font-weight: 700;
+}
+.author-info.card .right p {
+  text-align: left;
+}
+.author-info.card .right button {
+  align-self: center;
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.options a button {
+  padding: 0.5em;
+}
+.options a.active button {
+  background-color: white;
+  color: black;
+  box-shadow: none;
+}
+
+.status-bar.card {
+  background-color: var(--thfw-color-primary);
+}
+.status-bar.card.info {
+  background-color: var(--thfw-color-info);
+}
+.status-bar.card.caution {
+  background-color: var(--thfw-color-caution);
+}
+.status-bar.card.error {
+  background-color: var(--thfw-color-error);
+}
+.status-bar.card.success {
+  background-color: var(--thfw-color-success);
+}
+.status-bar.card span {
+  color: var(--thfw-color-secondary);
+}
+.status-bar.card span h4 {
+  padding: 0.5em;
+}
+
+/*# sourceMappingURL=thfw-users.css.map */
