@@ -40,10 +40,10 @@ class THFW_Users
     public function __construct()
     {
         add_action('wp_enqueue_scripts', [$this, 'load_css_js']);
-        
-        $factory = (new Factory)->withServiceAccount(THFW_USERS . 'API/serviceAccount.json');
+
+        $factory = (new Factory)->withServiceAccount(THFW_USERS . 'serviceAccount.json');
         $auth = $factory->createAuth();
-    
+
         // new Admin;
         new API($auth);
         new CSS;
@@ -65,7 +65,6 @@ class THFW_Users
     //Load Plugin CSS & JS
     function load_css_js()
     {
-
         wp_register_style('thfw_users_css',  WP_PLUGIN_URL . '/thfw-users/css/thfw-users.css', array(), false, 'all');
         wp_enqueue_style('thfw_users_css');
 
