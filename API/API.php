@@ -2,10 +2,6 @@
 
 namespace THFW_Users\API;
 
-use THFW_Users\API\Signup;
-use THFW_Users\API\Login;
-use THFW_Users\API\Logout;
-
 class API
 {
   function __construct($auth)
@@ -13,5 +9,7 @@ class API
     new Signup($auth);
     new Login($auth);
     new Logout();
+    new Users();
+    new Team();
   }
 }

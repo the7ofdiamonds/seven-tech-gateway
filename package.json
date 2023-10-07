@@ -17,7 +17,10 @@
     "react-router-dom": "^6.14.2",
     "rollup": "^3.26.3",
     "source-map-js": "^1.0.2",
-    "wp-scripts": "^0.0.1-security"
+    "wp-scripts": "^0.0.1-security",
+    "react": "^18.2.0",
+    "react-redux": "^8.1.2",
+    "@reduxjs/toolkit": "^1.9.5"
   },
   "scripts": {
     "build": "wp-scripts build",

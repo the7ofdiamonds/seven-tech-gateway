@@ -36,7 +36,7 @@ class JS
     {
         $directory = THFW_USERS . 'build';
 
-        if (is_page('login') | is_page('logout') | is_page('signup') | is_page('forgot')) {
+        if (is_front_page() | is_page('about') | is_page('login') | is_page('logout') | is_page('signup') | is_page('forgot')) {
 
             $jsFiles = $this->get_js_files($directory);
 

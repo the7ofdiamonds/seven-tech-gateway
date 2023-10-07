@@ -1,6 +1,8 @@
 <?php
 
-class THFW_Admin_Team 
+namespace THFW_Users\Admin;
+
+class AdminTeam 
 {
 
     public function __construct() {

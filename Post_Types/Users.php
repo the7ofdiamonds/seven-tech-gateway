@@ -1,19 +1,19 @@
 <?php
+
+namespace THFW_Users\Post_Types;
+
 /**
  * @package THFW Users
  */
 
-class THFW_Users_Post_Type
+class Users
 {
     public function __construct(){
         add_action('init', [$this, 'custom_post_type']);
-        add_action( 'add_meta_boxes', array( $this, 'add_post_meta_boxes' ) );
-        add_action( 'save_post', array( $this, 'save_post_member_name' ) );
-        add_action( 'save_post', array( $this, 'save_post_member_title' ) );
-        add_action( 'save_post', array( $this, 'save_post_hacker_rank_link' ) );
-        add_filter( 'archive_template', [$this, 'get_custom_archive_template'] );
-        add_filter( 'single_template', [$this, 'get_custom_single_template'] );
-        add_shortcode('t7odt_thfw_team_page', [$this, 'shortcode_archive_page'] );
+        // add_action( 'add_meta_boxes', array( $this, 'add_post_meta_boxes' ) );
+        // add_action( 'save_post', array( $this, 'save_post_member_name' ) );
+        // add_action( 'save_post', array( $this, 'save_post_member_title' ) );
+        // add_action( 'save_post', array( $this, 'save_post_hacker_rank_link' ) );
     }
 
     function custom_post_type (){
@@ -149,23 +149,5 @@ class THFW_Users_Post_Type
         //     return;
         // }
         update_post_meta( $post->ID, "hacker_rank_link", sanitize_text_field( $_POST[ "hacker_rank_link" ] ) );
-    }
-
-    function get_custom_archive_template( $archive_template ) {
-        global $post;
-
-        if ( is_post_type_archive ( 'team' ) ) {
-            $archive_template = WP_PLUGIN_DIR . '/thfw-users/archive-team.php';
-        }
-        return $archive_template;
-    }
-    
-    function get_custom_single_template( $singular_template ) {
-        global $post;
-
-        if ( is_singular ( 'team' ) ) {
-            $singular_template = WP_PLUGIN_DIR . '/thfw-users/single-team.php';
-        }
-        return $singular_template;
     }
 }
