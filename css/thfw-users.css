@@ -18,6 +18,9 @@
 .login.card form table {
   border-spacing: 0.75em;
 }
+.login.card form table tfoot td button {
+  margin: auto;
+}
 
 .member-card {
   display: flex;
@@ -204,7 +207,7 @@ div.team {
   padding: 0;
 }
 .author-card.card .author-pic {
-  width: 100%;
+  width: 300px;
 }
 .author-card.card .author-pic a {
   font-size: 0;
@@ -251,7 +254,7 @@ div.team {
 }
 
 .status-bar.card {
-  background-color: var(--thfw-color-primary);
+  background-color: var(--thfw-color-info);
 }
 .status-bar.card.info {
   background-color: var(--thfw-color-info);

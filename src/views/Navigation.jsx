@@ -6,7 +6,7 @@ function NavigationComponent() {
       <div className="options">
         <NavLink to={`/login`}>
           <button>
-            <h3>LOG IN</h3>
+            <h3>LOGIN</h3>
           </button>
         </NavLink>
 

@@ -74,7 +74,7 @@ function LoginComponent() {
             <tfoot>
               <td>
                 <button type="submit">
-                  <h3>LOG IN</h3>
+                  <h3>LOGIN</h3>
                 </button>
               </td>
             </tfoot>
