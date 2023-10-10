@@ -3,7 +3,7 @@
   justify-content: space-between;
   position: fixed;
   z-index: 900;
-  top: 4rem;
+  top: 4.5rem;
   left: 50%;
   transform: translateX(-50%);
 
@@ -17,21 +17,30 @@
 }
 
 .author-intro {
-  margin-top: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1000px;
+}
 
-  .author-photo {
-    max-width: 500px;
+.author-pic.card {
+  width: 100%;
+  max-width: 300px;
+  padding: 0;
+
+  img {
+    width: 100%;
+    height: auto;
   }
+}
 
-  .author-card {
-    max-width: 750px;
-
-    .author-greeting {
-      font-size: 1.5rem;
-      line-height: 2;
-    }
-  }
+.author-greeting {
+  width: 100%;
+  padding: 0.75rem;
 }
 
 .author-info.card {
@@ -95,7 +104,7 @@
   padding: 0;
 
   .author-pic {
-    width: 300px;
+    width: 100%;
 
     a {
       font-size: 0;

@@ -19,7 +19,7 @@ $lastName = get_the_author_meta('user_lastname', $post->post_author);
 
 <section class="author-intro" id="intro">
 
-    <div class="author-photo card">
+    <div class="author-pic card">
 
         <img src="<?php echo get_avatar_url($post->post_author, $size = 48, $default = '', $alt = '', $args = array( 'class' => 'wt-author-img' )) ?>" alt="">
     </div>

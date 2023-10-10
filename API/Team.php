@@ -35,7 +35,7 @@ class Team
                     'email' => $user_data->user_email,
                     'role' => $user_data->roles,
                     'author_url' => $user_data->user_url,
-                    'avatar_url' => get_avatar_url($user_data->ID)
+                    'avatar_url' => get_avatar_url($user_data->ID, ['size' => 384])
                 );
 
                 $team[] = $team_member;
