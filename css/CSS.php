@@ -16,7 +16,20 @@ class CSS
 
     function load_css()
     {
-        if (is_front_page() || is_page('about') || is_page('login') || is_page('signup') || is_page('forgot') || is_page('logout') || is_page('dashboard') || is_post_type_archive('team') || is_singular('team')) {
+        $pages = [
+            'about',
+            'login',
+            'signup',
+            'forgot',
+            'logout',
+            'dashboard'
+        ];
+
+        if (
+            is_front_page() ||
+            is_page($pages) ||
+            is_post_type_archive('team') || is_singular('team')
+        ) {
             wp_register_style('thfw_users_css',  THFW_USERS_URL . 'CSS/thfw-users.css', array(), false, 'all');
             wp_enqueue_style('thfw_users_css');
         }

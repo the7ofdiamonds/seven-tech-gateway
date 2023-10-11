@@ -7,7 +7,7 @@ class JS
 
     public function __construct()
     {
-        add_action('wp_head', [$this, 'load_js']);
+        // add_action('wp_footer', [$this, 'load_js']);
         add_action('wp_footer', [$this, 'load_react']);
         add_filter('script_loader_tag', [$this, 'set_script_type_to_module'], 10, 2);
         // add_action('wp_enqueue_scripts', [$this, 'load_firebase']);
@@ -34,9 +34,17 @@ class JS
 
     function load_react()
     {
-        $directory = THFW_USERS . 'build';
+        $pages = [
+            'about',
+            'forgot',
+            'login',
+            'logout',
+            'signup'
+        ];
 
-        if (is_front_page() | is_page('about') | is_page('login') | is_page('logout') | is_page('signup') | is_page('forgot')) {
+        if (is_front_page() || is_page($pages)) {
+
+            $directory = THFW_USERS . 'build';
 
             $jsFiles = $this->get_js_files($directory);
 
