@@ -1,12 +1,12 @@
 <?php
 
-namespace THFW_Users\Post_Types;
+namespace SEVEN_TECH\Post_Types;
 
 /**
- * @package THFW Users
+ * @package SEVEN TECH
  */
 
-class Users
+class Team
 {
     public function __construct(){
         add_action('init', [$this, 'custom_post_type']);

@@ -1,11 +1,15 @@
 <?php
 
-namespace THFW_Users\Roles;
+namespace SEVEN_TECH\Roles;
 
 class Roles
 {
     public function __construct()
     {
-        add_role('founder/managing member', 'Founder/Managing Member', get_role('administrator')->capabilities);
+    }
+
+    function add_roles()
+    {
+        add_role('founder', 'Founder', get_role('administrator')->capabilities);
     }
 }

@@ -30,7 +30,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "update-dev": "git push thfw-users development",
     "update-prod": "git push thfw-users production",
-    "watch:sass": "sass --watch ./CSS/scss/main.scss ./CSS/thfw-users.css"
+    "watch:sass": "sass --watch ./CSS/scss/main.scss ./CSS/seven-tech.css"
   },
   "author": "THE7OFDIAMONDS.TECH",
   "license": "ISC",

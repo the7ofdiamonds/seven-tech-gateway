@@ -1,6 +1,6 @@
 <?php
 
-namespace THFW_Users\API;
+namespace SEVEN_TECH\API;
 
 class API
 {

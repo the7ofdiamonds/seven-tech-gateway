@@ -1,6 +1,6 @@
 <?php
 
-namespace THFW_Users\Admin;
+namespace SEVEN_TECH\Admin;
 
 class AdminTeam 
 {

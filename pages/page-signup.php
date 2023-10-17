@@ -1,6 +1,6 @@
 <?php
 get_header();
 
-include THFW_USERS . 'includes/part-signup.php';
+include SEVEN_TECH . 'includes/part-signup.php';
 
 get_footer();

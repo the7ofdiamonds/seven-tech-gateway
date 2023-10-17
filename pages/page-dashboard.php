@@ -12,6 +12,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 get_header();
 
-include THFW_USERS . 'includes/part-dashboard.php';
+include SEVEN_TECH . 'includes/part-dashboard.php';
 
 get_footer();

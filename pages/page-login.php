@@ -9,6 +9,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 get_header();
 
-include THFW_USERS . 'includes/part-login.php';
+include SEVEN_TECH . 'includes/part-login.php';
 
 get_footer();

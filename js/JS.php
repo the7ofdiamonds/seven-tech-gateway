@@ -1,6 +1,8 @@
 <?php
 
-namespace THFW_Users\JS;
+namespace SEVEN_TECH\JS;
+
+use SEVEN_TECH\SEVEN_TECH;
 
 class JS
 {
@@ -15,8 +17,8 @@ class JS
 
     function load_js()
     {
-        wp_register_script('thfw_users_js', THFW_USERS_URL . 'JS/thfw-users.js', array('jquery'), false, false);
-        wp_enqueue_script('thfw_users_js');
+        wp_register_script('seven_tech_js', SEVEN_TECH_URL . 'JS/seven-tech.js', array('jquery'), false, false);
+        wp_enqueue_script('seven_tech_js');
     }
 
     function get_js_files($directory)
@@ -44,21 +46,21 @@ class JS
 
         if (is_front_page() || is_page($pages)) {
 
-            $directory = THFW_USERS . 'build';
+            $directory = SEVEN_TECH . 'build';
 
             $jsFiles = $this->get_js_files($directory);
 
             foreach ($jsFiles as $jsFile) {
-                $handle = 'thfw_users_react_' . basename($jsFile);
+                $handle = 'seven_tech_react_' . basename($jsFile);
 
-                wp_enqueue_script($handle, THFW_USERS_URL . 'build/' . $jsFile, array('react', 'react-dom', 'wp-element'), "1.0.0", true);
+                wp_enqueue_script($handle, SEVEN_TECH_URL . 'build/' . $jsFile, array('react', 'react-dom', 'wp-element'), "1.0.0", true);
             }
         }
     }
 
     function set_script_type_to_module($tag, $handle)
     {
-        if (strpos($handle, 'thfw_users_react_') === 0) {
+        if (strpos($handle, 'seven_tech_react_') === 0) {
             $tag = str_replace('type=\'text/javascript\'', 'type=\'module\'', $tag);
         }
         return $tag;

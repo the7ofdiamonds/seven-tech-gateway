@@ -1,6 +1,6 @@
 <?php
 
-namespace THFW_Users\Menus;
+namespace SEVEN_TECH\Menus;
 
 class Menus
 {

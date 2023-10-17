@@ -1,6 +1,6 @@
 <?php
 get_header();
 
-include THFW_USERS . 'includes/part-forgot.php';
+include SEVEN_TECH . 'includes/part-forgot.php';
 
 get_footer();

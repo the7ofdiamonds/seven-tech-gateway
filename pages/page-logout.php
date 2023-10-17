@@ -8,6 +8,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 get_header();
 
-include THFW_USERS . 'includes/part-logout.php';
+include SEVEN_TECH . 'includes/part-logout.php';
 
 get_footer();

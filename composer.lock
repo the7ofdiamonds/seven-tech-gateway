@@ -373,16 +373,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.318.0",
+            "version": "v0.320.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "908a866797b9731352e650997112c8c3a0347ac5"
+                "reference": "6b0ea59d53b301cf1a8f7e0456ff1bd8f5613fdf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/908a866797b9731352e650997112c8c3a0347ac5",
-                "reference": "908a866797b9731352e650997112c8c3a0347ac5",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/6b0ea59d53b301cf1a8f7e0456ff1bd8f5613fdf",
+                "reference": "6b0ea59d53b301cf1a8f7e0456ff1bd8f5613fdf",
                 "shasum": ""
             },
             "require": {
@@ -411,22 +411,22 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.318.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.320.0"
             },
-            "time": "2023-10-02T01:10:14+00:00"
+            "time": "2023-10-15T01:06:13+00:00"
         },
         {
             "name": "google/auth",
-            "version": "v1.31.0",
+            "version": "v1.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "22209fddd0c06f3f8e3cb4aade0b352aa00f9888"
+                "reference": "b88250090d834add55e4ad31f84190d51f617fca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/22209fddd0c06f3f8e3cb4aade0b352aa00f9888",
-                "reference": "22209fddd0c06f3f8e3cb4aade0b352aa00f9888",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/b88250090d834add55e4ad31f84190d51f617fca",
+                "reference": "b88250090d834add55e4ad31f84190d51f617fca",
                 "shasum": ""
             },
             "require": {
@@ -469,22 +469,22 @@
             "support": {
                 "docs": "https://googleapis.github.io/google-auth-library-php/main/",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.31.0"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.32.0"
             },
-            "time": "2023-10-05T20:39:00+00:00"
+            "time": "2023-10-16T18:38:15+00:00"
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.52.5",
+            "version": "v1.52.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "28765cf75bd028ed063b0422b9c85bb9a54c41ca"
+                "reference": "f79480d1e2b31a695ae98b42ca10b67b41da9fb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/28765cf75bd028ed063b0422b9c85bb9a54c41ca",
-                "reference": "28765cf75bd028ed063b0422b9c85bb9a54c41ca",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/f79480d1e2b31a695ae98b42ca10b67b41da9fb1",
+                "reference": "f79480d1e2b31a695ae98b42ca10b67b41da9fb1",
                 "shasum": ""
             },
             "require": {
@@ -500,7 +500,7 @@
             "require-dev": {
                 "erusev/parsedown": "^1.6",
                 "google/cloud-common-protos": "^0.4",
-                "google/gax": "^1.19.1",
+                "google/gax": "^1.24.0",
                 "opis/closure": "^3",
                 "phpdocumentor/reflection": "^5.0",
                 "phpspec/prophecy-phpunit": "^2.0",
@@ -534,26 +534,26 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.5"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.7"
             },
-            "time": "2023-09-30T16:50:41+00:00"
+            "time": "2023-10-16T22:54:31+00:00"
         },
         {
             "name": "google/cloud-storage",
-            "version": "v1.33.3",
+            "version": "v1.33.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-storage.git",
-                "reference": "e22877e96c3f5c4f53b0fb2077834fb6d64d0fca"
+                "reference": "02f53c6cbbc18c4ee8f5d12cbd7887ceec575724"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/e22877e96c3f5c4f53b0fb2077834fb6d64d0fca",
-                "reference": "e22877e96c3f5c4f53b0fb2077834fb6d64d0fca",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/02f53c6cbbc18c4ee8f5d12cbd7887ceec575724",
+                "reference": "02f53c6cbbc18c4ee8f5d12cbd7887ceec575724",
                 "shasum": ""
             },
             "require": {
-                "google/cloud-core": "^1.51.3",
+                "google/cloud-core": "^1.52.7",
                 "php": ">=7.4",
                 "ramsey/uuid": "^4.2.3"
             },
@@ -590,9 +590,9 @@
             ],
             "description": "Cloud Storage Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.33.3"
+                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.33.4"
             },
-            "time": "2023-09-30T16:50:41+00:00"
+            "time": "2023-10-16T22:54:31+00:00"
         },
         {
             "name": "graham-campbell/result-type",

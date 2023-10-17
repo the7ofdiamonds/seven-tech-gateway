@@ -1,6 +1,6 @@
 <?php
 
-namespace THFW_Users\Pages;
+namespace SEVEN_TECH\Pages;
 
 use WP_Query;
 
@@ -11,6 +11,7 @@ class Pages
     public function __construct()
     {
         $this->page_titles = [
+            'ABOUT',
             'LOGIN',
             'SIGNUP',
             'FORGOT',
