@@ -1,5 +1,5 @@
 {
-  "name": "thfw-users",
+  "name": "seven-tech",
   "version": "1.0.0",
   "description": "UX/UI for the convience of users",
   "main": "src/index.js",
@@ -28,8 +28,8 @@
     "sync": "browser-sync start -p 'http://localhost:8000'",
     "start": "wp-scripts start",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "update-dev": "git push thfw-users development",
-    "update-prod": "git push thfw-users production",
+    "update-dev": "git push seven-tech development",
+    "update-prod": "git push seven-tech production",
     "watch:sass": "sass --watch ./CSS/scss/main.scss ./CSS/seven-tech.css"
   },
   "author": "THE7OFDIAMONDS.TECH",
