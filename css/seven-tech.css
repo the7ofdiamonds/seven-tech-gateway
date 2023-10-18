@@ -115,25 +115,28 @@ div.team {
   max-width: 30rem;
 }
 
-.author-nav.card {
+.author-nav {
+  display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
   position: fixed;
   z-index: 900;
-  top: 4.5rem;
+  top: 5rem;
   left: 50%;
   transform: translateX(-50%);
 }
-.author-nav.card a {
+.author-nav a {
   text-decoration: none;
 }
-.author-nav.card a:hover {
+.author-nav a:hover {
   text-decoration: underline;
 }
 
 .author-intro {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
@@ -142,12 +145,22 @@ div.team {
   max-width: 1000px;
 }
 
-.author-pic.card {
-  width: 100%;
-  max-width: 300px;
-  padding: 0;
+.author {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
 }
-.author-pic.card img {
+
+.author-pic {
+  width: 100%;
+  max-width: 75vw;
+  padding: 0;
+  font-size: 0;
+}
+.author-pic img {
   width: 100%;
   height: auto;
 }
@@ -157,67 +170,11 @@ div.team {
   padding: 0.75rem;
 }
 
-.author-info.card {
-  display: grid;
-  grid-template-areas: "Left Right";
-  grid-template-columns: 1fr 2fr;
-  height: fit-content;
-}
-.author-info.card .left {
-  grid-area: Left;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.author-info.card .left img {
-  width: 100%;
-  max-width: 15rem;
-  height: auto;
-}
-.author-info.card .left .author-social {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-}
-.author-info.card .left .author-social i {
-  font-size: 1.5rem;
-  color: black;
-}
-.author-info.card .right {
-  grid-area: Right;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
-  height: 100%;
-  padding: 0.5rem;
-}
-.author-info.card .right h3.about-title {
-  text-align: left;
-  font-weight: 700;
-}
-.author-info.card .right p {
-  text-align: left;
-}
-.author-info.card .right button {
-  align-self: center;
-}
-
 .author-card.card {
   gap: 0.374rem;
   height: fit-content;
   padding: 0;
-}
-.author-card.card .author-pic {
-  width: 100%;
-}
-.author-card.card .author-pic a {
-  font-size: 0;
-}
-.author-card.card .author-pic a img {
-  width: 100%;
-  height: auto;
+  max-width: 500px;
 }
 .author-card.card .author-role,
 .author-card.card .author-bio,
@@ -374,24 +331,112 @@ div.team {
   background-color: black;
 }
 
-.social-bar {
+section.founder {
+  margin-top: 0;
+  min-height: fit-content;
+}
+section.founder section.portfolio {
+  margin-top: 0;
+  min-height: fit-content;
+}
+
+main.founder {
+  justify-content: start;
+  padding-top: 10rem;
+  min-height: fit-content;
+}
+
+:root {
+  --total-skills: 7;
+  --icon-width: 12rem;
+  --animation-duration: calc(var(--total-skills) * 1.5s);
+}
+
+.author-skills {
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  padding: 0.5em;
   width: 100%;
 }
-.social-bar .site-icon {
-  margin: 0;
+
+.author-skills-slide {
+  display: flex;
+  animation: var(--animation-duration) slide infinite linear;
+}
+
+.author-skills-slide i {
+  font-size: 4rem;
   padding: 0;
-  font-size: 0;
-  box-shadow: none;
+  width: var(--icon-width);
 }
-.social-bar .site-icon img {
-  width: 1.5rem;
+
+@keyframes slide {
+  100% {
+    transform: translateX(-50%);
+  }
 }
-.social-bar a i {
-  color: black;
+.schedule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 1.5rem;
+}
+.schedule .date-select.card,
+.schedule .time-select.card,
+.schedule .summary-select.card,
+.schedule .description-select.card,
+.schedule .communication-select.card,
+.schedule .attendees-select.card,
+.schedule .additional-attendee.card {
+  padding: 0;
+  gap: unset;
+}
+.schedule .date-select.card label,
+.schedule .time-select.card label,
+.schedule .summary-select.card label,
+.schedule .description-select.card label,
+.schedule .communication-select.card label,
+.schedule .attendees-select.card label,
+.schedule .additional-attendee.card label {
+  background-color: var(--orb-color-primary);
+  color: var(--orb-color-secondary);
+  padding: 0.25em;
+  margin: 0;
+  width: 100%;
+}
+.schedule .attendees-select.card .attendee,
+.schedule .additional-attendee.card .attendee {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-items: center;
+}
+.schedule .attendees-select.card .attendee h4,
+.schedule .additional-attendee.card .attendee h4 {
+  padding: 0.5em;
+}
+.schedule .attendees-select.card .attendee button,
+.schedule .additional-attendee.card .attendee button {
+  margin: 0 0.25em 0;
+}
+.schedule .attendees-select.card .attendee button h4,
+.schedule .additional-attendee.card .attendee button h4 {
+  padding: 0.25em;
+}
+.schedule .attendees-select.card .attendee input,
+.schedule .additional-attendee.card .attendee input {
+  margin: 0.5em;
+}
+.schedule .additional-attendee.card {
+  display: none;
+}
+.schedule .additional-attendee.card.view {
+  display: flex;
+}
+
+.schedule-select {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 }
 
 /*# sourceMappingURL=seven-tech.css.map */

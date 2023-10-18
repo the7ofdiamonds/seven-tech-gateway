@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import NavigationComponent from './Navigation';
+import NavigationComponent from './components/NavigationLogin';
 
 import { forgot } from '../utils/forgot';
 import { displayStatus } from '../utils/DisplayStatus';

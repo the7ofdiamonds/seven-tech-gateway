@@ -5,10 +5,10 @@ if (!function_exists('is_plugin_active')) {
 <section class="dashboard" id="thfw">
     <h2>DASHBOARD</h2>
     <?php include SEVEN_TECH . 'includes/part-user.php'; ?>
-    <?php if (is_plugin_active('thfw-portfolio/THFW_Portfolio.php')) : ?>
+    <?php if (is_plugin_active('seven-tech-portfolio/THFW_Portfolio.php')) : ?>
         <div class="thfw-portfolio" id="thfw_portfolio"></div>
     <?php endif;
-    if (is_plugin_active('orb-services/ORB_Services.php')) : ?>
+    if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) : ?>
         <div class="orb-services" id="orb_services"></div>
     <?php endif; ?>
 </section>

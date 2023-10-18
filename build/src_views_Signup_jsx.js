@@ -1,5 +1,5 @@
 "use strict";
-(self["webpackChunkthfw_users"] = self["webpackChunkthfw_users"] || []).push([["src_views_Signup_jsx"],{
+(self["webpackChunkseven_tech"] = self["webpackChunkseven_tech"] || []).push([["src_views_Signup_jsx"],{
 
 /***/ "./src/utils/DisplayStatus.js":
 /*!************************************!*\
@@ -104,30 +104,6 @@ var signup = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/views/Navigation.jsx":
-/*!**********************************!*\
-  !*** ./src/views/Navigation.jsx ***!
-  \**********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/dist/index.js");
-
-function NavigationComponent() {
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "options"
-  }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
-    to: "/login"
-  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "LOGIN"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
-    to: '/signup'
-  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "SIGN UP"))), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.NavLink, {
-    to: '/forgot'
-  }, /*#__PURE__*/React.createElement("button", null, /*#__PURE__*/React.createElement("h3", null, "FORGOT")))));
-}
-/* harmony default export */ __webpack_exports__["default"] = (NavigationComponent);
-
-/***/ }),
-
 /***/ "./src/views/Signup.jsx":
 /*!******************************!*\
   !*** ./src/views/Signup.jsx ***!
@@ -137,7 +113,7 @@ function NavigationComponent() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Navigation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Navigation */ "./src/views/Navigation.jsx");
+/* harmony import */ var _components_NavigationLogin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/NavigationLogin */ "./src/views/components/NavigationLogin.jsx");
 /* harmony import */ var _utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/DisplayStatus */ "./src/utils/DisplayStatus.js");
 /* harmony import */ var _utils_signup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/signup */ "./src/utils/signup.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -229,7 +205,7 @@ function SignUpComponent() {
       setConfirmPassword(e.target.value);
     }
   };
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Navigation__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_components_NavigationLogin__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/React.createElement("div", {
     className: "login card"
   }, /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("thead", null), /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
     type: "text",
@@ -263,6 +239,38 @@ function SignUpComponent() {
   }, /*#__PURE__*/React.createElement("span", null, message)));
 }
 /* harmony default export */ __webpack_exports__["default"] = (SignUpComponent);
+
+/***/ }),
+
+/***/ "./src/views/components/NavigationLogin.jsx":
+/*!**************************************************!*\
+  !*** ./src/views/components/NavigationLogin.jsx ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+function NavigationLoginComponent() {
+  var baseHost = window.location.protocol + '//' + window.location.host;
+  var handleLogin = function handleLogin() {
+    window.location.href = "/login/?redirectTo=".concat(baseHost, "/schedule/");
+  };
+  var handleSignUp = function handleSignUp() {
+    window.location.href = "/signup/?redirectTo=".concat(baseHost, "/schedule/");
+  };
+  var handleForgot = function handleForgot() {
+    window.location.href = "/forgot/?redirectTo=".concat(baseHost, "/schedule/");
+  };
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "options"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: handleLogin
+  }, /*#__PURE__*/React.createElement("h3", null, "LOGIN")), /*#__PURE__*/React.createElement("button", {
+    onClick: handleSignUp
+  }, /*#__PURE__*/React.createElement("h3", null, "SIGN UP")), /*#__PURE__*/React.createElement("button", {
+    onClick: handleForgot
+  }, /*#__PURE__*/React.createElement("h3", null, "FORGOT"))));
+}
+/* harmony default export */ __webpack_exports__["default"] = (NavigationLoginComponent);
 
 /***/ })
 

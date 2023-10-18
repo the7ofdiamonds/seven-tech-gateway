@@ -8,6 +8,9 @@ import store from './model/store.js';
 
 import './services/firebase/config';
 
+const LoadingComponent = lazy(() => import('./loading/LoadingComponent.jsx'));
+const ScheduleComponent = lazy(() => import('./views/Schedule.jsx'));
+
 const Team = lazy(() => import('./views/Team'));
 
 window.onload = function () {
@@ -28,6 +31,25 @@ if (thfwUsers) {
             <Route path="/" element={<Team />} />
             <Route path="/about" element={<Team />} />
           </Routes>
+        </Router>
+      </Provider>
+    </React.StrictMode>
+  );
+}
+
+const orbScheduleContainer = document.getElementById('orb_schedule');
+if (orbScheduleContainer) {
+  ReactDOM.createRoot(orbScheduleContainer).render(
+    <React.StrictMode>
+      <Provider store={store}>
+        <Router>
+          <Suspense fallback={<LoadingComponent />}>
+            <Routes>
+              <Route path="/" element={<ScheduleComponent />} />
+              <Route path="/about" element={<ScheduleComponent />} />
+              <Route path="/schedule" element={<ScheduleComponent />} />
+            </Routes>
+          </Suspense>
         </Router>
       </Provider>
     </React.StrictMode>

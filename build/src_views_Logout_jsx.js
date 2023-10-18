@@ -1,5 +1,5 @@
 "use strict";
-(self["webpackChunkthfw_users"] = self["webpackChunkthfw_users"] || []).push([["src_views_Logout_jsx"],{
+(self["webpackChunkseven_tech"] = self["webpackChunkseven_tech"] || []).push([["src_views_Logout_jsx"],{
 
 /***/ "./src/utils/DisplayStatus.js":
 /*!************************************!*\

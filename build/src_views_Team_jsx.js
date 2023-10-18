@@ -1,10 +1,51 @@
 "use strict";
-(self["webpackChunkthfw_users"] = self["webpackChunkthfw_users"] || []).push([["src_views_Team_jsx"],{
+(self["webpackChunkseven_tech"] = self["webpackChunkseven_tech"] || []).push([["src_views_Team_jsx"],{
 
-/***/ "./src/components/TeamMember.jsx":
-/*!***************************************!*\
-  !*** ./src/components/TeamMember.jsx ***!
-  \***************************************/
+/***/ "./src/views/Team.jsx":
+/*!****************************!*\
+  !*** ./src/views/Team.jsx ***!
+  \****************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _controllers_teamSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controllers/teamSlice */ "./src/controllers/teamSlice.js");
+/* harmony import */ var _components_TeamMember__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/TeamMember */ "./src/views/components/TeamMember.jsx");
+
+
+
+
+function Team() {
+  var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
+      return state.team;
+    }),
+    loading = _useSelector.loading,
+    error = _useSelector.error,
+    team = _useSelector.team;
+  var dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    dispatch((0,_controllers_teamSlice__WEBPACK_IMPORTED_MODULE_2__.getTeam)());
+  }, [dispatch]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
+    className: "title"
+  }, "Team"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "team"
+  }, Array.isArray(team) && team.length > 0 ? team.map(function (team_member) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_TeamMember__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      team_member: team_member
+    }));
+  }) : ''));
+}
+/* harmony default export */ __webpack_exports__["default"] = (Team);
+
+/***/ }),
+
+/***/ "./src/views/components/TeamMember.jsx":
+/*!*********************************************!*\
+  !*** ./src/views/components/TeamMember.jsx ***!
+  \*********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -35,47 +76,6 @@ function TeamMember(props) {
   })))) : '');
 }
 /* harmony default export */ __webpack_exports__["default"] = (TeamMember);
-
-/***/ }),
-
-/***/ "./src/views/Team.jsx":
-/*!****************************!*\
-  !*** ./src/views/Team.jsx ***!
-  \****************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _controllers_teamSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controllers/teamSlice */ "./src/controllers/teamSlice.js");
-/* harmony import */ var _components_TeamMember__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/TeamMember */ "./src/components/TeamMember.jsx");
-
-
-
-
-function Team() {
-  var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
-      return state.team;
-    }),
-    loading = _useSelector.loading,
-    error = _useSelector.error,
-    team = _useSelector.team;
-  var dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    dispatch((0,_controllers_teamSlice__WEBPACK_IMPORTED_MODULE_2__.getTeam)());
-  }, [dispatch]);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
-    className: "title"
-  }, "Team"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "team"
-  }, Array.isArray(team) && team.length > 0 ? team.map(function (team_member) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_TeamMember__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      team_member: team_member
-    }));
-  }) : ''));
-}
-/* harmony default export */ __webpack_exports__["default"] = (Team);
 
 /***/ })
 

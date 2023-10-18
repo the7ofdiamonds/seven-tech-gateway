@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import NavigationComponent from './Navigation';
+import NavigationComponent from './components/NavigationLogin';
 
 import { displayStatus, displayStatusType } from '../utils/DisplayStatus';
 import { signup } from '../utils/signup';

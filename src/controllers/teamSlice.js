@@ -31,7 +31,7 @@ export const getTeam = createAsyncThunk('team/getTeam', async () => {
     }
 });
 
-export const clientSlice = createSlice({
+export const teamSlice = createSlice({
     name: 'team',
     initialState,
     extraReducers: (builder) => {
@@ -52,4 +52,4 @@ export const clientSlice = createSlice({
     }
 })
 
-export default clientSlice;
+export default teamSlice;

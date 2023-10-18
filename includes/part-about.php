@@ -32,15 +32,15 @@ if (!function_exists('is_plugin_active')) {
     } ?>
     <!--  -->
     <?php
-    if (is_plugin_active('orb-services/ORB_Services.php')) {
+    if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
         echo do_shortcode('[orb-services-schedule]');
     }
 
-    if (is_plugin_active('orb-services/ORB_Services.php')) {
+    if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
         echo do_shortcode('[orb-services-headquarters]');
     }
 
-    if (is_plugin_active('thfw-users/THFW_Users.php')) {
+    if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
         echo do_shortcode('[thfw-team]');
     }
     ?>

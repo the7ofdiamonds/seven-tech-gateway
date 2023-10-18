@@ -10,11 +10,14 @@ class Templates
     {
         add_filter('frontpage_template', [$this, 'get_custom_front_page'], 10, 1);
         add_filter('page_template', [$this, 'get_custom_about_page_template']);
+        add_filter('page_template', [$this, 'get_custom_schedule_page_template']);
         add_filter('page_template', [$this, 'get_custom_login_page_template']);
         add_filter('page_template', [$this, 'get_custom_signup_page_template']);
         add_filter('page_template', [$this, 'get_custom_forgot_page_template']);
         add_filter('page_template', [$this, 'get_custom_logout_page_template']);
         add_filter('page_template', [$this, 'get_custom_dashboard_page_template']);
+        add_filter('page_template', [$this, 'get_founder_page_template']);
+        add_filter('template_include', [$this, 'get_founder_resume_page_template']);
         add_filter('archive_template', [$this, 'get_team_archive_template']);
         add_filter('single_template', [$this, 'get_team_single_template']);
     }
@@ -37,7 +40,24 @@ class Templates
 
         return $page_template;
     }
-    
+
+    function get_custom_schedule_page_template($page_template)
+    {
+        $schedule_page = get_page_by_path('schedule');
+
+        if ($schedule_page && is_page($schedule_page->ID)) {
+            $page_template = SEVEN_TECH . 'Pages/page-schedule.php';
+
+            if (file_exists($page_template)) {
+                return $page_template;
+            } else {
+                error_log('Schedule Page Template does not exist.');
+            }
+        }
+
+        return $page_template;
+    }
+
     function get_custom_login_page_template($page_template)
     {
         if (is_page('login')) {
@@ -79,6 +99,38 @@ class Templates
     {
         if (is_page('dashboard')) {
             $page_template = SEVEN_TECH . 'Pages/page-dashboard.php';
+        }
+
+        return $page_template;
+    }
+
+    function get_founder_page_template($page_template)
+    {
+        if (is_page('founder')) {
+            $page_template = SEVEN_TECH . 'Pages/page-founder.php';
+
+            if (file_exists($page_template)) {
+                return $page_template;
+            } else {
+                error_log('Founder Page Template does not exist.');
+            }
+        }
+
+        return $page_template;
+    }
+
+    function get_founder_resume_page_template($page_template)
+    {
+        $resume_page = get_page_by_path('founder/resume');
+
+        if ($resume_page && is_page($resume_page->ID)) {
+            $page_template = SEVEN_TECH . 'Pages/page-founder-resume.php';
+
+            if (file_exists($page_template)) {
+                return $page_template;
+            } else {
+                error_log('Resume Page Template does not exist.');
+            }
         }
 
         return $page_template;

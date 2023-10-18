@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { getTeam } from '../controllers/teamSlice';
 
-import TeamMember from '../components/TeamMember';
+import TeamMember from './components/TeamMember';
 
 function Team() {
   const { loading, error, team } = useSelector((state) => state.team);

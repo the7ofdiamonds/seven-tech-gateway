@@ -2,8 +2,6 @@
 
 namespace SEVEN_TECH\JS;
 
-use SEVEN_TECH\SEVEN_TECH;
-
 class JS
 {
 
@@ -38,6 +36,7 @@ class JS
     {
         $pages = [
             'about',
+            'schedule',
             'forgot',
             'login',
             'logout',

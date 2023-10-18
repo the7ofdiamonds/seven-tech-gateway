@@ -11,6 +11,8 @@ class Pages
     public function __construct()
     {
         $this->page_titles = [
+            'FOUNDER',
+            'SCHEDULE',
             'ABOUT',
             'LOGIN',
             'SIGNUP',
@@ -18,6 +20,7 @@ class Pages
             'LOGOUT',
             'DASHBOARD'
         ];
+
         add_action('init', [$this, 'react_rewrite_rules']);
     }
 
@@ -34,6 +37,36 @@ class Pages
                     'post_type'    => 'page',
                     'post_content' => '',
                     'post_status'  => 'publish',
+                );
+
+                wp_insert_post($page_data);
+            }
+        }
+    }
+
+    public function add_founder_subpages()
+    {
+        global $wpdb;
+
+        $pages = [
+            [
+                'title' => 'FOUNDER RESUME',
+                'name' => 'resume'
+            ]
+        ];
+
+        foreach ($pages as $page) {
+            $page_exists = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'page'", $page['name']));
+            $parent_id = get_page_by_path('founder')->ID;
+
+            if (!$page_exists) {
+                $page_data = array(
+                    'post_title'   => $page['title'],
+                    'post_type'    => 'page',
+                    'post_content' => '',
+                    'post_status'  => 'publish',
+                    'post_parent' => $parent_id,
+                    'post_name' => $page['name']
                 );
 
                 wp_insert_post($page_data);

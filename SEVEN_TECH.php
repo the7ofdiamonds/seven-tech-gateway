@@ -6,7 +6,7 @@ namespace SEVEN_TECH;
  * @package SEVEN_TECH
  */
 /*
-Plugin Name: 7 TECH
+Plugin Name: SEVEN TECH
 Plugin URI: 
 Description: Users.
 Version: 1.0.0
@@ -29,8 +29,8 @@ require_once SEVEN_TECH . 'vendor/autoload.php';
 use SEVEN_TECH\Admin\Admin;
 use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
+use SEVEN_TECH\Database\Database;
 use SEVEN_TECH\JS\JS;
-use SEVEN_TECH\Menus\Menus;
 use SEVEN_TECH\Pages\Pages;
 use SEVEN_TECH\Post_Types\Post_Types;
 use SEVEN_TECH\Roles\Roles;
@@ -45,12 +45,10 @@ class SEVEN_TECH
     {
         add_filter('upload_mimes', [$this, 'add_theme_support_upload_mimes']);
 
-        $factory = (new Factory)->withServiceAccount(SEVEN_TECH . 'serviceAccount.json');
-        $auth = $factory->createAuth();
-
         new Admin;
-        new API($auth);
+        new API();
         new CSS;
+        new Database;
         new JS;
         new Pages;
         new Post_Types;
@@ -81,10 +79,10 @@ register_activation_hook(__FILE__, array($seven_tech, 'activate'));
 $seven_tech_roles = new Roles();
 register_activation_hook(__FILE__, array($seven_tech_roles, 'add_roles'));
 
-register_activation_hook(__FILE__, array(new Menus(), 'create_mobile_menu'));
 
 $seven_tech_pages = new Pages();
 register_activation_hook(__FILE__, array($seven_tech_pages, 'add_pages'));
+register_activation_hook(__FILE__, [$seven_tech_pages, 'add_founder_subpages']);
 
 // register_deactivation_hook(__FILE__, array($thfw_users, 'deactivate'));
 
