@@ -5,13 +5,23 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php wp_title(''); ?></title>
-    
+
     <?php
     $site_icon_url = get_site_icon_url();
     if ($site_icon_url) {
         echo '<link rel="icon" href="' . esc_url($site_icon_url) . '" sizes="32x32" type="image/png">';
     }
     ?>
+    <style>
+        main {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,13 +36,18 @@
     </style>
 
     <?php
-    $resume_pdf = SEVEN_TECH . 'resume/Jamel_C_Lyons_Resume.pdf';
-    $resume_pdf_url = SEVEN_TECH_URL . 'resume/Jamel_C_Lyons_Resume.pdf';
+    $currentURL = $_SERVER['REQUEST_URI'];
+    $urlPosition = explode('/', $currentURL);
+    $founderName = strtoupper($urlPosition[2]);
+    $resume_pdf = SEVEN_TECH . 'resume/' . $founderName . '_Resume.pdf';
+    $resume_pdf_url = SEVEN_TECH_URL . 'resume/' . $founderName . '_Resume.pdf';
 
     if (file_exists($resume_pdf)) : ?>
         <iframe id="pdfViewer" src="<?php echo $resume_pdf_url; ?>" frameborder="0"></iframe>
     <?php else : ?>
-        <h4>This resume does not exist.</h4>
+        <main>
+            <h4>This resume does not exist.</h4>
+        </main>
     <?php endif; ?>
 
 </body>

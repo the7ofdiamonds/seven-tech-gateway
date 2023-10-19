@@ -19097,6 +19097,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   founderSlice: function() { return /* binding */ founderSlice; },
 /* harmony export */   getFounder: function() { return /* binding */ getFounder; },
+/* harmony export */   getFounderResume: function() { return /* binding */ getFounderResume; },
 /* harmony export */   getFounders: function() { return /* binding */ getFounders; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
@@ -19109,7 +19110,11 @@ var initialState = {
   founderLoading: false,
   founderError: '',
   founders: '',
-  founder: ''
+  title: '',
+  avatarURL: '',
+  fullName: '',
+  greeting: '',
+  skills: ''
 };
 var getFounders = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('founder/getFounders', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
   var response, errorData, errorMessage, responseData;
@@ -19152,47 +19157,98 @@ var getFounders = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncTh
     }
   }, _callee, null, [[0, 16]]);
 })));
-var getFounder = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('founder/getFounder', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-  var response, errorData, errorMessage, responseData;
-  return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-    while (1) switch (_context2.prev = _context2.next) {
-      case 0:
-        _context2.prev = 0;
-        _context2.next = 3;
-        return fetch("/wp-json/seven-tech/users/v1/founder", {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+var getFounder = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('founder/getFounder', /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(founder) {
+    var response, errorData, errorMessage, responseData;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return fetch("/wp-json/seven-tech/users/v1/founder/".concat(founder), {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        case 3:
+          response = _context2.sent;
+          if (response.ok) {
+            _context2.next = 10;
+            break;
           }
-        });
-      case 3:
-        response = _context2.sent;
-        if (response.ok) {
-          _context2.next = 10;
-          break;
-        }
-        _context2.next = 7;
-        return response.json();
-      case 7:
-        errorData = _context2.sent;
-        errorMessage = errorData.message;
-        throw new Error(errorMessage);
-      case 10:
-        _context2.next = 12;
-        return response.json();
-      case 12:
-        responseData = _context2.sent;
-        return _context2.abrupt("return", responseData);
-      case 16:
-        _context2.prev = 16;
-        _context2.t0 = _context2["catch"](0);
-        throw _context2.t0;
-      case 19:
-      case "end":
-        return _context2.stop();
-    }
-  }, _callee2, null, [[0, 16]]);
-})));
+          _context2.next = 7;
+          return response.json();
+        case 7:
+          errorData = _context2.sent;
+          errorMessage = errorData.message;
+          throw new Error(errorMessage);
+        case 10:
+          _context2.next = 12;
+          return response.json();
+        case 12:
+          responseData = _context2.sent;
+          return _context2.abrupt("return", responseData);
+        case 16:
+          _context2.prev = 16;
+          _context2.t0 = _context2["catch"](0);
+          throw _context2.t0;
+        case 19:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 16]]);
+  }));
+  return function (_x) {
+    return _ref2.apply(this, arguments);
+  };
+}());
+var getFounderResume = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('founder/getFounderResume', /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(pageTitle) {
+    var response, errorData, errorMessage, responseData;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          _context3.next = 3;
+          return fetch("/wp-json/seven-tech/users/v1/founder/".concat(pageTitle, "/resume"), {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        case 3:
+          response = _context3.sent;
+          if (response.ok) {
+            _context3.next = 10;
+            break;
+          }
+          _context3.next = 7;
+          return response.json();
+        case 7:
+          errorData = _context3.sent;
+          errorMessage = errorData.message;
+          throw new Error(errorMessage);
+        case 10:
+          _context3.next = 12;
+          return response.json();
+        case 12:
+          responseData = _context3.sent;
+          return _context3.abrupt("return", responseData);
+        case 16:
+          _context3.prev = 16;
+          _context3.t0 = _context3["catch"](0);
+          throw _context3.t0;
+        case 19:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3, null, [[0, 16]]);
+  }));
+  return function (_x2) {
+    return _ref3.apply(this, arguments);
+  };
+}());
 var founderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
   name: 'founder',
   initialState: initialState,
@@ -19213,8 +19269,22 @@ var founderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)
     }).addCase(getFounder.fulfilled, function (state, action) {
       state.founderLoading = false;
       state.founderError = null;
-      state.founder = action.payload;
+      state.title = action.payload.title;
+      state.avatarURL = action.payload.avatarURL;
+      state.fullName = action.payload.fullName;
+      state.greeting = action.payload.greeting;
+      state.skills = action.payload.skills;
     }).addCase(getFounder.rejected, function (state, action) {
+      state.founderLoading = false;
+      state.founderError = action.error.message;
+    }).addCase(getFounderResume.pending, function (state) {
+      state.founderLoading = true;
+      state.founderError = '';
+    }).addCase(getFounderResume.fulfilled, function (state, action) {
+      state.founderLoading = false;
+      state.founderError = null;
+      state.founderResume = action.payload;
+    }).addCase(getFounderResume.rejected, function (state, action) {
       state.founderLoading = false;
       state.founderError = action.error.message;
     });

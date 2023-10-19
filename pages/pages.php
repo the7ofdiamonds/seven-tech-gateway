@@ -2,7 +2,6 @@
 
 namespace SEVEN_TECH\Pages;
 
-use SEVEN_TECH\Post_Types\Post_Types;
 use WP_Query;
 
 class Pages

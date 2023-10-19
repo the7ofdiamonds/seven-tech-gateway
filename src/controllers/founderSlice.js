@@ -4,7 +4,11 @@ const initialState = {
     founderLoading: false,
     founderError: '',
     founders: '',
-    founder: ''
+    title: '',
+    avatarURL: '',
+    fullName: '',
+    greeting: '',
+    skills: ''
 };
 
 export const getFounders = createAsyncThunk('founder/getFounders', async () => {
@@ -30,10 +34,33 @@ export const getFounders = createAsyncThunk('founder/getFounders', async () => {
     }
 });
 
-export const getFounder = createAsyncThunk('founder/getFounder', async () => {
+export const getFounder = createAsyncThunk('founder/getFounder', async (founder) => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/users/v1/founder`, {
+        const response = await fetch(`/wp-json/seven-tech/users/v1/founder/${founder}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            const errorMessage = errorData.message;
+            throw new Error(errorMessage);
+        }
+
+        const responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        throw error;
+    }
+});
+
+export const getFounderResume = createAsyncThunk('founder/getFounderResume', async (pageTitle) => {
+
+    try {
+        const response = await fetch(`/wp-json/seven-tech/users/v1/founder/${pageTitle}/resume`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -78,9 +105,26 @@ export const founderSlice = createSlice({
             .addCase(getFounder.fulfilled, (state, action) => {
                 state.founderLoading = false;
                 state.founderError = null;
-                state.founder = action.payload
+                state.title = action.payload.title;
+                state.avatarURL = action.payload.avatarURL;
+                state.fullName = action.payload.fullName;
+                state.greeting = action.payload.greeting;
+                state.skills = action.payload.skills;
             })
             .addCase(getFounder.rejected, (state, action) => {
+                state.founderLoading = false
+                state.founderError = action.error.message
+            })
+            .addCase(getFounderResume.pending, (state) => {
+                state.founderLoading = true
+                state.founderError = ''
+            })
+            .addCase(getFounderResume.fulfilled, (state, action) => {
+                state.founderLoading = false;
+                state.founderError = null;
+                state.founderResume = action.payload
+            })
+            .addCase(getFounderResume.rejected, (state, action) => {
                 state.founderLoading = false
                 state.founderError = action.error.message
             })

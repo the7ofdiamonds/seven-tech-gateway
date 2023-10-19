@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
-function MemberNavigationComponent() {
+function MemberNavigationComponent(props) {
+  const { resume } = props;
+
   const founderSection = document.getElementById('founder');
   const portfolioElement = document.getElementById('portfolio');
   const portfolioButton = document.getElementById('portfolio_button');
@@ -19,7 +23,7 @@ function MemberNavigationComponent() {
   // Button press
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
-console.log(section);
+    console.log(section);
     if (section) {
       const offsetTopPx = section.getBoundingClientRect().top + window.scrollY;
       const paddingTopPx = 137.5;
@@ -36,12 +40,11 @@ console.log(section);
         behavior: 'smooth',
       });
     }
-  }
+  };
 
   const openResumeInNewTab = () => {
     window.location.href = 'resume';
-    console.log('resume');
-  }
+  };
 
   return (
     <nav class="author-nav">
@@ -55,9 +58,13 @@ console.log(section);
         <h3>PORTFOLIO</h3>
       </button>
 
-      <button onClick={openResumeInNewTab}>
-        <h3>RÉSUMÉ</h3>
-      </button>
+      {resume ? (
+        <button onClick={openResumeInNewTab}>
+          <h3>RÉSUMÉ</h3>
+        </button>
+      ) : (
+        ''
+      )}
     </nav>
   );
 }

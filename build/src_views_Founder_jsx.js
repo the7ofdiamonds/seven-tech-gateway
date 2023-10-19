@@ -1,6 +1,41 @@
 "use strict";
 (self["webpackChunkseven_tech"] = self["webpackChunkseven_tech"] || []).push([["src_views_Founder_jsx"],{
 
+/***/ "./src/error/ErrorComponent.jsx":
+/*!**************************************!*\
+  !*** ./src/error/ErrorComponent.jsx ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+function ErrorComponent(props) {
+  var error = props.error;
+  return /*#__PURE__*/React.createElement("main", {
+    className: "error"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "status-bar card error"
+  }, /*#__PURE__*/React.createElement("span", null, error)));
+}
+/* harmony default export */ __webpack_exports__["default"] = (ErrorComponent);
+
+/***/ }),
+
+/***/ "./src/loading/LoadingComponent.jsx":
+/*!******************************************!*\
+  !*** ./src/loading/LoadingComponent.jsx ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+function LoadingComponent() {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "loading"
+  }, /*#__PURE__*/React.createElement("h1", null, "Loading......"));
+}
+/* harmony default export */ __webpack_exports__["default"] = (LoadingComponent);
+
+/***/ }),
+
 /***/ "./src/views/Founder.jsx":
 /*!*******************************!*\
   !*** ./src/views/Founder.jsx ***!
@@ -10,13 +45,107 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_MemberNavigationComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/MemberNavigationComponent */ "./src/views/components/MemberNavigationComponent.jsx");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _controllers_founderSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controllers/founderSlice */ "./src/controllers/founderSlice.js");
+/* harmony import */ var _loading_LoadingComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../loading/LoadingComponent */ "./src/loading/LoadingComponent.jsx");
+/* harmony import */ var _error_ErrorComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../error/ErrorComponent */ "./src/error/ErrorComponent.jsx");
+/* harmony import */ var _components_MemberNavigationComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/MemberNavigationComponent */ "./src/views/components/MemberNavigationComponent.jsx");
+/* harmony import */ var _components_MemberProgrammingSkillsComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/MemberProgrammingSkillsComponent */ "./src/views/components/MemberProgrammingSkillsComponent.jsx");
+/* harmony import */ var _components_MemberIntroductionComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/MemberIntroductionComponent */ "./src/views/components/MemberIntroductionComponent.jsx");
+
+
+
+
+
+
+
 
 
 function Founder() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberNavigationComponent__WEBPACK_IMPORTED_MODULE_1__["default"], null));
+  var _useParams = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_8__.useParams)(),
+    founder = _useParams.founder;
+  var dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
+
+  // const skills = ['html5', 'css3-alt', 'js', 'php', 'java', 'swift', 'docker'];
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    dispatch((0,_controllers_founderSlice__WEBPACK_IMPORTED_MODULE_2__.getFounder)(founder));
+  }, [dispatch, founder]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    dispatch((0,_controllers_founderSlice__WEBPACK_IMPORTED_MODULE_2__.getFounderResume)(founder));
+  }, [dispatch]);
+  var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
+      return state.founder;
+    }),
+    founderLoading = _useSelector.founderLoading,
+    founderError = _useSelector.founderError,
+    title = _useSelector.title,
+    avatarURL = _useSelector.avatarURL,
+    fullName = _useSelector.fullName,
+    greeting = _useSelector.greeting,
+    skills = _useSelector.skills,
+    founderResume = _useSelector.founderResume;
+  if (founderLoading) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_loading_LoadingComponent__WEBPACK_IMPORTED_MODULE_3__["default"], null);
+  }
+  if (founderError) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_error_ErrorComponent__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      error: founderError
+    });
+  }
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberNavigationComponent__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    resume: founderResume
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberIntroductionComponent__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    title: title,
+    avatarURL: avatarURL,
+    fullName: fullName,
+    greeting: greeting
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberProgrammingSkillsComponent__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    skills: skills
+  }));
 }
 /* harmony default export */ __webpack_exports__["default"] = (Founder);
+
+/***/ }),
+
+/***/ "./src/views/components/MemberIntroductionComponent.jsx":
+/*!**************************************************************!*\
+  !*** ./src/views/components/MemberIntroductionComponent.jsx ***!
+  \**************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function MemberIntroductionComponent(props) {
+  var title = props.title,
+    avatarURL = props.avatarURL,
+    fullName = props.fullName,
+    greeting = props.greeting;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "class": "author-intro"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "class": "author"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    "class": "title"
+  }, title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "class": "author-card card"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "class": "author-pic"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
+    src: avatarURL,
+    alt: ""
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
+    "class": "title"
+  }, fullName)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "class": "author-card card"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    "class": "author-greeting"
+  }, greeting)));
+}
+/* harmony default export */ __webpack_exports__["default"] = (MemberIntroductionComponent);
 
 /***/ }),
 
@@ -29,8 +158,12 @@ function Founder() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 
-function MemberNavigationComponent() {
+
+
+function MemberNavigationComponent(props) {
+  var resume = props.resume;
   var founderSection = document.getElementById('founder');
   var portfolioElement = document.getElementById('portfolio');
   var portfolioButton = document.getElementById('portfolio_button');
@@ -64,7 +197,6 @@ function MemberNavigationComponent() {
   };
   var openResumeInNewTab = function openResumeInNewTab() {
     window.location.href = 'resume';
-    console.log('resume');
   };
   return /*#__PURE__*/React.createElement("nav", {
     "class": "author-nav"
@@ -74,11 +206,53 @@ function MemberNavigationComponent() {
   }, /*#__PURE__*/React.createElement("h3", null, "FOUNDER")), /*#__PURE__*/React.createElement("button", {
     onClick: scrollToSection('7tech_portfolio'),
     id: "portfolio_button"
-  }, /*#__PURE__*/React.createElement("h3", null, "PORTFOLIO")), /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React.createElement("h3", null, "PORTFOLIO")), resume ? /*#__PURE__*/React.createElement("button", {
     onClick: openResumeInNewTab
-  }, /*#__PURE__*/React.createElement("h3", null, "R\xC9SUM\xC9")));
+  }, /*#__PURE__*/React.createElement("h3", null, "R\xC9SUM\xC9")) : '');
 }
 /* harmony default export */ __webpack_exports__["default"] = (MemberNavigationComponent);
+
+/***/ }),
+
+/***/ "./src/views/components/MemberProgrammingSkillsComponent.jsx":
+/*!*******************************************************************!*\
+  !*** ./src/views/components/MemberProgrammingSkillsComponent.jsx ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function MemberProgrammingSkillsComponent(props) {
+  var skills = props.skills;
+  var skillsSlide = document.querySelector('.author-skills-slide');
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (skills && skillsSlide) {
+      // Calculate the total number of skills
+      var totalSkills = skillsSlide.children.length;
+
+      // Duplicate the skill icons for a sliding effect
+      for (var i = 0; i < totalSkills; i++) {
+        skillsSlide.appendChild(skillsSlide.children[i].cloneNode(true));
+      }
+
+      // Set the totalSkills as a CSS variable
+      document.documentElement.style.setProperty('--total-skills', totalSkills);
+    }
+  }, [skills, skillsSlide]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, Array.isArray(skills) && skills.length > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "author-skills"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "author-skills-slide"
+  }, skills.map(function (skill, index) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("i", {
+      key: index,
+      className: "fa-brands fa-".concat(skill.toLowerCase())
+    });
+  }))) : '');
+}
+/* harmony default export */ __webpack_exports__["default"] = (MemberProgrammingSkillsComponent);
 
 /***/ })
 

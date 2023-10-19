@@ -14,10 +14,9 @@ class Templates
         add_filter('page_template', [$this, 'get_custom_forgot_page_template']);
         add_filter('page_template', [$this, 'get_custom_logout_page_template']);
         add_filter('page_template', [$this, 'get_custom_dashboard_page_template']);
-        // add_filter('page_template', [$this, 'get_founder_page_template']);
-        add_filter('template_include', [$this, 'get_founder_resume_page_template']);
         add_filter('archive_template', [$this, 'get_founder_archive_template']);
         add_filter('single_template', [$this, 'get_founder_single_template']);
+        add_filter('template_include', [$this, 'get_founder_resume_page_template']);
         add_filter('archive_template', [$this, 'get_team_archive_template']);
         add_filter('single_template', [$this, 'get_team_single_template']);
     }
@@ -119,22 +118,6 @@ class Templates
         return $page_template;
     }
 
-    function get_founder_resume_page_template($singular_template)
-    {
-
-        if (is_page('resume')) {
-            $singular_template = SEVEN_TECH . 'Post_Types/Founders/single-founder-resume.php';
-
-            if (file_exists($singular_template)) {
-                return $singular_template;
-            } else {
-                error_log('Resume Page Template does not exist.');
-            }
-        }
-
-        return $singular_template;
-    }
-
     function get_founder_archive_template($archive_template)
     {
         if (is_post_type_archive('founders')) {
@@ -151,6 +134,22 @@ class Templates
         }
 
         return $singular_template;
+    }
+
+    function get_founder_resume_page_template($page_template)
+    {
+
+        if (is_page('resume')) {
+            $page_template = SEVEN_TECH . 'Post_Types/Founders/single-founder-resume.php';
+
+            if (file_exists($page_template)) {
+                return $page_template;
+            } else {
+                error_log('Resume Page Template does not exist.');
+            }
+        }
+
+        return $page_template;
     }
 
     function get_team_archive_template($archive_template)
