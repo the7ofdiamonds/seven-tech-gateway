@@ -1,8 +1,11 @@
 import React from 'react'
+import MemberNavigationComponent from './components/MemberNavigationComponent'
 
 function Founder() {
   return (
-    <div>Founder</div>
+    <>
+    <MemberNavigationComponent/>
+    </>
   )
 }
 

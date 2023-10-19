@@ -1,14 +1,11 @@
-<?php get_header(); ?>
+<?php
 
-<section class="founder" id="founder">
-    <?php
-    include SEVEN_TECH . 'includes/part-founder-nav.php';
-    include SEVEN_TECH . 'includes/main-founder.php';
+get_header();
 
-    if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
-        echo do_shortcode('[thfw-portfolio]');
-    }
-    ?>
-</section>
+include SEVEN_TECH . 'includes/section-founder.php';
 
-<?php get_footer(); ?>
+if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
+    echo do_shortcode('[thfw-portfolio]');
+}
+
+get_footer();

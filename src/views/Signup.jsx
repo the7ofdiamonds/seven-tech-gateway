@@ -65,6 +65,7 @@ function SignUpComponent() {
   return (
     <>
       <NavigationComponent />
+      
       <div className="login card">
         <form>
           <table>

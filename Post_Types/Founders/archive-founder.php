@@ -1,5 +1,7 @@
-<?php get_header(); ?>
+<?php
 
-<?php include SEVEN_TECH . 'includes/section-founder.php'; ?>
-    
-<?php get_footer(); ?>
+get_header();
+
+include SEVEN_TECH . 'includes/section-founder.php';
+
+get_footer();

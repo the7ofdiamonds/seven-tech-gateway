@@ -2,11 +2,13 @@
 
 namespace SEVEN_TECH\Pages;
 
+use SEVEN_TECH\Post_Types\Post_Types;
 use WP_Query;
 
 class Pages
 {
     public $page_titles;
+    public $post_types;
 
     public function __construct()
     {
@@ -56,7 +58,6 @@ class Pages
 
         foreach ($pages as $page) {
             $page_exists = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'page'", $page['name']));
-            $parent_id = get_page_by_path('founder')->ID;
 
             if (!$page_exists) {
                 $page_data = array(
@@ -64,7 +65,6 @@ class Pages
                     'post_type'    => 'page',
                     'post_content' => '',
                     'post_status'  => 'publish',
-                    'post_parent' => $parent_id,
                     'post_name' => $page['name']
                 );
 
@@ -87,6 +87,11 @@ class Pages
                 $query->the_post();
                 add_rewrite_rule('^' . $query->post->post_name, 'index.php?page_id=' . $query->post->ID, 'top');
             }
+
+            $resume_id = get_page_by_path('resume')->ID;
+
+            add_rewrite_rule('^founders/([^/]+)/resume/?$', 'index.php?page_id=' . $resume_id, 'top');
+
             wp_reset_postdata();
         }
     }
