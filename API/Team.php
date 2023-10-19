@@ -2,48 +2,45 @@
 
 namespace SEVEN_TECH\API;
 
+use Exception;
+use SEVEN_TECH\Post_Types\Team\Team as PTTeam;
+
 class Team
 {
+    private $pt_team;
+
     public function __construct()
     {
         add_action('rest_api_init', function () {
-            register_rest_route('thfw/users/v1', '/team', array(
+            register_rest_route('seven-tech/users/v1', '/team', array(
                 'methods' => 'GET',
                 'callback' => array($this, 'get_team'),
                 'permission_callback' => '__return_true',
             ));
         });
+
+        $this->pt_team = new PTTeam;
     }
 
     function get_team()
     {
-        $team = [];
-        $users = get_users(array(
-            'role__in' => array(
-                'founder/managing member',
-            )
-        ));
+        try {
+            $team = $this->pt_team->getTeam();
 
-        if (!empty($users)) {
-            foreach ($users as $user) {
-                $user_data = get_userdata($user->ID);
+            return rest_ensure_response($team);
+        } catch (Exception $e) {
+            $error_message = $e->getMessage();
+            $status_code = $e->getCode();
 
-                $team_member = array(
-                    'id' => $user_data->ID,
-                    'first_name' => $user_data->first_name,
-                    'last_name' => $user_data->last_name,
-                    'email' => $user_data->user_email,
-                    'role' => $user_data->roles,
-                    'author_url' => $user_data->user_url,
-                    'avatar_url' => get_avatar_url($user_data->ID, ['size' => 384])
-                );
+            $response_data = [
+                'message' => $error_message,
+                'status' => $status_code
+            ];
 
-                $team[] = $team_member;
-            }
+            $response = rest_ensure_response($response_data);
+            $response->set_status($status_code);
 
-            return $team;
-        } else {
-            echo "No users found.";
+            return $response;
         }
     }
 }

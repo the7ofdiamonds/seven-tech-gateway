@@ -1,23 +1,24 @@
 <?php
-namespace THFW\Admin;
 
-class Contact
+namespace SEVEN_TECH\Admin;
+
+class AdminSocialBar
 {
 
     public function __construct() {
-        add_action( 'admin_menu', [$this, 'register_custom_menu_page'] );
+        add_action( 'admin_menu', [$this, 'register_custom_submenu_page'] );
     }
 
-    function register_custom_menu_page() {
+    function register_custom_submenu_page() {
 
-        add_submenu_page( 'thfw_admin', 'Add Social Media', 'Add Social', 'manage_options', 'thfw_contact', [$this, 'create_section'], 4 );
+        add_submenu_page( 'seven_tech_admin', 'Add Social Media', 'Add Social', 'manage_options', 'seven_tech_social_bar', [$this, 'create_section'], 4 );
 
         add_action( 'admin_init', [$this, 'register_section'] );
     }
 
     function create_section() {
 
-        include plugin_dir_path(__FILE__) . 'includes/admin-add-contact.php';
+        include SEVEN_TECH . 'includes/admin-add-social-bar.php';
     }
 
     function register_section() {

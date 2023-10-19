@@ -2,8 +2,6 @@
 
 namespace SEVEN_TECH\Templates;
 
-use SEVEN_TECH\SEVEN_TECH;
-
 class Templates
 {
     public function __construct()
@@ -16,8 +14,10 @@ class Templates
         add_filter('page_template', [$this, 'get_custom_forgot_page_template']);
         add_filter('page_template', [$this, 'get_custom_logout_page_template']);
         add_filter('page_template', [$this, 'get_custom_dashboard_page_template']);
-        add_filter('page_template', [$this, 'get_founder_page_template']);
-        add_filter('template_include', [$this, 'get_founder_resume_page_template']);
+        // add_filter('page_template', [$this, 'get_founder_page_template']);
+        // add_filter('template_include', [$this, 'get_founder_resume_page_template']);
+        add_filter('archive_template', [$this, 'get_founder_archive_template']);
+        add_filter('single_template', [$this, 'get_founder_single_template']);
         add_filter('archive_template', [$this, 'get_team_archive_template']);
         add_filter('single_template', [$this, 'get_team_single_template']);
     }
@@ -134,6 +134,24 @@ class Templates
         }
 
         return $page_template;
+    }
+
+    function get_founder_archive_template($archive_template)
+    {
+        if (is_post_type_archive('founders')) {
+            $archive_template = SEVEN_TECH . 'Post_Types/Founders/archive-founder.php';
+        }
+
+        return $archive_template;
+    }
+
+    function get_founder_single_template($singular_template)
+    {
+        if (is_singular('founders')) {
+            $singular_template = SEVEN_TECH . 'Post_Types/Founders/single-founder.php';
+        }
+
+        return $singular_template;
     }
 
     function get_team_archive_template($archive_template)

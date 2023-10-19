@@ -57,6 +57,7 @@ class API
       error_log('A path to the Google Service Account file is required.');
     }
 
+    new Founders();
     new Users();
     new Team();
   }

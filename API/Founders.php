@@ -4,30 +4,31 @@ namespace SEVEN_TECH\API;
 
 use Exception;
 
-use WP_REST_Request;
+use SEVEN_TECH\Post_Types\Founders\Founders as PTFounders;
 
-class Users
+class Founders
 {
+    private $pt_founder;
+
     public function __construct()
     {
         add_action('rest_api_init', function () {
-            register_rest_route('seven-tech/v1', '/users/(?P<slug>[a-zA-Z0-9-_%.]+)', array(
+            register_rest_route('seven-tech/users/v1', '/founders', array(
                 'methods' => 'GET',
-                'callback' => array($this, 'get_user'),
+                'callback' => array($this, 'get_founders'),
                 'permission_callback' => '__return_true',
             ));
         });
+
+        $this->pt_founder = new PTFounders;
     }
 
-    public function get_user(WP_REST_Request $request)
+    function get_founders()
     {
         try {
-            $user_email_encoded = $request->get_param('slug');
-            $user_email = urldecode($user_email_encoded);
-            $user = get_user_by('email', $user_email);
-            $user_id = $user->id;
+            $founder = $this->pt_founder->getFounder();
 
-            return rest_ensure_response($user_id);
+            return rest_ensure_response($founder);
         } catch (Exception $e) {
             $error_message = $e->getMessage();
             $status_code = $e->getCode();

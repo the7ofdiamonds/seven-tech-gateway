@@ -2,9 +2,12 @@
 if (!function_exists('is_plugin_active')) {
     include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 } ?>
+
 <section class="dashboard" id="thfw">
     <h2>DASHBOARD</h2>
+
     <?php include SEVEN_TECH . 'includes/part-user.php'; ?>
+
     <?php if (is_plugin_active('seven-tech-portfolio/THFW_Portfolio.php')) : ?>
         <div class="thfw-portfolio" id="thfw_portfolio"></div>
     <?php endif;

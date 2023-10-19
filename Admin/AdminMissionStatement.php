@@ -1,25 +1,25 @@
 <?php
 
-namespace THFW\Admin;
+namespace SEVEN_TECH\Admin;
 
-class MissionStatement
+class AdminMissionStatement
 {
 
     public function __construct()
     {
-        add_action('admin_menu', [$this, 'register_custom_menu_page']);
+        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
     }
 
-    function register_custom_menu_page()
+    function register_custom_submenu_page()
     {
 
-        add_submenu_page('thfw_admin', 'Add Mission Statement', 'Add Mission', 'manage_options', 'orb_mission_statement', [$this, 'create_section'], 1);
+        add_submenu_page('seven_tech_admin', 'Add Mission Statement', 'Add Mission', 'manage_options', 'seven_tech_mission_statement', [$this, 'create_section'], 1);
         add_action('admin_init', [$this, 'register_section']);
     }
 
     function create_section()
     {
-        include plugin_dir_path(__FILE__) . 'includes/admin-add-mission-statement.php';
+        include SEVEN_TECH . 'includes/admin-add-mission-statement.php';
     }
 
     function register_section()

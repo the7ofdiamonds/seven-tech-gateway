@@ -2,15 +2,29 @@
 
 namespace SEVEN_TECH\JS;
 
+use SEVEN_TECH\Pages\Pages;
+use SEVEN_TECH\Post_Types\Post_Types;
+
 class JS
 {
+    private $page_titles;
+    private $post_types;
 
     public function __construct()
     {
         // add_action('wp_footer', [$this, 'load_js']);
-        add_action('wp_footer', [$this, 'load_react']);
+        add_action('wp_footer', [$this, 'load_front_page_react']);
+        add_action('wp_footer', [$this, 'load_pages_react']);
+        add_action('wp_footer', [$this, 'load_post_types_archive_jsx']);
+        add_action('wp_footer', [$this, 'load_post_types_single_jsx']);
         add_filter('script_loader_tag', [$this, 'set_script_type_to_module'], 10, 2);
         // add_action('wp_enqueue_scripts', [$this, 'load_firebase']);
+
+        $pages = new Pages;
+        $posttypes = new Post_Types;
+
+        $this->page_titles = $pages->page_titles;
+        $this->post_types = $posttypes->post_types;
     }
 
     function load_js()
@@ -19,42 +33,104 @@ class JS
         wp_enqueue_script('seven_tech_js');
     }
 
-    function get_js_files($directory)
+    function load_front_page_react()
     {
-        $jsFiles = array();
-        $files = scandir($directory);
-
-        foreach ($files as $file) {
-            if (pathinfo($file, PATHINFO_EXTENSION) === 'js') {
-                $jsFiles[] = $file;
-            }
-        }
-        return $jsFiles;
-    }
-
-    function load_react()
-    {
-        $pages = [
+        $sections = [
             'about',
             'schedule',
-            'forgot',
-            'login',
-            'logout',
-            'signup'
+            'founders',
         ];
 
-        if (is_front_page() || is_page($pages)) {
+        foreach ($sections as $section) {
+            if (is_front_page()) {
+                $fileName = ucwords($section);
+                $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
 
-            $directory = SEVEN_TECH . 'build';
+                if ($filePath) {
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true);
+                } else {
+                    error_log('Post Type' . $section . 'has not been created.');
+                }
 
-            $jsFiles = $this->get_js_files($directory);
-
-            foreach ($jsFiles as $jsFile) {
-                $handle = 'seven_tech_react_' . basename($jsFile);
-
-                wp_enqueue_script($handle, SEVEN_TECH_URL . 'build/' . $jsFile, array('react', 'react-dom', 'wp-element'), "1.0.0", true);
+                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true);
             }
         }
+    }
+
+    function load_pages_react()
+    {
+        foreach ($this->page_titles as $page) {
+            if (is_front_page()) {
+                $fileName = ucwords($page);
+                $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
+
+                if ($filePath) {
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true);
+                } else {
+                    error_log('Post Type' . $page . 'has not been created.');
+                }
+
+                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true);
+            }
+        }
+    }
+
+    function load_post_types_archive_jsx()
+    {
+        foreach ($this->post_types as $post_type) {
+            if (is_post_type_archive($post_type) || is_singular($post_type)) {
+                $fileName = ucwords($post_type);
+                $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
+
+                if ($filePath) {
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true);
+                } else {
+                    error_log('Post Type' . $post_type . 'has not been created.');
+                }
+
+                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true);
+            }
+        }
+    }
+
+    function load_post_types_single_jsx()
+    {
+        $post_types = [
+            [
+                'archive_page' => 'team',
+                'single_page' => 'team member'
+            ],
+            [
+                'archive_page' => 'employees',
+                'single_page' => 'employee'
+            ],
+            [
+                'archive_page' => 'founders',
+                'single_page' => 'founder'
+            ],
+            [
+                'archive_page' => 'executives',
+                'single_page' => 'executive'
+            ]
+        ];
+
+        foreach ($post_types as $post_type_config) {
+            $archive_page = $post_type_config['archive_page'];
+            $single_page = $post_type_config['single_page'];
+
+            if (is_post_type_archive($archive_page) || is_singular($archive_page) || is_singular($single_page)) {
+                $fileName = ucwords($single_page);
+                $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
+
+                if (file_exists($filePath)) {
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], '1.0', true);
+                } else {
+                    error_log('Script file not found for post type: ' . $archive_page);
+                }
+            }
+        }
+
+        wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/index.js', ['wp-element'], '1.0', true);
     }
 
     function set_script_type_to_module($tag, $handle)

@@ -67,12 +67,16 @@ class Schedule
 
             return rest_ensure_response($office_hours);
         } catch (Exception $e) {
-            $msg = $e->getMessage();
-            $message = [
-                'message' => $msg,
+            $error_message = $e->getMessage();
+            $status_code = $e->getCode();
+
+            $response_data = [
+                'message' => $error_message,
+                'status' => $status_code
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status(404);
+
+            $response = rest_ensure_response($response_data);
+            $response->set_status($status_code);
 
             return $response;
         }
@@ -80,9 +84,24 @@ class Schedule
 
     public function getHolidays()
     {
-        $holidays = $this->calendar->calendar->getHolidays();
+        try {
+            $holidays = $this->calendar->calendar->getHolidays();
 
-        return $holidays;
+            return $holidays;
+        } catch (Exception $e) {
+            $error_message = $e->getMessage();
+            $status_code = $e->getCode();
+
+            $response_data = [
+                'message' => $error_message,
+                'status' => $status_code
+            ];
+
+            $response = rest_ensure_response($response_data);
+            $response->set_status($status_code);
+
+            return $response;
+        }
     }
 
     public function get_available_times(WP_REST_Request $request)
@@ -139,17 +158,23 @@ class Schedule
 
     function get_communication_preferences()
     {
-        global $wpdb;
+        try {
+            global $wpdb;
 
-        $communication_types = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM orb_communication_types",
-            )
-        );
+            $communication_types = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT * FROM orb_communication_types",
+                )
+            );
 
-        if (!$communication_types) {
-            $error_message = 'No Communication Types found';
-            $status_code = 404;
+            if (!$communication_types) {
+                throw new Exception('No Communication Types found', 404);
+            }
+
+            return rest_ensure_response($communication_types);
+        } catch (Exception $e) {
+            $error_message = $e->getMessage();
+            $status_code = $e->getCode();
 
             $response_data = [
                 'message' => $error_message,
@@ -161,7 +186,5 @@ class Schedule
 
             return $response;
         }
-
-        return rest_ensure_response($communication_types);
     }
 }

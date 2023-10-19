@@ -46,7 +46,7 @@ class SEVEN_TECH
         add_filter('upload_mimes', [$this, 'add_theme_support_upload_mimes']);
 
         new Admin;
-        new API();
+        new API;
         new CSS;
         new Database;
         new JS;

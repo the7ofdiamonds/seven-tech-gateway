@@ -1,9 +1,11 @@
 <?php
+
 get_header();
 
 if (!function_exists('is_plugin_active')) {
     include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 }
+
 ?>
 
 <div class="front-page">
@@ -20,7 +22,7 @@ if (!function_exists('is_plugin_active')) {
         echo do_shortcode('[thfw-portfolio]');
     }
 
-    echo do_shortcode('[thfw-about]');
+    include SEVEN_TECH . 'includes/section-about.php';
     ?>
 </div>
 

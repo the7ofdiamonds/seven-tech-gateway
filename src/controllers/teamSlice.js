@@ -1,16 +1,15 @@
-import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = {
-    loading: false,
-    error: '',
+    teamLoading: false,
+    teamError: '',
     team: ''
 };
 
 export const getTeam = createAsyncThunk('team/getTeam', async () => {
 
     try {
-        const response = await fetch(`/wp-json/thfw/users/v1/team`, {
+        const response = await fetch(`/wp-json/seven-tech/users/v1/team`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,8 +25,7 @@ export const getTeam = createAsyncThunk('team/getTeam', async () => {
         const responseData = await response.json();
         return responseData;
     } catch (error) {
-        console.log(error)
-        throw error.message;
+        throw error;
     }
 });
 
@@ -37,17 +35,17 @@ export const teamSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getTeam.pending, (state) => {
-                state.loading = true
-                state.error = null
+                state.teamLoading = true
+                state.teamError = ''
             })
             .addCase(getTeam.fulfilled, (state, action) => {
-                state.loading = false;
-                state.error = null;
+                state.teamLoading = false;
+                state.teamError = null;
                 state.team = action.payload
             })
             .addCase(getTeam.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.error.message
+                state.teamLoading = false
+                state.teamError = action.error.message
             })
     }
 })

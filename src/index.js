@@ -10,8 +10,10 @@ import './services/firebase/config';
 
 const LoadingComponent = lazy(() => import('./loading/LoadingComponent.jsx'));
 const ScheduleComponent = lazy(() => import('./views/Schedule.jsx'));
-
+const Founders = lazy(() => import('./views/Founders'));
+const Founder = lazy(() => import('./views/Founder'));
 const Team = lazy(() => import('./views/Team'));
+const TeamMember = lazy(() => import('./views/TeamMember'));
 
 window.onload = function () {
   const thfw = document.getElementById('thfw');
@@ -21,21 +23,40 @@ window.onload = function () {
   }
 };
 
-const thfwUsers = document.getElementById('thfw_users');
-if (thfwUsers) {
-  ReactDOM.createRoot(thfwUsers).render(
+const sevenTeam = document.getElementById('seven_tech_team');
+if (sevenTeam) {
+  ReactDOM.createRoot(sevenTeam).render(
     <React.StrictMode>
       <Provider store={store}>
         <Router>
           <Routes>
-            <Route path="/" element={<Team />} />
-            <Route path="/about" element={<Team />} />
+            <Route path="/team" element={<Team />} />
+            <Route path="/team/:team" element={<TeamMember />} />
           </Routes>
         </Router>
       </Provider>
     </React.StrictMode>
   );
 }
+
+const sevenFounders = document.getElementById('seven_tech_founder');
+if (sevenFounders) {
+  ReactDOM.createRoot(sevenFounders).render(
+    <React.StrictMode>
+      <Provider store={store}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Founders />} />
+            <Route path="/about" element={<Founders />} />
+            <Route path="/founders" element={<Founders />} />
+            <Route path="/founders/:founder" element={<Founder />} />
+          </Routes>
+        </Router>
+      </Provider>
+    </React.StrictMode>
+  );
+}
+
 
 const orbScheduleContainer = document.getElementById('orb_schedule');
 if (orbScheduleContainer) {

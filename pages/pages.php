@@ -6,12 +6,11 @@ use WP_Query;
 
 class Pages
 {
-    private $page_titles;
+    public $page_titles;
 
     public function __construct()
     {
         $this->page_titles = [
-            'FOUNDER',
             'SCHEDULE',
             'ABOUT',
             'LOGIN',
