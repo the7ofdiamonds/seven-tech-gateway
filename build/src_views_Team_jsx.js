@@ -20,22 +20,6 @@ function ErrorComponent(props) {
 
 /***/ }),
 
-/***/ "./src/loading/LoadingComponent.jsx":
-/*!******************************************!*\
-  !*** ./src/loading/LoadingComponent.jsx ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-function LoadingComponent() {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "loading"
-  }, /*#__PURE__*/React.createElement("h1", null, "Loading......"));
-}
-/* harmony default export */ __webpack_exports__["default"] = (LoadingComponent);
-
-/***/ }),
-
 /***/ "./src/views/Team.jsx":
 /*!****************************!*\
   !*** ./src/views/Team.jsx ***!
