@@ -42,51 +42,54 @@ function LoginComponent() {
 
   return (
     <>
-      <NavigationComponent />
-      <div className="login card">
-        <form onSubmit={handleSubmit}>
-          <table>
-            <thead></thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <td>
-                <button type="submit">
-                  <h3>LOGIN</h3>
-                </button>
-              </td>
-            </tfoot>
-          </table>
-        </form>
-      </div>
+      <main className="login">
+        <NavigationComponent />
 
-      {message !== '' && (
-        <div className={`status-bar card ${messageType}`}>
-          <span>{message}</span>
+        <div className="login card">
+          <form onSubmit={handleSubmit}>
+            <table>
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      onChange={handleChange}
+                      required
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      onChange={handleChange}
+                      required
+                    />
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <td>
+                  <button type="submit">
+                    <h3>LOGIN</h3>
+                  </button>
+                </td>
+              </tfoot>
+            </table>
+          </form>
         </div>
-      )}
+
+        {message !== '' && (
+          <div className={`status-bar card ${messageType}`}>
+            <span>{message}</span>
+          </div>
+        )}
+      </main>
     </>
   );
 }

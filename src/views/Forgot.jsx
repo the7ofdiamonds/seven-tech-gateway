@@ -39,40 +39,42 @@ function ForgotComponent() {
 
   return (
     <>
-      <NavigationComponent />
-      <div className="login card">
-        <form>
-          <table>
-            <thead></thead>
-            <tbody>
-              <tr>
+      <main className="forgot">
+        <NavigationComponent />
+        <div className="login card">
+          <form>
+            <table>
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      onChange={handleChange}
+                      required
+                    />
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
                 <td>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    onChange={handleChange}
-                    required
-                  />
+                  <button type="submit" onClick={handleSubmit}>
+                    <h3>RESET</h3>
+                  </button>
                 </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <td>
-                <button type="submit" onClick={handleSubmit}>
-                  <h3>RESET</h3>
-                </button>
-              </td>
-            </tfoot>
-          </table>
-        </form>
-      </div>
-
-      {message !== '' && (
-        <div className={`status-bar card ${messageType}`}>
-          <span>{message}</span>
+              </tfoot>
+            </table>
+          </form>
         </div>
-      )}
+
+        {message !== '' && (
+          <div className={`status-bar card ${messageType}`}>
+            <span>{message}</span>
+          </div>
+        )}
+      </main>
     </>
   );
 }

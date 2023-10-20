@@ -2,30 +2,46 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ContentComponent from '../views/components/ContentComponent';
+import HeadquartersComponent from '../views/components/HeadquartersComponent';
 
-import { getContent } from '../controllers/contentSlice';
+import Schedule from './Schedule';
+import Founders from './Founders';
+
+import { getContent, getHeadquarters } from '../controllers/contentSlice';
 
 function About() {
   const dispatch = useDispatch();
 
   const missionStatement = 'Turning ideas into tangible assets ';
-  const { content } = useSelector((state) => state.content);
+  const { content, headquarters } = useSelector((state) => state.content);
 
   useEffect(() => {
     dispatch(getContent('about'));
   }, [dispatch]);
-console.log(content);
+
+  // useEffect(() => {
+  //   dispatch(getHeadquarters());
+  // }, [dispatch]);
+
   return (
     <>
-      <h2>ABOUT</h2>
+      <section className="about">
+        <h2>ABOUT</h2>
 
-      <div class="mission-statement-card card">
-        <h4 class="mission-statement">
-          <q>{missionStatement}</q>
-        </h4>
-      </div>
+        <div class="mission-statement-card card">
+          <h4 class="mission-statement">
+            <q>{missionStatement}</q>
+          </h4>
+        </div>
 
-      <ContentComponent content={content} />
+        <ContentComponent content={content} />
+
+        <HeadquartersComponent headquarters={headquarters} />
+
+        <Schedule />
+
+        <Founders />
+      </section>
     </>
   );
 }

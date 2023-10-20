@@ -17,6 +17,14 @@ class Content
                 'permission_callback' => '__return_true',
             ));
         });
+
+        add_action('rest_api_init', function () {
+            register_rest_route('seven-tech/headquarters/v1', '/', array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_headquarters'),
+                'permission_callback' => '__return_true',
+            ));
+        });
     }
 
     function get_content(WP_REST_Request $request)
@@ -70,6 +78,28 @@ class Content
             header('Content-Type: text/html; charset=UTF-8');
 
             return rest_ensure_response($paragraphArray);
+        } catch (Exception $e) {
+            $error_message = $e->getMessage();
+            $status_code = $e->getCode();
+
+            $response_data = [
+                'message' => $error_message,
+                'status' => $status_code,
+            ];
+
+            $response = rest_ensure_response($response_data);
+            $response->set_status($status_code);
+
+            return $response;
+        }
+    }
+
+    function get_headquarters()
+    {
+        try {
+            $headquarters = get_option('orb-headquarters');
+            
+            return rest_ensure_response($headquarters);
         } catch (Exception $e) {
             $error_message = $e->getMessage();
             $status_code = $e->getCode();

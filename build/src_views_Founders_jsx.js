@@ -59,11 +59,13 @@ function Founders() {
       error: founderError
     });
   }
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("section", {
+    className: "founders"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
     className: "title"
   }, "Founders"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_GroupMembers__WEBPACK_IMPORTED_MODULE_5__["default"], {
     group: founders
-  }));
+  })));
 }
 /* harmony default export */ __webpack_exports__["default"] = (Founders);
 

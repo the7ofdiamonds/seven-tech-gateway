@@ -1,5 +1,7 @@
-<?php get_header(); ?>
+<?php 
 
-<?php include SEVEN_TECH . 'includes/section-team.php'; ?>
+get_header();
+
+include SEVEN_TECH . 'includes/react.php';
     
-<?php get_footer(); ?>
+get_footer();

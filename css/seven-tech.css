@@ -331,15 +331,6 @@ div.team {
   background-color: black;
 }
 
-section.founder {
-  margin-top: 0;
-  min-height: fit-content;
-}
-section.founder section.portfolio {
-  margin-top: 0;
-  min-height: fit-content;
-}
-
 main.founder {
   justify-content: start;
   padding-top: 3rem;

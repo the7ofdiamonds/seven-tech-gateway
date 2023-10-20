@@ -41,17 +41,20 @@ function Founder() {
 
   return (
     <>
-      <MemberNavigationComponent resume={founderResume} />
-      
-      <main class="founder">
-        <MemberIntroductionComponent
-          title={title}
-          avatarURL={avatarURL}
-          fullName={fullName}
-          greeting={greeting}
-        />
+      <section className="founder">
+        <MemberNavigationComponent resume={founderResume} />
+
+        <main class="founder">
+          <MemberIntroductionComponent
+            title={title}
+            avatarURL={avatarURL}
+            fullName={fullName}
+            greeting={greeting}
+          />
+        </main>
+
         <MemberProgrammingSkillsComponent skills={skills} />
-      </main>
+      </section>
     </>
   );
 }

@@ -31,15 +31,17 @@ function LogOutComponent() {
 
   return (
     <>
-      <button onClick={handleClick}>
-        <h3>LOG OUT</h3>
-      </button>
+      <main className="logout">
+        <button onClick={handleClick}>
+          <h3>LOG OUT</h3>
+        </button>
 
-      {message !== '' && (
-        <div className={`status-bar card ${messageType}`}>
-          <span>{message}</span>
-        </div>
-      )}
+        {message !== '' && (
+          <div className={`status-bar card ${messageType}`}>
+            <span>{message}</span>
+          </div>
+        )}
+      </main>
     </>
   );
 }

@@ -2,6 +2,6 @@
 
 get_header();
 
-include SEVEN_TECH . 'includes/section-founder.php';
+include SEVEN_TECH . 'includes/react.php';
 
 get_footer();

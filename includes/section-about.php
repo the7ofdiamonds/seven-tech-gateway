@@ -1,1 +1,0 @@
-<section class="about" id="thfw"></section>

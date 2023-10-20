@@ -138,11 +138,13 @@ function LogOutComponent() {
       setMessageType('error');
     }
   }, [message]);
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("main", {
+    className: "logout"
+  }, /*#__PURE__*/React.createElement("button", {
     onClick: handleClick
   }, /*#__PURE__*/React.createElement("h3", null, "LOG OUT")), message !== '' && /*#__PURE__*/React.createElement("div", {
     className: "status-bar card ".concat(messageType)
-  }, /*#__PURE__*/React.createElement("span", null, message)));
+  }, /*#__PURE__*/React.createElement("span", null, message))));
 }
 /* harmony default export */ __webpack_exports__["default"] = (LogOutComponent);
 

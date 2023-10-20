@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-function HeadquartersComponent() {
-  return (
-    <div>HeadquartersComponent</div>
-  )
+function HeadquartersComponent(props) {
+  const { headquarters } = props;
+
+  return <div class="headquarters-card card">{headquarters}</div>;
 }
 
-export default HeadquartersComponent
+export default HeadquartersComponent;

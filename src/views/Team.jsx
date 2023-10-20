@@ -25,9 +25,11 @@ function Team() {
 
   return (
     <>
-      <h4 className="title">Team</h4>
+      <section className="team">
+        <h4 className="title">Team</h4>
 
-      <GroupMembers group={team} />
+        <GroupMembers group={team} />
+      </section>
     </>
   );
 }

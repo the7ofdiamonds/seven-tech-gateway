@@ -9,6 +9,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 get_header();
 
-include SEVEN_TECH . 'includes/part-login.php';
+include SEVEN_TECH . 'includes/react.php';
 
 get_footer();

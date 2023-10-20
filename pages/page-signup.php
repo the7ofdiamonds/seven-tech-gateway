@@ -1,6 +1,7 @@
 <?php
+
 get_header();
 
-include SEVEN_TECH . 'includes/part-signup.php';
+include SEVEN_TECH . 'includes/react.php';
 
 get_footer();

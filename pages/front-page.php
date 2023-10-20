@@ -22,7 +22,7 @@ if (!function_exists('is_plugin_active')) {
         echo do_shortcode('[thfw-portfolio]');
     }
 
-    include SEVEN_TECH . 'includes/section-about.php';
+    include SEVEN_TECH . 'includes/react.php';
     ?>
 </div>
 

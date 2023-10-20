@@ -193,7 +193,9 @@ function LoginComponent() {
       return _ref.apply(this, arguments);
     };
   }();
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_components_NavigationLogin__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("main", {
+    className: "login"
+  }, /*#__PURE__*/React.createElement(_components_NavigationLogin__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/React.createElement("div", {
     className: "login card"
   }, /*#__PURE__*/React.createElement("form", {
     onSubmit: handleSubmit
@@ -213,7 +215,7 @@ function LoginComponent() {
     type: "submit"
   }, /*#__PURE__*/React.createElement("h3", null, "LOGIN"))))))), message !== '' && /*#__PURE__*/React.createElement("div", {
     className: "status-bar card ".concat(messageType)
-  }, /*#__PURE__*/React.createElement("span", null, message)));
+  }, /*#__PURE__*/React.createElement("span", null, message))));
 }
 /* harmony default export */ __webpack_exports__["default"] = (LoginComponent);
 

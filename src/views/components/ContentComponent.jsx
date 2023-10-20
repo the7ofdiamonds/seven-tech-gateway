@@ -2,7 +2,7 @@ import React from 'react';
 
 function ContentComponent(props) {
   const { content } = props;
-  console.log(content);
+
   return (
     <>
       {content

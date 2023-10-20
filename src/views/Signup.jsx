@@ -64,74 +64,76 @@ function SignUpComponent() {
 
   return (
     <>
-      <NavigationComponent />
-      
-      <div className="login card">
-        <form>
-          <table>
-            <thead></thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input
-                    type="text"
-                    name="user-name"
-                    placeholder="User Name"
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="password"
-                    name="confirm-password"
-                    placeholder="Confirm Password"
-                    onChange={handleChange}
-                    required
-                  />
-                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <td>
-                <button type="submit" onClick={handleSubmit}>
-                  <h3>SIGN UP</h3>
-                </button>
-              </td>
-            </tfoot>
-          </table>
-        </form>
-      </div>
+      <main className="signup">
+        <NavigationComponent />
 
-      {message !== '' && (
-        <div className={`status-bar card ${messageType}`}>
-          <span>{message}</span>
+        <div className="login card">
+          <form>
+            <table>
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input
+                      type="text"
+                      name="user-name"
+                      placeholder="User Name"
+                      onChange={handleChange}
+                      required
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      onChange={handleChange}
+                      required
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      onChange={handleChange}
+                      required
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input
+                      type="password"
+                      name="confirm-password"
+                      placeholder="Confirm Password"
+                      onChange={handleChange}
+                      required
+                    />
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <td>
+                  <button type="submit" onClick={handleSubmit}>
+                    <h3>SIGN UP</h3>
+                  </button>
+                </td>
+              </tfoot>
+            </table>
+          </form>
         </div>
-      )}
+
+        {message !== '' && (
+          <div className={`status-bar card ${messageType}`}>
+            <span>{message}</span>
+          </div>
+        )}
+      </main>
     </>
   );
 }

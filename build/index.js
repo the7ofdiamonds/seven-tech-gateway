@@ -19053,10 +19053,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-// Components
 var About = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
   return __webpack_require__.e(/*! import() */ "src_views_About_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/About */ "./src/views/About.jsx"));
+});
+var Schedule = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
+  return __webpack_require__.e(/*! import() */ "src_views_Schedule_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Schedule.jsx */ "./src/views/Schedule.jsx"));
 });
 var Login = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
   return __webpack_require__.e(/*! import() */ "src_views_Login_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Login */ "./src/views/Login.jsx"));
@@ -19070,14 +19071,35 @@ var SignUp = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function (
 var Forgot = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
   return __webpack_require__.e(/*! import() */ "src_views_Forgot_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Forgot */ "./src/views/Forgot.jsx"));
 });
+var Dashboard = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
+  return __webpack_require__.e(/*! import() */ "src_views_Dashboard_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Dashboard */ "./src/views/Dashboard.jsx"));
+});
+var Founders = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
+  return __webpack_require__.e(/*! import() */ "src_views_Founders_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Founders */ "./src/views/Founders.jsx"));
+});
+var Founder = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
+  return __webpack_require__.e(/*! import() */ "src_views_Founder_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Founder */ "./src/views/Founder.jsx"));
+});
+var Team = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
+  return __webpack_require__.e(/*! import() */ "src_views_Team_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Team */ "./src/views/Team.jsx"));
+});
+var TeamMember = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
+  return __webpack_require__.e(/*! import() */ "src_views_TeamMember_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/TeamMember */ "./src/views/TeamMember.jsx"));
+});
 function App() {
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(react_redux__WEBPACK_IMPORTED_MODULE_1__.Provider, {
     store: _model_store_js__WEBPACK_IMPORTED_MODULE_2__["default"]
   }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.BrowserRouter, null, /*#__PURE__*/React.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
     fallback: /*#__PURE__*/React.createElement(_loading_LoadingComponent__WEBPACK_IMPORTED_MODULE_3__["default"], null)
   }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Routes, null, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
+    path: "/",
+    element: /*#__PURE__*/React.createElement(About, null)
+  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
     path: "/about",
     element: /*#__PURE__*/React.createElement(About, null)
+  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
+    path: "/schedule",
+    element: /*#__PURE__*/React.createElement(Schedule, null)
   }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
     path: "/login",
     element: /*#__PURE__*/React.createElement(Login, null)
@@ -19090,6 +19112,21 @@ function App() {
   }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
     path: "/forgot",
     element: /*#__PURE__*/React.createElement(Forgot, null)
+  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
+    path: "/Dashboard",
+    element: /*#__PURE__*/React.createElement(Dashboard, null)
+  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
+    path: "/founders",
+    element: /*#__PURE__*/React.createElement(Founders, null)
+  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
+    path: "/founders/:founder",
+    element: /*#__PURE__*/React.createElement(Founder, null)
+  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
+    path: "/team",
+    element: /*#__PURE__*/React.createElement(Team, null)
+  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.Route, {
+    path: "/team/:teammember",
+    element: /*#__PURE__*/React.createElement(TeamMember, null)
   }))))));
 }
 /* harmony default export */ __webpack_exports__["default"] = (App);
@@ -19105,7 +19142,8 @@ function App() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   contentSlice: function() { return /* binding */ contentSlice; },
-/* harmony export */   getContent: function() { return /* binding */ getContent; }
+/* harmony export */   getContent: function() { return /* binding */ getContent; },
+/* harmony export */   getHeadquarters: function() { return /* binding */ getHeadquarters; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -19116,7 +19154,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var initialState = {
   contentLoading: false,
   contentError: '',
-  content: ''
+  content: '',
+  headquarters: ''
 };
 var getContent = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('content/getContent', /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(pageSlug) {
@@ -19164,6 +19203,47 @@ var getContent = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThu
     return _ref.apply(this, arguments);
   };
 }());
+var getHeadquarters = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('content/getHeadquarters', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+  var response, errorData, errorMessage, responseData;
+  return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+    while (1) switch (_context2.prev = _context2.next) {
+      case 0:
+        _context2.prev = 0;
+        _context2.next = 3;
+        return fetch("/wp-json/seven-tech/headquarters/v1/", {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      case 3:
+        response = _context2.sent;
+        if (response.ok) {
+          _context2.next = 10;
+          break;
+        }
+        _context2.next = 7;
+        return response.json();
+      case 7:
+        errorData = _context2.sent;
+        errorMessage = errorData.message;
+        throw new Error(errorMessage);
+      case 10:
+        _context2.next = 12;
+        return response.json();
+      case 12:
+        responseData = _context2.sent;
+        return _context2.abrupt("return", responseData);
+      case 16:
+        _context2.prev = 16;
+        _context2.t0 = _context2["catch"](0);
+        throw _context2.t0;
+      case 19:
+      case "end":
+        return _context2.stop();
+    }
+  }, _callee2, null, [[0, 16]]);
+})));
 var contentSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
   name: 'content',
   initialState: initialState,
@@ -19176,6 +19256,16 @@ var contentSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)
       state.contentError = null;
       state.content = action.payload;
     }).addCase(getContent.rejected, function (state, action) {
+      state.contentLoading = false;
+      state.contentError = action.error.message;
+    }).addCase(getHeadquarters.pending, function (state) {
+      state.contentLoading = true;
+      state.contentError = '';
+    }).addCase(getHeadquarters.fulfilled, function (state, action) {
+      state.contentLoading = false;
+      state.contentError = null;
+      state.headquarters = action.payload;
+    }).addCase(getHeadquarters.rejected, function (state, action) {
       state.contentLoading = false;
       state.contentError = action.error.message;
     });
@@ -19929,6 +20019,8 @@ var _scheduleSlice$action = scheduleSlice.actions,
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getTeam: function() { return /* binding */ getTeam; },
+/* harmony export */   getTeamMember: function() { return /* binding */ getTeamMember; },
+/* harmony export */   getTeamMemberResume: function() { return /* binding */ getTeamMemberResume; },
 /* harmony export */   teamSlice: function() { return /* binding */ teamSlice; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
@@ -19940,7 +20032,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var initialState = {
   teamLoading: false,
   teamError: '',
-  team: ''
+  team: '',
+  title: '',
+  author_url: '',
+  avatar_url: '',
+  fullName: '',
+  greeting: '',
+  skills: '',
+  teamResume: ''
 };
 var getTeam = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('team/getTeam', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
   var response, errorData, errorMessage, responseData;
@@ -19983,6 +20082,98 @@ var getTeam = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)
     }
   }, _callee, null, [[0, 16]]);
 })));
+var getTeamMember = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('team/getTeamMember', /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(team) {
+    var response, errorData, errorMessage, responseData;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return fetch("/wp-json/seven-tech/users/v1/team/".concat(team), {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        case 3:
+          response = _context2.sent;
+          if (response.ok) {
+            _context2.next = 10;
+            break;
+          }
+          _context2.next = 7;
+          return response.json();
+        case 7:
+          errorData = _context2.sent;
+          errorMessage = errorData.message;
+          throw new Error(errorMessage);
+        case 10:
+          _context2.next = 12;
+          return response.json();
+        case 12:
+          responseData = _context2.sent;
+          return _context2.abrupt("return", responseData);
+        case 16:
+          _context2.prev = 16;
+          _context2.t0 = _context2["catch"](0);
+          throw _context2.t0;
+        case 19:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 16]]);
+  }));
+  return function (_x) {
+    return _ref2.apply(this, arguments);
+  };
+}());
+var getTeamMemberResume = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('team/getTeamMemberResume', /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(pageTitle) {
+    var response, errorData, errorMessage, responseData;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          _context3.next = 3;
+          return fetch("/wp-json/seven-tech/users/v1/team/".concat(pageTitle, "/resume"), {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        case 3:
+          response = _context3.sent;
+          if (response.ok) {
+            _context3.next = 10;
+            break;
+          }
+          _context3.next = 7;
+          return response.json();
+        case 7:
+          errorData = _context3.sent;
+          errorMessage = errorData.message;
+          throw new Error(errorMessage);
+        case 10:
+          _context3.next = 12;
+          return response.json();
+        case 12:
+          responseData = _context3.sent;
+          return _context3.abrupt("return", responseData);
+        case 16:
+          _context3.prev = 16;
+          _context3.t0 = _context3["catch"](0);
+          throw _context3.t0;
+        case 19:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3, null, [[0, 16]]);
+  }));
+  return function (_x2) {
+    return _ref3.apply(this, arguments);
+  };
+}());
 var teamSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
   name: 'team',
   initialState: initialState,
@@ -19995,6 +20186,32 @@ var teamSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
       state.teamError = null;
       state.team = action.payload;
     }).addCase(getTeam.rejected, function (state, action) {
+      state.teamLoading = false;
+      state.teamError = action.error.message;
+    }).addCase(getTeamMember.pending, function (state) {
+      state.teamLoading = true;
+      state.teamError = '';
+    }).addCase(getTeamMember.fulfilled, function (state, action) {
+      state.teamLoading = false;
+      state.teamError = null;
+      state.title = action.payload.title;
+      state.authorURL = action.payload.author_url;
+      state.avatarURL = action.payload.avatar_url;
+      state.fullName = action.payload.fullName;
+      state.greeting = action.payload.greeting;
+      state.skills = action.payload.skills;
+      state.teamResume = action.payload.teamResume;
+    }).addCase(getTeamMember.rejected, function (state, action) {
+      state.teamLoading = false;
+      state.teamError = action.error.message;
+    }).addCase(getTeamMemberResume.pending, function (state) {
+      state.teamLoading = true;
+      state.teamError = '';
+    }).addCase(getTeamMemberResume.fulfilled, function (state, action) {
+      state.teamLoading = false;
+      state.teamError = null;
+      state.teamResume = action.payload;
+    }).addCase(getTeamMemberResume.rejected, function (state, action) {
       state.teamLoading = false;
       state.teamError = action.error.message;
     });
@@ -33798,94 +34015,19 @@ var __webpack_exports__ = {};
   !*** ./src/index.js ***!
   \**********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./App */ "./src/App.jsx");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/dist/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _model_store_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./model/store.js */ "./src/model/store.js");
-/* harmony import */ var _services_firebase_config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./services/firebase/config */ "./src/services/firebase/config.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App */ "./src/App.jsx");
+/* harmony import */ var _services_firebase_config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/firebase/config */ "./src/services/firebase/config.js");
 
 
 
-
-
-
-
-var LoadingComponent = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
-  return Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! ./loading/LoadingComponent.jsx */ "./src/loading/LoadingComponent.jsx"));
-});
-var ScheduleComponent = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
-  return __webpack_require__.e(/*! import() */ "src_views_Schedule_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Schedule.jsx */ "./src/views/Schedule.jsx"));
-});
-var Founders = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
-  return __webpack_require__.e(/*! import() */ "src_views_Founders_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Founders */ "./src/views/Founders.jsx"));
-});
-var Founder = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
-  return __webpack_require__.e(/*! import() */ "src_views_Founder_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Founder */ "./src/views/Founder.jsx"));
-});
-var Team = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
-  return __webpack_require__.e(/*! import() */ "src_views_Team_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Team */ "./src/views/Team.jsx"));
-});
-var TeamMember = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.lazy)(function () {
-  return __webpack_require__.e(/*! import() */ "src_views_TeamMember_jsx").then(__webpack_require__.bind(__webpack_require__, /*! ./views/TeamMember */ "./src/views/TeamMember.jsx"));
-});
 window.onload = function () {
-  var thfw = document.getElementById('thfw');
-  if (thfw) {
-    react_dom__WEBPACK_IMPORTED_MODULE_1___default().render( /*#__PURE__*/React.createElement(_App__WEBPACK_IMPORTED_MODULE_2__["default"], null), thfw);
+  var sevenTech = document.getElementById('seven_tech');
+  if (sevenTech) {
+    react_dom__WEBPACK_IMPORTED_MODULE_0___default().render( /*#__PURE__*/React.createElement(_App__WEBPACK_IMPORTED_MODULE_1__["default"], null), sevenTech);
   }
 };
-var sevenTeam = document.getElementById('seven_tech_team');
-if (sevenTeam) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default().createRoot(sevenTeam).render( /*#__PURE__*/React.createElement(React.StrictMode, null, /*#__PURE__*/React.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {
-    store: _model_store_js__WEBPACK_IMPORTED_MODULE_4__["default"]
-  }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.BrowserRouter, null, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Routes, null, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/team",
-    element: /*#__PURE__*/React.createElement(Team, null)
-  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/team/:team",
-    element: /*#__PURE__*/React.createElement(TeamMember, null)
-  }))))));
-}
-var sevenFounders = document.getElementById('seven_tech_founder');
-if (sevenFounders) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default().createRoot(sevenFounders).render( /*#__PURE__*/React.createElement(React.StrictMode, null, /*#__PURE__*/React.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {
-    store: _model_store_js__WEBPACK_IMPORTED_MODULE_4__["default"]
-  }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.BrowserRouter, null, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Routes, null, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/",
-    element: /*#__PURE__*/React.createElement(Founders, null)
-  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/about",
-    element: /*#__PURE__*/React.createElement(Founders, null)
-  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/founders",
-    element: /*#__PURE__*/React.createElement(Founders, null)
-  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/founders/:founder",
-    element: /*#__PURE__*/React.createElement(Founder, null)
-  }))))));
-}
-var orbScheduleContainer = document.getElementById('orb_schedule');
-if (orbScheduleContainer) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default().createRoot(orbScheduleContainer).render( /*#__PURE__*/React.createElement(React.StrictMode, null, /*#__PURE__*/React.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {
-    store: _model_store_js__WEBPACK_IMPORTED_MODULE_4__["default"]
-  }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.BrowserRouter, null, /*#__PURE__*/React.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
-    fallback: /*#__PURE__*/React.createElement(LoadingComponent, null)
-  }, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Routes, null, /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/",
-    element: /*#__PURE__*/React.createElement(ScheduleComponent, null)
-  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/about",
-    element: /*#__PURE__*/React.createElement(ScheduleComponent, null)
-  }), /*#__PURE__*/React.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
-    path: "/schedule",
-    element: /*#__PURE__*/React.createElement(ScheduleComponent, null)
-  })))))));
-}
 }();
 /******/ })()
 ;

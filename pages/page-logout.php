@@ -1,4 +1,5 @@
 <?php 
+
 if (!is_user_logged_in()) {
     header('Location: /login');
 }
@@ -6,8 +7,9 @@ if (!is_user_logged_in()) {
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 get_header();
 
-include SEVEN_TECH . 'includes/part-logout.php';
+include SEVEN_TECH . 'includes/react.php';
 
 get_footer();

@@ -205,7 +205,9 @@ function SignUpComponent() {
       setConfirmPassword(e.target.value);
     }
   };
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_components_NavigationLogin__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("main", {
+    className: "signup"
+  }, /*#__PURE__*/React.createElement(_components_NavigationLogin__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/React.createElement("div", {
     className: "login card"
   }, /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("thead", null), /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
     type: "text",
@@ -236,7 +238,7 @@ function SignUpComponent() {
     onClick: handleSubmit
   }, /*#__PURE__*/React.createElement("h3", null, "SIGN UP"))))))), message !== '' && /*#__PURE__*/React.createElement("div", {
     className: "status-bar card ".concat(messageType)
-  }, /*#__PURE__*/React.createElement("span", null, message)));
+  }, /*#__PURE__*/React.createElement("span", null, message))));
 }
 /* harmony default export */ __webpack_exports__["default"] = (SignUpComponent);
 

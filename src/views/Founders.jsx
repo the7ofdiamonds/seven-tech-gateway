@@ -27,9 +27,11 @@ function Founders() {
 
   return (
     <>
-      <h4 className="title">Founders</h4>
+      <section className="founders">
+        <h4 className="title">Founders</h4>
 
-      <GroupMembers group={founders} />
+        <GroupMembers group={founders} />
+      </section>
     </>
   );
 }
