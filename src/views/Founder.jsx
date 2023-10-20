@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getFounder, getFounderResume } from '../controllers/founderSlice';
+import { getFounder } from '../controllers/founderSlice';
 
 import LoadingComponent from '../loading/LoadingComponent';
 import ErrorComponent from '../error/ErrorComponent';
@@ -15,15 +15,9 @@ function Founder() {
   const { founder } = useParams();
   const dispatch = useDispatch();
 
-  // const skills = ['html5', 'css3-alt', 'js', 'php', 'java', 'swift', 'docker'];
-
   useEffect(() => {
     dispatch(getFounder(founder));
   }, [dispatch, founder]);
-
-  useEffect(() => {
-    dispatch(getFounderResume(founder));
-  }, [dispatch]);
 
   const {
     founderLoading,
@@ -33,6 +27,7 @@ function Founder() {
     fullName,
     greeting,
     skills,
+    projects,
     founderResume,
   } = useSelector((state) => state.founder);
 
@@ -47,13 +42,16 @@ function Founder() {
   return (
     <>
       <MemberNavigationComponent resume={founderResume} />
-      <MemberIntroductionComponent
-        title={title}
-        avatarURL={avatarURL}
-        fullName={fullName}
-        greeting={greeting}
-      />
-      <MemberProgrammingSkillsComponent skills={skills} />
+      
+      <main class="founder">
+        <MemberIntroductionComponent
+          title={title}
+          avatarURL={avatarURL}
+          fullName={fullName}
+          greeting={greeting}
+        />
+        <MemberProgrammingSkillsComponent skills={skills} />
+      </main>
     </>
   );
 }

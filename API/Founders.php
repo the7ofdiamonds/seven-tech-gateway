@@ -63,10 +63,12 @@ class Founders
         }
     }
 
-    function get_founder()
+    function get_founder(WP_REST_Request $request)
     {
         try {
-            $founder = $this->pt_founder->getFounder();
+            $slug = $request->get_param('slug');
+
+            $founder = $this->pt_founder->getFounder($slug);
 
             return rest_ensure_response($founder);
         } catch (Exception $e) {
@@ -89,16 +91,10 @@ class Founders
     {
         try {
             $pageTitle = $request->get_param('slug');
-            $founderName = strtoupper($pageTitle);
-            $resume_pdf = SEVEN_TECH . 'resume/' . $founderName . '_Resume.pdf';
 
-            if (file_exists($resume_pdf)) {
-                $resume_pdf_url = SEVEN_TECH_URL . 'resume/' . $founderName . '_Resume.pdf';
+            $resume_pdf_url = $this->pt_founder->getFounderResume($pageTitle);
 
-                return rest_ensure_response($resume_pdf_url);
-            } else {
-                throw new Exception('Resume has not been uploaded.', 404);
-            }
+            return rest_ensure_response($resume_pdf_url);
         } catch (Exception $e) {
             $error_message = $e->getMessage();
             $status_code = $e->getCode();

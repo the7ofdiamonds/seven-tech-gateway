@@ -66,15 +66,9 @@ function Founder() {
   var _useParams = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_8__.useParams)(),
     founder = _useParams.founder;
   var dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
-
-  // const skills = ['html5', 'css3-alt', 'js', 'php', 'java', 'swift', 'docker'];
-
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     dispatch((0,_controllers_founderSlice__WEBPACK_IMPORTED_MODULE_2__.getFounder)(founder));
   }, [dispatch, founder]);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    dispatch((0,_controllers_founderSlice__WEBPACK_IMPORTED_MODULE_2__.getFounderResume)(founder));
-  }, [dispatch]);
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
       return state.founder;
     }),
@@ -85,6 +79,7 @@ function Founder() {
     fullName = _useSelector.fullName,
     greeting = _useSelector.greeting,
     skills = _useSelector.skills,
+    projects = _useSelector.projects,
     founderResume = _useSelector.founderResume;
   if (founderLoading) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_loading_LoadingComponent__WEBPACK_IMPORTED_MODULE_3__["default"], null);
@@ -96,14 +91,16 @@ function Founder() {
   }
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberNavigationComponent__WEBPACK_IMPORTED_MODULE_5__["default"], {
     resume: founderResume
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberIntroductionComponent__WEBPACK_IMPORTED_MODULE_7__["default"], {
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("main", {
+    "class": "founder"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberIntroductionComponent__WEBPACK_IMPORTED_MODULE_7__["default"], {
     title: title,
     avatarURL: avatarURL,
     fullName: fullName,
     greeting: greeting
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_MemberProgrammingSkillsComponent__WEBPACK_IMPORTED_MODULE_6__["default"], {
     skills: skills
-  }));
+  })));
 }
 /* harmony default export */ __webpack_exports__["default"] = (Founder);
 
@@ -156,32 +153,11 @@ function MemberIntroductionComponent(props) {
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-
-
-
 function MemberNavigationComponent(props) {
   var resume = props.resume;
-  var founderSection = document.getElementById('founder');
   var portfolioElement = document.getElementById('portfolio');
-  var portfolioButton = document.getElementById('portfolio_button');
-  var founderButton = document.getElementById('founder_button');
-  function updateButtonVisibility(currentSectionId) {
-    if (currentSectionId === 'founder') {
-      founderButton.style.display = 'none';
-      portfolioButton.style.display = 'block';
-    } else if (currentSectionId === '7tech_portfolio') {
-      portfolioButton.style.display = 'none';
-      founderButton.style.display = 'block';
-    }
-  }
-
-  // Button press
   var scrollToSection = function scrollToSection(sectionId) {
     var section = document.getElementById(sectionId);
-    console.log(section);
     if (section) {
       var offsetTopPx = section.getBoundingClientRect().top + window.scrollY;
       var paddingTopPx = 137.5;
@@ -196,19 +172,25 @@ function MemberNavigationComponent(props) {
     }
   };
   var openResumeInNewTab = function openResumeInNewTab() {
-    window.location.href = 'resume';
+    window.open('resume', '_blank');
   };
   return /*#__PURE__*/React.createElement("nav", {
     "class": "author-nav"
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: scrollToSection('founder'),
+  }, portfolioElement ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+    onClick: scrollToSection('intro'),
     id: "founder_button"
-  }, /*#__PURE__*/React.createElement("h3", null, "FOUNDER")), /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "title"
+  }, "intro")), /*#__PURE__*/React.createElement("button", {
     onClick: scrollToSection('7tech_portfolio'),
     id: "portfolio_button"
-  }, /*#__PURE__*/React.createElement("h3", null, "PORTFOLIO")), resume ? /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "title"
+  }, "PORTFOLIO"))) : '', resume ? /*#__PURE__*/React.createElement("button", {
     onClick: openResumeInNewTab
-  }, /*#__PURE__*/React.createElement("h3", null, "R\xC9SUM\xC9")) : '');
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "title"
+  }, "R\xC9SUM\xC9")) : '');
 }
 /* harmony default export */ __webpack_exports__["default"] = (MemberNavigationComponent);
 
@@ -226,31 +208,28 @@ __webpack_require__.r(__webpack_exports__);
 
 function MemberProgrammingSkillsComponent(props) {
   var skills = props.skills;
-  var skillsSlide = document.querySelector('.author-skills-slide');
+  var skillsSlideRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (skills && skillsSlide) {
-      // Calculate the total number of skills
+    var skillsSlide = skillsSlideRef.current;
+    if (skillsSlide) {
       var totalSkills = skillsSlide.children.length;
-
-      // Duplicate the skill icons for a sliding effect
       for (var i = 0; i < totalSkills; i++) {
         skillsSlide.appendChild(skillsSlide.children[i].cloneNode(true));
       }
-
-      // Set the totalSkills as a CSS variable
       document.documentElement.style.setProperty('--total-skills', totalSkills);
     }
-  }, [skills, skillsSlide]);
+  }, [skills]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, Array.isArray(skills) && skills.length > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "author-skills"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "author-skills-slide"
+    className: "author-skills-slide",
+    ref: skillsSlideRef
   }, skills.map(function (skill, index) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("i", {
       key: index,
       className: "fa-brands fa-".concat(skill.toLowerCase())
     });
-  }))) : '');
+  }))) : null);
 }
 /* harmony default export */ __webpack_exports__["default"] = (MemberProgrammingSkillsComponent);
 

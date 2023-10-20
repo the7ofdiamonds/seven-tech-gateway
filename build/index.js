@@ -19112,9 +19112,11 @@ var initialState = {
   founders: '',
   title: '',
   avatarURL: '',
+  authorURL: '',
   fullName: '',
   greeting: '',
-  skills: ''
+  skills: '',
+  founderResume: ''
 };
 var getFounders = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('founder/getFounders', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
   var response, errorData, errorMessage, responseData;
@@ -19270,10 +19272,12 @@ var founderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)
       state.founderLoading = false;
       state.founderError = null;
       state.title = action.payload.title;
-      state.avatarURL = action.payload.avatarURL;
+      state.authorURL = action.payload.author_url;
+      state.avatarURL = action.payload.avatar_url;
       state.fullName = action.payload.fullName;
       state.greeting = action.payload.greeting;
       state.skills = action.payload.skills;
+      state.founderResume = action.payload.founderResume;
     }).addCase(getFounder.rejected, function (state, action) {
       state.founderLoading = false;
       state.founderError = action.error.message;
