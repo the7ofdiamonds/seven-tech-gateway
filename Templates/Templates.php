@@ -2,8 +2,14 @@
 
 namespace SEVEN_TECH\Templates;
 
+use SEVEN_TECH\CSS\CSS;
+use SEVEN_TECH\JS\JS;
+
 class Templates
 {
+    private $css_file;
+    private $js_file;
+
     public function __construct()
     {
         add_filter('frontpage_template', [$this, 'get_custom_front_page'], 10, 1);
@@ -19,15 +25,23 @@ class Templates
         add_filter('template_include', [$this, 'get_founder_resume_page_template']);
         add_filter('archive_template', [$this, 'get_team_archive_template']);
         add_filter('single_template', [$this, 'get_team_single_template']);
+
+        $this->css_file = new CSS;
+        $this->js_file = new JS;
     }
 
     function get_custom_front_page($frontpage_template)
     {
         if (is_front_page()) {
-            $frontpage_template = SEVEN_TECH . 'Pages/front-page.php';
-        }
 
-        return $frontpage_template;
+            $frontpage_template = SEVEN_TECH . 'Pages/front-page.php';
+
+            if (file_exists($frontpage_template)) {
+                add_action('wp_head', [$this->css_file, 'load_front_page_css']);
+                add_action('wp_footer', [$this->js_file, 'load_front_page_react']);
+                return $frontpage_template;
+            }
+        }
     }
 
     function get_custom_about_page_template($page_template)

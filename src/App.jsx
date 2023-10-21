@@ -7,7 +7,6 @@ import store from './model/store.js';
 import LoadingComponent from './loading/LoadingComponent';
 
 const About = lazy(() => import('./views/About'));
-const Schedule = lazy(() => import('./views/Schedule.jsx'));
 const Login = lazy(() => import('./views/Login'));
 const LogOut = lazy(() => import('./views/Logout'));
 const SignUp = lazy(() => import('./views/Signup'));
@@ -27,7 +26,6 @@ function App() {
             <Routes>
               <Route path="/" element={<About />} />
               <Route path="/about" element={<About />} />
-              <Route path="/schedule" element={<Schedule />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<LogOut />} />
               <Route path="/signup" element={<SignUp />} />

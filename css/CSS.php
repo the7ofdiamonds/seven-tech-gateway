@@ -12,7 +12,7 @@ class CSS
 
     public function __construct()
     {
-        add_action('wp_head', [$this, 'load_front_page_css']);
+        // add_action('wp_head', [$this, 'load_front_page_css']);
         add_action('wp_head', [$this, 'load_pages_css']);
         add_action('wp_head', [$this, 'load_post_types_css']);
         add_action('wp_head', [$this, 'load_social_bar_css']);

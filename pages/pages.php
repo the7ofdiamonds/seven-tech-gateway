@@ -12,7 +12,6 @@ class Pages
     public function __construct()
     {
         $this->page_titles = [
-            'SCHEDULE',
             'ABOUT',
             'LOGIN',
             'SIGNUP',

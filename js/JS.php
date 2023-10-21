@@ -9,15 +9,16 @@ class JS
 {
     private $page_titles;
     private $post_types;
+    private $includes_url;
 
     public function __construct()
     {
         // add_action('wp_footer', [$this, 'load_js']);
-        add_action('wp_footer', [$this, 'load_front_page_react']);
+        // add_action('wp_footer', [$this, 'load_front_page_react']);
         add_action('wp_footer', [$this, 'load_pages_react']);
-        add_action('wp_footer', [$this, 'load_post_types_archive_jsx']);
-        add_action('wp_footer', [$this, 'load_post_types_single_jsx']);
-        add_filter('script_loader_tag', [$this, 'set_script_type_to_module'], 10, 2);
+        // add_action('wp_footer', [$this, 'load_post_types_archive_jsx'], 1);
+        // add_action('wp_footer', [$this, 'load_post_types_single_jsx'], 1);
+        // add_filter('script_loader_tag', [$this, 'set_script_type_to_module'], 10, 2);
         // add_action('wp_enqueue_scripts', [$this, 'load_firebase']);
 
         $pages = new Pages;
@@ -25,6 +26,8 @@ class JS
 
         $this->page_titles = $pages->page_titles;
         $this->post_types = $posttypes->post_types;
+
+        $this->includes_url = includes_url();
     }
 
     function load_js()
@@ -37,22 +40,22 @@ class JS
     {
         $sections = [
             'about',
-            'schedule',
-            'founders',
         ];
 
         foreach ($sections as $section) {
             if (is_front_page()) {
                 $fileName = ucwords($section);
                 $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
+                
+                wp_enqueue_script('wp-element', $this->includes_url . 'js/dist/element.min.js', [], null, true);
 
                 if ($filePath) {
-                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true);
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true, true);
                 } else {
                     error_log('Post Type' . $section . 'has not been created.');
                 }
 
-                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true);
+                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true, true);
             }
         }
     }
@@ -60,17 +63,17 @@ class JS
     function load_pages_react()
     {
         foreach ($this->page_titles as $page) {
-            if (is_front_page()) {
+            if (is_page($page)) {
                 $fileName = ucwords($page);
                 $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
 
                 if ($filePath) {
-                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true);
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true, true);
                 } else {
                     error_log('Post Type' . $page . 'has not been created.');
                 }
 
-                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true);
+                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true, true);
             }
         }
     }
@@ -83,12 +86,12 @@ class JS
                 $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
 
                 if ($filePath) {
-                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true);
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], 1.0, true, true);
                 } else {
                     error_log('Post Type' . $post_type . 'has not been created.');
                 }
 
-                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true);
+                wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/' . 'index.js', ['wp-element'], 1.0, true, true);
             }
         }
     }
@@ -123,14 +126,14 @@ class JS
                 $filePath = SEVEN_TECH_URL . 'build/' . 'src_views_' . $fileName . '_jsx.js';
 
                 if (file_exists($filePath)) {
-                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], '1.0', true);
+                    wp_enqueue_script('seven_tech_react_' . $fileName, $filePath, ['wp-element'], '1.0', true, true);
                 } else {
                     error_log('Script file not found for post type: ' . $archive_page);
                 }
             }
         }
 
-        wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/index.js', ['wp-element'], '1.0', true);
+        wp_enqueue_script('seven_tech_react_index', SEVEN_TECH_URL . 'build/index.js', ['wp-element'], '1.0', true, true);
     }
 
     function set_script_type_to_module($tag, $handle)

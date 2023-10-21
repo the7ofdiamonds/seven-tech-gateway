@@ -6,15 +6,13 @@ class Shortcodes
 {
     public function __construct()
     {
-        add_shortcode('thfw-about', [$this, 'about_page_shortcode']);
-        add_shortcode('thfw-social-bar', [$this, 'social_bar_shortcode']);
-        add_shortcode('thfw-team', [$this, 'team_shortcode']);
-        add_shortcode('orb-services-schedule', [$this, 'orb_services_schedule_shortcode']);
-        add_shortcode('orb-services-headquarters', [$this, 'orb_services_headquarters_shortcode']);
+        add_shortcode('seven-tech-about', [$this, 'about_page_shortcode']);
+        add_shortcode('seven-tech-social-bar', [$this, 'social_bar_shortcode']);
+        add_shortcode('seven-tech-team', [$this, 'team_shortcode']);
     }
 
     function about_page_shortcode() {
-        include SEVEN_TECH . 'includes/part-about.php';
+        include SEVEN_TECH . 'includes/react.php';
     }
 
     function social_bar_shortcode() {
@@ -23,16 +21,6 @@ class Shortcodes
 
     function team_shortcode()
     {
-        include SEVEN_TECH . 'includes/section-team.php';
-    }
-
-    function orb_services_schedule_shortcode()
-    {
-        include SEVEN_TECH . 'includes/part-schedule.php';
-    }
-
-    function orb_services_headquarters_shortcode()
-    {
-        include SEVEN_TECH . 'includes/part-headquarters.php';
+        include SEVEN_TECH . 'includes/react.php';
     }
 }

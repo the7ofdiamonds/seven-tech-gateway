@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import ContentComponent from '../views/components/ContentComponent';
 import HeadquartersComponent from '../views/components/HeadquartersComponent';
 
-import Schedule from './Schedule';
 import Founders from './Founders';
 
 import { getContent, getHeadquarters } from '../controllers/contentSlice';
@@ -35,10 +34,6 @@ function About() {
         </div>
 
         <ContentComponent content={content} />
-
-        <HeadquartersComponent headquarters={headquarters} />
-
-        <Schedule />
 
         <Founders />
       </section>

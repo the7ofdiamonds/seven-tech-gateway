@@ -21,8 +21,18 @@ if (!function_exists('is_plugin_active')) {
     if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
         echo do_shortcode('[thfw-portfolio]');
     }
+    ?>
 
-    include SEVEN_TECH . 'includes/react.php';
+    <div id="seven_tech"></div>
+
+    <?php
+    if (is_plugin_active('seven-tech-location/SEVEN_TECH_Location.php')) {
+        echo do_shortcode('[seven-tech-locations]');
+    }
+
+    if (is_plugin_active('seven-tech-schedule/SEVEN_TECH_Schedule.php')) {
+        echo do_shortcode('[seven-tech-schedule]');
+    }
     ?>
 </div>
 

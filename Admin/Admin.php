@@ -15,8 +15,6 @@ class Admin
 
         // add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
 
-        new AdminLocation;
-        new AdminOfficeHours;
         new AdminMissionStatement;
         new AdminSocialBar;
     }
