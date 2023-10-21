@@ -8,6 +8,7 @@ class Pages
 {
     public $page_titles;
     public $post_types;
+    public $react_pages;
 
     public function __construct()
     {
@@ -20,6 +21,14 @@ class Pages
             'DASHBOARD'
         ];
 
+        $this->react_pages = [
+            'ABOUT',
+            'LOGIN',
+            'SIGNUP',
+            'FORGOT',
+            'LOGOUT',
+            'DASHBOARD'
+        ];
         add_action('init', [$this, 'react_rewrite_rules']);
     }
 
