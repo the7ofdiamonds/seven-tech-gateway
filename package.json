@@ -16,7 +16,6 @@
     "watch:sass": "sass --watch ./CSS/scss/main.scss ./CSS/seven-tech.css"
   },
   "dependencies": {
-    "@wordpress/scripts": "^26.9.0",
     "dotenv": "^16.3.1",
     "esbuild": "^0.18.15",
     "firebase": "^10.1.0",
@@ -30,6 +29,7 @@
     "@reduxjs/toolkit": "^1.9.5"
   },
   "devDependencies": {
+    "@wordpress/scripts": "^26.9.0",
     "@babel/core": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
     "@rollup/plugin-babel": "^6.0.3",
