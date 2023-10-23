@@ -1,3 +1,8 @@
+.card {
+    box-shadow: var(--seven-tech-card-shadow);
+    border-radius: var(--seven-tech-border-radius);
+}
+
 .card.login-card,
 .card.signup-card,
 .card.reset-card {

@@ -7,18 +7,12 @@ class SocialBar
 
     public function __construct()
     {
-        add_action('customize_register', array($this, 'register_customizer_section'));
+        add_action('customize_register', [$this, 'seven_tech_social_bar_section']);
         add_action('wp_head', [$this, 'load_css']);
     }
 
-    public function register_customizer_section($wp_customize)
+    function seven_tech_social_bar_section($wp_customize)
     {
-        $this->thfw_social_bar_section($wp_customize);
-    }
-
-    private function thfw_social_bar_section($wp_customize)
-    {
-
         $wp_customize->add_section(
             'social_bar_settings',
             array(
@@ -27,7 +21,7 @@ class SocialBar
                 'theme_supports' => '',
                 'title'          => __('Social Bar', 'the-house-forever-wins'),
                 'description'    =>  __('Social Bar Settings', 'the-house-forever-wins'),
-                'panel'  => 'theme_options',
+                'panel'  => 'seven_tech_settings',
             )
         );
 
@@ -43,18 +37,60 @@ class SocialBar
                 'section' => 'social_bar_settings',
             )
         );
+
+        $wp_customize->add_setting('social_bar_background_color', array(
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+
+        $wp_customize->add_control(
+            'social_bar_background_color',
+            array(
+                'type' => 'input',
+                'label' => __('Social Bar Background Color', 'the-house-forever-wins'),
+                'section' => 'social_bar_settings',
+            )
+        );
+
+        $wp_customize->add_setting('social_bar_icon_color', array(
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+
+        $wp_customize->add_control(
+            'social_bar_icon_color',
+            array(
+                'type' => 'input',
+                'label' => __('Social Bar Icon Color', 'the-house-forever-wins'),
+                'section' => 'social_bar_settings',
+            )
+        );
     }
 
     function load_css()
     {
 ?>
         <style>
-            .social-bar {
-                box-shadow: <?php if (!get_theme_mod('social_bar_box_shadow')) {
-                                    echo 'var(--thfw-box-shadow-social)';
-                                } else {
-                                    echo esc_html(get_theme_mod('social_bar_border_radius'));
-                                } ?>;
+            :root {
+                --seven-tech-box-social-bar-shadow: <?php
+                                                    if (get_theme_mod('social_bar_box_shadow') === '') {
+                                                        echo esc_html('0.25em -0.25em 0.25em rgba(0, 0, 0, 0.5), 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.5)');
+                                                    } else {
+                                                        echo  esc_html(get_theme_mod('social_bar_box_shadow'));
+                                                    }
+                                                    ?>;
+                --seven-tech-box-social-bar-background-color: <?php
+                                                                if (get_theme_mod('social_bar_background_color') === '') {
+                                                                    echo esc_html('white');
+                                                                } else {
+                                                                    echo esc_html(get_theme_mod('social_bar_background_color'));
+                                                                }
+                                                                ?>;
+                --seven-tech-box-social-bar-icon-color: <?php
+                                                        if (get_theme_mod('social_bar_icon_color') === '') {
+                                                            echo esc_html('black');
+                                                        } else {
+                                                            echo esc_html(get_theme_mod('social_bar_icon_color'));
+                                                        }
+                                                        ?>;
             }
         </style>
 <?php

@@ -109,6 +109,11 @@ div.team {
   flex-wrap: wrap;
 }
 
+.card {
+  box-shadow: var(--seven-tech-card-shadow);
+  border-radius: var(--seven-tech-border-radius);
+}
+
 .card.login-card,
 .card.signup-card,
 .card.reset-card {
@@ -214,22 +219,22 @@ div.team {
 }
 
 .status-bar.card {
-  background-color: var(--thfw-color-info);
+  background-color: var(--seven-tech-color-info);
 }
 .status-bar.card.info {
-  background-color: var(--thfw-color-info);
+  background-color: var(--seven-tech-color-info);
 }
 .status-bar.card.caution {
-  background-color: var(--thfw-color-caution);
+  background-color: var(--seven-tech-color-caution);
 }
 .status-bar.card.error {
-  background-color: var(--thfw-color-error);
+  background-color: var(--seven-tech-color-error);
 }
 .status-bar.card.success {
-  background-color: var(--thfw-color-success);
+  background-color: var(--seven-tech-color-success);
 }
 .status-bar.card span {
-  color: var(--thfw-color-primary);
+  color: var(--seven-tech-color-primary);
 }
 .status-bar.card span h4 {
   padding: 0.5em;
@@ -428,6 +433,24 @@ main.founder {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
+}
+
+.social-bar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0.5em;
+  width: 100%;
+  background-color: var(--seven-tech-box-social-bar-background-color);
+  box-shadow: var(--seven-tech-box-social-bar-shadow);
+}
+.social-bar a i {
+  color: var(--seven-tech-box-social-bar-icon-color);
+}
+
+button {
+  box-shadow: var(--seven-tech-btn-shadow);
+  border-radius: var(--seven-tech-border-radius);
 }
 
 /*# sourceMappingURL=seven-tech.css.map */

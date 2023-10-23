@@ -1,19 +1,19 @@
 .status-bar.card {
-  background-color: var(--thfw-color-info);
+  background-color: var(--seven-tech-color-info);
   &.info {
-    background-color: var(--thfw-color-info);
+    background-color: var(--seven-tech-color-info);
   }
   &.caution {
-    background-color: var(--thfw-color-caution);
+    background-color: var(--seven-tech-color-caution);
   }
   &.error {
-    background-color: var(--thfw-color-error);
+    background-color: var(--seven-tech-color-error);
   }
   &.success {
-    background-color: var(--thfw-color-success);
+    background-color: var(--seven-tech-color-success);
   }
   span {
-    color: var(--thfw-color-primary);
+    color: var(--seven-tech-color-primary);
 
     h4 {
       padding: 0.5em;
