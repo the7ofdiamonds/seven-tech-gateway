@@ -2,16 +2,19 @@
 
 namespace SEVEN_TECH\CSS\Customizer;
 
-class BorderRadius{
+class BorderRadius
+{
     public function __construct()
-	{
-		add_action('customize_register', [$this, 'seven_tech_border_radius_section']);
-		add_action('wp_head', [$this, 'load_css']);
-	}
+    {
+        add_action('customize_register', [$this, 'seven_tech_border_radius_section']);
+        add_action('wp_head', [$this, 'load_css']);
+    }
 
-	function seven_tech_border_radius_section($wp_customize){
-		$wp_customize->add_section(
-            'border_radius_settings',
+    function seven_tech_border_radius_section($wp_customize)
+    {
+        error_log('border radius');
+        $wp_customize->add_section(
+            'seven_tech_border_radius_settings',
             array(
                 'priority'       => 9,
                 'capability'     => 'edit_theme_options',
@@ -31,19 +34,24 @@ class BorderRadius{
             array(
                 'type' => 'input',
                 'label' => __('Border Radius', 'the-house-forever-wins'),
-                'section' => 'border_radius_settings',
+                'section' => 'seven_tech_border_radius_settings',
             )
         );
-	}
+    }
 
-	function load_css()
-	{
+    function load_css()
+    {
 ?>
-		<style>
-			:root {
-				--seven-tech-border-radius: 0.25em;
-			}
-		</style>
+        <style>
+            :root {
+                --seven-tech-border-radius: <?php
+                                            if (get_theme_mod('seven_tech_border_radius') === '') {
+                                                echo esc_html('0.5em');
+                                            } else {
+                                                echo esc_html(get_theme_mod('seven_tech_border_radius'));
+                                            } ?>;
+            }
+        </style>
 <?php
-	}
+    }
 }
