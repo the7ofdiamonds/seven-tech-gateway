@@ -19,7 +19,7 @@ if (!function_exists('is_plugin_active')) {
     }
 
     if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
-        echo do_shortcode('[thfw-portfolio]');
+        echo do_shortcode('[seven-tech-portfolio]');
     }
     ?>
 

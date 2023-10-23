@@ -60,6 +60,5 @@ class API
     new Content;
     new Founders;
     new Users;
-    new Team;
   }
 }

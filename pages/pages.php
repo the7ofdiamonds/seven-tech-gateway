@@ -6,29 +6,26 @@ use WP_Query;
 
 class Pages
 {
+    public $front_page_react;
     public $page_titles;
     public $post_types;
     public $react_pages;
 
     public function __construct()
     {
-        $this->page_titles = [
-            'ABOUT',
-            'LOGIN',
-            'SIGNUP',
-            'FORGOT',
-            'LOGOUT',
-            'DASHBOARD'
+        $this->front_page_react = [
+            'about',
         ];
 
-        $this->react_pages = [
-            'ABOUT',
-            'LOGIN',
-            'SIGNUP',
-            'FORGOT',
-            'LOGOUT',
-            'DASHBOARD'
+        $this->page_titles = [
+            'about',
+            'login',
+            'signup',
+            'forgot',
+            'logout',
+            'dashboard'
         ];
+
         add_action('init', [$this, 'react_rewrite_rules']);
     }
 
@@ -41,7 +38,7 @@ class Pages
 
             if (!$page_exists) {
                 $page_data = array(
-                    'post_title'   => $page_title,
+                    'post_title'   => strtoupper($page_title),
                     'post_type'    => 'page',
                     'post_content' => '',
                     'post_status'  => 'publish',
