@@ -71,21 +71,21 @@ class SocialBar
         <style>
             :root {
                 --seven-tech-box-social-bar-shadow: <?php
-                                                    if (get_theme_mod('social_bar_box_shadow') === '') {
+                                                    if (empty(get_theme_mod('social_bar_box_shadow'))) {
                                                         echo esc_html('0.25em -0.25em 0.25em rgba(0, 0, 0, 0.5), 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.5)');
                                                     } else {
                                                         echo  esc_html(get_theme_mod('social_bar_box_shadow'));
                                                     }
                                                     ?>;
                 --seven-tech-box-social-bar-background-color: <?php
-                                                                if (get_theme_mod('social_bar_background_color') === '') {
+                                                                if (empty(get_theme_mod('social_bar_background_color'))) {
                                                                     echo esc_html('white');
                                                                 } else {
                                                                     echo esc_html(get_theme_mod('social_bar_background_color'));
                                                                 }
                                                                 ?>;
                 --seven-tech-box-social-bar-icon-color: <?php
-                                                        if (get_theme_mod('social_bar_icon_color') === '') {
+                                                        if (empty(get_theme_mod('social_bar_icon_color'))) {
                                                             echo esc_html('black');
                                                         } else {
                                                             echo esc_html(get_theme_mod('social_bar_icon_color'));

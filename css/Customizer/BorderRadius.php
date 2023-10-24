@@ -12,7 +12,6 @@ class BorderRadius
 
     function seven_tech_border_radius_section($wp_customize)
     {
-        error_log('border radius');
         $wp_customize->add_section(
             'seven_tech_border_radius_settings',
             array(
@@ -45,7 +44,7 @@ class BorderRadius
         <style>
             :root {
                 --seven-tech-border-radius: <?php
-                                            if (get_theme_mod('seven_tech_border_radius') === '') {
+                                            if (empty(get_theme_mod('seven_tech_border_radius'))) {
                                                 echo esc_html('0.5em');
                                             } else {
                                                 echo esc_html(get_theme_mod('seven_tech_border_radius'));

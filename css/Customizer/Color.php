@@ -135,49 +135,49 @@ class Color
 		<style>
 			:root {
 				--seven-tech-color-primary: <?php
-											if (get_theme_mod('seven_tech_primary_color') === '') {
+											if (empty(get_theme_mod('seven_tech_primary_color'))) {
 												echo esc_html('#fff');
 											} else {
 												echo esc_html(get_theme_mod('seven_tech_primary_color'));
 											} ?>;
 				--seven-tech-color-secondary: <?php
-												if (get_theme_mod('seven_tech_secondary_color') === '') {
+												if (empty(get_theme_mod('seven_tech_secondary_color'))) {
 													echo esc_html('#000');
 												} else {
 													echo esc_html(get_theme_mod('seven_tech_secondary_color'));
 												} ?>;
 				--seven-tech-color-tertiary: <?php
-												if (get_theme_mod('seven_tech_tertiary_color') === '') {
+												if (empty(get_theme_mod('seven_tech_tertiary_color'))) {
 													echo esc_html('red');
 												} else {
 													echo esc_html(get_theme_mod('seven_tech_tertiary_color'));
 												} ?>;
 				--seven-tech-color-quaternary: <?php
-												if (get_theme_mod('seven_tech_quaternary_color') === '') {
+												if (empty(get_theme_mod('seven_tech_quaternary_color'))) {
 													echo esc_html('#2ed341');
 												} else {
 													echo esc_html(get_theme_mod('seven_tech_quaternary_color'));
 												} ?>;
 				--seven-tech-color-success: <?php
-											if (get_theme_mod('seven_tech_success_color') === '') {
+											if (empty(get_theme_mod('seven_tech_success_color'))) {
 												echo esc_html('green');
 											} else {
 												echo esc_html(get_theme_mod('seven_tech_success_color'));
 											} ?>;
 				--seven-tech-color-error: <?php
-											if (get_theme_mod('seven_tech_error_color') === '') {
+											if (empty(get_theme_mod('seven_tech_error_color'))) {
 												echo esc_html('red');
 											} else {
 												echo esc_html(get_theme_mod('seven_tech_error_color'));
 											} ?>;
 				--seven-tech-color-caution: <?php
-											if (get_theme_mod('seven_tech_caution_color') === '') {
+											if (empty(get_theme_mod('seven_tech_caution_color'))) {
 												echo esc_html('yellow');
 											} else {
 												echo esc_html(get_theme_mod('seven_tech_caution_color'));
 											} ?>;
 				--seven-tech-color-info: <?php
-											if (get_theme_mod('seven_tech_info_color') === '') {
+											if (empty(get_theme_mod('seven_tech_info_color'))) {
 												echo esc_html('blue');
 											} else {
 												echo esc_html(get_theme_mod('seven_tech_info_color'));

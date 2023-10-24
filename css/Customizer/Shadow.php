@@ -58,13 +58,13 @@ class Shadow
         <style>
             :root {
                 --seven-tech-card-shadow: <?php
-                                            if (get_theme_mod('seven_tech_card_shadow') === '') {
+                                            if (empty(get_theme_mod('seven_tech_card_shadow'))) {
                                                 echo esc_html('0 0 0.5em rgba(0, 0, 0, 0.85)');
                                             } else {
                                                 echo esc_html(get_theme_mod('seven_tech_card_shadow'));
                                             } ?>;
                 --seven-tech-btn-shadow: <?php
-                                            if (get_theme_mod('seven_tech_button_shadow') === '') {
+                                            if (empty(get_theme_mod('seven_tech_button_shadow'))) {
                                                 echo esc_html('0 0 0.5em rgba(0, 0, 0, 0.85)');
                                             } else {
                                                 echo esc_html(get_theme_mod('seven_tech_button_shadow'));
