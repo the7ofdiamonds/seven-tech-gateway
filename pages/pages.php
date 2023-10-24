@@ -8,8 +8,6 @@ class Pages
 {
     public $front_page_react;
     public $page_titles;
-    public $post_types;
-    public $react_pages;
 
     public function __construct()
     {

@@ -60,7 +60,7 @@ function About() {
     className: "about"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "ABOUT"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "class": "mission-statement-card card"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
     "class": "mission-statement"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("q", null, missionStatement))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_views_components_ContentComponent__WEBPACK_IMPORTED_MODULE_2__["default"], {
     content: content

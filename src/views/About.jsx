@@ -28,9 +28,9 @@ function About() {
         <h2>ABOUT</h2>
 
         <div class="mission-statement-card card">
-          <h4 class="mission-statement">
+          <h3 class="mission-statement">
             <q>{missionStatement}</q>
-          </h4>
+          </h3>
         </div>
 
         <ContentComponent content={content} />

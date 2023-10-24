@@ -43,6 +43,8 @@ class Templates
                 return $frontpage_template;
             }
         }
+
+        return $frontpage_template;
     }
 
     function get_custom_about_page_template($template_include)

@@ -278,14 +278,7 @@ div.team {
   width: fit-content;
   background-color: black;
 }
-.mission-statement-card.card h4 {
-  letter-spacing: 0;
-  margin-right: 0;
-  color: white;
-}
-
-.office-hours-card.card table thead {
-  background-color: black;
+.mission-statement-card.card h3 {
   color: white;
 }
 

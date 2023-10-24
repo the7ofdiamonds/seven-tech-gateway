@@ -48,7 +48,7 @@ class SEVEN_TECH
         new Admin;
         new API;
         new CSS;
-        new Database;
+        // new Database;
         new JS;
         new Pages;
         new Post_Types;
