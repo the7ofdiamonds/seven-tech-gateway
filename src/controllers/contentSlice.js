@@ -22,7 +22,7 @@ export const getContent = createAsyncThunk('content/getContent', async (pageSlug
             const errorMessage = errorData.message;
             throw new Error(errorMessage);
         }
-
+        
         const responseData = await response.json();
         return responseData;
     } catch (error) {

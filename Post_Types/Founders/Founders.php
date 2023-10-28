@@ -13,11 +13,11 @@ class Founders
     function getFounders()
     {
         $founders = [];
-        $users = get_users(array(
-            'role__in' => array(
+        $users = get_users([
+            'role__in' => [
                 'founder'
-            )
-        ));
+            ]
+        ]);
 
         if ($users) {
             foreach ($users as $user) {

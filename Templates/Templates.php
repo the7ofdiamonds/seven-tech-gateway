@@ -65,7 +65,7 @@ class Templates
 
     function get_custom_login_page_template($template_include)
     {
-        if (is_page('login')) {
+        if (get_query_var('login')) {
             $template_include = SEVEN_TECH . 'Pages/page-login.php';
 
             if (file_exists($template_include)) {
@@ -73,7 +73,7 @@ class Templates
                 add_action('wp_footer', [$this->js_file, 'load_pages_react']);
 
                 return $template_include;
-            } 
+            }
         }
 
         return $template_include;
@@ -81,7 +81,7 @@ class Templates
 
     function get_custom_signup_page_template($template_include)
     {
-        if (is_page('signup')) {
+        if (get_query_var('signup')) {
             $template_include = SEVEN_TECH . 'Pages/page-signup.php';
 
             if (file_exists($template_include)) {
@@ -97,7 +97,7 @@ class Templates
 
     function get_custom_forgot_page_template($template_include)
     {
-        if (is_page('forgot')) {
+        if (get_query_var('forgot')) {
             $template_include = SEVEN_TECH . 'Pages/page-forgot.php';
 
             if (file_exists($template_include)) {
@@ -130,7 +130,7 @@ class Templates
 
     function get_custom_dashboard_page_template($template_include)
     {
-        if (is_page('dashboard')) {
+        if (get_query_var('dashboard')) {
             $template_include = SEVEN_TECH . 'Pages/page-dashboard.php';
 
             if (file_exists($template_include)) {
@@ -147,7 +147,7 @@ class Templates
     function get_founder_resume_page_template($template_include)
     {
 
-        if (is_page('resume')) {
+        if (get_query_var('resume')) {
             $template_include = SEVEN_TECH . 'Post_Types/Founders/single-founder-resume.php';
 
             if (file_exists($template_include)) {

@@ -48,7 +48,7 @@ class SEVEN_TECH
         new Admin;
         new API;
         new CSS;
-        // new Database;
+        new Database;
         new JS;
         new Pages;
         new Post_Types;
@@ -76,13 +76,13 @@ class SEVEN_TECH
 $seven_tech = new SEVEN_TECH();
 register_activation_hook(__FILE__, array($seven_tech, 'activate'));
 
-$seven_tech_roles = new Roles();
-register_activation_hook(__FILE__, array($seven_tech_roles, 'add_roles'));
+// $seven_tech_roles = new Roles();
+// register_activation_hook(__FILE__, array($seven_tech_roles, 'add_roles'));
 
 
-$seven_tech_pages = new Pages();
-register_activation_hook(__FILE__, array($seven_tech_pages, 'add_pages'));
-register_activation_hook(__FILE__, [$seven_tech_pages, 'add_founder_subpages']);
+// $seven_tech_pages = new Pages();
+// register_activation_hook(__FILE__, array($seven_tech_pages, 'add_pages'));
+// register_activation_hook(__FILE__, [$seven_tech_pages, 'add_founder_subpages']);
 
 // register_deactivation_hook(__FILE__, array($thfw_users, 'deactivate'));
 

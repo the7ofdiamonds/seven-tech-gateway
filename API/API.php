@@ -14,6 +14,7 @@ class API
 
     if (file_exists($credentialsPath)) {
       $jsonFileContents = file_get_contents($credentialsPath);
+     
 
       if ($jsonFileContents !== false) {
         $decodedData = json_decode($jsonFileContents, true);

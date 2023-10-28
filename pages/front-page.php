@@ -11,11 +11,7 @@ if (!function_exists('is_plugin_active')) {
 <div class="front-page">
     <?php
     if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
-        echo do_shortcode('[orb-services-hero]');
-    }
-
-    if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
-        echo do_shortcode('[orb-services]');
+        echo do_shortcode('[orb-products-services-frontpage]');
     }
 
     if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
@@ -36,4 +32,4 @@ if (!function_exists('is_plugin_active')) {
     ?>
 </div>
 
-<?php get_footer(); ?>
+<?php get_footer();

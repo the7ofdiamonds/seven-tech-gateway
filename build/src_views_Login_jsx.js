@@ -79,31 +79,32 @@ var login = /*#__PURE__*/function () {
           }
           throw new Error('User not found.');
         case 9:
-          _context.next = 11;
+          console.log(user);
+          _context.next = 12;
           return user.getIdToken();
-        case 11:
+        case 12:
           token = _context.sent;
           data = {
             idToken: token,
             user_password: Password
           };
-          _context.next = 15;
-          return axios__WEBPACK_IMPORTED_MODULE_2__["default"].post('/wp-json/thfw/users/v1/login', data);
-        case 15:
+          _context.next = 16;
+          return axios__WEBPACK_IMPORTED_MODULE_2__["default"].post('/wp-json/seven-tech/users/v1/login', data);
+        case 16:
           sessionStorage.setItem('idToken', token);
           sessionStorage.setItem('user_email', Email);
           return _context.abrupt("return", 'Login successful');
-        case 20:
-          _context.prev = 20;
+        case 21:
+          _context.prev = 21;
           _context.t0 = _context["catch"](1);
           errorCode = _context.t0.code;
           errorMessage = _context.t0.message;
           return _context.abrupt("return", "Error (".concat(errorCode, "): ").concat(errorMessage));
-        case 25:
+        case 26:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[1, 20]]);
+    }, _callee, null, [[1, 21]]);
   }));
   return function login(_x, _x2) {
     return _ref.apply(this, arguments);

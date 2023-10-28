@@ -2,8 +2,6 @@
 
 namespace SEVEN_TECH\Pages;
 
-use WP_Query;
-
 class Pages
 {
     public $front_page_react;
@@ -25,6 +23,12 @@ class Pages
         ];
 
         add_action('init', [$this, 'react_rewrite_rules']);
+        add_action('init', [$this, 'founder_resume_rewrite_rules']);
+
+        add_filter('query_vars', [$this, 'add_query_vars']);
+        add_filter('query_vars', [$this, 'add_query_var_resume']);
+
+        add_action('init', [$this, 'is_user_logged_in']);
     }
 
     public function add_pages()
@@ -47,54 +51,47 @@ class Pages
         }
     }
 
-    public function add_founder_subpages()
+    function react_rewrite_rules()
     {
-        global $wpdb;
+        if (is_array($this->page_titles) && count($this->page_titles) > 0) {
 
-        $pages = [
-            [
-                'title' => 'FOUNDER RESUME',
-                'name' => 'resume'
-            ]
-        ];
+            foreach ($this->page_titles as $page_title) {
+                $url = explode('/', $page_title);
 
-        foreach ($pages as $page) {
-            $page_exists = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'page'", $page['name']));
-
-            if (!$page_exists) {
-                $page_data = array(
-                    'post_title'   => $page['title'],
-                    'post_type'    => 'page',
-                    'post_content' => '',
-                    'post_status'  => 'publish',
-                    'post_name' => $page['name']
-                );
-
-                wp_insert_post($page_data);
+                add_rewrite_rule('^' . $page_title, 'index.php?' . $url[0] . '=$1', 'top');
             }
         }
     }
 
-    public function react_rewrite_rules()
+    function founder_resume_rewrite_rules()
     {
-        foreach ($this->page_titles as $page_title) {
-            $args = array(
-                'post_type' => 'page',
-                'post_title' => $page_title,
-                'posts_per_page' => 1
-            );
-            $query = new WP_Query($args);
+        $founder_resume_path = 'founders/([a-zA-Z-]+)/resume';
+        $url = explode('/', $founder_resume_path);
 
-            if ($query->have_posts()) {
-                $query->the_post();
-                add_rewrite_rule('^' . $query->post->post_name, 'index.php?page_id=' . $query->post->ID, 'top');
+        add_rewrite_rule('^' . $founder_resume_path, 'index.php?' . $url[2] . '=$1', 'top');
+    }
+
+    function add_query_vars($query_vars)
+    {
+        if (is_array($this->page_titles) && count($this->page_titles) > 0) {
+
+            foreach ($this->page_titles as $page_title) {
+                $query_vars[] = $page_title;
             }
 
-            $resume_id = get_page_by_path('resume')->ID;
-
-            add_rewrite_rule('^founders/([^/]+)/resume/?$', 'index.php?page_id=' . $resume_id, 'top');
-
-            wp_reset_postdata();
+            return $query_vars;
         }
+    }
+
+    function add_query_var_resume($query_vars)
+    {
+        $query_vars[] = 'resume';
+
+        return $query_vars;
+    }
+
+    function is_user_logged_in()
+    {
+        return isset($_SESSION['idToken']);
     }
 }
