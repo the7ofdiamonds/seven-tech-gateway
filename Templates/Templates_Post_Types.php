@@ -4,50 +4,63 @@ namespace SEVEN_TECH\Templates;
 
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\JS\JS;
+use SEVEN_TECH\Post_Types\Post_Types;
 
 class Templates_Post_types
 {
+    private $post_types;
     private $css_file;
     private $js_file;
 
     public function __construct()
     {
-        add_filter('archive_template', [$this, 'get_founder_archive_template']);
-        add_filter('single_template', [$this, 'get_founder_single_template']);
+        add_filter('archive_template', [$this, 'get_archive_page_template']);
+        add_filter('single_template', [$this, 'get_single_page_template']);
 
+        $posttypes = new Post_Types();
         $this->css_file = new CSS;
         $this->js_file = new JS;
+
+        $this->post_types = $posttypes->post_types;
     }
 
-    function get_founder_archive_template($archive_template)
+
+    function get_archive_page_template($archive_template)
     {
-        if (is_post_type_archive('founders')) {
-            $archive_template = SEVEN_TECH . 'Post_Types/Founders/archive-founder.php';
+        foreach ($this->post_types as $post_type) {
 
-            if (file_exists($archive_template)) {
-                add_action('wp_head', [$this->css_file, 'load_post_types_css']);
-                add_action('wp_footer', [$this->js_file, 'load_post_types_archive_react']);
+            if (is_post_type_archive($post_type['name'])) {
+                $archive_template = SEVEN_TECH . 'Post_Types/' . $post_type['plural'] . '/archive-' . $post_type['name'] . '.php';
 
-                return $archive_template;
+                if (file_exists($archive_template)) {
+                    add_action('wp_head', [$this->css_file, 'load_post_types_css']);
+                    add_action('wp_footer', [$this->js_file, 'load_post_types_archive_react']);
+
+                    return $archive_template;
+                } else {
+                    error_log('Post Type ' . $post_type['name'] . ' archive template not found.');
+                }
             }
         }
-
-        return $archive_template;
     }
 
-    function get_founder_single_template($singular_template)
+    function get_single_page_template($single_template)
     {
-        if (is_singular('founders')) {
-            $singular_template = SEVEN_TECH . 'Post_Types/Founders/single-founder.php';
+        foreach ($this->post_types as $post_type) {
 
-            if (file_exists($singular_template)) {
-                add_action('wp_head', [$this->css_file, 'load_post_types_css']);
-                add_action('wp_footer', [$this->js_file, 'load_post_types_single_react']);
+            if (is_singular($post_type['name'])) {
+                $single_template = SEVEN_TECH . 'Post_Types/' . $post_type['plural'] . '/single-' . $post_type['name'] . '.php';
 
-                return $singular_template;
+                if (file_exists($single_template)) {
+                    add_action('wp_head', [$this->css_file, 'load_post_types_css']);
+                    add_action('wp_footer', [$this->js_file, 'load_post_types_single_react']);
+
+                    return $single_template;
+                } else {
+                    error_log('Post Type ' . $post_type['name'] . ' single template not found.');
+                }
             }
         }
-
-        return $singular_template;
     }
+
 }

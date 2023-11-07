@@ -50,6 +50,19 @@ class Shadow
                 'section' => 'seven_tech_shadow_settings',
             )
         );
+
+        $wp_customize->add_setting('seven_tech_input_shadow', array(
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+
+        $wp_customize->add_control(
+            'seven_tech_input_shadow',
+            array(
+                'type' => 'input',
+                'label' => __('Input Box Shadow', 'the-house-forever-wins'),
+                'section' => 'seven_tech_shadow_settings',
+            )
+        );
     }
 
     function load_css()
@@ -69,6 +82,13 @@ class Shadow
                                             } else {
                                                 echo esc_html(get_theme_mod('seven_tech_button_shadow'));
                                             } ?>;
+                --seven-tech-input-shadow: <?php
+                                            if (empty(get_theme_mod('seven_tech_input_shadow'))) {
+                                                echo esc_html('0 0 0.5em rgba(0, 0, 0, 0.85)');
+                                            } else {
+                                                echo esc_html(get_theme_mod('seven_tech_input_shadow'));
+                                            } ?>;
+
             }
         </style>
 <?php

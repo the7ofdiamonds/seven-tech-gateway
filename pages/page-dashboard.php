@@ -11,8 +11,25 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-get_header();
-echo isset($_SESSION['idToken']);
-include SEVEN_TECH . 'includes/react.php';
+get_header(); ?>
 
-get_footer();
+<div class="dashboard">
+    <?php
+
+    include SEVEN_TECH . 'includes/react.php';
+
+    if (is_plugin_active('seven-tech-schedule/SEVEN_TECH_Schedule.php')) {
+        echo do_shortcode('[seven-tech-schedule]');
+    }
+
+    if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
+        echo do_shortcode('[seven-tech-portfolio]');
+    }
+
+    if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
+        echo do_shortcode('[orb-products-services]');
+    }
+    ?>
+</div>
+
+<?php get_footer();
