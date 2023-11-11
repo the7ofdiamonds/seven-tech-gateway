@@ -8,22 +8,29 @@ use SEVEN_TECH\Post_Types\Post_Types;
 class JS
 {
     private $handle_prefix;
-    private $page_titles;
-    private $post_types;
-    private $includes_url;
+    private $dir;
+    private $dirURL;
+    private $buildDir;
+    private $buildDirURL;
     private $buildFilePrefix;
     private $buildFilePrefixURL;
     private $front_page_react;
+    private $page_titles;
+    private $post_types;
+    private $includes_url;
 
     public function __construct()
     {
         // add_action('wp_footer', [$this, 'load_js']);
 
         $this->handle_prefix = 'seven_tech_';
-        $this->buildFilePrefix = SEVEN_TECH . 'build/src_views_';
-        $this->buildFilePrefixURL = SEVEN_TECH_URL . 'build/src_views_';
+        $this->dir = SEVEN_TECH;
+        $this->dirURL = SEVEN_TECH_URL;
 
-        $this->includes_url = includes_url();
+        $this->buildDir = $this->dir . 'build/';
+        $this->buildDirURL = $this->dirURL . 'build/';
+        $this->buildFilePrefix = $this->buildDir . 'src_views_';
+        $this->buildFilePrefixURL = $this->buildDirURL . 'src_views_';
 
         $pages = new Pages;
         $posttypes = new Post_Types;
@@ -34,6 +41,8 @@ class JS
         ];
         $this->front_page_react = $pages->front_page_react;
         $this->post_types = $posttypes->post_types;
+
+        $this->includes_url = includes_url();
     }
 
     function load_js()
@@ -45,7 +54,7 @@ class JS
 
     function load_front_page_react()
     {
-        if (is_front_page()) {
+        if ($_SERVER['REQUEST_URI'] === '/') {
             if (is_array($this->front_page_react) && !empty($this->front_page_react)) {
                 foreach ($this->front_page_react as $section) {
                     $fileName = ucwords($section);
@@ -70,10 +79,28 @@ class JS
 
     function load_pages_react()
     {
-        if (is_array($this->page_titles) && !empty($this->page_titles)) {
+        if (!empty($this->page_titles) && is_array($this->page_titles)) {
             foreach ($this->page_titles as $page) {
-                if (is_page($page)) {
-                    $fileName = ucwords($page);
+                $full_url = explode('/', $page);
+                $full_path = explode('/', $_SERVER['REQUEST_URI']);
+
+                $full_url = array_filter($full_url, function ($value) {
+                    return $value !== "";
+                });
+
+                $full_path = array_filter($full_path, function ($value) {
+                    return $value !== "";
+                });
+
+                $full_url = array_values($full_url);
+                $full_path = array_values($full_path);
+
+                $differences = array_diff($full_url, $full_path);
+
+                if (empty($differences)) {
+
+                    $fileName = str_replace(' ', '', ucwords(str_replace('/', ' ', $page)));
+
                     $filePath = $this->buildFilePrefix . $fileName . '_jsx.js';
                     $filePathURL = $this->buildFilePrefixURL . $fileName . '_jsx.js';
 
@@ -85,11 +112,11 @@ class JS
                         error_log($page . ' page has not been created in react JSX.');
                     }
 
-                    wp_enqueue_script($this->handle_prefix . 'react_index', SEVEN_TECH_URL . 'build/index.js', ['wp-element'], '1.0', true);
+                    wp_enqueue_script($this->handle_prefix . 'react_index', $this->buildDirURL . 'index.js', ['wp-element'], '1.0', true);
                 }
             }
         } else {
-            error_log('There are no page titles in the array at SEVEN_TECH Pages');
+            error_log('There are no page titles in the array at ' . $this->dir . ' Pages');
         }
     }
 

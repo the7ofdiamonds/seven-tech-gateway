@@ -67,7 +67,8 @@ class Templates
 
         $differences = array_diff($full_url, $full_path);
 
-        if (empty($differences)) {            $template_include = SEVEN_TECH . 'Pages/page-about.php';
+        if (empty($differences)) {
+            $template_include = SEVEN_TECH . 'Pages/page-about.php';
 
             if (file_exists($template_include)) {
                 add_action('wp_head', [$this->css_file, 'load_pages_css']);
@@ -134,7 +135,8 @@ class Templates
 
         $differences = array_diff($full_url, $full_path);
 
-        if (empty($differences)) {            $template_include = SEVEN_TECH . 'Pages/page-signup.php';
+        if (empty($differences)) {
+            $template_include = SEVEN_TECH . 'Pages/page-signup.php';
 
             if (file_exists($template_include)) {
                 add_action('wp_head', [$this->css_file, 'load_pages_css']);
@@ -167,7 +169,8 @@ class Templates
 
         $differences = array_diff($full_url, $full_path);
 
-        if (empty($differences)) {            $template_include = SEVEN_TECH . 'Pages/page-forgot.php';
+        if (empty($differences)) {
+            $template_include = SEVEN_TECH . 'Pages/page-forgot.php';
 
             if (file_exists($template_include)) {
                 add_action('wp_head', [$this->css_file, 'load_pages_css']);

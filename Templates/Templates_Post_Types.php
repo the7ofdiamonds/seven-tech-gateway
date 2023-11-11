@@ -8,9 +8,9 @@ use SEVEN_TECH\Post_Types\Post_Types;
 
 class Templates_Post_types
 {
-    private $post_types;
     private $css_file;
     private $js_file;
+    private $post_types;
 
     public function __construct()
     {
@@ -23,7 +23,6 @@ class Templates_Post_types
 
         $this->post_types = $posttypes->post_types;
     }
-
 
     function get_archive_page_template($archive_template)
     {
@@ -62,5 +61,4 @@ class Templates_Post_types
             }
         }
     }
-
 }
