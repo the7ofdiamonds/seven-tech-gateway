@@ -2,6 +2,10 @@
 
 get_header();
 
+if (!function_exists('is_plugin_active')) {
+    include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+}
+
 include SEVEN_TECH . 'includes/react.php';
 
 if (is_plugin_active('seven-tech-location/SEVEN_TECH_Location.php')) {

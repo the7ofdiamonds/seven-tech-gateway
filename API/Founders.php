@@ -14,30 +14,6 @@ class Founders
 
     public function __construct()
     {
-        add_action('rest_api_init', function () {
-            register_rest_route('seven-tech/users/v1', '/founders', array(
-                'methods' => 'GET',
-                'callback' => array($this, 'get_founders'),
-                'permission_callback' => '__return_true',
-            ));
-        });
-
-        add_action('rest_api_init', function () {
-            register_rest_route('seven-tech/users/v1', '/founder/(?P<slug>[a-zA-Z0-9-_]+)', array(
-                'methods' => 'GET',
-                'callback' => array($this, 'get_founder'),
-                'permission_callback' => '__return_true',
-            ));
-        });
-
-        add_action('rest_api_init', function () {
-            register_rest_route('seven-tech/users/v1', '/founder/(?P<slug>[a-zA-Z0-9-_]+)/resume', array(
-                'methods' => 'GET',
-                'callback' => array($this, 'get_founder_resume'),
-                'permission_callback' => '__return_true',
-            ));
-        });
-
         $this->pt_founder = new PTFounders;
     }
 

@@ -81,7 +81,7 @@ class JS
     {
         if (!empty($this->page_titles) && is_array($this->page_titles)) {
             foreach ($this->page_titles as $page) {
-                $full_url = explode('/', $page);
+                $full_url = explode('/', $page['url']);
                 $full_path = explode('/', $_SERVER['REQUEST_URI']);
 
                 $full_url = array_filter($full_url, function ($value) {
@@ -99,7 +99,7 @@ class JS
 
                 if (empty($differences)) {
 
-                    $fileName = str_replace(' ', '', ucwords(str_replace('/', ' ', $page)));
+                    $fileName = str_replace(' ', '', ucwords(str_replace('/', ' ', $page['url'])));
 
                     $filePath = $this->buildFilePrefix . $fileName . '_jsx.js';
                     $filePathURL = $this->buildFilePrefixURL . $fileName . '_jsx.js';

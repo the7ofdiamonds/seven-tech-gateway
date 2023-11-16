@@ -4,34 +4,24 @@ namespace SEVEN_TECH\Templates;
 
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\JS\JS;
+use SEVEN_TECH\Post_Types\Post_Types;
 
 class Templates
 {
     private $css_file;
     private $js_file;
+    private $post_types;
 
     public function __construct()
     {
-        add_filter('frontpage_template', [$this, 'get_custom_front_page']);
-
-        add_filter('template_include', [$this, 'get_custom_about_page_template']);
-
-        add_filter('template_include', [$this, 'get_custom_login_page_template']);
-        add_filter('template_include', [$this, 'get_custom_signup_page_template']);
-        add_filter('template_include', [$this, 'get_custom_forgot_page_template']);
-        add_filter('template_include', [$this, 'get_custom_logout_page_template']);
-
-        add_filter('template_include', [$this, 'get_custom_dashboard_page_template']);
-
-        add_filter('template_include', [$this, 'get_founder_resume_page_template']);
-
         $this->css_file = new CSS;
         $this->js_file = new JS;
+        $posttypes = new Post_Types;
 
-        new Templates_Post_types;
+        $this->post_types = $posttypes->post_types;
     }
 
-    function get_custom_front_page($frontpage_template)
+    function get_front_page_template($frontpage_template)
     {
         if (is_front_page()) {
             $frontpage_template = SEVEN_TECH . 'Pages/front-page.php';
@@ -47,221 +37,107 @@ class Templates
         return $frontpage_template;
     }
 
-    function get_custom_about_page_template($template_include)
+    function get_custom_page_template($template, $name)
     {
-        $page = '/about';
+        if (is_page($name)) {
+            $custom_template = SEVEN_TECH . "Pages/page-{$name}.php";
 
-        $full_url = explode('/', $page);
-        $full_path = explode('/', $_SERVER['REQUEST_URI']);
-
-        $full_url = array_filter($full_url, function ($value) {
-            return $value !== "";
-        });
-
-        $full_path = array_filter($full_path, function ($value) {
-            return $value !== "";
-        });
-
-        $full_url = array_values($full_url);
-        $full_path = array_values($full_path);
-
-        $differences = array_diff($full_url, $full_path);
-
-        if (empty($differences)) {
-            $template_include = SEVEN_TECH . 'Pages/page-about.php';
-
-            if (file_exists($template_include)) {
+            if (file_exists($custom_template)) {
                 add_action('wp_head', [$this->css_file, 'load_pages_css']);
                 add_action('wp_footer', [$this->js_file, 'load_pages_react']);
-
-                return $template_include;
+    
+                return $custom_template;
+            } else {
+                return SEVEN_TECH . "Pages/page.php";
             }
         }
 
-        return $template_include;
+        return $template;
     }
 
-    function get_custom_login_page_template($template_include)
+    function get_protected_page_template($template)
     {
-        $page = '/login';
+        $template = SEVEN_TECH . 'Pages/page-protected.php';
 
-        $full_url = explode('/', $page);
-        $full_path = explode('/', $_SERVER['REQUEST_URI']);
-
-        $full_url = array_filter($full_url, function ($value) {
-            return $value !== "";
-        });
-
-        $full_path = array_filter($full_path, function ($value) {
-            return $value !== "";
-        });
-
-        $full_url = array_values($full_url);
-        $full_path = array_values($full_path);
-
-        $differences = array_diff($full_url, $full_path);
-
-        if (empty($differences)) {
-            $template_include = SEVEN_TECH . 'Pages/page-login.php';
-
-            if (file_exists($template_include)) {
-                add_action('wp_head', [$this->css_file, 'load_pages_css']);
-                add_action('wp_footer', [$this->js_file, 'load_pages_react']);
-
-                return $template_include;
-            }
+        if (file_exists($template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+            return $template;
+        } else {
+            error_log('Protected Page Template does not exist.');
         }
 
-        return $template_include;
+        return $template;
     }
 
-    function get_custom_signup_page_template($template_include)
+    function get_page_template($template)
     {
-        $page = '/signup';
+        $template = SEVEN_TECH . 'Pages/page.php';;
 
-        $full_url = explode('/', $page);
-        $full_path = explode('/', $_SERVER['REQUEST_URI']);
+        if (file_exists($template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
 
-        $full_url = array_filter($full_url, function ($value) {
-            return $value !== "";
-        });
-
-        $full_path = array_filter($full_path, function ($value) {
-            return $value !== "";
-        });
-
-        $full_url = array_values($full_url);
-        $full_path = array_values($full_path);
-
-        $differences = array_diff($full_url, $full_path);
-
-        if (empty($differences)) {
-            $template_include = SEVEN_TECH . 'Pages/page-signup.php';
-
-            if (file_exists($template_include)) {
-                add_action('wp_head', [$this->css_file, 'load_pages_css']);
-                add_action('wp_footer', [$this->js_file, 'load_pages_react']);
-
-                return $template_include;
-            }
+            return $template;
+        } else {
+            error_log('Page Template does not exist.');
         }
 
-        return $template_include;
+        return $template;
     }
 
-    function get_custom_forgot_page_template($template_include)
+    function get_archive_page_template($archive_template)
     {
-        $page = '/forgot';
+        if (!empty($this->post_types)) {
+            foreach ($this->post_types as $post_type) {
 
-        $full_url = explode('/', $page);
-        $full_path = explode('/', $_SERVER['REQUEST_URI']);
+                if (is_post_type_archive($post_type['name'])) {
+                    $archive_template = SEVEN_TECH . 'Post_Types/' . $post_type['plural'] . '/archive-' . $post_type['name'] . '.php';
 
-        $full_url = array_filter($full_url, function ($value) {
-            return $value !== "";
-        });
+                    if (file_exists($archive_template)) {
+                        add_action('wp_head', [$this->css_file, 'load_post_types_css']);
+                        add_action('wp_footer', [$this->js_file, 'load_post_types_archive_react']);
 
-        $full_path = array_filter($full_path, function ($value) {
-            return $value !== "";
-        });
+                        return $archive_template;
+                    }
 
-        $full_url = array_values($full_url);
-        $full_path = array_values($full_path);
-
-        $differences = array_diff($full_url, $full_path);
-
-        if (empty($differences)) {
-            $template_include = SEVEN_TECH . 'Pages/page-forgot.php';
-
-            if (file_exists($template_include)) {
-                add_action('wp_head', [$this->css_file, 'load_pages_css']);
-                add_action('wp_footer', [$this->js_file, 'load_pages_react']);
-
-                return $template_include;
+                    break;
+                }
             }
         }
 
-        return $template_include;
+        return $archive_template;
     }
 
-    function get_custom_logout_page_template($template_include)
+    function get_single_page_template($single_template)
     {
-        $page = '/logout';
+        if (!empty($this->post_types)) {
+            foreach ($this->post_types as $post_type) {
 
-        $full_url = explode('/', $page);
-        $full_path = explode('/', $_SERVER['REQUEST_URI']);
+                if (is_singular($post_type['name'])) {
+                    $single_template = SEVEN_TECH . 'Post_Types/' . $post_type['plural'] . '/single-' . $post_type['name'] . '.php';
 
-        $full_url = array_filter($full_url, function ($value) {
-            return $value !== "";
-        });
+                    if (file_exists($single_template)) {
+                        add_action('wp_head', [$this->css_file, 'load_post_types_css']);
+                        add_action('wp_footer', [$this->js_file, 'load_post_types_single_react']);
+                    }
 
-        $full_path = array_filter($full_path, function ($value) {
-            return $value !== "";
-        });
-
-        $full_url = array_values($full_url);
-        $full_path = array_values($full_path);
-
-        $differences = array_diff($full_url, $full_path);
-
-        if (empty($differences)) {
-            $template_include = SEVEN_TECH . 'Pages/page-logout.php';
-
-            if (file_exists($template_include)) {
-                add_action('wp_head', [$this->css_file, 'load_pages_css']);
-                add_action('wp_footer', [$this->js_file, 'load_pages_react']);
-
-                return $template_include;
+                    break;
+                }
             }
         }
 
-        return $template_include;
-    }
-
-    function get_custom_dashboard_page_template($template_include)
-    {
-        $page = '/dashboard';
-
-        $full_url = explode('/', $page);
-        $full_path = explode('/', $_SERVER['REQUEST_URI']);
-
-        $full_url = array_filter($full_url, function ($value) {
-            return $value !== "";
-        });
-
-        $full_path = array_filter($full_path, function ($value) {
-            return $value !== "";
-        });
-
-        $full_url = array_values($full_url);
-        $full_path = array_values($full_path);
-
-        $differences = array_diff($full_url, $full_path);
-
-        if (empty($differences)) {
-            $template_include = SEVEN_TECH . 'Pages/page-dashboard.php';
-
-            if (file_exists($template_include)) {
-                add_action('wp_head', [$this->css_file, 'load_pages_css']);
-                add_action('wp_footer', [$this->js_file, 'load_pages_react']);
-
-                return $template_include;
-            }
-        }
-
-        return $template_include;
+        return $single_template;
     }
 
     function get_founder_resume_page_template($template_include)
     {
+        $resume_template = SEVEN_TECH . 'Post_Types/Founders/single-founder-resume.php';
 
-        if (get_query_var('resume')) {
-            $template_include = SEVEN_TECH . 'Post_Types/Founders/single-founder-resume.php';
-
-            if (file_exists($template_include)) {
-                return $template_include;
-            } else {
-                error_log('Resume Page Template does not exist.');
-            }
+        if (file_exists($resume_template)) {
+            return $resume_template;
+        } else {
+            error_log('Resume Page Template does not exist.');
         }
 
         return $template_include;

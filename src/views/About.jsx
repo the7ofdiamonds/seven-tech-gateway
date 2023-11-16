@@ -2,25 +2,20 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ContentComponent from '../views/components/ContentComponent';
-import HeadquartersComponent from '../views/components/HeadquartersComponent';
 
 import Founders from './Founders';
 
-import { getContent, getHeadquarters } from '../controllers/contentSlice';
+import { getContent } from '../controllers/contentSlice';
 
 function About() {
   const dispatch = useDispatch();
 
   const missionStatement = 'Turning ideas into tangible assets ';
-  const { content, headquarters } = useSelector((state) => state.content);
+  const { content } = useSelector((state) => state.content);
 
   useEffect(() => {
     dispatch(getContent('about'));
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   dispatch(getHeadquarters());
-  // }, [dispatch]);
 
   return (
     <>

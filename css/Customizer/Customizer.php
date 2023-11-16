@@ -6,11 +6,6 @@ class Customizer
 {
 	public function __construct()
 	{
-		add_theme_support('custom-logo');
-		add_theme_support("custom-background");
-
-		add_action('customize_register', array($this, 'register_customizer_panel'));
-
 		new BorderRadius;
 		new Color;
 		new Shadow;

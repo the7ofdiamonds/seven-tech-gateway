@@ -4,26 +4,21 @@ namespace SEVEN_TECH\API;
 
 use Exception;
 
-use WP_REST_Request;
-
-class Users
+class Location
 {
-    public function get_user(WP_REST_Request $request)
+    function get_headquarters()
     {
         try {
-            $user_email_encoded = $request->get_param('slug');
-            $user_email = urldecode($user_email_encoded);
-            $user = get_user_by('email', $user_email);
-            $user_id = $user->id;
+            $headquarters = get_option('orb-headquarters');
 
-            return rest_ensure_response($user_id);
+            return rest_ensure_response($headquarters);
         } catch (Exception $e) {
             $error_message = $e->getMessage();
             $status_code = $e->getCode();
 
             $response_data = [
                 'message' => $error_message,
-                'status' => $status_code
+                'status' => $status_code,
             ];
 
             $response = rest_ensure_response($response_data);

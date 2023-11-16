@@ -8,17 +8,6 @@ use WP_REST_Request;
 
 class Signup
 {
-    public function __construct()
-    {
-        add_action('rest_api_init', function () {
-            register_rest_route('thfw/users/v1', '/signup', array(
-                'methods' => 'POST',
-                'callback' => array($this, 'signup'),
-                'permission_callback' => '__return_true',
-            ));
-        });
-    }
-
     public function signup(WP_REST_Request $request)
     {
         try {

@@ -10,7 +10,7 @@ const initialState = {
 export const getContent = createAsyncThunk('content/getContent', async (pageSlug) => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/content/v1/${pageSlug}`, {
+        const response = await fetch(`/wp-json/seven-tech/v1/content/${pageSlug}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,7 +33,7 @@ export const getContent = createAsyncThunk('content/getContent', async (pageSlug
 export const getHeadquarters = createAsyncThunk('content/getHeadquarters', async () => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/headquarters/v1/`, {
+        const response = await fetch(`/wp-json/seven-tech/location/v1/headquarters`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

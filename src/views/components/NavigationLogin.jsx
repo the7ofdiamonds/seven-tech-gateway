@@ -2,15 +2,15 @@ function NavigationLoginComponent() {
   const baseHost = window.location.protocol + '//' + window.location.host;
 
   const handleLogin = () => {
-    window.location.href = `/login/?redirectTo=${baseHost}/schedule/`;
+    window.location.href = `/login`;
   };
 
   const handleSignUp = () => {
-    window.location.href = `/signup/?redirectTo=${baseHost}/schedule/`;
+    window.location.href = `/signup`;
   };
 
   const handleForgot = () => {
-    window.location.href = `/forgot/?redirectTo=${baseHost}/schedule/`;
+    window.location.href = `/forgot`;
   };
 
   return (

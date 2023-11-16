@@ -29,47 +29,43 @@ require_once SEVEN_TECH . 'vendor/autoload.php';
 use SEVEN_TECH\Admin\Admin;
 use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
-use SEVEN_TECH\Database\Database;
-use SEVEN_TECH\JS\JS;
+use SEVEN_TECH\CSS\Customizer\Customizer;
 use SEVEN_TECH\Pages\Pages;
 use SEVEN_TECH\Post_Types\Post_Types;
-use SEVEN_TECH\Roles\Roles;
+use SEVEN_TECH\Router\Router;
 use SEVEN_TECH\Shortcodes\Shortcodes;
-use SEVEN_TECH\Templates\Templates;
-
-use Kreait\Firebase\Factory;
 
 class SEVEN_TECH
 {
     public function __construct()
     {
-        add_filter('upload_mimes', [$this, 'add_theme_support_upload_mimes']);
+        add_theme_support('custom-logo');
+		add_theme_support("custom-background");
 
-        new Admin;
-        new API;
-        new CSS;
-        new Database;
-        new JS;
-        new Pages;
-        new Post_Types;
-        new Shortcodes;
-        new Templates;
+        add_action('admin_init', function () {
+            new Admin;
+        });
+
+        add_action('rest_api_init', function () {
+            new API;
+        });
+
+        add_action('init', function () {
+            (new Pages)->react_rewrite_rules();
+            (new Post_Types)->custom_post_types();
+            (new Router)->load_page();
+            new Shortcodes;
+        });
+
+        add_action('wp_head', [(new CSS), 'load_social_bar_css']);
+        add_action('customize_register', [(new Customizer), 'register_customizer_panel']);
+
+        add_filter('query_vars', [(new Pages), 'add_query_vars']);
     }
 
     function activate()
     {
         flush_rewrite_rules();
-    }
-
-    function add_theme_support_upload_mimes($mimes)
-    {
-        $mimes['jpeg'] = 'image/jpeg';
-        $mimes['jpg'] = 'image/jpeg';
-        $mimes['svg'] = 'image/svg+xml';
-        $mimes['eps'] = 'application/postscript';
-        $mimes['ai'] = 'application/postscript';
-
-        return $mimes;
     }
 }
 

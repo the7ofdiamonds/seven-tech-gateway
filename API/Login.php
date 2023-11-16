@@ -5,8 +5,6 @@ namespace SEVEN_TECH\API;
 use Exception;
 use WP_REST_Request;
 
-use Kreait\Firebase\Exception\AuthException;
-
 class Login
 {
     private $auth;
@@ -14,17 +12,9 @@ class Login
     public function __construct($auth)
     {
         $this->auth = $auth;
-
-        add_action('rest_api_init', function () {
-            register_rest_route('seven-tech/users/v1', '/login', array(
-                'methods' => 'POST',
-                'callback' => [$this, 'login_user'],
-                'permission_callback' => '__return_true',
-            ));
-        });
     }
 
-    function login_user(WP_REST_Request $request)
+    function login(WP_REST_Request $request)
     {
         try {
             $idToken = $request['idToken'];

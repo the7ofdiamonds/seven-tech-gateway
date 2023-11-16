@@ -8,43 +8,23 @@ use WP_REST_Request;
 
 class Content
 {
-    public function __construct()
-    {
-        add_action('rest_api_init', function () {
-            register_rest_route('seven-tech/content/v1', '/(?P<slug>[a-zA-Z0-9-_]+)', array(
-                'methods' => 'GET',
-                'callback' => array($this, 'get_content'),
-                'permission_callback' => '__return_true',
-            ));
-        });
-
-        add_action('rest_api_init', function () {
-            register_rest_route('seven-tech/headquarters/v1', '/', array(
-                'methods' => 'GET',
-                'callback' => array($this, 'get_headquarters'),
-                'permission_callback' => '__return_true',
-            ));
-        });
-    }
-
     function get_content(WP_REST_Request $request)
     {
         try {
             $page_slug = $request->get_param('slug');
             $page = get_page_by_path($page_slug);
 
-            if (!$page) {
+            if ($page === null) {
                 throw new Exception('Page not found', 404);
             }
 
             $page_id = $page->ID;
             $page = get_post($page_id);
+            $page_content = $page->post_content;
 
-            if (!$page) {
+            if (empty($page_content)) {
                 throw new Exception('Page content not found', 404);
             }
-
-            $page_content = $page->post_content;
 
             // Create a DOMDocument to parse the content with UTF-8 encoding
             $doc = new \DOMDocument('1.0', 'UTF-8');
@@ -78,28 +58,6 @@ class Content
             header('Content-Type: text/html; charset=UTF-8');
 
             return rest_ensure_response($paragraphArray);
-        } catch (Exception $e) {
-            $error_message = $e->getMessage();
-            $status_code = $e->getCode();
-
-            $response_data = [
-                'message' => $error_message,
-                'status' => $status_code,
-            ];
-
-            $response = rest_ensure_response($response_data);
-            $response->set_status($status_code);
-
-            return $response;
-        }
-    }
-
-    function get_headquarters()
-    {
-        try {
-            $headquarters = get_option('orb-headquarters');
-            
-            return rest_ensure_response($headquarters);
         } catch (Exception $e) {
             $error_message = $e->getMessage();
             $status_code = $e->getCode();

@@ -4,7 +4,6 @@ namespace SEVEN_TECH\CSS;
 
 use SEVEN_TECH\Pages\Pages;
 use SEVEN_TECH\Post_Types\Post_Types;
-use SEVEN_TECH\CSS\Customizer\Customizer;
 
 class CSS
 {
@@ -18,8 +17,6 @@ class CSS
 
     public function __construct()
     {
-        add_action('wp_head', [$this, 'load_social_bar_css']);
-
         $this->handle_prefix = 'seven_tech_';
         $this->cssFolderPath = SEVEN_TECH . 'CSS/';
         $this->cssFolderPathURL = SEVEN_TECH_URL . 'CSS/';
@@ -35,8 +32,6 @@ class CSS
             ...$pages->protected_pages
         ];
         $this->post_types = $posttypes->post_types;
-
-        new Customizer;
     }
 
     function load_front_page_css()
@@ -54,7 +49,7 @@ class CSS
     function load_pages_css()
     {
         foreach ($this->page_titles as $page) {
-            $full_url = explode('/', $page);
+            $full_url = explode('/', $page['url']);
             $full_path = explode('/', $_SERVER['REQUEST_URI']);
 
             $full_url = array_filter($full_url, function ($value) {

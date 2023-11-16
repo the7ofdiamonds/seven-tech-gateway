@@ -254,13 +254,13 @@ __webpack_require__.r(__webpack_exports__);
 function NavigationLoginComponent() {
   var baseHost = window.location.protocol + '//' + window.location.host;
   var handleLogin = function handleLogin() {
-    window.location.href = "/login/?redirectTo=".concat(baseHost, "/schedule/");
+    window.location.href = "/login";
   };
   var handleSignUp = function handleSignUp() {
-    window.location.href = "/signup/?redirectTo=".concat(baseHost, "/schedule/");
+    window.location.href = "/signup";
   };
   var handleForgot = function handleForgot() {
-    window.location.href = "/forgot/?redirectTo=".concat(baseHost, "/schedule/");
+    window.location.href = "/forgot";
   };
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "options"

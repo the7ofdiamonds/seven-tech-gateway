@@ -31,10 +31,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _views_components_ContentComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../views/components/ContentComponent */ "./src/views/components/ContentComponent.jsx");
-/* harmony import */ var _views_components_HeadquartersComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../views/components/HeadquartersComponent */ "./src/views/components/HeadquartersComponent.jsx");
-/* harmony import */ var _Founders__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Founders */ "./src/views/Founders.jsx");
-/* harmony import */ var _controllers_contentSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../controllers/contentSlice */ "./src/controllers/contentSlice.js");
-
+/* harmony import */ var _Founders__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Founders */ "./src/views/Founders.jsx");
+/* harmony import */ var _controllers_contentSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../controllers/contentSlice */ "./src/controllers/contentSlice.js");
 
 
 
@@ -46,16 +44,10 @@ function About() {
   var _useSelector = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
       return state.content;
     }),
-    content = _useSelector.content,
-    headquarters = _useSelector.headquarters;
+    content = _useSelector.content;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    dispatch((0,_controllers_contentSlice__WEBPACK_IMPORTED_MODULE_5__.getContent)('about'));
+    dispatch((0,_controllers_contentSlice__WEBPACK_IMPORTED_MODULE_4__.getContent)('about'));
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   dispatch(getHeadquarters());
-  // }, [dispatch]);
-
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("section", {
     className: "about"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, "ABOUT"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -64,7 +56,7 @@ function About() {
     "class": "mission-statement"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("q", null, missionStatement))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_views_components_ContentComponent__WEBPACK_IMPORTED_MODULE_2__["default"], {
     content: content
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Founders__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Founders__WEBPACK_IMPORTED_MODULE_3__["default"], null)));
 }
 /* harmony default export */ __webpack_exports__["default"] = (About);
 
@@ -185,26 +177,6 @@ function GroupMembers(props) {
   }) : '');
 }
 /* harmony default export */ __webpack_exports__["default"] = (GroupMembers);
-
-/***/ }),
-
-/***/ "./src/views/components/HeadquartersComponent.jsx":
-/*!********************************************************!*\
-  !*** ./src/views/components/HeadquartersComponent.jsx ***!
-  \********************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-function HeadquartersComponent(props) {
-  var headquarters = props.headquarters;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "class": "headquarters-card card"
-  }, headquarters);
-}
-/* harmony default export */ __webpack_exports__["default"] = (HeadquartersComponent);
 
 /***/ })
 
