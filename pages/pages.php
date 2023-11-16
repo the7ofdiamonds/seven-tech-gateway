@@ -82,6 +82,8 @@ class Pages
                     );
 
                     wp_insert_post($page_data);
+
+                    error_log($page['title'] . ' page added.');
                 }
             }
         }

@@ -30,8 +30,10 @@ use SEVEN_TECH\Admin\Admin;
 use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\CSS\Customizer\Customizer;
+use SEVEN_TECH\Database\Database;
 use SEVEN_TECH\Pages\Pages;
 use SEVEN_TECH\Post_Types\Post_Types;
+use SEVEN_TECH\Roles\Roles;
 use SEVEN_TECH\Router\Router;
 use SEVEN_TECH\Shortcodes\Shortcodes;
 
@@ -39,9 +41,6 @@ class SEVEN_TECH
 {
     public function __construct()
     {
-        add_theme_support('custom-logo');
-		add_theme_support("custom-background");
-
         add_action('admin_init', function () {
             new Admin;
         });
@@ -55,6 +54,7 @@ class SEVEN_TECH
             (new Post_Types)->custom_post_types();
             (new Router)->load_page();
             new Shortcodes;
+            // (new Taxonomies)->custom_taxonomy();
         });
 
         add_action('wp_head', [(new CSS), 'load_social_bar_css']);
@@ -66,6 +66,9 @@ class SEVEN_TECH
     function activate()
     {
         flush_rewrite_rules();
+        (new Database)->createTables();
+        (new Pages)->add_pages();
+        (new Roles)->add_roles();
     }
 }
 
