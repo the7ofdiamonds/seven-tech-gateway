@@ -16,7 +16,7 @@ const initialState = {
 export const getFounders = createAsyncThunk('founder/getFounders', async () => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/users/v1/founders`, {
+        const response = await fetch(`/wp-json/seven-tech/v1/users/founders`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ export const getFounders = createAsyncThunk('founder/getFounders', async () => {
 export const getFounder = createAsyncThunk('founder/getFounder', async (founder) => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/users/v1/founder/${founder}`, {
+        const response = await fetch(`/wp-json/seven-tech/v1/users/founder/${founder}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ export const getFounder = createAsyncThunk('founder/getFounder', async (founder)
 export const getFounderResume = createAsyncThunk('founder/getFounderResume', async (pageTitle) => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/users/v1/founder/${pageTitle}/resume`, {
+        const response = await fetch(`/wp-json/seven-tech/v1/users/founder/${pageTitle}/resume`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

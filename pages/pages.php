@@ -59,10 +59,6 @@ class Pages
             ...$this->pages,
             ...$this->protected_pages
         ];
-
-        add_action('init', [$this, 'react_rewrite_rules']);
-
-        add_action('init', [$this, 'is_user_logged_in']);
     }
 
     function add_pages()

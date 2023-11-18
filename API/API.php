@@ -69,19 +69,19 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/users/v1', '/founders', array(
+    register_rest_route('seven-tech/v1', '/users/founders', array(
       'methods' => 'GET',
       'callback' => array($founders, 'get_founders'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/users/v1', '/founder/(?P<slug>[a-zA-Z0-9-_]+)', array(
+    register_rest_route('seven-tech/v1', '/users/founder/(?P<slug>[a-zA-Z0-9-_]+)', array(
       'methods' => 'GET',
       'callback' => array($founders, 'get_founder'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/users/v1', '/founder/(?P<slug>[a-zA-Z0-9-_]+)/resume', array(
+    register_rest_route('seven-tech/v1', '/users/founder/(?P<slug>[a-zA-Z0-9-_]+)/resume', array(
       'methods' => 'GET',
       'callback' => array($founders, 'get_founder_resume'),
       'permission_callback' => '__return_true',
@@ -93,25 +93,25 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/users/v1', '/login', array(
+    register_rest_route('seven-tech/v1', '/users/login', array(
       'methods' => 'POST',
       'callback' => [$login, 'login'],
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/users/v1', '/logout', array(
+    register_rest_route('seven-tech/v1', '/users/logout', array(
       'methods' => 'POST',
       'callback' => array($logout, 'logout'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/users/v1', '/signup', array(
+    register_rest_route('seven-tech/v1', '/users/signup', array(
       'methods' => 'POST',
       'callback' => array($signup, 'signup'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/users/v1', '/(?P<slug>[a-zA-Z0-9-_%.]+)', array(
+    register_rest_route('seven-tech/v1', '/users/(?P<slug>[a-zA-Z0-9-_%.]+)', array(
       'methods' => 'GET',
       'callback' => array($users, 'get_user'),
       'permission_callback' => '__return_true',

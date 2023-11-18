@@ -23,10 +23,12 @@ export const login = async ( Email, Password) => {
 
     const token = await user.getIdToken();
     const data = { idToken: token, user_password: Password };
-    await axios.post('/wp-json/seven-tech/users/v1/login', data);
+    
+    await axios.post('/wp-json/seven-tech/v1/users/login', data);
 
     sessionStorage.setItem('idToken', token);
     sessionStorage.setItem('user_email', Email);
+
     return 'Login successful';
   } catch (error) {
     const errorCode = error.code;

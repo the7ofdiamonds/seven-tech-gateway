@@ -15,7 +15,7 @@ class Login
     }
 
     function login(WP_REST_Request $request)
-    {
+    {error_log('login');
         try {
             $idToken = $request['idToken'];
             $user_password = $request['user_password'];
@@ -23,6 +23,7 @@ class Login
             if (empty($idToken)) {
                 throw new Exception('Token is required.');
             }
+
             $verifiedIdToken = $this->auth->verifyIdToken($idToken);
 
             $uid = $verifiedIdToken->claims()->get('sub');
@@ -51,6 +52,7 @@ class Login
                 ];
                 $response = rest_ensure_response($message);
                 $response->set_status(401);
+
                 return $response;
             }
 

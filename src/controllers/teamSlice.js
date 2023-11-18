@@ -16,7 +16,7 @@ const initialState = {
 export const getTeam = createAsyncThunk('team/getTeam', async () => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/users/v1/team`, {
+        const response = await fetch(`/wp-json/seven-tech/v1/users/team`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ export const getTeam = createAsyncThunk('team/getTeam', async () => {
 export const getTeamMember = createAsyncThunk('team/getTeamMember', async (team) => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/users/v1/team/${team}`, {
+        const response = await fetch(`/wp-json/seven-tech/v1/users/team/${team}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ export const getTeamMember = createAsyncThunk('team/getTeamMember', async (team)
 export const getTeamMemberResume = createAsyncThunk('team/getTeamMemberResume', async (pageTitle) => {
 
     try {
-        const response = await fetch(`/wp-json/seven-tech/users/v1/team/${pageTitle}/resume`, {
+        const response = await fetch(`/wp-json/seven-tech/v1/users/team/${pageTitle}/resume`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

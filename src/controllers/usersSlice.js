@@ -1,5 +1,12 @@
-import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+    browserSessionPersistence,
+    setPersistence,
+    signInWithEmailAndPassword,
+    getAuth,
+} from 'firebase/auth';
+
+import { projectAuth } from '../services/firebase/config.js';
 
 const initialState = {
     userLoading: false,
@@ -12,19 +19,70 @@ const initialState = {
     user_id: ''
 };
 
+// Signup ?
 export const addUser = createAsyncThunk('users/adduser', async (user_data) => {
     try {
-        const response = await axios.post('/wp-json/orb/v1/users', user_data);
-        return response.data;
+        const response = await fetch('/wp-json/seven-tech/v1/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user_data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            const errorMessage = errorData.message;
+            throw new Error(errorMessage);
+        }
+
+        const responseData = await response.json();
+        return responseData;
     } catch (error) {
-        throw new Error(error.message);
+        throw error;
+    }
+});
+
+export const signInEmailAndPassword = createAsyncThunk('users/signInWithEmailAndPassword', async (Email, Password) => {
+    const auth = getAuth();
+    try {
+        signInWithEmailAndPassword(auth, Email, Password);
+        setPersistence(auth, browserSessionPersistence);
+
+        const user = projectAuth.currentUser;
+
+        if (!user) {
+            throw new Error('User not found.', 404);
+        }
+
+        const token = user.getIdToken();
+        const data = { idToken: token, user_password: Password };
+
+        const response = await fetch('/wp-json/seven-tech/v1/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            const errorMessage = errorData.message;
+            throw new Error(errorMessage);
+        }
+
+        const responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        console.error(error)
+        throw error.message;
     }
 });
 
 export const getUser = createAsyncThunk('user/getUser', async (_, { getState }) => {
     const { user_email } = getState().user;
     const encodedEmail = encodeURIComponent(user_email);
-
     try {
         const response = await fetch(`/wp-json/seven-tech/v1/users/${encodedEmail}`, {
             method: 'GET',
