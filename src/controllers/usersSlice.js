@@ -11,7 +11,7 @@ const initialState = {
     user_id: ''
 };
 
-export const addUser = createAsyncThunk('users/adduser', async (user_data) => {
+export const addUser = createAsyncThunk('users/addUser', async (user_data) => {
     try {
         const response = await fetch('/wp-json/seven-tech/v1/users', {
             method: 'POST',
@@ -34,13 +34,11 @@ export const addUser = createAsyncThunk('users/adduser', async (user_data) => {
     }
 });
 
-export const updateUser  = createAsyncThunk('user/getUser', async (_, { getState }) => {});
-
 export const getUser = createAsyncThunk('user/getUser', async (_, { getState }) => {
     try {
         const { user_email } = getState().user;
         const encodedEmail = encodeURIComponent(user_email);
-    
+
         const response = await fetch(`/wp-json/seven-tech/v1/users/${encodedEmail}`, {
             method: 'GET',
             headers: {
@@ -61,6 +59,8 @@ export const getUser = createAsyncThunk('user/getUser', async (_, { getState }) 
     }
 });
 
+export const updateUser = createAsyncThunk('user/updateUser', async (_, { getState }) => { });
+
 export const usersSlice = createSlice({
     name: 'users',
     initialState,
@@ -70,17 +70,17 @@ export const usersSlice = createSlice({
                 state.loading = false
                 state.user_id = action.payload
             })
-            .addCase(updateUser.fulfilled, (state, action) => {
-                state.userLoading = false
-                state.userError = ''
-                state.userMessage = action.payload
-            })
             .addCase(getUser.fulfilled, (state, action) => {
                 state.userLoading = false;
                 state.userError = null;
                 state.user_id = action.payload.id
                 state.first_name = action.payload.first_name
                 state.last_name = action.payload.last_name
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.userLoading = false
+                state.userError = ''
+                state.userMessage = action.payload
             })
     }
 })

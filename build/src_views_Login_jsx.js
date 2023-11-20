@@ -57,15 +57,16 @@ var signInEmailAndPassword = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_2__.cr
           }
           throw new Error('User not found.', 404);
         case 10:
-          _context.next = 12;
+          sessionStorage.setItem('email', Email);
+          _context.next = 13;
           return user.getIdToken();
-        case 12:
+        case 13:
           token = _context.sent;
           data = {
             idToken: token,
             user_password: Password
           };
-          _context.next = 16;
+          _context.next = 17;
           return fetch('/wp-json/seven-tech/v1/users/login', {
             method: 'POST',
             headers: {
@@ -73,34 +74,34 @@ var signInEmailAndPassword = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_2__.cr
             },
             body: JSON.stringify(data)
           });
-        case 16:
+        case 17:
           response = _context.sent;
           if (response.ok) {
-            _context.next = 23;
+            _context.next = 24;
             break;
           }
-          _context.next = 20;
+          _context.next = 21;
           return response.json();
-        case 20:
+        case 21:
           errorData = _context.sent;
           errorMessage = errorData.message;
           throw new Error(errorMessage);
-        case 23:
-          _context.next = 25;
+        case 24:
+          _context.next = 26;
           return response.json();
-        case 25:
+        case 26:
           responseData = _context.sent;
           return _context.abrupt("return", responseData);
-        case 29:
-          _context.prev = 29;
+        case 30:
+          _context.prev = 30;
           _context.t0 = _context["catch"](0);
           console.error(_context.t0);
           throw _context.t0;
-        case 33:
+        case 34:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 29]]);
+    }, _callee, null, [[0, 30]]);
   }));
   return function (_x) {
     return _ref.apply(this, arguments);

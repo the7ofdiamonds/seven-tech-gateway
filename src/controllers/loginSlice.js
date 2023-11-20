@@ -36,6 +36,8 @@ export const signInEmailAndPassword = createAsyncThunk('users/signInEmailAndPass
             throw new Error('User not found.', 404);
         }
 
+        sessionStorage.setItem('email', Email);
+        
         const token = await user.getIdToken();
         const data = { idToken: token, user_password: Password };
 
@@ -65,7 +67,7 @@ export const getUser = createAsyncThunk('user/getUser', async (_, { getState }) 
     try {
         const { user_email } = getState().user;
         const encodedEmail = encodeURIComponent(user_email);
-    
+
         const response = await fetch(`/wp-json/seven-tech/v1/users/${encodedEmail}`, {
             method: 'GET',
             headers: {

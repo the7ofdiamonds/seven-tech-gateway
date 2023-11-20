@@ -19668,7 +19668,7 @@ var initialState = {
   last_name: '',
   user_id: ''
 };
-var addUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('users/adduser', /*#__PURE__*/function () {
+var addUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('users/addUser', /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(user_data) {
     var response, errorData, errorMessage, responseData;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -19715,34 +19715,17 @@ var addUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)
     return _ref.apply(this, arguments);
   };
 }());
-var updateUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('user/getUser', /*#__PURE__*/function () {
+var getUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('user/getUser', /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_, _ref2) {
-    var getState;
+    var getState, user_email, encodedEmail, response, errorData, errorMessage, responseData;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
           getState = _ref2.getState;
-        case 1:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2);
-  }));
-  return function (_x2, _x3) {
-    return _ref3.apply(this, arguments);
-  };
-}());
-var getUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('user/getUser', /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(_, _ref4) {
-    var getState, user_email, encodedEmail, response, errorData, errorMessage, responseData;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          getState = _ref4.getState;
-          _context3.prev = 1;
+          _context2.prev = 1;
           user_email = getState().user.user_email;
           encodedEmail = encodeURIComponent(user_email);
-          _context3.next = 6;
+          _context2.next = 6;
           return fetch("/wp-json/seven-tech/v1/users/".concat(encodedEmail), {
             method: 'GET',
             headers: {
@@ -19750,32 +19733,49 @@ var getUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)
             }
           });
         case 6:
-          response = _context3.sent;
+          response = _context2.sent;
           if (response.ok) {
-            _context3.next = 13;
+            _context2.next = 13;
             break;
           }
-          _context3.next = 10;
+          _context2.next = 10;
           return response.json();
         case 10:
-          errorData = _context3.sent;
+          errorData = _context2.sent;
           errorMessage = errorData.message;
           throw new Error(errorMessage);
         case 13:
-          _context3.next = 15;
+          _context2.next = 15;
           return response.json();
         case 15:
-          responseData = _context3.sent;
-          return _context3.abrupt("return", responseData);
+          responseData = _context2.sent;
+          return _context2.abrupt("return", responseData);
         case 19:
-          _context3.prev = 19;
-          _context3.t0 = _context3["catch"](1);
-          throw _context3.t0;
+          _context2.prev = 19;
+          _context2.t0 = _context2["catch"](1);
+          throw _context2.t0;
         case 22:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[1, 19]]);
+  }));
+  return function (_x2, _x3) {
+    return _ref3.apply(this, arguments);
+  };
+}());
+var updateUser = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)('user/updateUser', /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(_, _ref4) {
+    var getState;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          getState = _ref4.getState;
+        case 1:
         case "end":
           return _context3.stop();
       }
-    }, _callee3, null, [[1, 19]]);
+    }, _callee3);
   }));
   return function (_x4, _x5) {
     return _ref5.apply(this, arguments);
@@ -19788,16 +19788,16 @@ var usersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
     builder.addCase(addUser.fulfilled, function (state, action) {
       state.loading = false;
       state.user_id = action.payload;
-    }).addCase(updateUser.fulfilled, function (state, action) {
-      state.userLoading = false;
-      state.userError = '';
-      state.userMessage = action.payload;
     }).addCase(getUser.fulfilled, function (state, action) {
       state.userLoading = false;
       state.userError = null;
       state.user_id = action.payload.id;
       state.first_name = action.payload.first_name;
       state.last_name = action.payload.last_name;
+    }).addCase(updateUser.fulfilled, function (state, action) {
+      state.userLoading = false;
+      state.userError = '';
+      state.userMessage = action.payload;
     });
   }
 });
