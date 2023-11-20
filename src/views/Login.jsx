@@ -1,44 +1,48 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import NavigationComponent from './components/NavigationLogin';
-import { login } from '../utils/login';
+
 import { displayStatus, displayStatusType } from '../utils/DisplayStatus';
-import { signInEmailAndPassword } from '../controllers/usersSlice';
+
+import { signInEmailAndPassword } from '../controllers/loginSlice';
 
 function LoginComponent() {
-  const [Email, setEmail] = useState('');
-  const [Password, setPassword] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState(
     'Enter your email and password to log in.'
   );
 
-  const handleChange = (e) => {
-    if (e.target.name === 'email') {
-      setEmail(e.target.value);
-    } else if (e.target.name === 'password') {
-      setPassword(e.target.value);
-    }
+  const dispatch = useDispatch();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signInEmailAndPassword(Email, Password));
-      // .then((response) => {
-      //   setMessage(displayStatus(response));
-      //   setMessageType(displayStatusType(response));
-      // })
-      // .then(() => {
-      //   const urlParams = new URLSearchParams(window.location.search);
-      //   const redirectTo = urlParams.get('redirectTo');
+    dispatch(signInEmailAndPassword(formData))
+      .then((response) => {
+        setMessage(displayStatus(response));
+        setMessageType(displayStatusType(response));
+      })
+      .then(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirectTo');
 
-      //   setTimeout(() => {
-      //     if (redirectTo === null) {
-      //       window.location.href = '/dashboard';
-      //     } else {
-      //       window.location.href = redirectTo;
-      //     }
-      //   }, 5000);
-      // });
+        setTimeout(() => {
+          if (redirectTo === null) {
+            window.location.href = '/dashboard';
+          } else {
+            window.location.href = redirectTo;
+          }
+        }, 5000);
+      });
   };
 
   return (
@@ -57,7 +61,8 @@ function LoginComponent() {
                       type="email"
                       name="email"
                       placeholder="Email"
-                      onChange={handleChange}
+                      value={formData.email}
+                      onChange={handleInputChange}
                       required
                     />
                   </td>
@@ -68,7 +73,8 @@ function LoginComponent() {
                       type="password"
                       name="password"
                       placeholder="Password"
-                      onChange={handleChange}
+                      value={formData.password}
+                      onChange={handleInputChange}
                       required
                     />
                   </td>

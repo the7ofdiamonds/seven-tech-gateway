@@ -2,8 +2,9 @@ import { useState } from 'react';
 
 import NavigationComponent from './components/NavigationLogin';
 
-import { forgot } from '../utils/forgot';
 import { displayStatus } from '../utils/DisplayStatus';
+
+import { forgot } from '../controllers/forgotSlice';
 
 function ForgotComponent() {
   const [Email, setEmail] = useState('');

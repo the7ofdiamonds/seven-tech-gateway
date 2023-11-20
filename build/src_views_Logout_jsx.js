@@ -1,47 +1,10 @@
 "use strict";
 (self["webpackChunkseven_tech"] = self["webpackChunkseven_tech"] || []).push([["src_views_Logout_jsx"],{
 
-/***/ "./src/utils/DisplayStatus.js":
-/*!************************************!*\
-  !*** ./src/utils/DisplayStatus.js ***!
-  \************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   displayStatus: function() { return /* binding */ displayStatus; },
-/* harmony export */   displayStatusType: function() { return /* binding */ displayStatusType; }
-/* harmony export */ });
-var displayStatus = function displayStatus(status) {
-  if (status === 'Error (auth/too-many-requests): Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).') {
-    return 'Access to this account has been temporarily disabled due to too many failed login attempts. You can immediately restore it by resetting your password or you can try again later.';
-  }
-  if (status == 'Error (auth/wrong-password): Firebase: The password is invalid or the user does not have a password. (auth/wrong-password).') {
-    return 'The password is invalid or the user does not have a password.';
-  }
-  if (status == 'Error (auth/user-not-found): Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found).') {
-    return 'There is no user record corresponding to this identifier. The user may have been deleted.';
-  }
-  return status;
-};
-var displayStatusType = function displayStatusType(status) {
-  if (status === 'Login successful' || status === 'twins!!' || status === 'You are now a user.') {
-    return 'success';
-  }
-  if (status === 'Error (auth/user-not-found): Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found).' || status === 'Error (auth/wrong-password): Firebase: The password is invalid or the user does not have a password. (auth/wrong-password).') {
-    return 'caution';
-  }
-  if (status === 'You have been logged out' || status === 'Error (auth/too-many-requests): Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).') {
-    return 'error';
-  }
-};
-
-/***/ }),
-
-/***/ "./src/utils/logout.js":
-/*!*****************************!*\
-  !*** ./src/utils/logout.js ***!
-  \*****************************/
+/***/ "./src/controllers/logoutSlice.js":
+/*!****************************************!*\
+  !*** ./src/controllers/logoutSlice.js ***!
+  \****************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -91,6 +54,43 @@ var logout = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/utils/DisplayStatus.js":
+/*!************************************!*\
+  !*** ./src/utils/DisplayStatus.js ***!
+  \************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   displayStatus: function() { return /* binding */ displayStatus; },
+/* harmony export */   displayStatusType: function() { return /* binding */ displayStatusType; }
+/* harmony export */ });
+var displayStatus = function displayStatus(status) {
+  if (status.mesaage === 'Error (auth/too-many-requests): Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).') {
+    return 'Access to this account has been temporarily disabled due to too many failed login attempts. You can immediately restore it by resetting your password or you can try again later.';
+  }
+  if (status.mesaage == 'Error (auth/wrong-password): Firebase: The password is invalid or the user does not have a password. (auth/wrong-password).') {
+    return 'The password is invalid or the user does not have a password.';
+  }
+  if (status.mesaage == 'Error (auth/user-not-found): Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found).') {
+    return 'There is no user record corresponding to this identifier. The user may have been deleted.';
+  }
+  return status.message;
+};
+var displayStatusType = function displayStatusType(status) {
+  if (status.mesaage === 'Login successful' || status.mesaage === 'twins!!' || status.mesaage === 'You are now a user.') {
+    return 'success';
+  }
+  if (status.mesaage === 'Error (auth/user-not-found): Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found).' || status.mesaage === 'Error (auth/wrong-password): Firebase: The password is invalid or the user does not have a password. (auth/wrong-password).') {
+    return 'caution';
+  }
+  if (status.mesaage === 'You have been logged out' || status.mesaage === 'Error (auth/too-many-requests): Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).') {
+    return 'error';
+  }
+};
+
+/***/ }),
+
 /***/ "./src/views/Logout.jsx":
 /*!******************************!*\
   !*** ./src/views/Logout.jsx ***!
@@ -100,8 +100,8 @@ var logout = /*#__PURE__*/function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utils_logout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/logout */ "./src/utils/logout.js");
-/* harmony import */ var _utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/DisplayStatus */ "./src/utils/DisplayStatus.js");
+/* harmony import */ var _utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/DisplayStatus */ "./src/utils/DisplayStatus.js");
+/* harmony import */ var _controllers_logoutSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controllers/logoutSlice */ "./src/controllers/logoutSlice.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -121,7 +121,7 @@ function LogOutComponent() {
     message = _useState4[0],
     setMessage = _useState4[1];
   var handleClick = function handleClick() {
-    (0,_utils_logout__WEBPACK_IMPORTED_MODULE_1__.logout)().then(function (responseMessage) {
+    (0,_controllers_logoutSlice__WEBPACK_IMPORTED_MODULE_2__.logout)().then(function (responseMessage) {
       setMessage(responseMessage);
       setTimeout(function () {
         window.location.href = '/';
@@ -134,7 +134,7 @@ function LogOutComponent() {
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (message !== '') {
-      (0,_utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_2__.displayStatus)(message);
+      (0,_utils_DisplayStatus__WEBPACK_IMPORTED_MODULE_1__.displayStatus)(message);
       setMessageType('error');
     }
   }, [message]);

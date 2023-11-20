@@ -1,4 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+    browserSessionPersistence,
+    setPersistence,
+    signInWithEmailAndPassword,
+    getAuth,
+} from 'firebase/auth';
+
+import { projectAuth } from '../services/firebase/config.js';
 
 const initialState = {
     userLoading: false,
@@ -11,14 +19,32 @@ const initialState = {
     user_id: ''
 };
 
-export const addUser = createAsyncThunk('users/adduser', async (user_data) => {
+// Use php in the backend
+
+export const signInEmailAndPassword = createAsyncThunk('users/signInEmailAndPassword', async (credentials) => {
     try {
-        const response = await fetch('/wp-json/seven-tech/v1/users', {
+        const auth = getAuth();
+        const Email = credentials.email;
+        const Password = credentials.password;
+
+        await signInWithEmailAndPassword(auth, Email, Password);
+        setPersistence(auth, browserSessionPersistence);
+
+        const user = projectAuth.currentUser;
+
+        if (!user) {
+            throw new Error('User not found.', 404);
+        }
+
+        const token = await user.getIdToken();
+        const data = { idToken: token, user_password: Password };
+
+        const response = await fetch('/wp-json/seven-tech/v1/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(user_data)
+            body: JSON.stringify(data)
         });
 
         if (!response.ok) {
@@ -30,11 +56,10 @@ export const addUser = createAsyncThunk('users/adduser', async (user_data) => {
         const responseData = await response.json();
         return responseData;
     } catch (error) {
+        console.error(error)
         throw error;
     }
 });
-
-export const updateUser  = createAsyncThunk('user/getUser', async (_, { getState }) => {});
 
 export const getUser = createAsyncThunk('user/getUser', async (_, { getState }) => {
     try {
@@ -66,21 +91,10 @@ export const usersSlice = createSlice({
     initialState,
     extraReducers: (builder) => {
         builder
-            .addCase(addUser.fulfilled, (state, action) => {
-                state.loading = false
-                state.user_id = action.payload
-            })
-            .addCase(updateUser.fulfilled, (state, action) => {
+            .addCase(signInEmailAndPassword.fulfilled, (state, action) => {
                 state.userLoading = false
                 state.userError = ''
                 state.userMessage = action.payload
-            })
-            .addCase(getUser.fulfilled, (state, action) => {
-                state.userLoading = false;
-                state.userError = null;
-                state.user_id = action.payload.id
-                state.first_name = action.payload.first_name
-                state.last_name = action.payload.last_name
             })
     }
 })

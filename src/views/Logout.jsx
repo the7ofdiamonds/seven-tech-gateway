@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 
-import { logout } from '../utils/logout';
 import { displayStatus } from '../utils/DisplayStatus';
+
+import { logout } from '../controllers/logoutSlice';
 
 function LogOutComponent() {
   const [messageType, setMessageType] = useState('');
