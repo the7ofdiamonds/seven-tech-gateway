@@ -50,10 +50,11 @@ class SEVEN_TECH
         });
 
         add_action('init', function () {
-            (new Pages)->react_rewrite_rules();
+            // (new Pages)->react_rewrite_rules();
             (new Pages)->is_user_logged_in();
             (new Post_Types)->custom_post_types();
             (new Router)->load_page();
+            (new Router)->react_rewrite_rules();
             new Shortcodes;
             // (new Taxonomies)->custom_taxonomy();
         });

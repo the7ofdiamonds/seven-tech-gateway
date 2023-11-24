@@ -5,8 +5,10 @@ namespace SEVEN_TECH\Pages;
 class Pages
 {
     public $front_page_react;
+    public $custom_pages_list;
+    public $protected_pages_list;
+    public $pages_list;
     public $pages;
-    public $protected_pages;
     public $page_titles;
 
     public function __construct()
@@ -15,49 +17,70 @@ class Pages
             'about',
         ];
 
-        $this->pages = [
+        $this->custom_pages_list = [
             [
                 'url' => 'about',
+                'regex' => '#^/about#',
+                'file_name' => 'About',
                 'title' => 'ABOUT',
                 'name' => 'about'
             ],
             [
                 'url' => 'dashboard',
+                'regex' => '#^/dashboard#',
+                'file_name' => 'Dashboard',
                 'title' => 'DASHBOARD',
                 'name' => 'dashboard'
             ],
             [
-                'url' => 'login',
-                'title' => 'LOGIN',
-                'name' => 'login'
-            ],
-            [
-                'url' => 'signup',
-                'title' => 'SIGNUP',
-                'name' => 'signup'
-            ],
-            [
                 'url' => 'forgot',
+                'regex' => '#^/forgot#',
+                'file_name' => 'Forgot',
                 'title' => 'FORGOT',
                 'name' => 'forgot'
             ],
             [
+                'url' => 'founders/([a-zA-Z-]+)/resume',
+                'regex' => '#^/founders/([a-zA-Z-]+)/resume$#',
+                'file_name' => 'FounderResume',
+                'title' => '',
+                'name' => 'founder_resume'
+            ],
+            [
+                'url' => 'login',
+                'regex' => '#^/login#',
+                'file_name' => 'Login',
+                'title' => 'LOGIN',
+                'name' => 'login'
+            ],
+            [
                 'url' => 'logout',
+                'regex' => '#^/logout#',
+                'file_name' => 'Logout',
                 'title' => 'LOGOUT',
                 'name' => 'logout'
             ],
             [
-                'url' => 'founders/([a-zA-Z-]+)/resume',
-                'title' => '',
-                'name' => 'founder_resume'
-            ]
+                'url' => 'signup',
+                'regex' => '#^/signup#',
+                'file_name' => 'Signup',
+                'title' => 'SIGNUP',
+                'name' => 'signup'
+            ],
         ];
 
-        $this->protected_pages = [];
+        $this->protected_pages_list = [];
+
+        $this->pages_list = [];
+
+        $this->pages = [
+            ['title' => 'ABOUT']
+        ];
 
         $this->page_titles = [
-            ...$this->pages,
-            ...$this->protected_pages
+            ...$this->custom_pages_list,
+            ...$this->protected_pages_list,
+            ...$this->pages_list,
         ];
     }
 
@@ -80,28 +103,6 @@ class Pages
                     wp_insert_post($page_data);
 
                     error_log($page['title'] . ' page added.');
-                }
-            }
-        }
-    }
-
-    function react_rewrite_rules()
-    {
-        if (is_array($this->page_titles) && count($this->page_titles) > 0) {
-
-            foreach ($this->page_titles as $page_title) {
-                if (!empty($page_title['url'])) {
-                    $url = explode('/', $page_title['url']);
-                    $segment = count($url) - 1;
-                    $query_var = $url[$segment];
-
-                    if (!empty($query_var)) {
-                        add_action('init',  function () use ($page_title, $query_var) {
-                            add_rewrite_rule('^' . $page_title['url'], 'index.php?' . $query_var . '=$matches[1]', 'top');
-                        });
-                    } else {
-                        continue;
-                    }
                 }
             }
         }

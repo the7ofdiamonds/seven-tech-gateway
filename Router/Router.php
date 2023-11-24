@@ -2,14 +2,17 @@
 
 namespace SEVEN_TECH\Router;
 
+use Exception;
+
 use SEVEN_TECH\Pages\Pages;
 use SEVEN_TECH\Post_Types\Post_Types;
 use SEVEN_TECH\Templates\Templates;
 
 class Router
 {
-    private $pages;
-    private $protected_pages;
+    private $custom_pages_list;
+    private $protected_pages_list;
+    private $pages_list;
     private $post_types;
     private $templates;
 
@@ -19,68 +22,88 @@ class Router
         $posttypes = new Post_Types;
         $this->templates = new Templates;
 
-        $this->pages = $pages->pages;
-        $this->protected_pages = $pages->protected_pages;
+        $this->custom_pages_list = $pages->custom_pages_list;
+        $this->protected_pages_list = $pages->protected_pages_list;
+        $this->pages_list = $pages->pages_list;
         $this->post_types = $posttypes->post_types;
     }
 
     function load_page()
     {
-        $path = $_SERVER['REQUEST_URI'];
+        try {
+            $path = $_SERVER['REQUEST_URI'];
 
-        if ($path === '/') {
-            add_filter('frontpage_template', [$this->templates, 'get_front_page_template']);
-        }
+            if ($path === '/') {
+                add_filter('frontpage_template', [$this->templates, 'get_front_page_template']);
+                return;
+            }
 
-        if (!empty($this->protected_pages)) {
-            foreach ($this->protected_pages as $pattern) {
-                $regex = '#^/' . $pattern . '/$#';
+            if (!empty($this->custom_pages_list)) {
+                if (preg_match('#/about#', $path)) {
+                    add_filter('template_include', [$this->templates, 'get_about_page_template']);
+                }
 
-                if (preg_match($regex, $path)) {
-                    add_filter('template_include', [$this->templates, 'get_protected_page_template']);
-                    break;
+                if (preg_match('#/dashboard#', $path)) {
+                    add_filter('template_include', [$this->templates, 'get_dashboard_page_template']);
+                }
+
+                if (preg_match('#/forgot#', $path)) {
+                    add_filter('template_include', [$this->templates, 'get_forgot_page_template']);
+                }
+
+                if (preg_match('#/logout#', $path)) {
+                    add_filter('template_include', [$this->templates, 'get_logout_page_template']);
+                }
+
+                if (preg_match('#/founders/([a-zA-Z-]+)/resume$#', $path)) {
+                    add_filter('template_include', [$this->templates, 'get_founder_resume_page_template']);
+                }
+
+                if (preg_match('#/login#', $path)) {
+                    add_filter('template_include', [$this->templates, 'get_login_page_template']);
+                }
+
+                if (preg_match('#/signup#', $path)) {
+                    add_filter('template_include', [$this->templates, 'get_signup_page_template']);
                 }
             }
-        }
 
-        if (!empty($this->pages)) {
-            foreach ($this->pages as $page) {
-                $regex = '#^/' . $page['url'] . '/$#';
+            if (!empty($this->protected_pages_list)) {
+                foreach ($this->protected_pages_list as $protected_page) {
 
-                if (preg_match($regex, $path)) {
-                    $page_name = $page['name'];
-
-                    if (!empty($page_name)) {
-                        add_filter('template_include', function ($template) use ($page_name) {
-                            return $this->templates->get_custom_page_template($template, $page_name);
-                        });
-                    } else {
-                        add_filter('template_include', [$this->templates, 'get_page_template']);
+                    if (preg_match($protected_page['regex'], $path)) {
+                        add_filter('template_include', [$this->templates, 'get_protected_page_template']);
+                        break;
                     }
-                    break;
-                }
-            }
-        }
-
-        if (!empty($this->post_types)) {
-            foreach ($this->post_types as $post_type) {
-                $url = array_filter(explode('/', $path), function ($value) {
-                    return !empty($value);
-                });
-
-                if (count($url) === 1 && $url[1] === $post_type['archive_page']) {
-                    add_filter('archive_template', [$this->templates, 'get_archive_page_template']);
-                    break;
                 }
             }
 
-            add_filter('single_template', [$this->templates, 'get_single_page_template']);
-        }
+            if (!empty($this->pages_list) && $path !== '/') {
+                foreach ($this->pages_list as $page) {
 
-        $regex = '#^/founders/([a-zA-Z-]+)/resume$#';
+                    if (preg_match($page['regex'], $path)) {
+                        add_filter('template_include', [$this->templates, 'get_page_template']);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+            $response = $errorMessage . ' ' . $errorCode;
 
-        if (preg_match($regex, $path)) {
-            add_filter('template_include', [$this->templates, 'get_founder_resume_page_template']);
+            error_log($response . ' at load_page');
+
+            return $response;
         }
+    }
+
+
+    function react_rewrite_rules()
+    {
+        add_rewrite_rule('^forgot/?', 'index.php?', 'top');
+        add_rewrite_rule('^login/?', 'index.php?', 'top');
+        add_rewrite_rule('^logout/?', 'index.php?', 'top');
+        add_rewrite_rule('^signup/?', 'index.php?', 'top');
     }
 }

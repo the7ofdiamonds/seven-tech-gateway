@@ -120,6 +120,8 @@ class Templates
                     if (file_exists($single_template)) {
                         add_action('wp_head', [$this->css_file, 'load_post_types_css']);
                         add_action('wp_footer', [$this->js_file, 'load_post_types_single_react']);
+                    
+                        return $single_template;
                     }
 
                     break;
@@ -130,14 +132,113 @@ class Templates
         return $single_template;
     }
 
+    function get_about_page_template($template_include)
+    {
+        $about_template = SEVEN_TECH . 'Pages/page-about.php';
+
+        if (file_exists($about_template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+
+            return $about_template;
+        } else {
+            error_log('About Page Template does not exist.');
+        }
+
+        return $template_include;
+    }
+
+    function get_dashboard_resume_page_template($template_include)
+    {
+        $dashboard_template = SEVEN_TECH . 'Pages/page-dashboard.php';
+
+        if (file_exists($dashboard_template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+
+            return $dashboard_template;
+        } else {
+            error_log('Dashboard Page Template does not exist.');
+        }
+
+        return $template_include;
+    }
+
+    function get_forgot_page_template($template_include)
+    {
+        $forgot_template = SEVEN_TECH . 'Pages/page-forgot.php';
+
+        if (file_exists($forgot_template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+
+            return $forgot_template;
+        } else {
+            error_log('Forgot Page Template does not exist.');
+        }
+
+        return $template_include;
+    }
+
     function get_founder_resume_page_template($template_include)
     {
         $resume_template = SEVEN_TECH . 'Post_Types/Founders/single-founder-resume.php';
 
         if (file_exists($resume_template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+
             return $resume_template;
         } else {
             error_log('Resume Page Template does not exist.');
+        }
+
+        return $template_include;
+    }
+
+    function get_login_page_template($template_include)
+    {
+        $login_template = SEVEN_TECH . 'Pages/page-login.php';
+
+        if (file_exists($login_template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+
+            return $login_template;
+        } else {
+            error_log('Login Page Template does not exist.');
+        }
+
+        return $template_include;
+    }
+
+    function get_logout_page_template($template_include)
+    {
+        $logout_template = SEVEN_TECH . 'Pages/page-logout.php';
+
+        if (file_exists($logout_template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+
+            return $logout_template;
+        } else {
+            error_log('Logout Page Template does not exist.');
+        }
+
+        return $template_include;
+    }
+
+    function get_signup_page_template($template_include)
+    {
+        $signup_template = SEVEN_TECH . 'Pages/page-signup.php';
+
+        if (file_exists($signup_template)) {
+            add_action('wp_head', [$this->css_file, 'load_pages_css']);
+            add_action('wp_footer', [$this->js_file, 'load_pages_react']);
+
+            return $signup_template;
+        } else {
+            error_log('Signup Page Template does not exist.');
         }
 
         return $template_include;
