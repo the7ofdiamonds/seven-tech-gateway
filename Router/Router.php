@@ -119,5 +119,6 @@ class Router
         add_rewrite_rule('^login/?', 'index.php?', 'top');
         add_rewrite_rule('^logout/?', 'index.php?', 'top');
         add_rewrite_rule('^signup/?', 'index.php?', 'top');
+        add_rewrite_rule('^dashboard/?', 'index.php?', 'top');
     }
 }
