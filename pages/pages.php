@@ -73,14 +73,14 @@ class Pages
 
         $this->pages_list = [];
 
-        $this->pages = [
-            ['title' => 'ABOUT']
-        ];
-
         $this->page_titles = [
             ...$this->custom_pages_list,
             ...$this->protected_pages_list,
             ...$this->pages_list,
+        ];
+
+        $this->pages = [
+            ['title' => 'ABOUT']
         ];
     }
 
@@ -106,27 +106,6 @@ class Pages
                 }
             }
         }
-    }
-
-    function add_query_vars($query_vars)
-    {
-        if (is_array($this->page_titles) && count($this->page_titles) > 0) {
-
-            foreach ($this->page_titles as $page_title) {
-                $url = explode('/', $page_title['url']);
-                $segment = count($url) - 1;
-
-                if (!in_array($url[$segment], $query_vars)) {
-                    $query_vars[] = $url[$segment];
-                } else {
-                    continue;
-                }
-            }
-
-            return array_unique($query_vars);
-        }
-
-        return $query_vars;
     }
 
     function is_user_logged_in()

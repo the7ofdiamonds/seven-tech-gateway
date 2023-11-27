@@ -31,14 +31,25 @@ use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\CSS\Customizer\Customizer;
 use SEVEN_TECH\Database\Database;
+use SEVEN_TECH\JS\JS;
 use SEVEN_TECH\Pages\Pages;
 use SEVEN_TECH\Post_Types\Post_Types;
 use SEVEN_TECH\Roles\Roles;
 use SEVEN_TECH\Router\Router;
 use SEVEN_TECH\Shortcodes\Shortcodes;
+use SEVEN_TECH\Taxonomies\Taxonomies;
+use SEVEN_TECH\Templates\Templates;
 
 class SEVEN_TECH
 {
+    public $pages;
+    public $plugin;
+    public $css;
+    public $js;
+    public $posttypes;
+    public $router;
+    public $templates;
+
     public function __construct()
     {
         add_action('admin_init', function () {
@@ -49,20 +60,32 @@ class SEVEN_TECH
             new API;
         });
 
-        add_action('init', function () {
-            // (new Pages)->react_rewrite_rules();
-            (new Pages)->is_user_logged_in();
-            (new Post_Types)->custom_post_types();
-            (new Router)->load_page();
-            (new Router)->react_rewrite_rules();
+        $css = new CSS;
+        $js = new JS;
+        $this->pages = new Pages;
+
+        add_action('init', function () use ($css, $js) {
+            $posttypes = new Post_Types;
+            $posttypes->custom_post_types();
+            $taxonomies = new Taxonomies;
+            $taxonomies->custom_taxonomy();
+            $templates = new Templates(
+                $css,
+                $js,
+            );
+            $router = new Router(
+                $this->pages,
+                $posttypes,
+                $taxonomies,
+                $templates
+            );
+            $router->load_page();
+            $router->react_rewrite_rules();
             new Shortcodes;
-            // (new Taxonomies)->custom_taxonomy();
         });
 
         add_action('wp_head', [(new CSS), 'load_social_bar_css']);
         add_action('customize_register', [(new Customizer), 'register_customizer_panel']);
-
-        add_filter('query_vars', [(new Pages), 'add_query_vars']);
     }
 
     function activate()
