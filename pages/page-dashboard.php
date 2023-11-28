@@ -31,7 +31,7 @@ get_header(); ?>
     }
 
     if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
-        echo do_shortcode('[orb-products-services]');
+        echo do_shortcode('[orb-dashboard]');
     }
     ?>
 </div>
