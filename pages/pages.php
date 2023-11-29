@@ -20,7 +20,7 @@ class Pages
         $this->custom_pages_list = [
             [
                 'url' => 'about',
-                'regex' => '#^/about#',
+                'regex' => '#^/about$#',
                 'file_name' => 'About',
                 'title' => 'ABOUT',
                 'name' => 'about'
