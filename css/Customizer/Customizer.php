@@ -6,10 +6,6 @@ class Customizer
 {
 	public function __construct()
 	{
-		new BorderRadius;
-		new Color;
-		new Shadow;
-		new SocialBar;
 	}
 
 	function register_customizer_panel($wp_customize)

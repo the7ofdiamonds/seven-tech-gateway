@@ -7,8 +7,6 @@ class SocialBar
 
     public function __construct()
     {
-        add_action('customize_register', [$this, 'seven_tech_social_bar_section']);
-        add_action('wp_head', [$this, 'load_css']);
     }
 
     function seven_tech_social_bar_section($wp_customize)

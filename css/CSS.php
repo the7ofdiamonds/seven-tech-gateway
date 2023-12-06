@@ -4,6 +4,10 @@ namespace SEVEN_TECH\CSS;
 
 use Exception;
 
+use SEVEN_TECH\CSS\Customizer\BorderRadius;
+use SEVEN_TECH\CSS\Customizer\Color;
+use SEVEN_TECH\CSS\Customizer\Shadow;
+
 class CSS
 {
     private $handle_prefix;
@@ -27,10 +31,19 @@ class CSS
         $this->filePath = $this->cssFolderPath . $this->cssFileName;
     }
 
+    function load_customization_css()
+    {
+        (new BorderRadius)->load_css();
+        (new Color)->load_css();
+        (new Shadow)->load_css();
+    }
+
     function load_front_page_css($section)
     {
         try {
             if (!empty($section)) {
+                $this->load_customization_css();
+
                 if ($this->filePath) {
                     wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');
@@ -53,6 +66,8 @@ class CSS
     {
         try {
             if (!empty($page)) {
+                $this->load_customization_css();
+
                 if ($this->filePath) {
                     wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');
@@ -75,6 +90,8 @@ class CSS
     {
         try {
             if (!empty($taxonomy['name']) && is_tax($taxonomy['name'])) {
+                $this->load_customization_css();
+
                 if ($this->filePath) {
                     wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');
@@ -97,6 +114,8 @@ class CSS
     {
         try {
             if (!empty($post_type) && (is_array($post_type) || is_object($post_type)) && (is_post_type_archive($post_type) || is_singular($post_type))) {
+                $this->load_customization_css();
+
                 if ($this->filePath) {
                     wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');

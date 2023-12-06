@@ -6,8 +6,6 @@ class BorderRadius
 {
     public function __construct()
     {
-        add_action('customize_register', [$this, 'seven_tech_border_radius_section']);
-        add_action('wp_head', [$this, 'load_css']);
     }
 
     function seven_tech_border_radius_section($wp_customize)

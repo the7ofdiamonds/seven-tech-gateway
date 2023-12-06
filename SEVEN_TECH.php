@@ -30,6 +30,10 @@ use SEVEN_TECH\Admin\Admin;
 use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\CSS\Customizer\Customizer;
+use SEVEN_TECH\CSS\Customizer\BorderRadius;
+use SEVEN_TECH\CSS\Customizer\Color;
+use SEVEN_TECH\CSS\Customizer\Shadow;
+use SEVEN_TECH\CSS\Customizer\SocialBar;
 use SEVEN_TECH\Database\Database;
 use SEVEN_TECH\JS\JS;
 use SEVEN_TECH\Pages\Pages;
@@ -84,8 +88,18 @@ class SEVEN_TECH
             new Shortcodes;
         });
 
-        add_action('wp_head', [(new CSS), 'load_social_bar_css']);
-        add_action('customize_register', [(new Customizer), 'register_customizer_panel']);
+        add_action('wp_head', function(){
+            (new CSS)->load_social_bar_css();
+            (new SocialBar)->load_css();
+        });
+
+        add_action('customize_register', function($wp_customize){
+            (new Customizer)->register_customizer_panel($wp_customize);    
+            (new BorderRadius)->seven_tech_border_radius_section($wp_customize);
+            (new Color)->seven_tech_color_section($wp_customize);
+            (new Shadow)->seven_tech_shadow_section($wp_customize);
+            (new SocialBar)->seven_tech_social_bar_section($wp_customize);    
+        });
     }
 
     function activate()
