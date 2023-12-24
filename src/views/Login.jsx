@@ -27,23 +27,23 @@ function LoginComponent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(signInEmailAndPassword(formData))
-      // .then((response) => {
-      //   console.log(response);
-      //   setMessage(displayStatus(response));
-      //   setMessageType(displayStatusType(response));
-      // })
-      // .then(() => {
-      //   const urlParams = new URLSearchParams(window.location.search);
-      //   const redirectTo = urlParams.get('redirectTo');
+    .then((response) => {
+      console.log(response);
+      setMessage(displayStatus(response));
+      setMessageType(displayStatusType(response));
+    })
+    .then(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirectTo');
 
-      //   setTimeout(() => {
-      //     if (redirectTo === null) {
-      //       window.location.href = '/dashboard';
-      //     } else {
-      //       window.location.href = redirectTo;
-      //     }
-      //   }, 5000);
-      // });
+      setTimeout(() => {
+        if (redirectTo === null) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = redirectTo;
+        }
+      }, 5000);
+    });
   };
 
   return (
@@ -82,11 +82,13 @@ function LoginComponent() {
                 </tr>
               </tbody>
               <tfoot>
-                <td>
-                  <button type="submit">
-                    <h3>LOGIN</h3>
-                  </button>
-                </td>
+                <tr>
+                  <td>
+                    <button type="submit">
+                      <h3>LOGIN</h3>
+                    </button>
+                  </td>
+                </tr>
               </tfoot>
             </table>
           </form>

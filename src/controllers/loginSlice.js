@@ -48,7 +48,7 @@ export const signInEmailAndPassword = createAsyncThunk('login/signInEmailAndPass
             },
             body: JSON.stringify(data)
         });
-console.log(response);
+
         if (!response.ok) {
             const errorData = await response.json();
             const errorMessage = errorData.message;

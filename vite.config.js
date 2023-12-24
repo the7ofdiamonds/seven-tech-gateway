@@ -2,15 +2,22 @@ import dotenv from 'dotenv';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import reactRefresh from '@vitejs/plugin-react-refresh';
-import VitePluginBrowserSync from 'vite-plugin-browser-sync'
+import BasicSSL from '@vitejs/plugin-basic-ssl';
 
 import generateIndexAssetPHPFile from './generate-index-assets-php.js';
 
 dotenv.config();
 
 export default defineConfig({
+    server: {
+        port: 3000
+    },
     publicDir: false,
     build: {
+        watch: {
+            exclude: 'node_modules/**',
+            include: 'src/**/*'
+        },
         assetsDir: '',
         emptyOutDir: true,
         manifest: true,
@@ -45,10 +52,9 @@ export default defineConfig({
                 }
             },
         },
-        // VitePluginBrowserSync({
-        //     watch: true,
-        //     cors: true,
-        //     proxy: 'https://https://the7ofdiamonds.development',
+        // BasicSSL({
+        //     cert: '/Users/jamellyons/Documents/J_C_LYONS_ENTERPRISES_LLC/THE7OFDIAMONDS.TECH/Development/nginx/ssl/certs/nginx-selfsigned.crt',
+        //     key: '/Users/jamellyons/Documents/J_C_LYONS_ENTERPRISES_LLC/THE7OFDIAMONDS.TECH/Development/nginx/ssl/private/nginx-selfsigned.key',
         // }),
         generateIndexAssetPHPFile(),
     ],

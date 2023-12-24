@@ -45,7 +45,7 @@ class Login
             ];
 
             $signedInUser = wp_signon($credentials);
-error_log(print_r($signedInUser, true));
+
             if (is_wp_error($signedInUser)) {
                 $message = [
                     'message' => $signedInUser->get_error_message(),

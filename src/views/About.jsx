@@ -20,10 +20,10 @@ function About() {
   return (
     <>
       <section className="about">
-        <h2>ABOUTooo</h2>
+        <h2>ABOUT</h2>
 
-        <div class="mission-statement-card card">
-          <h3 class="mission-statement">
+        <div className="mission-statement-card card">
+          <h3 className="mission-statement">
             <q>{missionStatement}</q>
           </h3>
         </div>
