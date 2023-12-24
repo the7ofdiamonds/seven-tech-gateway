@@ -15,7 +15,7 @@ class Login
     }
 
     function login(WP_REST_Request $request)
-    {error_log('login');
+    {
         try {
             $idToken = $request['idToken'];
             $user_password = $request['user_password'];
@@ -45,7 +45,7 @@ class Login
             ];
 
             $signedInUser = wp_signon($credentials);
-
+error_log(print_r($signedInUser, true));
             if (is_wp_error($signedInUser)) {
                 $message = [
                     'message' => $signedInUser->get_error_message(),

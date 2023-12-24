@@ -20,7 +20,7 @@ function About() {
   return (
     <>
       <section className="about">
-        <h2>ABOUT</h2>
+        <h2>ABOUTooo</h2>
 
         <div class="mission-statement-card card">
           <h3 class="mission-statement">

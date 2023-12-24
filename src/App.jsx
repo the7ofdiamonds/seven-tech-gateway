@@ -7,7 +7,7 @@ import store from './model/store.js';
 import LoadingComponent from './loading/LoadingComponent';
 
 const About = lazy(() => import('./views/About'));
-const Login = lazy(() => import('./views/Login'));
+const Login = lazy(() => import('./views/Login.jsx'));
 const LogOut = lazy(() => import('./views/Logout'));
 const SignUp = lazy(() => import('./views/Signup'));
 const Forgot = lazy(() => import('./views/Forgot'));

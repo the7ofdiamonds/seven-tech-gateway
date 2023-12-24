@@ -1,0 +1,2 @@
+import{u,r as a,k as i,j as r,L as d}from"./main.js";import{E as f}from"./ErrorComponent.js";import{G as m}from"./GroupMembers.js";import{u as c}from"./useDispatch.js";function h(){const{founderLoading:o,founderError:s,founders:n}=u(t=>t.founder),e=c();return a.useEffect(()=>{e(i())},[e]),o?r.jsx(d,{}):s?r.jsx(f,{error:s}):r.jsx(r.Fragment,{children:r.jsxs("section",{className:"founders",children:[r.jsx("h4",{className:"title",children:"Founders"}),r.jsx(m,{group:n})]})})}export{h as default};
+//# sourceMappingURL=Founders.js.map

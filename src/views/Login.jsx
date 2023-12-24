@@ -27,22 +27,23 @@ function LoginComponent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(signInEmailAndPassword(formData))
-      .then((response) => {
-        setMessage(displayStatus(response));
-        setMessageType(displayStatusType(response));
-      })
-      .then(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirectTo = urlParams.get('redirectTo');
+      // .then((response) => {
+      //   console.log(response);
+      //   setMessage(displayStatus(response));
+      //   setMessageType(displayStatusType(response));
+      // })
+      // .then(() => {
+      //   const urlParams = new URLSearchParams(window.location.search);
+      //   const redirectTo = urlParams.get('redirectTo');
 
-        setTimeout(() => {
-          if (redirectTo === null) {
-            window.location.href = '/dashboard';
-          } else {
-            window.location.href = redirectTo;
-          }
-        }, 5000);
-      });
+      //   setTimeout(() => {
+      //     if (redirectTo === null) {
+      //       window.location.href = '/dashboard';
+      //     } else {
+      //       window.location.href = redirectTo;
+      //     }
+      //   }, 5000);
+      // });
   };
 
   return (

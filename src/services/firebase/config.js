@@ -3,18 +3,18 @@ import 'firebase/auth';
 import { getAuth } from 'firebase/auth';
 
 export const firebaseConfig = {
-    apiKey: "AIzaSyBu0CCToizQh2SORCP-4dAmXHJpzB6tU6k",
-    authDomain: "theorb-f3a48.firebaseapp.com",
-    databaseURL: "https://theorb-f3a48.firebaseio.com",
-    projectId: "theorb-f3a48",
-    storageBucket: "theorb-f3a48.appspot.com",
-    messagingSenderId: "1073451047758",
-    appId: "1:1073451047758:web:7389fd0497fa5d4c071c1f",
-    measurementId: "G-YMC4WY6W9H"
+    apiKey: import.meta.env.VITE_API_KEY,
+    authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_DATABASE_URL,
+    projectId: import.meta.env.VITE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_ID,
+    measurementId: import.meta.env.VITE_MEASUREMENT_ID
 };
 
 initializeApp(firebaseConfig);
 
-const projectAuth = getAuth();
+const firebaseAuth = getAuth();
 
-export { projectAuth }
+export { firebaseAuth }

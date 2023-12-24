@@ -6,11 +6,11 @@ import {
     getAuth,
 } from 'firebase/auth';
 
-import { projectAuth } from '../services/firebase/config.js';
+import { firebaseAuth } from '../services/firebase/config.js';
 
 const initialState = {
-    userLoading: false,
-    userError: '',
+    loginLoading: false,
+    loginError: '',
     user_login: '',
     user_pass: '',
     user_email: '',
@@ -21,7 +21,7 @@ const initialState = {
 
 // Use php in the backend
 
-export const signInEmailAndPassword = createAsyncThunk('users/signInEmailAndPassword', async (credentials) => {
+export const signInEmailAndPassword = createAsyncThunk('login/signInEmailAndPassword', async (credentials) => {
     try {
         const auth = getAuth();
         const Email = credentials.email;
@@ -30,14 +30,14 @@ export const signInEmailAndPassword = createAsyncThunk('users/signInEmailAndPass
         await signInWithEmailAndPassword(auth, Email, Password);
         setPersistence(auth, browserSessionPersistence);
 
-        const user = projectAuth.currentUser;
+        const user = firebaseAuth.currentUser;
 
         if (!user) {
             throw new Error('User not found.', 404);
         }
 
         sessionStorage.setItem('email', Email);
-        
+
         const token = await user.getIdToken();
         const data = { idToken: token, user_password: Password };
 
@@ -48,7 +48,7 @@ export const signInEmailAndPassword = createAsyncThunk('users/signInEmailAndPass
             },
             body: JSON.stringify(data)
         });
-
+console.log(response);
         if (!response.ok) {
             const errorData = await response.json();
             const errorMessage = errorData.message;
@@ -63,42 +63,30 @@ export const signInEmailAndPassword = createAsyncThunk('users/signInEmailAndPass
     }
 });
 
-export const getUser = createAsyncThunk('user/getUser', async (_, { getState }) => {
-    try {
-        const { user_email } = getState().user;
-        const encodedEmail = encodeURIComponent(user_email);
-
-        const response = await fetch(`/wp-json/seven-tech/v1/users/${encodedEmail}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMessage = errorData.message;
-            throw new Error(errorMessage);
-        }
-
-        const responseData = await response.json();
-        return responseData;
-    } catch (error) {
-        throw error;
-    }
-});
-
-export const usersSlice = createSlice({
-    name: 'users',
+export const loginSlice = createSlice({
+    name: 'login',
     initialState,
     extraReducers: (builder) => {
         builder
             .addCase(signInEmailAndPassword.fulfilled, (state, action) => {
-                state.userLoading = false
-                state.userError = ''
-                state.userMessage = action.payload
+                state.loginLoading = false;
+                state.loginError = '';
+                state.loginMessage = action.payload;
             })
+            .addMatcher(isAnyOf(
+                signInEmailAndPassword.pending,
+            ), (state) => {
+                state.loginLoading = true;
+                state.loginError = null;
+            })
+            .addMatcher(isAnyOf(
+                signInEmailAndPassword.rejected,
+            ),
+                (state, action) => {
+                    state.loginLoading = false;
+                    state.loginError = action.error.message;
+                });
     }
 })
 
-export default usersSlice;
+export default loginSlice;

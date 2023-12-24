@@ -1,0 +1,2 @@
+import{j as n}from"./main.js";function r(){const o=()=>{window.location.href="/login"},i=()=>{window.location.href="/signup"},t=()=>{window.location.href="/forgot"};return n.jsx(n.Fragment,{children:n.jsxs("div",{className:"options",children:[n.jsx("button",{onClick:o,children:n.jsx("h3",{children:"LOGIN"})}),n.jsx("button",{onClick:i,children:n.jsx("h3",{children:"SIGN UP"})}),n.jsx("button",{onClick:t,children:n.jsx("h3",{children:"FORGOT"})})]})})}export{r as N};
+//# sourceMappingURL=NavigationLogin.js.map

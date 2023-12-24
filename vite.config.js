@@ -1,7 +1,10 @@
 import dotenv from 'dotenv';
 import { defineConfig } from 'vite';
-import babel from '@rollup/plugin-babel';
 import react from '@vitejs/plugin-react';
+import reactRefresh from '@vitejs/plugin-react-refresh';
+import VitePluginBrowserSync from 'vite-plugin-browser-sync'
+
+import generateIndexAssetPHPFile from './generate-index-assets-php.js';
 
 dotenv.config();
 
@@ -11,19 +14,29 @@ export default defineConfig({
         assetsDir: '',
         emptyOutDir: true,
         manifest: true,
-        outDir: 'build',
+        sourcemap: true,
+        outDir: 'Assets/JS/dist',
         rollupOptions: {
             input: {
-                main: 'src/index.js',
-            }
+                main: 'src/index.jsx',
+            },
+            output: {
+                format: 'esm',
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                assetFileNames: '[name].[ext]',
+            },
+        },
+        esbuild: {
+            loader: 'jsx',
         },
     },
+    babel: {
+        configFile: '.babelrc',
+    },
     plugins: [
-        babel({
-            "presets": ["@babel/preset-env", "@babel/preset-react"]
-          }
-          ),
         react(),
+        reactRefresh(),
         {
             name: 'php',
             handleHotUpdate({ file, server }) {
@@ -32,5 +45,16 @@ export default defineConfig({
                 }
             },
         },
+        // VitePluginBrowserSync({
+        //     watch: true,
+        //     cors: true,
+        //     proxy: 'https://https://the7ofdiamonds.development',
+        // }),
+        generateIndexAssetPHPFile(),
     ],
+    resolve: {
+        alias: {
+            '/@/': new URL('src/', import.meta.url).pathname + '/',
+        },
+    },
 });
