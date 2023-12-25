@@ -6,6 +6,7 @@ use Exception;
 
 class JS
 {
+    // private $handle_prefix;
     private $dir;
     private $dirURL;
     private $buildDir;
@@ -14,6 +15,7 @@ class JS
 
     public function __construct()
     {
+        // $this->handle_prefix = 'orb_accounts_';
         $this->dir = SEVEN_TECH;
         $this->dirURL = SEVEN_TECH_URL;
 
@@ -34,11 +36,14 @@ class JS
 
                 if (file_exists($filePath)) {
                     echo '<script type="module" src="' . esc_url($filePathURL) . '"></script>';
+                    // wp_enqueue_script($this->handle_prefix . 'react_' . $section, $filePathURL, ['wp-element'], 1.0, true);
+
                 } else {
                     throw new Exception($section . ' page has not been created in react JSX.', 404);
                 }
 
                 echo '<script type="module" src="' . esc_url($this->buildDirURL . 'main.js') . '"></script>';
+                // wp_enqueue_script($this->handle_prefix . 'react_index', $this->buildDirURL . 'main.js', ['wp-element'], '1.0', true);
             }
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();

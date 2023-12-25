@@ -2,22 +2,27 @@ import dotenv from 'dotenv';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import reactRefresh from '@vitejs/plugin-react-refresh';
-import BasicSSL from '@vitejs/plugin-basic-ssl';
-
-import generateIndexAssetPHPFile from './generate-index-assets-php.js';
+import VitePluginBrowserSync from 'vite-plugin-browser-sync';
+import browserSyncConfig from './bs-config.js';
 
 dotenv.config();
 
 export default defineConfig({
     server: {
-        port: 3000
+        proxy: "https://the7ofdiamonds.development",
+        hmr: {
+            protocol: 'ws',
+            host: 'the7ofdiamonds.development',
+        },
+        watch: {
+            usePolling: true,
+            interval: 100,
+            include: '**/**.jsx', // Move the watch option here
+        },
     },
     publicDir: false,
     build: {
-        watch: {
-            exclude: 'node_modules/**',
-            include: 'src/**/*'
-        },
+        watch: {}, // Remove the watch option from here
         assetsDir: '',
         emptyOutDir: true,
         manifest: true,
@@ -28,35 +33,21 @@ export default defineConfig({
                 main: 'src/index.jsx',
             },
             output: {
-                format: 'esm',
+                format: 'es',
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
             },
         },
         esbuild: {
+            format: 'esm',
             loader: 'jsx',
         },
-    },
-    babel: {
-        configFile: '.babelrc',
     },
     plugins: [
         react(),
         reactRefresh(),
-        {
-            name: 'php',
-            handleHotUpdate({ file, server }) {
-                if (file.endsWith('.php')) {
-                    server.ws.send({ type: 'full-reload', path: '*' });
-                }
-            },
-        },
-        // BasicSSL({
-        //     cert: '/Users/jamellyons/Documents/J_C_LYONS_ENTERPRISES_LLC/THE7OFDIAMONDS.TECH/Development/nginx/ssl/certs/nginx-selfsigned.crt',
-        //     key: '/Users/jamellyons/Documents/J_C_LYONS_ENTERPRISES_LLC/THE7OFDIAMONDS.TECH/Development/nginx/ssl/private/nginx-selfsigned.key',
-        // }),
-        generateIndexAssetPHPFile(),
+        VitePluginBrowserSync(browserSyncConfig),
     ],
     resolve: {
         alias: {

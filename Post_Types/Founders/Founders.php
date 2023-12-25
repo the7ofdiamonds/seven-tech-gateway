@@ -11,7 +11,7 @@ class Founders
     }
 
     function getFounders()
-    {
+    { error_log('getFounders');
         $founders = [];
         $users = get_users([
             'role__in' => [
@@ -38,7 +38,7 @@ class Founders
 
             return $founders;
         } else {
-            throw new Exception("No Founders found.", 404);
+            throw new Exception("No Founders at this time.", 404);
         }
     }
 
