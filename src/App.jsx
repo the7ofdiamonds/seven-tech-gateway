@@ -6,16 +6,16 @@ import store from './model/store.js';
 
 import LoadingComponent from './loading/LoadingComponent';
 
-const About = lazy(() => import('./views/About'));
+const About = lazy(() => import('./views/About.jsx'));
 const Login = lazy(() => import('./views/Login.jsx'));
-const LogOut = lazy(() => import('./views/Logout'));
-const SignUp = lazy(() => import('./views/Signup'));
-const Forgot = lazy(() => import('./views/Forgot'));
-const Dashboard = lazy(() => import('./views/Dashboard'));
-const Founders = lazy(() => import('./views/Founders'));
-const Founder = lazy(() => import('./views/Founder'));
-const Team = lazy(() => import('./views/Team'));
-const TeamMember = lazy(() => import('./views/TeamMember'));
+const LogOut = lazy(() => import('./views/Logout.jsx'));
+const SignUp = lazy(() => import('./views/Signup.jsx'));
+const Forgot = lazy(() => import('./views/Forgot.jsx'));
+const Dashboard = lazy(() => import('./views/Dashboard.jsx'));
+const Founders = lazy(() => import('./views/Founders.jsx'));
+const Founder = lazy(() => import('./views/Founder.jsx'));
+const Team = lazy(() => import('./views/Team.jsx'));
+const TeamMember = lazy(() => import('./views/TeamMember.jsx'));
 
 function App() {
   return (

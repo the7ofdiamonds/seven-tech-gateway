@@ -12,22 +12,21 @@ export default defineConfig({
             host: 'the7ofdiamonds.development',
         },
         watch: {
-            usePolling: true,
-            interval: 100,
+        //     usePolling: true,
+        //     interval: 100,
             include: ['src/**/*.jsx', 'src/**/*.js'],
-            exclude: ['**/*.html']
         },
     },
     publicDir: false,
     build: {
-        assetsDir: '',
         manifest: true,
         sourcemap: true,
         emptyOutDir: true,
-        outDir: 'Assets/JS/dist',
-        target: 'es2015',
+        modulePreload: false,
+        outDir: 'Assets/JS',
+        assetsDir: 'dist',
         input: './src/index.jsx',
-        rollupOptions: rollupConfig,
+        rollupOptions: rollupConfig
     },
     plugins: [
         react(),

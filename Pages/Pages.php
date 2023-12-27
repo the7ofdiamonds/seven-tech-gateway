@@ -44,7 +44,7 @@ class Pages
                 'regex' => '#^/founders/([a-zA-Z-]+)/resume$#',
                 'file_name' => 'FounderResume',
                 'title' => '',
-                'name' => 'founder_resume'
+                'name' => 'founder-resume'
             ],
             [
                 'url' => 'login',

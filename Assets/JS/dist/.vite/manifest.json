@@ -5,34 +5,34 @@
   "_ErrorComponent.js": {
     "file": "ErrorComponent.js",
     "imports": [
-      "index.html"
+      "src/index.jsx"
     ]
   },
   "_GroupMembers.js": {
     "file": "GroupMembers.js",
     "imports": [
-      "index.html"
+      "src/index.jsx"
     ]
   },
   "_MemberIntroductionComponent.js": {
     "file": "MemberIntroductionComponent.js",
     "imports": [
-      "index.html"
+      "src/index.jsx"
     ]
   },
   "_NavigationLogin.js": {
     "file": "NavigationLogin.js",
     "imports": [
-      "index.html"
+      "src/index.jsx"
     ]
   },
   "_useDispatch.js": {
     "file": "useDispatch.js",
     "imports": [
-      "index.html"
+      "src/index.jsx"
     ]
   },
-  "index.html": {
+  "src/index.jsx": {
     "dynamicImports": [
       "src/views/About.jsx",
       "src/views/Login.jsx",
@@ -47,12 +47,12 @@
     ],
     "file": "index.js",
     "isEntry": true,
-    "src": "index.html"
+    "src": "src/index.jsx"
   },
   "src/views/About.jsx": {
     "file": "About.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "src/views/Founders.jsx",
       "_useDispatch.js",
       "_ErrorComponent.js",
@@ -64,7 +64,7 @@
   "src/views/Dashboard.jsx": {
     "file": "Dashboard.js",
     "imports": [
-      "index.html"
+      "src/index.jsx"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Dashboard.jsx"
@@ -72,7 +72,7 @@
   "src/views/Forgot.jsx": {
     "file": "Forgot.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_NavigationLogin.js",
       "_DisplayStatus.js"
     ],
@@ -82,7 +82,7 @@
   "src/views/Founder.jsx": {
     "file": "Founder.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_ErrorComponent.js",
       "_MemberIntroductionComponent.js",
       "_useDispatch.js"
@@ -93,7 +93,7 @@
   "src/views/Founders.jsx": {
     "file": "Founders.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_ErrorComponent.js",
       "_GroupMembers.js",
       "_useDispatch.js"
@@ -104,7 +104,7 @@
   "src/views/Login.jsx": {
     "file": "Login.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_NavigationLogin.js",
       "_DisplayStatus.js",
       "_useDispatch.js"
@@ -115,7 +115,7 @@
   "src/views/Logout.jsx": {
     "file": "Logout.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_DisplayStatus.js"
     ],
     "isDynamicEntry": true,
@@ -124,7 +124,7 @@
   "src/views/Signup.jsx": {
     "file": "Signup.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_NavigationLogin.js",
       "_DisplayStatus.js"
     ],
@@ -134,7 +134,7 @@
   "src/views/Team.jsx": {
     "file": "Team.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_ErrorComponent.js",
       "_GroupMembers.js",
       "_useDispatch.js"
@@ -145,7 +145,7 @@
   "src/views/TeamMember.jsx": {
     "file": "TeamMember.js",
     "imports": [
-      "index.html",
+      "src/index.jsx",
       "_ErrorComponent.js",
       "_MemberIntroductionComponent.js",
       "_useDispatch.js"
