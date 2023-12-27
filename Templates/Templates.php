@@ -2,8 +2,8 @@
 
 namespace SEVEN_TECH\Templates;
 
-use SEVEN_TECH\Assets\CSS\CSS;
-use SEVEN_TECH\Assets\JS\JS;
+use SEVEN_TECH\CSS\CSS;
+use SEVEN_TECH\JS\JS;
 
 class Templates
 {

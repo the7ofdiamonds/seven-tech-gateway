@@ -1,12 +1,12 @@
 <?php
 
-namespace SEVEN_TECH\Assets\CSS;
+namespace SEVEN_TECH\CSS;
 
 use Exception;
 
-use SEVEN_TECH\Assets\CSS\Customizer\BorderRadius;
-use SEVEN_TECH\Assets\CSS\Customizer\Color;
-use SEVEN_TECH\Assets\CSS\Customizer\Shadow;
+use SEVEN_TECH\CSS\Customizer\BorderRadius;
+use SEVEN_TECH\CSS\Customizer\Color;
+use SEVEN_TECH\CSS\Customizer\Shadow;
 
 class CSS
 {
@@ -22,8 +22,8 @@ class CSS
         $this->dir = SEVEN_TECH;
         $this->dirURL = SEVEN_TECH_URL;
 
-        $this->cssFolderPath = $this->dir . 'Assets/CSS/dist/';
-        $this->cssFolderPathURL = $this->dirURL . 'Assets/CSS/dist/';
+        $this->cssFolderPath = $this->dir . 'dist/css/';
+        $this->cssFolderPathURL = $this->dirURL . 'dist/css/';
     }
 
     function load_customization_css()

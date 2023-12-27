@@ -23,8 +23,8 @@ export default defineConfig({
         sourcemap: true,
         emptyOutDir: true,
         modulePreload: false,
-        outDir: 'Assets/JS',
-        assetsDir: 'dist',
+        outDir: 'dist/',
+        assetsDir: 'js',
         input: './src/index.jsx',
         rollupOptions: rollupConfig
     },

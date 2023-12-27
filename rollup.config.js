@@ -3,7 +3,7 @@ import babel from '@rollup/plugin-babel';
 const rollupConfig = {
     input: './src/index.jsx',
     output: {
-        dir: 'Assets/JS/dist',
+        dir: 'dist/js/',
         entryFileNames: '[name].js',
         chunkFileNames: '[name].js',
         assetFileNames: '[name].[ext]',

@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Assets\CSS\Customizer;
+namespace SEVEN_TECH\CSS\Customizer;
 
 class Color
 {

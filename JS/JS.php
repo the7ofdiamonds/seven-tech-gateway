@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Assets\JS;
+namespace SEVEN_TECH\JS;
 
 use Exception;
 
@@ -17,8 +17,8 @@ class JS
         $this->dir = SEVEN_TECH;
         $this->dirURL = SEVEN_TECH_URL;
 
-        $this->buildDir = $this->dir . 'Assets/JS/dist/';
-        $this->buildDirURL = $this->dirURL . 'Assets/JS/dist/';
+        $this->buildDir = $this->dir . 'dist/js/';
+        $this->buildDirURL = $this->dirURL . 'dist/js/';
 
         $this->includes_url = includes_url();
     }
