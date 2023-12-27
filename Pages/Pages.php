@@ -14,7 +14,7 @@ class Pages
     public function __construct()
     {
         $this->front_page_react = [
-            'about',
+            'About',
         ];
 
         $this->custom_pages_list = [
@@ -80,7 +80,10 @@ class Pages
         ];
 
         $this->pages = [
-            ['title' => 'ABOUT']
+            [
+                'title' => 'ABOUT',
+                'filename' => 'About'
+            ]
         ];
     }
 

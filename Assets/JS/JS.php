@@ -25,31 +25,34 @@ class JS
         $this->includes_url = includes_url();
     }
 
-    function load_front_page_react($section)
+    function load_react_index()
+    {
+        $indexPath = $this->buildDir . 'index.js';
+        $indexPathURL = $this->buildDirURL . 'index.js';
+
+        if (file_exists($indexPath)) {
+            echo '<script type="module" src="' . esc_url($indexPathURL) . '"></script>';
+        } else {
+            throw new Exception('Index page has not been created in react JSX.', 404);
+        }
+    }
+
+    function load_front_page_react($sections)
     {
         try {
+            $this->load_react_index();
+
             if (!empty($section)) {
+                wp_enqueue_script('wp-element', $this->includes_url . 'js/dist/element.min.js', [], null, true);
+
                 $filePath = $this->buildDir . $section . '.js';
                 $filePathURL = $this->buildDirURL . $section . '.js';
 
-                wp_enqueue_script('wp-element', $this->includes_url . 'js/dist/element.min.js', [], null, true);
-
-                // if (file_exists($filePath)) {
-                    // echo '<script type="module" src="' . esc_url($filePathURL) . '"></script>';
-                //     wp_enqueue_script($this->handle_prefix . 'react_' . $section, $filePathURL, ['wp-element'], 1.0, true);
-                // } else {
-                //     throw new Exception($section . ' page has not been created in react JSX.', 404);
-                // }
-
-                $indexPath = $this->buildDir . 'index.js';
-                // error_log($this->buildDir);
-                if (file_exists($indexPath)) {
-                    // echo '<script type="module" src="' . esc_url($this->buildDirURL . 'main.js') . '"></script>';
-                    wp_enqueue_script($this->handle_prefix . 'react_index', $this->buildDirURL . 'index.js', ['wp-element'], '1.0', true);
+                if (file_exists($filePath)) {
+                    echo '<script type="module" src="' . esc_url($filePathURL) . '"></script>';
+                    // wp_enqueue_script($this->handle_prefix . 'react_' . $section, $filePathURL, ['wp-element'], 1.0, true);
                 } else {
-                    // throw new Exception('Index page has not been created in react JSX.', 404);
-                    // $indexPath = $this->buildDir . 'index.js';
-                error_log($indexPath);
+                    throw new Exception($section . ' page has not been created in react JSX.', 404);
                 }
             }
         } catch (Exception $e) {
@@ -78,7 +81,7 @@ class JS
                     throw new Exception($page['file_name'] . ' page has not been created in react JSX.');
                 }
 
-                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'main.js') . '"></script>';
+                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'index.js') . '"></script>';
             }
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();
@@ -106,7 +109,7 @@ class JS
                     throw new Exception('Taxonomy ' . ucfirst($taxonomy['name']) . ' page has not been created in react JSX.');
                 }
 
-                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'main.js') . '"></script>';
+                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'index.js') . '"></script>';
             }
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();
@@ -134,7 +137,7 @@ class JS
                     throw new Exception('Post Type ' . ucfirst($post_type['name']) . ' page has not been created in react JSX.', 404);
                 }
 
-                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'main.js') . '"></script>';
+                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'index.js') . '"></script>';
             }
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();
@@ -162,7 +165,7 @@ class JS
                     throw new Exception('Post Type ' . ucfirst($post_type['name']) . ' page has not been created in react JSX.');
                 }
 
-                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'main.js') . '"></script>';
+                echo '<script type="module" src="' . esc_url($this->buildDirURL . 'index.js') . '"></script>';
             }
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();

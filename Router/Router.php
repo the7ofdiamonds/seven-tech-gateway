@@ -66,8 +66,10 @@ class Router
             if (!empty($this->protected_pages_list)) {
                 foreach ($this->protected_pages_list as $protected_page) {
                     if (preg_match($protected_page['regex'], $path)) {
-                        add_filter('template_include',  function ($template_include) use ($protected_page) {
-                            return $this->templates->get_protected_page_template($template_include, $protected_page);
+                        $filename = $protected_page['file_name'];
+
+                        add_filter('template_include',  function ($template_include) use ($filename) {
+                            return $this->templates->get_protected_page_template($template_include, $filename);
                         });
                     }
                 }
@@ -76,8 +78,10 @@ class Router
             if (!empty($this->pages_list)) {
                 foreach ($this->pages_list as $page) {
                     if (preg_match($page['regex'], $path)) {
-                        add_filter('template_include', function ($template_include) use ($page) {
-                            return $this->templates->get_page_template($template_include, $page);
+                        $filename = $page['file_name'];
+
+                        add_filter('template_include', function ($template_include) use ($filename) {
+                            return $this->templates->get_page_template($template_include, $filename);
                         });
                     }
                 }

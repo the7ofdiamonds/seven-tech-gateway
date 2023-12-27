@@ -1,1 +1,0 @@
-.card{display:flex;flex-direction:column;align-items:center;gap:.75rem;height:fit-content;max-width:1000px;padding:.75rem;text-align:center;opacity:.85}.card{box-shadow:var(--seven-tech-card-shadow);border-radius:var(--seven-tech-border-radius)}.card.login-card,.card.signup-card,.card.reset-card{max-width:30rem}

@@ -24,7 +24,8 @@ class Post_Types
                 'singular' => 'Investor',
                 'plural' => 'Investors',
                 'archive_page' => 'investors',
-                'single_page' => 'investor'
+                'single_page' => 'investor',
+                'file_name' => "Investors"
             ],
             [
                 'name' => 'founders',
@@ -34,7 +35,8 @@ class Post_Types
                 'singular' => 'Founder',
                 'plural' => 'Founders',
                 'archive_page' => 'founders',
-                'single_page' => 'founder'
+                'single_page' => 'founder',
+                'file_name' => "Founders"
             ],
         ];
     }

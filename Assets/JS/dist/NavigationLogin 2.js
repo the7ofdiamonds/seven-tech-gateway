@@ -1,2 +1,0 @@
-import{j as n}from"./index.js";function l(){var i=function(){window.location.href="/login"},t=function(){window.location.href="/signup"},r=function(){window.location.href="/forgot"};return n.jsx(n.Fragment,{children:n.jsxs("div",{className:"options",children:[n.jsx("button",{onClick:i,children:n.jsx("h3",{children:"LOGIN"})}),n.jsx("button",{onClick:t,children:n.jsx("h3",{children:"SIGN UP"})}),n.jsx("button",{onClick:r,children:n.jsx("h3",{children:"FORGOT"})})]})})}export{l as N};
-//# sourceMappingURL=NavigationLogin.js.map

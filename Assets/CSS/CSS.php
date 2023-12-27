@@ -25,8 +25,8 @@ class CSS
         $this->dirURL = SEVEN_TECH_URL;
         $this->cssFileName = 'seven-tech.css';
 
-        $this->cssFolderPath = $this->dir . 'Assets/CSS/dist';
-        $this->cssFolderPathURL = $this->dirURL . 'Assets/CSS/';
+        $this->cssFolderPath = $this->dir . 'Assets/CSS/dist/';
+        $this->cssFolderPathURL = $this->dirURL . 'Assets/CSS/dist/';
 
         $this->filePath = $this->cssFolderPath . $this->cssFileName;
     }
@@ -38,17 +38,47 @@ class CSS
         (new Shadow)->load_css();
     }
 
+    function load_index_css()
+    {
+        try {
+            $filename = 'index.css';
+            $indexPath = $this->cssFolderPath . $filename;
+            $indexPathURL = $this->cssFolderPathURL . $filename;
+
+            if (file_exists($indexPath)) {
+                wp_register_style($this->handle_prefix . $filename,  $indexPathURL, array(), false, 'all');
+                wp_enqueue_style($this->handle_prefix . $filename);
+            } else {
+                throw new Exception('CSS file ' . $filename . ' is missing at :' . $this->filePath, 404);
+            }
+        } catch (Exception $e) {
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+            $response = $errorMessage . ' ' . $errorCode;
+
+            error_log($response . ' at load_index_css');
+
+            return $response;
+        }
+    }
+
     function load_front_page_css($section)
     {
         try {
-            if (!empty($section)) {
-                $this->load_customization_css();
+            $this->load_customization_css();
+            $this->load_index_css();
 
-                if ($this->filePath) {
-                    wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
+            if (!empty($section)) {
+
+                $filename = $section . '.css';
+                $cssFilePath = $this->cssFolderPath . $filename;
+                $cssFilePathURL = $this->cssFolderPathURL . $filename;
+
+                if ($cssFilePath) {
+                    wp_register_style($this->handle_prefix . 'css',  $cssFilePathURL, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');
                 } else {
-                    throw new Exception('CSS file is missing at :' . $this->filePath, 404);
+                    throw new Exception('CSS file ' . $filename . ' is missing at :' . $this->filePath, 404);
                 }
             }
         } catch (Exception $e) {
@@ -67,12 +97,17 @@ class CSS
         try {
             if (!empty($page)) {
                 $this->load_customization_css();
+                $this->load_index_css();
 
-                if ($this->filePath) {
-                    wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
+                $filename = $page['file_name'] . '.css';
+                $cssFilePath = $this->cssFolderPath . $filename;
+                $cssFilePathURL = $this->cssFolderPathURL . $filename;
+
+                if (file_exists($cssFilePath)) {
+                    wp_register_style($this->handle_prefix . 'css',  $cssFilePathURL, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');
                 } else {
-                    throw new Exception('CSS file is missing at :' . $this->filePath, 404);
+                    throw new Exception('CSS file ' . $filename . ' is missing at :' . $this->filePath, 404);
                 }
             }
         } catch (Exception $e) {
@@ -91,12 +126,17 @@ class CSS
         try {
             if (!empty($taxonomy['name']) && is_tax($taxonomy['name'])) {
                 $this->load_customization_css();
+                $this->load_index_css();
 
-                if ($this->filePath) {
-                    wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
+                $filename = $taxonomy['file_name'] . '.css';
+                $cssFilePath = $this->cssFolderPath . $filename;
+                $cssFilePathURL = $this->cssFolderPathURL . $filename;
+
+                if (file_exists($cssFilePath)) {
+                    wp_register_style($this->handle_prefix . 'css',  $cssFilePathURL, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');
                 } else {
-                    throw new Exception('CSS file is missing at :' . $this->filePath, 404);
+                    throw new Exception('CSS file ' . $filename . ' is missing at :' . $this->filePath, 404);
                 }
             }
         } catch (Exception $e) {
@@ -115,12 +155,17 @@ class CSS
         try {
             if (!empty($post_type) && (is_array($post_type) || is_object($post_type)) && (is_post_type_archive($post_type) || is_singular($post_type))) {
                 $this->load_customization_css();
+                $this->load_index_css();
 
-                if ($this->filePath) {
-                    wp_register_style($this->handle_prefix . 'css',  $this->cssFolderPathURL . $this->cssFileName, array(), false, 'all');
+                $filename = $post_type['file_name'] . '.css';
+                $cssFilePath = $this->cssFolderPath . $filename;
+                $cssFilePathURL = $this->cssFolderPathURL . $filename;
+
+                if (file_exists($cssFilePath)) {
+                    wp_register_style($this->handle_prefix . 'css',  $cssFilePathURL, array(), false, 'all');
                     wp_enqueue_style($this->handle_prefix . 'css');
                 } else {
-                    throw new Exception('CSS file is missing at :' . $this->filePath, 404);
+                    throw new Exception('CSS file ' . $filename . ' is missing at :' . $this->filePath, 404);
                 }
             }
         } catch (Exception $e) {
@@ -136,7 +181,25 @@ class CSS
 
     function load_social_bar_css()
     {
-        wp_register_style($this->handle_prefix . 'social_bar_css',  $this->cssFolderPathURL . 'social-bar.css', array(), false, 'all');
-        wp_enqueue_style($this->handle_prefix . 'social_bar_css');
+        try {
+            $filename = 'social-bar.css';
+            $cssFilePath = $this->cssFolderPath . $filename;
+            $cssFilePathURL = $this->cssFolderPathURL . $filename;
+
+            if (file_exists($cssFilePath)) {
+                wp_register_style($this->handle_prefix . 'social_bar_css',  $cssFilePathURL, array(), false, 'all');
+                wp_enqueue_style($this->handle_prefix . 'social_bar_css');
+            } else {
+                throw new Exception('CSS file ' . $filename . ' is missing at :' . $this->filePath, 404);
+            }
+        } catch (Exception $e) {
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+            $response = $errorMessage . ' ' . $errorCode;
+
+            error_log($response . ' at load_social_bar_css');
+
+            return $response;
+        }
     }
 }

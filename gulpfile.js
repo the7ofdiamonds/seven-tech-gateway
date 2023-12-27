@@ -4,7 +4,6 @@ const rename = require('gulp-rename');
 const clean = require('gulp-clean');
 
 gulp.task('clean', function () {
-    // Clean the CSS dist folder
     return gulp.src('./Assets/CSS/dist/**/*', { read: false, allowEmpty: true })
         .pipe(clean());
 });
@@ -12,8 +11,8 @@ gulp.task('clean', function () {
 gulp.task('sass', gulp.series('clean', function () {
     return gulp.src('./Assets/CSS/scss/**/*.scss')
         .pipe(rename(function (file) {
-            // Remove underscores from the basename
             file.basename = file.basename.replace(/_/g, '');
+            file.basename = file.basename.charAt(0).toUpperCase() + file.basename.slice(1);
         }))
         .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
         .pipe(gulp.dest('./Assets/CSS/dist/'));

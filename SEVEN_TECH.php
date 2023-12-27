@@ -89,8 +89,8 @@ class SEVEN_TECH
         });
 
         add_action('wp_head', function(){
-            (new CSS)->load_social_bar_css();
             (new SocialBar)->load_css();
+            (new CSS)->load_social_bar_css();
         });
 
         add_action('customize_register', function($wp_customize){

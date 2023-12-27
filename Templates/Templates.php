@@ -85,6 +85,7 @@ class Templates
 
         if (file_exists($template)) {
             add_action('wp_head', function () use ($page) {
+                error_log($page);
                 $this->css->load_pages_css($page);
             });
             add_action('wp_footer', function () use ($page) {
