@@ -25,7 +25,7 @@ class CSS
         $this->dirURL = SEVEN_TECH_URL;
         $this->cssFileName = 'seven-tech.css';
 
-        $this->cssFolderPath = $this->dir . 'Assets/CSS/';
+        $this->cssFolderPath = $this->dir . 'Assets/CSS/dist';
         $this->cssFolderPathURL = $this->dirURL . 'Assets/CSS/';
 
         $this->filePath = $this->cssFolderPath . $this->cssFileName;

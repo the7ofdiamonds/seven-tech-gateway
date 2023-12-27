@@ -7,11 +7,6 @@ const rollupConfig = {
         entryFileNames: '[name].js',
         chunkFileNames: '[name].js',
         assetFileNames: '[name].[ext]',
-        cssCodeSplit: true,
-        css: {
-            input: 'Assets/CSS',
-            outDir: 'Assets/CSS/dist',
-        },
     },
     plugins: [babel({ babelHelpers: 'bundled' })],
 };

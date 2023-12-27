@@ -1,0 +1,2 @@
+import{u as a,r as f,o as i,j as r,L as d}from"./index.js";import{E as c}from"./ErrorComponent.js";import{G as m}from"./GroupMembers.js";import{u as p}from"./useDispatch.js";function g(){var e=a(function(u){return u.founder}),n=e.founderLoading,o=e.founderError,t=e.founders,s=p();return f.useEffect(function(){s(i())},[s]),n?r.jsx(d,{}):o?r.jsx(c,{error:o}):r.jsx(r.Fragment,{children:r.jsxs("section",{className:"founders",children:[r.jsx("h4",{className:"title",children:"Founders"}),r.jsx(m,{group:t})]})})}export{g as default};
+//# sourceMappingURL=Founders.js.map
