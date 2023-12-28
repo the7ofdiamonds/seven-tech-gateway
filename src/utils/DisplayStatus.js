@@ -1,4 +1,4 @@
-export const displayStatus = (status) => {
+const displayStatus = (status) => {
   if (status.mesaage === 'Error (auth/too-many-requests): Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).') {
     return 'Access to this account has been temporarily disabled due to too many failed login attempts. You can immediately restore it by resetting your password or you can try again later.';
   }
@@ -14,7 +14,7 @@ export const displayStatus = (status) => {
   return status.message;
 };
 
-export const displayStatusType = (status) => {
+const displayStatusType = (status) => {
   if (status.mesaage === 'Login successful' ||
     status.mesaage === 'twins!!' ||
     status.mesaage === 'You are now a user.') {
@@ -32,3 +32,5 @@ export const displayStatusType = (status) => {
     return 'error';
   }
 };
+
+export { displayStatus, displayStatusType };

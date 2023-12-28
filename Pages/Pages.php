@@ -19,20 +19,6 @@ class Pages
 
         $this->custom_pages_list = [
             [
-                'url' => 'about',
-                'regex' => '#^/about$#',
-                'file_name' => 'About',
-                'title' => 'ABOUT',
-                'name' => 'about'
-            ],
-            [
-                'url' => 'dashboard',
-                'regex' => '#^/dashboard#',
-                'file_name' => 'Dashboard',
-                'title' => 'DASHBOARD',
-                'name' => 'dashboard'
-            ],
-            [
                 'url' => 'forgot',
                 'regex' => '#^/forgot#',
                 'file_name' => 'Forgot',
@@ -41,7 +27,7 @@ class Pages
             ],
             [
                 'url' => 'founders/([a-zA-Z-]+)/resume',
-                'regex' => '#^/founders/([a-zA-Z-]+)/resume$#',
+                'regex' => '#^/founders/([a-zA-Z-]+)/resume#',
                 'file_name' => 'FounderResume',
                 'title' => '',
                 'name' => 'founder-resume'
@@ -69,9 +55,25 @@ class Pages
             ],
         ];
 
-        $this->protected_pages_list = [];
+        $this->protected_pages_list = [
+            [
+                'url' => 'dashboard',
+                'regex' => '#^/dashboard#',
+                'file_name' => 'Dashboard',
+                'title' => 'DASHBOARD',
+                'name' => 'dashboard'
+            ],
+        ];
 
-        $this->pages_list = [];
+        $this->pages_list = [
+            [
+                'url' => 'about',
+                'regex' => '#^/about$#',
+                'file_name' => 'About',
+                'title' => 'ABOUT',
+                'name' => 'about'
+            ],
+        ];
 
         $this->page_titles = [
             ...$this->custom_pages_list,

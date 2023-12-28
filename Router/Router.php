@@ -8,6 +8,7 @@ use SEVEN_TECH\Pages\Pages;
 use SEVEN_TECH\Post_Types\Post_Types;
 use SEVEN_TECH\Taxonomies\Taxonomies;
 use SEVEN_TECH\Templates\Templates;
+use SEVEN_TECH\Templates\TemplatesCustom;
 
 class Router
 {
@@ -18,12 +19,14 @@ class Router
     private $post_types_list;
     private $taxonomies_list;
     private $templates;
+    private $templates_custom;
 
     public function __construct(
         Pages $pages,
         Post_Types $posttypes,
         Taxonomies $taxonomies,
-        Templates $templates
+        Templates $templates,
+        TemplatesCustom $templates_custom
     ) {
         $this->front_page_react = $pages->front_page_react;
         $this->custom_pages_list = $pages->custom_pages_list;
@@ -34,12 +37,14 @@ class Router
         $this->taxonomies_list = $taxonomies->taxonomies_list;
 
         $this->templates = $templates;
+        $this->templates_custom = $templates_custom;
     }
 
     function load_page()
     {
         try {
             $path = $_SERVER['REQUEST_URI'];
+
 
             if (preg_match('#^/$|^/index\.php(?:\?|$)#', $path)) {
 
@@ -128,5 +133,6 @@ class Router
         add_rewrite_rule('^logout/?', 'index.php?', 'top');
         add_rewrite_rule('^signup/?', 'index.php?', 'top');
         add_rewrite_rule('^dashboard/?', 'index.php?', 'top');
+        add_rewrite_rule('^founders/([a-zA-Z\-]+)/resume/?$', 'index.php?founder_name=$matches[1]', 'top');
     }
 }

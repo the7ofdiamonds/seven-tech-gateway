@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getFounder } from '../controllers/founderSlice';
+import { getFounder } from '../controllers/founderSlice.js';
 
 import LoadingComponent from '../loading/LoadingComponent';
 import ErrorComponent from '../error/ErrorComponent';
@@ -44,7 +44,7 @@ function Founder() {
       <section className="founder">
         <MemberNavigationComponent resume={founderResume} />
 
-        <main class="founder">
+        <main className="founder">
           <MemberIntroductionComponent
             title={title}
             avatarURL={avatarURL}

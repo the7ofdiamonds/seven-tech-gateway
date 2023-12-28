@@ -11,7 +11,7 @@ class Founders
     }
 
     function getFounders()
-    { error_log('getFounders');
+    {
         $founders = [];
         $users = get_users([
             'role__in' => [
@@ -44,7 +44,9 @@ class Founders
 
     function getFounder($slug)
     {
-        $user = get_user_by('ID', 16);
+        $post_type = 'founders';
+        $post = get_page_by_path($slug, OBJECT, $post_type);
+        $user = get_user_by('ID', $post->post_author);
 
         if ($user) {
             $user_data = get_userdata($user->ID);
@@ -74,7 +76,8 @@ class Founders
 
     function getFounderResume($pageTitle)
     {
-        $founderName = strtoupper($pageTitle);
+        $outputString = str_replace('-', '', $pageTitle);
+        $founderName = strtoupper($outputString);
         $resume_pdf = SEVEN_TECH . 'resume/' . $founderName . '_Resume.pdf';
 
         if (file_exists($resume_pdf)) {

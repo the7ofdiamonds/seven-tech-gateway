@@ -54,9 +54,9 @@
     "imports": [
       "src/index.jsx",
       "src/views/Founders.jsx",
-      "_useDispatch.js",
       "_ErrorComponent.js",
-      "_GroupMembers.js"
+      "_GroupMembers.js",
+      "_useDispatch.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/About.jsx"

@@ -7,5 +7,6 @@ import './services/firebase/config.js';
 const sevenTech = document.getElementById('seven_tech');
 
 if (sevenTech) {
-  ReactDOM.createRoot(sevenTech).render(<React.Fragment><App /></React.Fragment>);
+  ReactDOM.createRoot(sevenTech).render(<><App /></>);
 }
+

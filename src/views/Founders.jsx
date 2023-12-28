@@ -30,7 +30,10 @@ function Founders() {
       <section className="founders">
         <h4 className="title">Founders</h4>
 
-        <GroupMembers group={founders} />
+        {Array.isArray(founders) &&
+          founders.map((founder) => (
+            <GroupMembers key={founder.id} group={founder} />
+          ))}
       </section>
     </>
   );

@@ -4,7 +4,21 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php wp_title(''); ?></title>
+    <title>
+        <?php
+        $currentURL = $_SERVER['REQUEST_URI'];
+        $urlPosition = explode('/', $currentURL);
+        $page = get_page_by_path($urlPosition[2], OBJECT, 'founders');
+        error_log(print_r($page, true));
+        if ($page) {
+            $founderTitle = $page->post_title;
+            $resumeTitle = $founderTitle . ' Resume';
+            echo $resumeTitle;
+        } else {
+            echo "Page not found!";
+        }
+        ?>
+    </title>
 
     <?php
     $site_icon_url = get_site_icon_url();
@@ -38,7 +52,8 @@
     <?php
     $currentURL = $_SERVER['REQUEST_URI'];
     $urlPosition = explode('/', $currentURL);
-    $founderName = strtoupper($urlPosition[2]);
+    $outputString = str_replace('-', '', $urlPosition[2]);
+    $founderName = strtoupper($outputString);
     $resume_pdf = SEVEN_TECH . 'resume/' . $founderName . '_Resume.pdf';
     $resume_pdf_url = SEVEN_TECH_URL . 'resume/' . $founderName . '_Resume.pdf';
 

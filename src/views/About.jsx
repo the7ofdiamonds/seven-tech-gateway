@@ -8,14 +8,14 @@ import Founders from './Founders';
 import { getContent } from '../controllers/contentSlice';
 
 function About() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const missionStatement = 'Turning ideas into tangible assets ';
-  const { content } = useSelector((state) => state.content);
+  // const { content } = useSelector((state) => state.content);
 
-  useEffect(() => {
-    dispatch(getContent('about'));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getContent('about'));
+  // }, [dispatch]);
 
   return (
     <>
@@ -28,7 +28,7 @@ function About() {
           </h3>
         </div>
 
-        <ContentComponent content={content} />
+        {/* <ContentComponent content={content} /> */}
 
         <Founders />
       </section>

@@ -12,13 +12,16 @@ export default defineConfig({
             host: 'the7ofdiamonds.development',
         },
         watch: {
-        //     usePolling: true,
-        //     interval: 100,
+            //     usePolling: true,
+            //     interval: 100,
             include: ['src/**/*.jsx', 'src/**/*.js'],
         },
     },
     publicDir: false,
     build: {
+        watch: {
+            include: ['src/**/*.jsx', 'src/**/*.js'],
+        },
         manifest: true,
         sourcemap: true,
         emptyOutDir: true,

@@ -43,6 +43,7 @@ use SEVEN_TECH\Router\Router;
 use SEVEN_TECH\Shortcodes\Shortcodes;
 use SEVEN_TECH\Taxonomies\Taxonomies;
 use SEVEN_TECH\Templates\Templates;
+use SEVEN_TECH\Templates\TemplatesCustom;
 
 class SEVEN_TECH
 {
@@ -67,8 +68,9 @@ class SEVEN_TECH
         $css = new CSS;
         $js = new JS;
         $this->pages = new Pages;
+        $templates_custom = new TemplatesCustom;
 
-        add_action('init', function () use ($css, $js) {
+        add_action('init', function () use ($css, $js, $templates_custom) {
             $posttypes = new Post_Types;
             $posttypes->custom_post_types();
             $taxonomies = new Taxonomies;
@@ -81,33 +83,34 @@ class SEVEN_TECH
                 $this->pages,
                 $posttypes,
                 $taxonomies,
-                $templates
+                $templates,
+                $templates_custom
             );
             $router->load_page();
             $router->react_rewrite_rules();
             new Shortcodes;
         });
 
-        add_action('wp_head', function(){
+        add_action('wp_head', function () {
             (new SocialBar)->load_css();
             (new CSS)->load_social_bar_css();
         });
 
-        add_action('customize_register', function($wp_customize){
-            (new Customizer)->register_customizer_panel($wp_customize);    
+        add_action('customize_register', function ($wp_customize) {
+            (new Customizer)->register_customizer_panel($wp_customize);
             (new BorderRadius)->seven_tech_border_radius_section($wp_customize);
             (new Color)->seven_tech_color_section($wp_customize);
             (new Shadow)->seven_tech_shadow_section($wp_customize);
-            (new SocialBar)->seven_tech_social_bar_section($wp_customize);    
+            (new SocialBar)->seven_tech_social_bar_section($wp_customize);
         });
     }
 
     function activate()
     {
-        flush_rewrite_rules();
         (new Database)->createTables();
         (new Pages)->add_pages();
         (new Roles)->add_roles();
+        flush_rewrite_rules();
     }
 }
 
