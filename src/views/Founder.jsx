@@ -29,7 +29,7 @@ function Founder() {
     fullName,
     greeting,
     skills,
-    founderResume,
+    founder_resume,
     social_networks
   } = useSelector((state) => state.founder);
 
@@ -44,7 +44,7 @@ function Founder() {
   return (
     <>
       <section className="founder">
-        <MemberNavigationComponent resume={founderResume} />
+        <MemberNavigationComponent resume={founder_resume} />
 
         <main className="founder">
           <MemberIntroductionComponent

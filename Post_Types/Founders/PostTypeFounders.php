@@ -4,7 +4,7 @@ namespace SEVEN_TECH\Post_Types\Founders;
 
 use Exception;
 
-use SEVEN_TECH\PDF\PDF;
+use SEVEN_TECH\Media\Media;
 
 /**
  * @package SEVEN TECH
@@ -14,7 +14,6 @@ class PostTypeFounders
 {
     private $admin;
     private $founders;
-    private $is_founder;
     private $post_id;
     private $founder_user_id;
     private $user_data;
@@ -26,7 +25,6 @@ class PostTypeFounders
 
         $this->current_user = wp_get_current_user();
         $this->admin = $this->current_user->has_cap('administrator');
-        $this->is_founder = $this->user_has_role('founder', $this->current_user->ID);
 
         add_action('load-post-new.php', [$this, 'show_founder_select']);
         add_action('load-post.php', [$this, 'get_founder']);
@@ -45,7 +43,7 @@ class PostTypeFounders
     {
         $user = get_userdata($user_id);
         $roles = $user->roles;
-
+        error_log(print_r($user));
         if (in_array($role, $roles, true)) {
             return true;
         } else {
@@ -55,21 +53,19 @@ class PostTypeFounders
 
     function show_founder_select()
     {
-        if ($this->admin || $this->is_founder) {
-            $this->founders = (new Founders)->getFoundersList();
+        $this->founders = (new Founders)->getFoundersList();
 
-            add_meta_box(
-                "post_metadata_founder_select",
-                "Founder Select",
-                [$this, 'post_meta_box_founder_select'],
-                "founders",
-                "side",
-                "low"
-            );
+        add_meta_box(
+            "post_metadata_founder_select",
+            "Founder Select",
+            [$this, 'post_meta_box_founder_select'],
+            "founders",
+            "side",
+            "low"
+        );
 
-            $this->founder_user_id = $this->founders[0]['id'];
-            $this->user_data = get_userdata($this->founder_user_id);
-        }
+        $this->founder_user_id = $this->founders[0]['id'];
+        $this->user_data = get_userdata($this->founder_user_id);
     }
 
     function get_founder()
@@ -261,8 +257,8 @@ class PostTypeFounders
         $custom = get_post_custom($this->post_id);
         $resume_url = isset($custom['founder_resume'][0]) ? esc_url($custom['founder_resume'][0]) : '';
     ?>
-            <label for="founder_resume">Upload Founder Resume (PDF):</label>
-            <input type="file" id="founder_resume" name="founder_resume" accept=".pdf">
+        <label for="founder_resume">Upload Founder Resume (PDF):</label>
+        <input type="file" id="founder_resume" name="founder_resume" accept=".pdf">
 <?php
         if ($resume_url) {
             echo '<p>Current Resume: <a href="' . $resume_url . '" target="_blank">' . $resume_url . '</a></p>';
@@ -346,10 +342,10 @@ class PostTypeFounders
 
         if (isset($_FILES['founder_resume']['tmp_name']) && !empty($_FILES['founder_resume']['tmp_name'])) {
             $pdf_subdir = '/resume';
-            $file_path = $_FILES['founder_resume']['tmp_name'];
+            $file = $_FILES['founder_resume'];
             $filename = '/Resume_' . $post_id . '.pdf';
 
-            $founder_resume_url = (new PDF)->upload($pdf_subdir, $file_path, $filename);
+            $founder_resume_url = (new Media)->upload($pdf_subdir, $file, $filename);
 
             update_post_meta($post_id, 'founder_resume', esc_url($founder_resume_url));
         }

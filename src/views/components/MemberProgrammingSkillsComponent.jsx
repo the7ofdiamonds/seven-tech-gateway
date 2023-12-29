@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 function MemberProgrammingSkillsComponent(props) {
   const { skills } = props;
   const skillsSlideRef = useRef(null);
-  console.log(skills);
+
   useEffect(() => {
     const skillsSlide = skillsSlideRef.current;
 

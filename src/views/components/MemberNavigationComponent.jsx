@@ -2,7 +2,7 @@ function MemberNavigationComponent(props) {
   const { resume } = props;
 
   const portfolioElement = document.getElementById('portfolio');
-
+console.log(resume);
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
 
