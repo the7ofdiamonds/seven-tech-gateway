@@ -9,7 +9,7 @@
         $currentURL = $_SERVER['REQUEST_URI'];
         $urlPosition = explode('/', $currentURL);
         $page = get_page_by_path($urlPosition[2], OBJECT, 'founders');
-        error_log(print_r($page, true));
+
         if ($page) {
             $founderTitle = $page->post_title;
             $resumeTitle = $founderTitle . ' Resume';
@@ -50,14 +50,14 @@
     </style>
 
     <?php
-    $currentURL = $_SERVER['REQUEST_URI'];
-    $urlPosition = explode('/', $currentURL);
-    $outputString = str_replace('-', '', $urlPosition[2]);
-    $founderName = strtoupper($outputString);
-    $resume_pdf = SEVEN_TECH . 'resume/' . $founderName . '_Resume.pdf';
-    $resume_pdf_url = SEVEN_TECH_URL . 'resume/' . $founderName . '_Resume.pdf';
+    $upload_dir = wp_upload_dir();
+    $pdf_subdir = '/resume';
+    $upload_path = $upload_dir['basedir'] . $pdf_subdir;
+    $upload_url = $upload_dir['baseurl'] . $pdf_subdir;
+    $resume_pdf = $upload_path . '/Resume_' . $page->ID . '.pdf';
+    $resume_pdf_url = $upload_url . '/Resume_' . $page->ID . '.pdf';
 
-    if (file_exists($resume_pdf)) : ?>
+if (file_exists($resume_pdf)) : ?>
         <iframe id="pdfViewer" src="<?php echo $resume_pdf_url; ?>" frameborder="0"></iframe>
     <?php else : ?>
         <main>

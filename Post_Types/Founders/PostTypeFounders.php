@@ -4,6 +4,8 @@ namespace SEVEN_TECH\Post_Types\Founders;
 
 use Exception;
 
+use SEVEN_TECH\PDF\PDF;
+
 /**
  * @package SEVEN TECH
  */
@@ -36,6 +38,7 @@ class PostTypeFounders
         add_action('save_post', [$this, 'save_post_instagram_link']);
         add_action('save_post', [$this, 'save_post_x_link']);
         add_action('save_post', [$this, 'save_post_hacker_rank_link']);
+        add_action('save_post', [$this, 'save_post_resume']);
     }
 
     function user_has_role($role, $user_id)
@@ -202,7 +205,7 @@ class PostTypeFounders
                 <h4>Email:</h4><?php echo $email; ?>
             </div>
         </div>
-<?php
+    <?php
     }
 
     function post_meta_box_github_link()
@@ -255,13 +258,15 @@ class PostTypeFounders
 
     function post_meta_box_resume()
     {
-        global $post;
-        $custom = get_post_custom($post->ID);
+        $custom = get_post_custom($this->post_id);
         $resume_url = isset($custom['founder_resume'][0]) ? esc_url($custom['founder_resume'][0]) : '';
-
-        echo '<label for="founder_resume">Upload Founder Resume (PDF):</label>';
-        echo '<input type="file" id="founder_resume" name="founder_resume" accept=".pdf">';
-        echo '<p>Current Resume: <a href="' . $resume_url . '">' . $resume_url . '</a></p>';
+    ?>
+            <label for="founder_resume">Upload Founder Resume (PDF):</label>
+            <input type="file" id="founder_resume" name="founder_resume" accept=".pdf">
+<?php
+        if ($resume_url) {
+            echo '<p>Current Resume: <a href="' . $resume_url . '" target="_blank">' . $resume_url . '</a></p>';
+        }
     }
 
     function save_post_founder_user_id()
@@ -333,19 +338,20 @@ class PostTypeFounders
         update_post_meta($this->post_id, "hacker_rank_link", sanitize_text_field($hacker_rank_link));
     }
 
-    function save_post_meta($post_id)
+    function save_post_resume($post_id)
     {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
 
-        if (isset($_FILES['founder_resume'])) {
-            $file = $_FILES['founder_resume'];
-            $upload = wp_upload_bits($file['name'], null, file_get_contents($file['tmp_name']));
+        if (isset($_FILES['founder_resume']['tmp_name']) && !empty($_FILES['founder_resume']['tmp_name'])) {
+            $pdf_subdir = '/resume';
+            $file_path = $_FILES['founder_resume']['tmp_name'];
+            $filename = '/Resume_' . $post_id . '.pdf';
 
-            if (!$upload['error']) {
-                update_post_meta($post_id, 'founder_resume', $upload['url']);
-            }
+            $founder_resume_url = (new PDF)->upload($pdf_subdir, $file_path, $filename);
+
+            update_post_meta($post_id, 'founder_resume', esc_url($founder_resume_url));
         }
     }
 }
