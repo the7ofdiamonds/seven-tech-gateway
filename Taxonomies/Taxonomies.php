@@ -10,7 +10,16 @@ class Taxonomies
 
     public function __construct()
     {
-        $this->taxonomies_list = [];
+        $this->taxonomies_list = [
+            [
+                'name' => 'Skills',
+                'singular' => 'Skill',
+                'plural' => 'Skills',
+                'slug' => 'skills',
+                'menu_position' => 3,
+                'post_type' => 'founders'
+            ]
+        ];
     }
 
     function custom_taxonomy()
@@ -54,7 +63,7 @@ class Taxonomies
                     'update_count_callback' => '_update_post_term_count'
                 );
 
-                register_taxonomy($taxonomy['taxonomy'], $taxonomy['post_type'], $args);
+                register_taxonomy($taxonomy['name'], $taxonomy['post_type'], $args);
             }
         }
     }

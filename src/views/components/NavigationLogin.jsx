@@ -1,5 +1,4 @@
 function NavigationLoginComponent() {
-  const baseHost = window.location.protocol + '//' + window.location.host;
 
   const handleLogin = () => {
     window.location.href = `/login`;

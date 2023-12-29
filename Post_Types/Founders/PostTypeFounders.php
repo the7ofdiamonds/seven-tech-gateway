@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Founders\Post_Types;
+namespace SEVEN_TECH\Post_Types\Founders;
 
 use Exception;
 
@@ -10,166 +10,342 @@ use Exception;
 
 class PostTypeFounders
 {
+    private $admin;
+    private $founders;
+    private $is_founder;
+    private $post_id;
+    private $founder_user_id;
+    private $user_data;
+    private $current_user;
+
     public function __construct()
     {
-        add_action('init', [$this, 'add_founder_page']);
+        add_action('add_meta_boxes', [$this, 'add_post_meta_boxes']);
+
+        $this->current_user = wp_get_current_user();
+        $this->admin = $this->current_user->has_cap('administrator');
+        $this->is_founder = $this->user_has_role('founder', $this->current_user->ID);
+
+        add_action('load-post-new.php', [$this, 'show_founder_select']);
+        add_action('load-post.php', [$this, 'get_founder']);
+
+        add_action('save_post', [$this, 'save_post_founder_user_id']);
+        add_action('save_post', [$this, 'save_post_github_link']);
+        add_action('save_post', [$this, 'save_post_linkedin_link']);
+        add_action('save_post', [$this, 'save_post_facebook_link']);
+        add_action('save_post', [$this, 'save_post_instagram_link']);
+        add_action('save_post', [$this, 'save_post_x_link']);
+        add_action('save_post', [$this, 'save_post_hacker_rank_link']);
     }
 
-    function extractNameFromString($inputString)
+    function user_has_role($role, $user_id)
     {
-        // Use a regular expression to remove non-alphabetic characters
-        $nameOnly = preg_replace('/[^A-Za-z]/', '', $inputString);
+        $user = get_userdata($user_id);
+        $roles = $user->roles;
 
-        // Convert the result to lowercase
-        $lowercaseName = strtolower($nameOnly);
-
-        return $lowercaseName;
+        if (in_array($role, $roles, true)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    function add_founder_page()
+    function show_founder_select()
     {
-        try {
-            // Get users with roles 'founder/managing member' or 'team'
-            $users = get_users(array(
-                'role__in' => array(
-                    'founder',
-                )
-            ));
+        if ($this->admin || $this->is_founder) {
+            $this->founders = (new Founders)->getFoundersList();
 
-            if (!empty($users)) {
-                foreach ($users as $user) {
-                    $user_data = get_userdata($user->ID);
-                    $first_name = $user_data->first_name;
-                    $last_name = $user_data->last_name;
+            add_meta_box(
+                "post_metadata_founder_select",
+                "Founder Select",
+                [$this, 'post_meta_box_founder_select'],
+                "founders",
+                "side",
+                "low"
+            );
 
-                    // Extract a cleaned and lowercase name
-                    $post_title = $first_name . ' ' . $last_name;
-                    $post_slug = strtolower(preg_replace('/[^a-zA-Z]/', '', $post_title)); // Remove non-letter characters
+            $this->founder_user_id = $this->founders[0]['id'];
+            $this->user_data = get_userdata($this->founder_user_id);
+        }
+    }
 
-                    // Check if a post with this slug already exists
-                    $existing_post = get_page_by_path($post_slug, OBJECT, 'founders');
+    function get_founder()
+    {
+        if (!empty($_GET['post'])) {
+            $this->post_id = absint($_GET['post']);
 
-                    if (is_null($existing_post)) {
-                        // Create a new team member page
-                        $args = array(
-                            'post_title'    => $post_title,
-                            'post_content'  => '',
-                            'post_status'   => 'publish',
-                            'post_type'     => 'founders',
-                            'post_name'     => $post_slug, // Set the post name to the slug
-                        );
-
-                        $team_member_page = wp_insert_post($args);
-
-                        if (!is_wp_error($team_member_page)) {
-                            // Success
-                        } else {
-                            throw new Exception("Failed to create team member page: " . $team_member_page->get_error_message(), $team_member_page->get_error_code());
-                        }
-                    } else {
-                        // A post with the same slug already exists, skip creation.
-                    }
-                }
-            } else {
-                throw new Exception("No Founders found.", 404);
+            if ($this->post_id) {
+                $this->founder_user_id = get_post_meta($this->post_id, 'founder_user_id', true);
+                $this->user_data = get_userdata($this->founder_user_id);
             }
-        } catch (Exception $e) {
-            error_log(("Error: " . $e->getMessage())); // Log the error message
-            throw new Exception("An error occurred while creating team member pages. Please try again later."); // Display a user-friendly error message
         }
     }
 
     function add_post_meta_boxes()
     {
         add_meta_box(
-            "post_metadata_member_name", // div id containing rendered fields
-            "Founder Name", // section heading displayed as text
-            [$this, 'post_meta_box_member_name'], // callback function to render fields
-            "team", // name of post type on which to render fields
-            "side", // location on the screen
-            "low" // placement priority
+            "post_metadata_founder_info",
+            "Founder Info",
+            [$this, 'post_meta_box_founder_info'],
+            "founders",
+            "side",
+            "low"
         );
 
         add_meta_box(
-            "post_metadata_member_title", // div id containing rendered fields
-            "Founder Title", // section heading displayed as text
-            [$this, 'post_meta_box_member_title'], // callback function to render fields
-            "team", // name of post type on which to render fields
-            "normal", // location on the screen
-            "low" // placement priority
+            "post_metadata_github_link",
+            "GitHub Link",
+            [$this, 'post_meta_box_github_link'],
+            "founders",
+            "normal",
+            "low"
         );
 
         add_meta_box(
-            "post_metadata_hacker_rank_link", // div id containing rendered fields
-            "Hacker Rank Link", // section heading displayed as text
-            [$this, 'post_meta_box_hacker_rank_link'], // callback function to render fields
-            "team", // name of post type on which to render fields
-            "normal", // location on the screen
-            "low" // placement priority
+            "post_metadata_linkedin_link",
+            "LinkedIn Link",
+            [$this, 'post_meta_box_linkedin_link'],
+            "founders",
+            "normal",
+            "low"
+        );
+
+        add_meta_box(
+            "post_metadata_facebook_link",
+            "Facebook Link",
+            [$this, 'post_meta_box_facebook_link'],
+            "founders",
+            "normal",
+            "low"
+        );
+
+        add_meta_box(
+            "post_metadata_instagram_link",
+            "Instagram Link",
+            [$this, 'post_meta_box_instagram_link'],
+            "founders",
+            "normal",
+            "low"
+        );
+
+        add_meta_box(
+            "post_metadata_x_link",
+            "Instagram Link",
+            [$this, 'post_meta_box_x_link'],
+            "founders",
+            "normal",
+            "low"
+        );
+
+        add_meta_box(
+            "post_metadata_hacker_rank_link",
+            "Hacker Rank Link",
+            [$this, 'post_meta_box_hacker_rank_link'],
+            "founders",
+            "normal",
+            "low"
+        );
+
+        add_meta_box(
+            'post_metadata_resume',
+            'Founder Resume',
+            [$this, 'post_meta_box_resume'],
+            'founders',
+            'normal',
+            'low'
         );
     }
 
-    function post_meta_box_member_name()
+    function post_meta_box_founder_select()
     {
-        global $post;
-        $custom = get_post_custom($post->ID);
-        $field = $custom["member_name"][0];
-
-        echo "<input type=\"text\" name=\"member_name\" value=\"" . $field . "\" placeholder=\"Founder Name\">";
+        if ($this->admin) {
+?>
+            <select name="founder_select">
+                <?php
+                foreach ($this->founders as $founder) {
+                ?>
+                    <option value="<?php echo esc_attr($founder['id']); ?>">
+                        <?php echo $founder['first_name'] . ' ' . $founder['last_name']; ?>
+                    </option>
+                <?php
+                }
+                ?>
+            </select>
+        <?php
+        }
     }
 
-    function post_meta_box_member_title()
+    function post_meta_box_founder_info()
     {
-        global $post;
-        $custom = get_post_custom($post->ID);
-        $field = $custom["member_title"][0];
+        $avatar_url = get_avatar_url($this->user_data->ID, ['size' => 384]);
+        $first_name = $this->user_data->first_name;
+        $last_name = $this->user_data->last_name;
+        $email = $this->user_data->user_email;
+        $roles = $this->user_data->roles;
+        ?>
+        <div>
+            <div>
+                <img src="<?php echo $avatar_url; ?>" alt="">
+            </div>
+            <div>
+                <p><?php echo $first_name . ' ' . $last_name; ?></p>
+            </div>
+            <div>
+                <h4>Roles</h4>
+                <?php
+                foreach ($roles as $role) {
+                    echo $role;
+                }
+                ?>
+            </div>
+            <div>
+                <h4>Email:</h4><?php echo $email; ?>
+            </div>
+        </div>
+<?php
+    }
 
-        echo "<input type=\"text\" name=\"member_title\" value=\"" . $field . "\" placeholder=\"Founder Title\">";
+    function post_meta_box_github_link()
+    {
+        $custom = get_post_custom($this->post_id);
+        $field = isset($custom["github_link"][0]) ? esc_url($custom["github_link"][0]) : '';
+
+        echo '<input type="text" name="github_link" value="' . $field . '" placeholder="GitHub Link">';
+    }
+
+    function post_meta_box_linkedin_link()
+    {
+        $custom = get_post_custom($this->post_id);
+        $field = isset($custom["linkedin_link"][0]) ? esc_url($custom["linkedin_link"][0]) : '';
+
+        echo '<input type="text" name="linkedin_link" value="' . $field . '" placeholder="LinkedIn Link">';
+    }
+
+    function post_meta_box_facebook_link()
+    {
+        $custom = get_post_custom($this->post_id);
+        $field = isset($custom["facebook_link"][0]) ? esc_url($custom["facebook_link"][0]) : '';
+
+        echo '<input type="text" name="facebook_link" value="' . $field . '" placeholder="Facebook Link">';
+    }
+
+    function post_meta_box_instagram_link()
+    {
+        $custom = get_post_custom($this->post_id);
+        $field = isset($custom["instagram_link"][0]) ? esc_url($custom["instagram_link"][0]) : '';
+
+        echo '<input type="text" name="instagram_link" value="' . $field . '" placeholder="Instagram Link">';
+    }
+
+    function post_meta_box_x_link()
+    {
+        $custom = get_post_custom($this->post_id);
+        $field = isset($custom["x_link"][0]) ? esc_url($custom["x_link"][0]) : '';
+
+        echo "<input type=\"text\" name=\"x_link\" value=\"" . $field . "\" placeholder=\"x Link\">";
     }
 
     function post_meta_box_hacker_rank_link()
     {
-        global $post;
-        $custom = get_post_custom($post->ID);
-        $field = $custom["hacker_rank_link"][0];
+        $custom = get_post_custom($this->post_id);
+        $field = isset($custom["hacker_rank_link"][0]) ? esc_url($custom["hacker_rank_link"][0]) : '';
 
         echo "<input type=\"text\" name=\"hacker_rank_link\" value=\"" . $field . "\" placeholder=\"Hacker Rank Link\">";
     }
 
-    // save field value
-    function save_post_member_name()
+    function post_meta_box_resume()
     {
         global $post;
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return;
-        }
-        // if ( get_post_status( $post->ID ) === 'auto-draft' ) {
-        //     return;
-        // }
-        update_post_meta($post->ID, "member_name", sanitize_text_field($_POST["member_name"]));
+        $custom = get_post_custom($post->ID);
+        $resume_url = isset($custom['founder_resume'][0]) ? esc_url($custom['founder_resume'][0]) : '';
+
+        echo '<label for="founder_resume">Upload Founder Resume (PDF):</label>';
+        echo '<input type="file" id="founder_resume" name="founder_resume" accept=".pdf">';
+        echo '<p>Current Resume: <a href="' . $resume_url . '">' . $resume_url . '</a></p>';
     }
 
-    function save_post_member_title()
+    function save_post_founder_user_id()
     {
-        global $post;
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
-        // if ( get_post_status( $post->ID ) === 'auto-draft' ) {
-        //     return;
-        // }
-        update_post_meta($post->ID, "member_title", sanitize_text_field($_POST["member_title"]));
+
+        update_post_meta($this->post_id, "founder_user_id", sanitize_text_field($this->founder_user_id));
+    }
+
+    function save_post_github_link()
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        $github_link = isset($_POST["github_link"]) ? sanitize_text_field($_POST["github_link"]) : '';
+        update_post_meta($this->post_id, "github_link", $github_link);
+    }
+
+    function save_post_linkedin_link()
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        $linkedin_link = isset($_POST["linkedin_link"]) ? sanitize_text_field($_POST["linkedin_link"]) : '';
+        update_post_meta($this->post_id, "linkedin_link", sanitize_text_field($linkedin_link));
+    }
+
+    function save_post_facebook_link()
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        $facebook_link = isset($_POST["facebook_link"]) ? sanitize_text_field($_POST["facebook_link"]) : '';
+        update_post_meta($this->post_id, "facebook_link", sanitize_text_field($facebook_link));
+    }
+
+    function save_post_instagram_link()
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        $instagram_link = isset($_POST["instagram_link"]) ? sanitize_text_field($_POST["instagram_link"]) : '';
+        update_post_meta($this->post_id, "instagram_link", sanitize_text_field($instagram_link));
+    }
+
+    function save_post_x_link()
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        $x_link = isset($_POST["x_link"]) ? sanitize_text_field($_POST["x_link"]) : '';
+        update_post_meta($this->post_id, "x_link", sanitize_text_field($x_link));
     }
 
     function save_post_hacker_rank_link()
     {
-        global $post;
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
-        // if ( get_post_status( $post->ID ) === 'auto-draft' ) {
-        //     return;
-        // }
-        update_post_meta($post->ID, "hacker_rank_link", sanitize_text_field($_POST["hacker_rank_link"]));
+
+        $hacker_rank_link = isset($_POST["hacker_rank_link"]) ? sanitize_text_field($_POST["hacker_rank_link"]) : '';
+        update_post_meta($this->post_id, "hacker_rank_link", sanitize_text_field($hacker_rank_link));
+    }
+
+    function save_post_meta($post_id)
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        if (isset($_FILES['founder_resume'])) {
+            $file = $_FILES['founder_resume'];
+            $upload = wp_upload_bits($file['name'], null, file_get_contents($file['tmp_name']));
+
+            if (!$upload['error']) {
+                update_post_meta($post_id, 'founder_resume', $upload['url']);
+            }
+        }
     }
 }

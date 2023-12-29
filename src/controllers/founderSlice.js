@@ -10,7 +10,8 @@ const initialState = {
     fullName: '',
     greeting: '',
     skills: '',
-    founderResume: ''
+    social_networks: '',
+    founder_resume: ''
 };
 
 export const getFounders = createAsyncThunk('founder/getFounders', async () => {
@@ -113,7 +114,8 @@ export const founderSlice = createSlice({
                 state.fullName = action.payload.fullName
                 state.greeting = action.payload.greeting
                 state.skills = action.payload.skills
-                state.founderResume = action.payload.founderResume
+                state.social_networks = action.payload.social_networks
+                state.founder_resume = action.payload.founder_resume
             })
             .addCase(getFounder.rejected, (state, action) => {
                 state.founderLoading = false
@@ -126,13 +128,12 @@ export const founderSlice = createSlice({
             .addCase(getFounderResume.fulfilled, (state, action) => {
                 state.founderLoading = false;
                 state.founderError = null;
-                state.founderResume = action.payload
+                state.founder_resume = action.payload
             })
             .addCase(getFounderResume.rejected, (state, action) => {
                 state.founderLoading = false
                 state.founderError = action.error.message
             })
-
     }
 })
 

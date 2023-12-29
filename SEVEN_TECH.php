@@ -37,6 +37,7 @@ use SEVEN_TECH\CSS\Customizer\SocialBar;
 use SEVEN_TECH\Database\Database;
 use SEVEN_TECH\JS\JS;
 use SEVEN_TECH\Pages\Pages;
+use SEVEN_TECH\Post_Types\Founders\Founders;
 use SEVEN_TECH\Post_Types\Post_Types;
 use SEVEN_TECH\Roles\Roles;
 use SEVEN_TECH\Router\Router;
@@ -110,6 +111,8 @@ class SEVEN_TECH
         (new Database)->createTables();
         (new Pages)->add_pages();
         (new Roles)->add_roles();
+        (new Founders)->add_founder_pages();
+
         flush_rewrite_rules();
     }
 }

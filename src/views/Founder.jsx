@@ -11,6 +11,8 @@ import MemberNavigationComponent from './components/MemberNavigationComponent';
 import MemberProgrammingSkillsComponent from './components/MemberProgrammingSkillsComponent';
 import MemberIntroductionComponent from './components/MemberIntroductionComponent';
 
+import FounderSocialComponent from './components/FounderSocialComponent.jsx';
+
 function Founder() {
   const { founder } = useParams();
   const dispatch = useDispatch();
@@ -27,8 +29,8 @@ function Founder() {
     fullName,
     greeting,
     skills,
-    projects,
     founderResume,
+    social_networks
   } = useSelector((state) => state.founder);
 
   if (founderLoading) {
@@ -54,6 +56,8 @@ function Founder() {
         </main>
 
         <MemberProgrammingSkillsComponent skills={skills} />
+
+        <FounderSocialComponent social_networks={social_networks}/>
       </section>
     </>
   );

@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 function MemberProgrammingSkillsComponent(props) {
   const { skills } = props;
   const skillsSlideRef = useRef(null);
-
+  console.log(skills);
   useEffect(() => {
     const skillsSlide = skillsSlideRef.current;
 
@@ -26,7 +26,7 @@ function MemberProgrammingSkillsComponent(props) {
             {skills.map((skill, index) => (
               <i
                 key={index}
-                className={`fa-brands fa-${skill.toLowerCase()}`}></i>
+                className={`fa-brands fa-${skill['slug'].toLowerCase()}`}></i>
             ))}
           </div>
         </div>
