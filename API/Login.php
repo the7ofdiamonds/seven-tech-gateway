@@ -18,7 +18,6 @@ class Login
     {
         try {
             $idToken = $request['idToken'];
-            $user_password = $request['user_password'];
 
             if (empty($idToken)) {
                 throw new Exception('Token is required.');
@@ -36,28 +35,8 @@ class Login
                 throw new Exception('User not found');
             }
 
-            $user_login = $userData->user_login;
-
-            $credentials = [
-                'user_login' => $user_login,
-                'user_password' => $user_password,
-                'remember' => true
-            ];
-
-            $signedInUser = wp_signon($credentials);
-
-            if (is_wp_error($signedInUser)) {
-                $message = [
-                    'message' => $signedInUser->get_error_message(),
-                ];
-                $response = rest_ensure_response($message);
-                $response->set_status(401);
-
-                return $response;
-            }
-
-            wp_set_current_user($signedInUser->ID, $signedInUser->user_login);
-            wp_set_auth_cookie($signedInUser->ID, true);
+            wp_set_current_user($userData->ID, $userData->user_login);
+            wp_set_auth_cookie($userData->ID, true);
 
             if (is_user_logged_in()) {
                 return rest_ensure_response('You have been logged in successfully using the email ' . $email);

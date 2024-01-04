@@ -21,13 +21,13 @@ class PostTypeFounders
 
     public function __construct()
     {
-        add_action('add_meta_boxes', [$this, 'add_post_meta_boxes']);
-
         $this->current_user = wp_get_current_user();
         $this->admin = $this->current_user->has_cap('administrator');
 
         add_action('load-post-new.php', [$this, 'show_founder_select']);
         add_action('load-post.php', [$this, 'get_founder']);
+
+        add_action('add_meta_boxes', [$this, 'add_post_meta_boxes']);
 
         add_action('save_post', [$this, 'save_post_founder_user_id']);
         add_action('save_post', [$this, 'save_post_github_link']);

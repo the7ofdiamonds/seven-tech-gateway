@@ -15,13 +15,22 @@
             $resumeTitle = $founderTitle . ' Resume';
             echo $resumeTitle;
         } else {
-            echo "Page not found!";
+            echo "Resume could not be found!";
+            die;
         }
         ?>
     </title>
 
     <?php
     $site_icon_url = get_site_icon_url();
+
+    $upload_dir = wp_upload_dir();
+    $pdf_subdir = '/resume';
+    $upload_path = $upload_dir['basedir'] . $pdf_subdir;
+    $upload_url = $upload_dir['baseurl'] . $pdf_subdir;
+    $resume_pdf = $upload_path . '/Resume_' . $page->ID . '.pdf';
+    $resume_pdf_url = $upload_url . '/Resume_' . $page->ID . '.pdf';
+
     if ($site_icon_url) {
         echo '<link rel="icon" href="' . esc_url($site_icon_url) . '" sizes="32x32" type="image/png">';
     }
@@ -50,14 +59,7 @@
     </style>
 
     <?php
-    $upload_dir = wp_upload_dir();
-    $pdf_subdir = '/resume';
-    $upload_path = $upload_dir['basedir'] . $pdf_subdir;
-    $upload_url = $upload_dir['baseurl'] . $pdf_subdir;
-    $resume_pdf = $upload_path . '/Resume_' . $page->ID . '.pdf';
-    $resume_pdf_url = $upload_url . '/Resume_' . $page->ID . '.pdf';
-
-if (file_exists($resume_pdf)) : ?>
+    if (file_exists($resume_pdf)) : ?>
         <iframe id="pdfViewer" src="<?php echo $resume_pdf_url; ?>" frameborder="0"></iframe>
     <?php else : ?>
         <main>

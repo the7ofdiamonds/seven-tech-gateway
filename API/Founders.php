@@ -67,8 +67,9 @@ class Founders
     {
         try {
             $pageTitle = $request->get_param('slug');
-
-            $resume_pdf_url = $this->pt_founder->getFounderResume($pageTitle);
+            $page = get_page_by_title($pageTitle, OBJECT, 'founders');
+            $custom = get_post_custom($page->ID);
+            $resume_pdf_url = isset($custom['founder_resume'][0]) ? esc_url($custom['founder_resume'][0]) : '';
 
             return rest_ensure_response($resume_pdf_url);
         } catch (Exception $e) {

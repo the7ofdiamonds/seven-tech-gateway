@@ -1,4 +1,5 @@
-function NavigationLoginComponent() {
+function NavigationLoginComponent(props) {
+  const { page } = props;
 
   const handleLogin = () => {
     window.location.href = `/login`;
@@ -15,17 +16,29 @@ function NavigationLoginComponent() {
   return (
     <>
       <div className="options">
-        <button onClick={handleLogin}>
-          <h3>LOGIN</h3>
-        </button>
+        {page === 'login' ? (
+          ''
+        ) : (
+          <button onClick={handleLogin}>
+            <h3>LOGIN</h3>
+          </button>
+        )}
 
-        <button onClick={handleSignUp}>
-          <h3>SIGN UP</h3>
-        </button>
+        {page === 'signup' ? (
+          ''
+        ) : (
+          <button onClick={handleSignUp}>
+            <h3>SIGN UP</h3>
+          </button>
+        )}
 
-        <button onClick={handleForgot}>
-          <h3>FORGOT</h3>
-        </button>
+        {page === 'forgot' ? (
+          ''
+        ) : (
+          <button onClick={handleForgot}>
+            <h3>FORGOT</h3>
+          </button>
+        )}
       </div>
     </>
   );

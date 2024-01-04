@@ -1,16 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
 import {
     browserSessionPersistence,
     setPersistence,
-    signInWithEmailAndPassword,
-    getAuth,
 } from 'firebase/auth';
-
 import { firebaseAuth } from '../services/firebase/config.js';
 
 const initialState = {
     loginLoading: false,
     loginError: '',
+    loginMessage: '',
     user_login: '',
     user_pass: '',
     user_email: '',
@@ -19,34 +18,27 @@ const initialState = {
     user_id: ''
 };
 
-// Use php in the backend
-
-export const signInEmailAndPassword = createAsyncThunk('login/signInEmailAndPassword', async (credentials) => {
+export const signIn = createAsyncThunk('login/signIn', async () => {
     try {
-        const auth = getAuth();
-        const Email = credentials.email;
-        const Password = credentials.password;
-
-        await signInWithEmailAndPassword(auth, Email, Password);
-        setPersistence(auth, browserSessionPersistence);
+        setPersistence(firebaseAuth, browserSessionPersistence);
 
         const user = firebaseAuth.currentUser;
+        const { email } = user;
 
         if (!user) {
-            throw new Error('User not found.', 404);
+            throw new Error('User is not currently signed in.', 401);
         }
 
-        sessionStorage.setItem('email', Email);
+        sessionStorage.setItem('email', email);
 
         const token = await user.getIdToken();
-        const data = { idToken: token, user_password: Password };
 
         const response = await fetch('/wp-json/seven-tech/v1/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ idToken: token })
         });
 
         if (!response.ok) {
@@ -68,19 +60,19 @@ export const loginSlice = createSlice({
     initialState,
     extraReducers: (builder) => {
         builder
-            .addCase(signInEmailAndPassword.fulfilled, (state, action) => {
+            .addCase(signIn.fulfilled, (state, action) => {
                 state.loginLoading = false;
                 state.loginError = '';
                 state.loginMessage = action.payload;
             })
             .addMatcher(isAnyOf(
-                signInEmailAndPassword.pending,
+                signIn.pending,
             ), (state) => {
                 state.loginLoading = true;
                 state.loginError = null;
             })
             .addMatcher(isAnyOf(
-                signInEmailAndPassword.rejected,
+                signIn.rejected,
             ),
                 (state, action) => {
                     state.loginLoading = false;
