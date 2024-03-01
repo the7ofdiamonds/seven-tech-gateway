@@ -1,44 +1,51 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 
-import {
-    browserSessionPersistence,
-    setPersistence,
-} from 'firebase/auth';
-import { firebaseAuth } from '../services/firebase/config.js';
+const apiUrl = "/wp-json/seven-tech/v1/users/login";
 
 const initialState = {
     loginLoading: false,
     loginError: '',
     loginMessage: '',
+    loginMessageType: '',
     user_login: '',
+    display_name: '',
     user_pass: '',
     user_email: '',
     first_name: '',
     last_name: '',
-    user_id: ''
+    user_id: '',
+    accessToken: '',
+    refreshToken: '',
+    customToken: ''
 };
 
-export const signIn = createAsyncThunk('login/signIn', async () => {
+export const updateAccessToken = (access_token) => {
+    return {
+        type: 'login/updateAccessToken',
+        payload: access_token
+    };
+};
+
+export const updateRefreshToken = (refresh_token) => {
+    return {
+        type: 'login/updateRefreshToken',
+        payload: refresh_token
+    };
+};
+
+export const signIn = createAsyncThunk('login/signIn', async ({ username, password }) => {
     try {
-        setPersistence(firebaseAuth, browserSessionPersistence);
 
-        const user = firebaseAuth.currentUser;
-        const { email } = user;
-
-        if (!user) {
-            throw new Error('User is not currently signed in.', 401);
-        }
-
-        sessionStorage.setItem('email', email);
-
-        const token = await user.getIdToken();
-
-        const response = await fetch('/wp-json/seven-tech/v1/users/login', {
+        const response = await fetch(`${apiUrl}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ idToken: token })
+            body: JSON.stringify({
+                "username": username,
+                "password": password,
+                "location": "here"
+            })
         });
 
         if (!response.ok) {
@@ -58,12 +65,22 @@ export const signIn = createAsyncThunk('login/signIn', async () => {
 export const loginSlice = createSlice({
     name: 'login',
     initialState,
+    reducers: {
+        updateAccessToken: (state, action) => {
+            state.accessToken = action.payload;
+        },
+        updateRefreshToken: (state, action) => {
+            state.refreshToken = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(signIn.fulfilled, (state, action) => {
                 state.loginLoading = false;
                 state.loginError = '';
-                state.loginMessage = action.payload;
+                state.loginMessage = action.payload.message;
+                state.loginMessageType = action.payload.message_type;
+                state.customToken = action.payload.custom_token;
             })
             .addMatcher(isAnyOf(
                 signIn.pending,
@@ -76,7 +93,9 @@ export const loginSlice = createSlice({
             ),
                 (state, action) => {
                     state.loginLoading = false;
-                    state.loginError = action.error.message;
+                    state.loginError = action.error.stack;
+                    state.loginMessageType = 'error';
+                    state.loginMessage = action.error.message;
                 });
     }
 })

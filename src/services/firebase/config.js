@@ -1,5 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, MicrosoftAuthProvider } from 'firebase/auth';
 
 export const firebaseConfig = {
     apiKey: import.meta.env.VITE_API_KEY,
@@ -16,6 +15,5 @@ try {
     initializeApp(firebaseConfig);
 } catch (error) {
     console.error(error);
+    console.log(error);
 }
-
-export const firebaseAuth = getAuth();

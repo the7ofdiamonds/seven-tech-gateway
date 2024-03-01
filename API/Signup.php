@@ -8,6 +8,14 @@ use WP_REST_Request;
 
 class Signup
 {
+
+    private $auth;
+
+    public function __construct($auth)
+    {
+        $this->auth = $auth;
+    }
+    
     public function signup(WP_REST_Request $request)
     {
         try {
@@ -16,20 +24,31 @@ class Signup
             $user_email = $request['user_email'];
             $user_password = $request['user_password'];
 
+            $hashedPassword = password_hash($user_password, PASSWORD_BCRYPT);
+
             $userLogin = get_user_by('login', $user_login);
 
             if ($userLogin) {
                 return rest_ensure_response("A user already exists with this user name. Choose another user name.");
             }
-
-            wp_create_user($user_login,  $user_password, $user_email);
-
-
+            
             $userEmail = get_user_by('email', $user_email);
 
             if ($userEmail) {
                 return rest_ensure_response("A user already exists with this email. Please go to the forgot page to reset your password.");
             }
+
+            $user_data = array(
+                'user_login' => $user_login,
+                'user_pass'  => $hashedPassword, // Note: This should be a hashed password, not plain text
+                'user_email' => $user_email,
+                'first_name' => 'John',
+                'last_name'  => 'Doe',
+                'role'       => 'user', // Set the user role (e.g., subscriber, author, editor, administrator)
+            );
+            
+            // Insert the new user
+            wp_insert_user($user_data);
 
             $credentials = [
                 'user_login' => $user_login,

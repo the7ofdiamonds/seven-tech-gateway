@@ -6,7 +6,7 @@ class TemplatesCustom
 {
     private $pluginDir;
 
-    public function  __construct()
+    public function __construct()
     {
         $this->pluginDir = SEVEN_TECH;
     }

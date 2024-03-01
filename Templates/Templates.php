@@ -2,6 +2,8 @@
 
 namespace SEVEN_TECH\Templates;
 
+use Exception;
+
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\JS\JS;
 
@@ -63,6 +65,8 @@ class Templates
     {
         $template = $this->pluginDir . 'Pages/page-protected.php';
 
+        error_log("get_protected_page_template");
+        
         if (file_exists($template)) {
             add_action('wp_head', function () use ($protected_page) {
                 $this->css->load_pages_css($protected_page);

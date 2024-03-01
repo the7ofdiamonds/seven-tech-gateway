@@ -53,9 +53,6 @@ class Pages
                 'title' => 'SIGNUP',
                 'name' => 'signup'
             ],
-        ];
-
-        $this->protected_pages_list = [
             [
                 'url' => 'dashboard',
                 'regex' => '#^/dashboard#',
@@ -64,6 +61,8 @@ class Pages
                 'name' => 'dashboard'
             ],
         ];
+
+        $this->protected_pages_list = [];
 
         $this->pages_list = [
             [

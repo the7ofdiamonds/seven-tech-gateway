@@ -46,6 +46,8 @@ use SEVEN_TECH\Taxonomies\Taxonomies;
 use SEVEN_TECH\Templates\Templates;
 use SEVEN_TECH\Templates\TemplatesCustom;
 
+use Kreait\Firebase\Contract\Auth;
+
 class SEVEN_TECH
 {
     public $pages;
@@ -63,7 +65,7 @@ class SEVEN_TECH
         });
 
         add_action('rest_api_init', function () {
-            new API;
+            new API();
         });
 
         $css = new CSS;

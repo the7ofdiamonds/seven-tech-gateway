@@ -69,37 +69,41 @@ class Founders
             }
         } catch (Exception $e) {
             error_log(("Error: " . $e->getMessage())); // Log the error message
-            throw new Exception("An error occurred while creating team member pages. Please try again later."); // Display a user-friendly error message
         }
     }
 
     function getFoundersList()
     {
-        $founders = [];
-        $users = get_users([
-            'role__in' => [
-                'founder'
-            ]
-        ]);
+        try {
+            $founders = [];
+            $users = get_users([
+                'role__in' => [
+                    'founder'
+                ]
+            ]);
 
-        if ($users) {
-            foreach ($users as $user) {
-                $user_data = get_userdata($user->ID);
+            if (is_array($users)) {
+                foreach ($users as $user) {
+                    $user_data = get_userdata($user->ID);
 
-                if (empty($user_data->user_url)) {
-                    $founder = array(
-                        'id' => $user_data->ID,
-                        'first_name' => $user_data->first_name,
-                        'last_name' => $user_data->last_name,
-                    );
+                    if (empty($user_data->user_url)) {
+                        $founder = array(
+                            'id' => $user_data->ID,
+                            'first_name' => $user_data->first_name,
+                            'last_name' => $user_data->last_name,
+                        );
 
-                    $founders[] = $founder;
+                        $founders[] = $founder;
+                    }
                 }
-            }
 
-            return $founders;
-        } else {
-            throw new Exception("No Founders at this time.", 404);
+                return $founders;
+            } else {
+                throw new Exception("No Founders at this time.", 404);
+            }
+        } catch (Exception $e) {
+            error_log($e);
+            return $e;
         }
     }
 

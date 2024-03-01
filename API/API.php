@@ -8,7 +8,8 @@ use Kreait\Firebase\Factory;
 
 class API
 {
-  function __construct()
+
+  public function __construct()
   {
     $credentialsPath = SEVEN_TECH . 'serviceAccount.json';
 
@@ -101,7 +102,7 @@ class API
 
     register_rest_route('seven-tech/v1', '/users/logout', array(
       'methods' => 'POST',
-      'callback' => array($logout, 'logout'),
+      'callback' => [$logout, 'logout'],
       'permission_callback' => '__return_true',
     ));
 

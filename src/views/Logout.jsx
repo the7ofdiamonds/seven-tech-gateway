@@ -1,34 +1,37 @@
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { displayStatus } from '../utils/DisplayStatus';
 
-import { logout } from '../controllers/logoutSlice';
+import { logout, signout } from '../controllers/logoutSlice';
 
 function LogOutComponent() {
+  const dispatch = useDispatch();
+
+  const { logoutMessage, logoutMessageType, display_name, firebaseUserID } =
+    useSelector((state) => state.logout);
+
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');
 
+  useEffect(() => {
+    if (logoutMessage && logoutMessageType) {
+      setMessageType(logoutMessageType);
+      setMessage(logoutMessage);
+    }
+  }, [logoutMessage, logoutMessageType]);
+
   const handleClick = () => {
-    logout()
-      .then((responseMessage) => {
-        setMessage(responseMessage);
+    dispatch(logout())
+      // .then(() => {
+      //   dispatch(signout());
+      // })
+      .then(() => {
         setTimeout(() => {
           window.location.href = '/';
         }, 5000);
-      })
-      .catch((error) => {
-        console.error('Error occurred while logging out:', error);
-        setMessage('Error occurred while logging out.');
-        setMessageType('error');
       });
   };
-
-  useEffect(() => {
-    if (message !== '') {
-      displayStatus(message);
-      setMessageType('error');
-    }
-  }, [message]);
 
   return (
     <>

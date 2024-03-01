@@ -45,7 +45,6 @@ class Router
         try {
             $path = $_SERVER['REQUEST_URI'];
 
-
             if (preg_match('#^/$|^/index\.php(?:\?|$)#', $path)) {
 
                 if (!empty($this->front_page_react)) {

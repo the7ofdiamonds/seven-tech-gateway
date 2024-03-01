@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import NavigationComponent from './components/NavigationLogin';
 
-import { signIn } from '../controllers/loginSlice';
+import {
+  signIn,
+  updateAccessToken,
+  updateRefreshToken,
+} from '../controllers/loginSlice';
 
 import {
   onAuthStateChanged,
   getAuth,
-  signInWithEmailAndPassword,
   GoogleAuthProvider,
   OAuthProvider,
   signInWithPopup,
+  signInWithCustomToken,
 } from 'firebase/auth';
 
 const firebaseAuth = getAuth();
@@ -22,52 +26,74 @@ const apple = new OAuthProvider('apple');
 function LoginComponent() {
   let page = 'login';
 
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const dispatch = useDispatch();
+
+  const {
+    loginMessage,
+    loginMessageType,
+    loginError,
+    customToken,
+    accessToken,
+    refreshToken,
+    display_name,
+    firebaseUserID,
+  } = useSelector((state) => state.login);
+
+  const [formData, setFormData] = useState({
+    username: display_name,
+    password: '',
+  });
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState(
     'Enter your email and password to log in.'
   );
-  const [loggedIn, setLoggedIn] = useState(null);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
-      setLoggedIn(user);
-
-      setTimeout(() => {
-        setMessage(`Welcome ${user.displayName}`);
-        setMessageType('success');
-      }, 3000);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (loggedIn) {
-      dispatch(signIn())
-        .then((response) => {
-          console.log(response.payload);
-          setMessage(response.payload);
-          setMessageType('success');
-        })
-        .then(() => {
-          const urlParams = new URLSearchParams(window.location.search);
-          const redirectTo = urlParams.get('redirectTo');
-
-          setTimeout(() => {
-            if (redirectTo === null) {
-              window.location.href = '/dashboard';
-            } else {
-              window.location.href = redirectTo;
-            }
-          }, 5000);
-        });
+    if (loginMessage && loginMessageType) {
+      setMessage(loginMessage);
+      setMessageType(loginMessageType);
     }
-  }, [loggedIn, dispatch]);
+  }, [loginMessage, loginMessageType]);
+
+  useEffect(() => {
+    if (customToken) {
+      signInWithCustomToken(firebaseAuth, customToken).then((signedInUser) => {
+        signedInUser.user.getIdToken().then((accessToken) => {
+          localStorage.setItem('access_token', accessToken);
+          dispatch(updateAccessToken(accessToken));
+        });
+
+        const refreshToken = signedInUser.user.refreshToken;
+        const displayName = signedInUser.user.displayName;
+
+        localStorage.setItem('refresh_token', refreshToken);
+        localStorage.setItem('display_name', displayName);
+
+        dispatch(updateRefreshToken(refreshToken));
+      });
+    }
+  }, [customToken]);
+  console.log(accessToken);
+  console.log(refreshToken);
+  useEffect(() => {
+    if (accessToken && refreshToken) {
+      return onAuthStateChanged(firebaseAuth, () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirectTo');
+
+        setMessage(loginMessage);
+        setMessageType(loginMessageType);
+
+        setTimeout(() => {
+          if (redirectTo == null) {
+            window.location.href = '/dashboard';
+          } else {
+            window.location.href = redirectTo;
+          }
+        }, 5000);
+      });
+    }
+  }, [accessToken, refreshToken]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -79,10 +105,8 @@ function LoginComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signInWithEmailAndPassword(
-      firebaseAuth,
-      formData.email,
-      formData.password
+    dispatch(
+      signIn({ username: formData.username, password: formData.password })
     );
   };
 
@@ -111,10 +135,10 @@ function LoginComponent() {
                 <tr>
                   <td>
                     <input
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                      value={formData.email}
+                      type="text"
+                      name="username"
+                      placeholder="Username"
+                      value={formData.username}
                       onChange={handleInputChange}
                       required
                     />
@@ -204,7 +228,9 @@ function LoginComponent() {
 
         {message !== '' && (
           <div className={`status-bar card ${messageType}`}>
-            <span>{message}</span>
+            <span>
+              <div dangerouslySetInnerHTML={{ __html: message }} />
+            </span>
           </div>
         )}
       </main>

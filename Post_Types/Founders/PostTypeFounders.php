@@ -55,17 +55,22 @@ class PostTypeFounders
     {
         $this->founders = (new Founders)->getFoundersList();
 
-        add_meta_box(
-            "post_metadata_founder_select",
-            "Founder Select",
-            [$this, 'post_meta_box_founder_select'],
-            "founders",
-            "side",
-            "low"
-        );
+        if (is_array($this->founders) && !empty($this->founders)) {
+            $this->founder_user_id = $this->founders[0]['id'];
 
-        $this->founder_user_id = $this->founders[0]['id'];
-        $this->user_data = get_userdata($this->founder_user_id);
+            add_meta_box(
+                "post_metadata_founder_select",
+                "Founder Select",
+                [$this, 'post_meta_box_founder_select'],
+                "founders",
+                "side",
+                "low"
+            );
+    
+            return $this->user_data = get_userdata($this->founder_user_id);
+        } else {
+            return;
+        }
     }
 
     function get_founder()
