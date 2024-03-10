@@ -31,7 +31,18 @@ class Login
             }
 
             global $wpdb;
+// Must update when roles are updated add to ORB database ???
+            $sql = "SELECT * FROM wp_user_roles_view";
 
+            $results = $wpdb->get_results($sql, ARRAY_A);
+
+            foreach ($results as $result) {
+                $unserializedData = unserialize($result['option_value']);
+                $jsonData = json_encode($unserializedData, JSON_PRETTY_PRINT);
+
+                error_log($jsonData);
+            }
+// 
             $storedProcedureName = 'findUserByUsername';
 
             $results = $wpdb->get_results($wpdb->prepare("CALL $storedProcedureName(%s)", $display_name));
