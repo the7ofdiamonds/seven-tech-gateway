@@ -46,8 +46,6 @@ use SEVEN_TECH\Taxonomies\Taxonomies;
 use SEVEN_TECH\Templates\Templates;
 use SEVEN_TECH\Templates\TemplatesCustom;
 
-use Kreait\Firebase\Contract\Auth;
-
 class SEVEN_TECH
 {
     public $pages;
@@ -57,6 +55,7 @@ class SEVEN_TECH
     public $posttypes;
     public $router;
     public $templates;
+    public $roles;
 
     public function __construct()
     {
@@ -106,13 +105,17 @@ class SEVEN_TECH
             (new Shadow)->seven_tech_shadow_section($wp_customize);
             (new SocialBar)->seven_tech_social_bar_section($wp_customize);
         });
+
+        $this->roles = new Roles;
+
+        add_action('update_option_wp_user_roles', array($this->roles, 'get_roles'), 10, 2);
     }
 
     function activate()
     {
         (new Database)->createTables();
         (new Pages)->add_pages();
-        (new Roles)->add_roles();
+        $this->roles->add_roles();
         (new Founders)->add_founder_pages();
 
         flush_rewrite_rules();
