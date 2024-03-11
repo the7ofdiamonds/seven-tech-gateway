@@ -2,22 +2,17 @@
 
 namespace SEVEN_TECH\Admin;
 
-use SEVEN_TECH\Post_Types\Founders\PostTypeFounders;
-
 class Admin
 {
     public function __construct()
     {
-        // add_action('admin_menu', [$this, 'register_custom_menu_page']);
+        $this->register_custom_menu_page();
+        (new AdminMissionStatement)->register_custom_submenu_page();
+        (new AdminSocialBar)->register_custom_submenu_page();
 
         // add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
 
-        add_filter('map_meta_cap', [$this, 'allow_founder_edit_capabilities'], 10, 4);
-
-        new AdminMissionStatement;
-        new AdminSocialBar;
-
-        new PostTypeFounders;
+        // add_filter('map_meta_cap', [$this, 'allow_founder_edit_capabilities'], 10, 4);
     }
 
     function register_custom_menu_page()

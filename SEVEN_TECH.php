@@ -108,11 +108,12 @@ class SEVEN_TECH
 
         $this->roles = new Roles;
 
-        add_action('update_option_wp_user_roles', array($this->roles, 'get_roles'), 10, 2);
+        add_action('update_option_wp_user_roles', array($this->roles, 'update_roles'), 10, 2);
     }
 
     function activate()
     {
+        (new Database)->establishConnection();
         (new Database)->createTables();
         (new Pages)->add_pages();
         $this->roles->add_roles();

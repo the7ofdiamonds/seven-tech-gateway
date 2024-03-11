@@ -7,12 +7,10 @@ class AdminMissionStatement
 
     public function __construct()
     {
-        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
     }
 
     function register_custom_submenu_page()
     {
-
         add_submenu_page('seven_tech_admin', 'Add Mission Statement', 'Add Mission', 'manage_options', 'seven_tech_mission_statement', [$this, 'create_section'], 1);
         add_action('admin_init', [$this, 'register_section']);
     }
