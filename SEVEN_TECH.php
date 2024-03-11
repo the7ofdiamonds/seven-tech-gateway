@@ -109,6 +109,7 @@ class SEVEN_TECH
         $this->roles = new Roles;
 
         add_action('update_option_wp_user_roles', array($this->roles, 'update_roles'), 10, 2);
+        add_action('add_user_role', array($this->roles, 'update_user_roles'), 10, 2);
     }
 
     function activate()

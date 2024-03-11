@@ -162,6 +162,7 @@ class Database
     function createTables()
     {
         $this->create_options_table();
+        $this->create_user_meta_table();
     }
 
     function create_options_table()
@@ -172,6 +173,26 @@ class Database
         option_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         option_name VARCHAR(191) NOT NULL,
         option_value LONGTEXT,
+        updated_at TIMESTAMP NOT NULL {$this->updated_at}
+    ) {$this->charset_collate};";
+
+        try {
+            $this->connection->query($sql);
+            $this->updatedAT($table_name);
+        } catch (PDOException $e) {
+            error_log("Error creating options table: " . $e->getMessage());
+        }
+    }
+
+    function create_user_meta_table()
+    {
+        $table_name = 'orb_usermeta';
+
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->db_name}.{$table_name} (  
+        umeta_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        user_id BIGINT(20) UNSIGNED NOT NULL,
+        meta_key VARCHAR(255) NOT NULL,
+        meta_value LONGTEXT,
         updated_at TIMESTAMP NOT NULL {$this->updated_at}
     ) {$this->charset_collate};";
 

@@ -3,21 +3,17 @@
 namespace SEVEN_TECH\Roles;
 
 use SEVEN_TECH\Database\DatabaseOptions;
+use SEVEN_TECH\Database\DatabaseUserMeta;
 
 class Roles
 {
     private $db_options;
+    private $db_usermeta;
 
     public function __construct()
     {
         $this->db_options = new DatabaseOptions;
-        
-        // remove_role('investor');
-        // remove_role('founder');
-        // remove_role('managing_member');
-        // remove_role('executive');
-        // remove_role('employee');
-        // remove_role('freelancer');
+        $this->db_usermeta = new DatabaseUserMeta;
     }
 
     function add_roles()
@@ -38,10 +34,17 @@ class Roles
 
     public function update_roles($old_value, $new_value)
     {
-        error_log("get_roles");
-
         $roles = json_encode($new_value, JSON_PRETTY_PRINT);
 
         return $this->db_options->update_options('orb_user_roles', $roles);
+    }
+
+    public function update_user_roles($user_id, $role)
+    {
+        $wp_cap = get_user_meta($user_id, 'wp_capabilities', true);
+
+        $user_roles = json_encode($wp_cap, JSON_PRETTY_PRINT);
+
+        return $this->db_usermeta->update_usermeta($user_id, 'orb_capabilities', $user_roles);
     }
 }

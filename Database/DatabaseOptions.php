@@ -21,7 +21,6 @@ class DatabaseOptions
     public function update_options($option_name, $option_value)
     {
         $sql = "UPDATE {$this->table_name} SET option_value = :option_value WHERE option_name = :option_name";
-        $encoded = json_encode($option_value);
 
         try {
             $this->connection->exec("USE {$this->db_name}");
@@ -33,7 +32,7 @@ class DatabaseOptions
 
             if ($exists) {
                 $stmt = $this->connection->prepare($sql);
-                $stmt->bindParam(':option_value', $encoded);
+                $stmt->bindParam(':option_value', $option_value);
                 $stmt->bindParam(':option_name', $option_name);
                 $stmt->execute();
                 return $stmt->rowCount();
@@ -41,7 +40,7 @@ class DatabaseOptions
                 $insertSql = "INSERT INTO {$this->table_name} (option_name, option_value) VALUES (:option_name, :option_value)";
                 $stmt = $this->connection->prepare($insertSql);
                 $stmt->bindParam(':option_name', $option_name);
-                $stmt->bindParam(':option_value', $encoded);
+                $stmt->bindParam(':option_value', $option_value);
                 $stmt->execute();
                 return $stmt->rowCount();
             }
