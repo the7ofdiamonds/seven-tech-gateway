@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import NavigationComponent from './components/NavigationLogin';
 
 import {
-  signIn,
+  login,
+  updateUsername,
   updateAccessToken,
   updateRefreshToken,
 } from '../controllers/loginSlice';
@@ -15,8 +16,8 @@ import {
   GoogleAuthProvider,
   OAuthProvider,
   signInWithPopup,
-  signInWithCustomToken,
 } from 'firebase/auth';
+import { getLocation } from '../utils/location';
 
 const firebaseAuth = getAuth();
 const google = new GoogleAuthProvider();
@@ -29,60 +30,58 @@ function LoginComponent() {
   const dispatch = useDispatch();
 
   const {
-    loginMessage,
-    loginMessageType,
+    loginSuccessMessage,
+    loginErrorMessage,
     loginError,
-    customToken,
     accessToken,
     refreshToken,
-    display_name,
-    firebaseUserID,
+    username,
   } = useSelector((state) => state.login);
 
   const [formData, setFormData] = useState({
-    username: display_name,
+    username: username,
     password: '',
   });
+  const [location, setLocation] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState(
     'Enter your email and password to log in.'
   );
 
   useEffect(() => {
-    if (loginMessage && loginMessageType) {
-      setMessage(loginMessage);
-      setMessageType(loginMessageType);
-    }
-  }, [loginMessage, loginMessageType]);
+    getLocation().then((location) => {
+      setLocation({
+        longitude: location.longitude,
+        latitude: location.latitude,
+      });
+    });
+  }, []);
 
   useEffect(() => {
-    if (customToken) {
-      signInWithCustomToken(firebaseAuth, customToken).then((signedInUser) => {
-        signedInUser.user.getIdToken().then((accessToken) => {
-          localStorage.setItem('access_token', accessToken);
-          dispatch(updateAccessToken(accessToken));
-        });
-
-        const refreshToken = signedInUser.user.refreshToken;
-        const displayName = signedInUser.user.displayName;
-
-        localStorage.setItem('refresh_token', refreshToken);
-        localStorage.setItem('display_name', displayName);
-
-        dispatch(updateRefreshToken(refreshToken));
-      });
+    if (loginSuccessMessage) {
+      setMessage(loginSuccessMessage);
+      setMessageType('success');
     }
-  }, [customToken]);
-  console.log(accessToken);
-  console.log(refreshToken);
+  }, [loginSuccessMessage]);
+
+  useEffect(() => {
+    if (loginErrorMessage) {
+      setMessage(loginErrorMessage);
+      setMessageType('error');
+    }
+  }, [loginErrorMessage]);
+
+  useEffect(() => {
+    dispatch(updateUsername(username));
+    dispatch(updateAccessToken(accessToken));
+    dispatch(updateRefreshToken(refreshToken));
+  }, [dispatch, username, accessToken, refreshToken]);
+
   useEffect(() => {
     if (accessToken && refreshToken) {
       return onAuthStateChanged(firebaseAuth, () => {
         const urlParams = new URLSearchParams(window.location.search);
         const redirectTo = urlParams.get('redirectTo');
-
-        setMessage(loginMessage);
-        setMessageType(loginMessageType);
 
         setTimeout(() => {
           if (redirectTo == null) {
@@ -106,7 +105,11 @@ function LoginComponent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(
-      signIn({ username: formData.username, password: formData.password })
+      login({
+        username: formData.username,
+        password: formData.password,
+        location: location,
+      })
     );
   };
 

@@ -1,7 +1,4 @@
 {
-  "_DisplayStatus.js": {
-    "file": "DisplayStatus.js"
-  },
   "_ErrorComponent.js": {
     "file": "ErrorComponent.js",
     "imports": [
@@ -22,6 +19,12 @@
   },
   "_NavigationLogin.js": {
     "file": "NavigationLogin.js",
+    "imports": [
+      "src/index.jsx"
+    ]
+  },
+  "_index-dd468b12.js": {
+    "file": "index-dd468b12.js",
     "imports": [
       "src/index.jsx"
     ]
@@ -73,7 +76,8 @@
     "file": "Forgot.js",
     "imports": [
       "src/index.jsx",
-      "_NavigationLogin.js"
+      "_NavigationLogin.js",
+      "_index-dd468b12.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Forgot.jsx"
@@ -105,6 +109,7 @@
     "imports": [
       "src/index.jsx",
       "_NavigationLogin.js",
+      "_index-dd468b12.js",
       "_useDispatch.js"
     ],
     "isDynamicEntry": true,

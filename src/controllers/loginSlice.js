@@ -5,18 +5,18 @@ const apiUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_U
 const initialState = {
     loginLoading: false,
     loginError: '',
-    loginMessage: '',
-    loginMessageType: '',
-    user_login: '',
-    display_name: '',
-    user_pass: '',
-    user_email: '',
-    first_name: '',
-    last_name: '',
-    user_id: '',
+    loginSuccessMessage: '',
+    loginErrorMessage: '',
+    username: '',
     accessToken: '',
-    refreshToken: '',
-    customToken: ''
+    refreshToken: ''
+};
+
+export const updateUsername = (username) => {
+    return {
+        type: 'login/updateUsername',
+        payload: username
+    };
 };
 
 export const updateAccessToken = (access_token) => {
@@ -33,7 +33,7 @@ export const updateRefreshToken = (refresh_token) => {
     };
 };
 
-export const signIn = createAsyncThunk('login/signIn', async ({ username, password }) => {
+export const login = createAsyncThunk('login/login', async ({ username, password, location }) => {
     try {
 
         const response = await fetch(`${apiUrl}/`, {
@@ -44,15 +44,9 @@ export const signIn = createAsyncThunk('login/signIn', async ({ username, passwo
             body: JSON.stringify({
                 "username": username,
                 "password": password,
-                "location": "here"
+                "location": location
             })
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMessage = errorData.message;
-            throw new Error(errorMessage);
-        }
 
         const responseData = await response.json();
         return responseData;
@@ -66,36 +60,42 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
-        updateAccessToken: (state, action) => {
-            state.accessToken = action.payload;
+        updateUsername: (action) => {
+            localStorage.setItem('display_name', action.payload);
         },
-        updateRefreshToken: (state, action) => {
-            state.refreshToken = action.payload;
+        updateAccessToken: (action) => {
+            localStorage.setItem('access_token', action.payload);
+        },
+        updateRefreshToken: (action) => {
+            localStorage.setItem('refresh_token', action.payload);
         }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(signIn.fulfilled, (state, action) => {
+            .addCase(login.fulfilled, (state, action) => {
                 state.loginLoading = false;
                 state.loginError = '';
-                state.loginMessage = action.payload.message;
-                state.loginMessageType = action.payload.message_type;
-                state.customToken = action.payload.custom_token;
+                state.loginSuccessMessage = action.payload.successMessage;
+                state.loginErrorMessage = action.payload.errorMessage;
+                state.username = action.payload.username;
+                state.refreshToken = action.payload.refreshToken;
+                state.accessToken = action.payload.accessToken;
             })
             .addMatcher(isAnyOf(
-                signIn.pending,
+                login.pending,
             ), (state) => {
                 state.loginLoading = true;
                 state.loginError = null;
+                state.loginSuccessMessage = null;
+                state.loginErrorMessage = null;
             })
             .addMatcher(isAnyOf(
-                signIn.rejected,
+                login.rejected,
             ),
                 (state, action) => {
                     state.loginLoading = false;
-                    state.loginError = action.error.stack;
-                    state.loginMessageType = 'error';
-                    state.loginMessage = action.error.message;
+                    state.loginError = action.error;
+                    state.loginErrorMessage = action.error.errorMessage;
                 });
     }
 })

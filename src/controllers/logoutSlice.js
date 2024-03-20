@@ -1,39 +1,25 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import {
-    browserSessionPersistence,
-    getAuth,
-    setPersistence,
-    signOut,
-} from 'firebase/auth';
 
-const apiUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout" : "/wp-json/seven-tech/v1/users/logout";
+const logoutUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout" : "/wp-json/seven-tech/v1/users/logout";
+const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout-all" : "/wp-json/seven-tech/v1/users/logout-all";
 
 const initialState = {
     logoutLoading: false,
     logoutError: '',
-    logoutMessage: '',
-    logoutMessageType: '',
-    user_logout: '',
-    display_name: localStorage.getItem('display_name'),
-    user_pass: '',
-    user_email: '',
-    first_name: '',
-    last_name: '',
-    user_id: '',
-    accessToken: localStorage.getItem('access_token'),
-    refreshToken: localStorage.getItem('refresh_token'),
-    customToken: ''
+    logoutSuccessMessage: '',
+    logoutErrorMessage: ''
 };
 
-export const logout = createAsyncThunk('logout/logout', async () => {
+export const logout = createAsyncThunk('logout/logout', async (_, { getState }) => {
     try {
-        const response = await fetch(apiUrl, {
+        const { username } = getState().loginSlice;
+        const response = await fetch(logoutUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": localStorage.getItem('display_name'),
+                "username": username,
             })
         });
 
@@ -45,27 +31,48 @@ export const logout = createAsyncThunk('logout/logout', async () => {
         }
 
         const responseData = await response.json();
-        console.log(responseData);
+
+        localStorage.removeItem('display_name');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+
         return responseData;
     } catch (error) {
         console.error('Error:', error.message);
     }
 });
 
-export const signout = createAsyncThunk('logout/signout', async () => {
+export const logoutAll = createAsyncThunk('logout/logoutAll', async (_, { getState }) => {
     try {
-        const firebaseAuth = getAuth();
-
-        return signOut(firebaseAuth).then(() => {
-            localStorage.removeItem('display_name');
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+        const { username } = getState().loginSlice;
+        const response = await fetch(logoutAllUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "username": username,
+            })
         });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error(errorData);
+            const errorMessage = errorData.message;
+            throw new Error(errorMessage);
+        }
+
+        const responseData = await response.json();
+
+        localStorage.removeItem('display_name');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+
+        return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error('Error:', error.message);
     }
-})
+});
 
 export const logoutSlice = createSlice({
     name: 'logout',
@@ -75,31 +82,33 @@ export const logoutSlice = createSlice({
             .addCase(logout.fulfilled, (state, action) => {
                 state.logoutLoading = false;
                 state.logoutError = '';
-                state.logoutMessage = action.payload.message;
-                state.logoutMessageType = action.payload.message_type;
+                state.logoutSuccessMessage = action.payload.successMessage;
+                state.logoutErrorMessage = action.payload.errorMessage;
             })
-            .addCase(signout.fulfilled, (state) => {
+            .addCase(logoutAll.fulfilled, (state) => {
                 state.logoutLoading = false;
                 state.logoutError = '';
-                state.logoutMessage = 'Signout successful';
-                state.logoutMessageType = 'success';
+                state.logoutSuccessMessage = action.payload.successMessage;
+                state.logoutErrorMessage = action.payload.errorMessage;
             })
             .addMatcher(isAnyOf(
                 logout.pending,
-                signout.pending
+                logoutAll.pending
             ), (state) => {
                 state.logoutLoading = true;
                 state.logoutError = null;
+                state.logoutSuccessMessage = null;
+                state.logoutErrorMessage = null;
             })
             .addMatcher(isAnyOf(
                 logout.rejected,
-                signout.rejected
+                logoutAll.rejected
             ),
                 (state, action) => {
                     state.logoutLoading = false;
                     state.logoutError = action.error.stack;
-                    state.logoutMessageType = 'error';
-                    state.logoutMessage = action.error.message;
+                    state.logoutSuccessMessage = action.payload.successMessage;
+                    state.logoutErrorMessage = action.payload.errorMessage;
                 });
     }
 })
