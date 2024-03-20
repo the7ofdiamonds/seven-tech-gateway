@@ -20,16 +20,23 @@ class Login
     {
         try {
             $display_name = $request['username'];
+            $email = $request['email'];
             $password = $request['password'];
+            $location = $request['location'];
 
-            if (empty($display_name)) {
-                return rest_ensure_response('A Username is required for login');
+            $headers = $request->get_headers();
+
+            error_log(print_r($headers, true));
+            error_log(print_r($location, true));
+            if (empty($display_name) && empty($email)) {
+                return rest_ensure_response('A Username or email is required for login');
             }
 
             if (empty($password)) {
                 return rest_ensure_response('A Password is required for login');
             }
 
+            $this->auth->verifyIdToken();
             global $wpdb;
 
             $storedProcedureName = 'findUserByUsername';

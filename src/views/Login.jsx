@@ -6,6 +6,9 @@ import NavigationComponent from './components/NavigationLogin';
 import {
   login,
   updateUsername,
+  updateName,
+  updateEmail,
+  updateUserPhoto,
   updateAccessToken,
   updateRefreshToken,
 } from '../controllers/loginSlice';
@@ -71,15 +74,15 @@ function LoginComponent() {
     }
   }, [loginErrorMessage]);
 
-  useEffect(() => {
-    dispatch(updateUsername(username));
-    dispatch(updateAccessToken(accessToken));
-    dispatch(updateRefreshToken(refreshToken));
-  }, [dispatch, username, accessToken, refreshToken]);
+  // useEffect(() => {
+  //   dispatch(updateUsername(username));
+  //   dispatch(updateAccessToken(accessToken));
+  //   dispatch(updateRefreshToken(refreshToken));
+  // }, [dispatch, username, accessToken, refreshToken]);
 
   useEffect(() => {
     if (accessToken && refreshToken) {
-      return onAuthStateChanged(firebaseAuth, () => {
+      dispatch(login()).then(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const redirectTo = urlParams.get('redirectTo');
 
@@ -114,7 +117,13 @@ function LoginComponent() {
   };
 
   const handleGoogleSignIn = async () => {
-    await signInWithPopup(firebaseAuth, google);
+    await signInWithPopup(firebaseAuth, google).then((response) => {
+      dispatch(updateName(response.user.displayName));
+      dispatch(updateEmail(response.user.email));
+      dispatch(updateUserPhoto(response.user.photoURL));
+      dispatch(updateAccessToken(response._tokenResponse.idToken));
+      dispatch(updateRefreshToken(response._tokenResponse.refreshToken));
+    });
   };
 
   const handleMicrosoftSignIn = async () => {

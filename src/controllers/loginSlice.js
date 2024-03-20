@@ -8,6 +8,9 @@ const initialState = {
     loginSuccessMessage: '',
     loginErrorMessage: '',
     username: '',
+    name: '',
+    email: '',
+    userPhoto: '',
     accessToken: '',
     refreshToken: ''
 };
@@ -16,6 +19,27 @@ export const updateUsername = (username) => {
     return {
         type: 'login/updateUsername',
         payload: username
+    };
+};
+
+export const updateName = (displayName) => {
+    return {
+        type: 'login/updateName',
+        payload: displayName
+    };
+};
+
+export const updateEmail = (email) => {
+    return {
+        type: 'login/updateEmail',
+        payload: email
+    };
+};
+
+export const updateUserPhoto = (userPhoto) => {
+    return {
+        type: 'login/updateName',
+        payload: userPhoto
     };
 };
 
@@ -39,6 +63,8 @@ export const login = createAsyncThunk('login/login', async ({ username, password
         const response = await fetch(`${apiUrl}/`, {
             method: 'POST',
             headers: {
+                'Authentication': "Bearer " + localStorage.getItem('accessToken'),
+                'refresh-token': localStorage.getItem('refreshToken'),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -60,13 +86,28 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
-        updateUsername: (action) => {
-            localStorage.setItem('display_name', action.payload);
+        updateName: (state, action) => {
+            state.name = action.payload;
+            localStorage.setItem('name', action.payload);
         },
-        updateAccessToken: (action) => {
+        updateUsername: (state, action) => {
+            state.username = action.payload;
+            localStorage.setItem('username', action.payload);
+        },
+        updateEmail: (state, action) => {
+            state.email = action.payload;
+            localStorage.setItem('email', action.payload);
+        },
+        updateUserPhoto: (state, action) => {
+            state.userPhoto = action.payload;
+            localStorage.setItem('userPhoto', action.payload);
+        },
+        updateAccessToken: (state, action) => {
+            state.accessToken = action.payload;
             localStorage.setItem('access_token', action.payload);
         },
-        updateRefreshToken: (action) => {
+        updateRefreshToken: (state, action) => {
+            state.refreshToken = action.payload;
             localStorage.setItem('refresh_token', action.payload);
         }
     },
