@@ -73,8 +73,7 @@
     "file": "Forgot.js",
     "imports": [
       "src/index.jsx",
-      "_NavigationLogin.js",
-      "_DisplayStatus.js"
+      "_NavigationLogin.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Forgot.jsx"
@@ -125,7 +124,7 @@
     "imports": [
       "src/index.jsx",
       "_NavigationLogin.js",
-      "_DisplayStatus.js"
+      "_useDispatch.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Signup.jsx"

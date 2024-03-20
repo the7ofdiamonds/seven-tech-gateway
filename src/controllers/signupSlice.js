@@ -1,27 +1,32 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import {
-    createUserWithEmailAndPassword, getAuth
-} from "firebase/auth";
+const apiUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/signup' : '/wp-json/thfw/users/v1/signup';
 
-export const signup = createAsyncThunk('signup/signup', async (User_Name, Email, Password) => {
+const initialState = {
+    signupLoading: false,
+    signupError: '',
+    signupMessage: '',
+    signupMessageType: '',
+};
+
+export const signup = createAsyncThunk('signup/signup', async (credentials) => {
     try {
-        const auth = getAuth();
 
-        await createUserWithEmailAndPassword(auth, Email, Password);
-
-        const new_user_data = {
-            'user_login': User_Name,
-            'user_email': Email,
-            'user_password': Password
-        };
-
-        await fetch('/wp-json/thfw/users/v1/signup', {
+        await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(new_user_data)
+            body: JSON.stringify({
+                "username": credentials.username,
+                "email": credentials.email,
+                "password": credentials.password,
+                "confirmPassword": credentials.confirmPassword,
+                "firstname": credentials.firstname,
+                "lastname": credentials.lastname,
+                "phone": credentials.phone,
+                "location": credentials.location
+            })
         });
 
         if (!response.ok) {
@@ -39,3 +44,43 @@ export const signup = createAsyncThunk('signup/signup', async (User_Name, Email,
         return `Error (${errorCode}): ${errorMessage}`;
     }
 });
+
+export const signupSlice = createSlice({
+    name: 'signup',
+    initialState,
+    reducers: {
+        updateAccessToken: (state, action) => {
+            state.accessToken = action.payload;
+        },
+        updateRefreshToken: (state, action) => {
+            state.refreshToken = action.payload;
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(signIn.fulfilled, (state, action) => {
+                state.signupLoading = false;
+                state.signupError = '';
+                state.signupMessage = action.payload.message;
+                state.signupMessageType = action.payload.message_type;
+                state.customToken = action.payload.custom_token;
+            })
+            .addMatcher(isAnyOf(
+                signIn.pending,
+            ), (state) => {
+                state.signupLoading = true;
+                state.signupError = null;
+            })
+            .addMatcher(isAnyOf(
+                signIn.rejected,
+            ),
+                (state, action) => {
+                    state.signupLoading = false;
+                    state.signupError = action.error.stack;
+                    state.signupMessageType = 'error';
+                    state.signupMessage = action.error.message;
+                });
+    }
+})
+
+export default signupSlice;

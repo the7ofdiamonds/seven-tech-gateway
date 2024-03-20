@@ -5,9 +5,8 @@ import {
     setPersistence,
     signOut,
 } from 'firebase/auth';
-import { firebaseAuth } from '../services/firebase/config.js';
 
-const apiUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL : "/wp-json/seven-tech/v1/users/logout";
+const apiUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout" : "/wp-json/seven-tech/v1/users/logout";
 
 const initialState = {
     logoutLoading: false,
@@ -28,7 +27,7 @@ const initialState = {
 
 export const logout = createAsyncThunk('logout/logout', async () => {
     try {
-        const response = await fetch('/wp-json/seven-tech/v1/users/logout', {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
