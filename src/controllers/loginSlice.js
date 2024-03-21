@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { isValidEmail } from '../utils/Validation';
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL : "/wp-json/seven-tech/v1/users/login";
 
@@ -8,9 +9,9 @@ const initialState = {
     loginSuccessMessage: '',
     loginErrorMessage: '',
     username: '',
-    name: '',
+    displayName: '',
     email: '',
-    userPhoto: '',
+    profileImage: '',
     accessToken: '',
     refreshToken: ''
 };
@@ -22,9 +23,9 @@ export const updateUsername = (username) => {
     };
 };
 
-export const updateName = (displayName) => {
+export const updateDisplayName = (displayName) => {
     return {
-        type: 'login/updateName',
+        type: 'login/updateDisplayName',
         payload: displayName
     };
 };
@@ -36,10 +37,10 @@ export const updateEmail = (email) => {
     };
 };
 
-export const updateUserPhoto = (userPhoto) => {
+export const updateProfileImage = (profileImage) => {
     return {
-        type: 'login/updateName',
-        payload: userPhoto
+        type: 'login/updateProfileImage',
+        payload: profileImage
     };
 };
 
@@ -57,23 +58,31 @@ export const updateRefreshToken = (refresh_token) => {
     };
 };
 
-export const login = createAsyncThunk('login/login', async ({ username, password, location }) => {
+export const login = createAsyncThunk('login/login', async ({ identity, password, location }) => {
     try {
 
-        const response = await fetch(`${apiUrl}/`, {
+        var email = '';
+        var username = '';
+
+        if (isValidEmail(identity)) {
+            var email = identity;
+        } else {
+            var username = identity;
+        }
+        
+        const response = await fetch(`${apiUrl}`, {
             method: 'POST',
             headers: {
-                'Authentication': "Bearer " + localStorage.getItem('accessToken'),
-                'refresh-token': localStorage.getItem('refreshToken'),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 "username": username,
+                "email": email,
                 "password": password,
                 "location": location
             })
         });
-console.log("login function called");
+
         const responseData = await response.json();
         return responseData;
     } catch (error) {
@@ -86,9 +95,10 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
-        updateName: (state, action) => {
-            state.name = action.payload;
-            localStorage.setItem('name', action.payload);
+        updateDisplayName: (state, action) => {
+            console.log(action.payload);
+            state.displayName = action.payload;
+            localStorage.setItem('display_name', action.payload);
         },
         updateUsername: (state, action) => {
             state.username = action.payload;
@@ -98,9 +108,10 @@ export const loginSlice = createSlice({
             state.email = action.payload;
             localStorage.setItem('email', action.payload);
         },
-        updateUserPhoto: (state, action) => {
-            state.userPhoto = action.payload;
-            localStorage.setItem('userPhoto', action.payload);
+        updateProfileImage: (state, action) => {
+            console.log(action.payload);
+            state.profileImage = action.payload;
+            localStorage.setItem('profile_image', action.payload);
         },
         updateAccessToken: (state, action) => {
             state.accessToken = action.payload;

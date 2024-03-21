@@ -5,9 +5,9 @@ import NavigationComponent from './components/NavigationLogin';
 
 import {
   login,
-  updateName,
+  updateDisplayName,
   updateEmail,
-  updateUserPhoto,
+  updateProfileImage,
   updateAccessToken,
   updateRefreshToken,
 } from '../controllers/loginSlice';
@@ -38,16 +38,15 @@ function LoginComponent() {
     loginError,
     accessToken,
     refreshToken,
-    username,
+    displayName,
+    profileImage
   } = useSelector((state) => state.login);
   const { tokenSuccessMessage, tokenErrorMessage } = useSelector(
     (state) => state.token
   );
 
-  const [formData, setFormData] = useState({
-    username: username,
-    password: '',
-  });
+  const [identity, setIdentity] = useState('');
+  const [password, setPassword] = useState('');
   const [location, setLocation] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState(
@@ -65,7 +64,9 @@ function LoginComponent() {
 
   useEffect(() => {
     if (loginSuccessMessage || tokenSuccessMessage) {
-      const msg = loginSuccessMessage ?  loginSuccessMessage : tokenSuccessMessage;
+      const msg = loginSuccessMessage
+        ? loginSuccessMessage
+        : tokenSuccessMessage;
 
       setMessage(msg);
       setMessageType('success');
@@ -83,35 +84,33 @@ function LoginComponent() {
 
   useEffect(() => {
     if (accessToken && refreshToken) {
-      dispatch(token()).then(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirectTo = urlParams.get('redirectTo');
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirectTo');
 
-        setTimeout(() => {
-          if (redirectTo == null) {
-            window.location.href = '/dashboard';
-          } else {
-            window.location.href = redirectTo;
-          }
-        }, 5000);
-      });
+      setTimeout(() => {
+        if (redirectTo == null) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = redirectTo;
+        }
+      }, 5000);
     }
   }, [accessToken, refreshToken]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const handleIdentityChange = async (e) => {
+    setIdentity(e.target.value);
+  };
+
+  const handlePasswordChange = async (e) => {
+    setPassword(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(
       login({
-        username: formData.username,
-        password: formData.password,
+        identity: identity,
+        password: password,
         location: location,
       })
     );
@@ -119,31 +118,43 @@ function LoginComponent() {
 
   const handleGoogleSignIn = async () => {
     await signInWithPopup(firebaseAuth, google).then((response) => {
-      dispatch(updateName(response.user.displayName));
+      dispatch(updateDisplayName(response.user.displayName));
       dispatch(updateEmail(response.user.email));
-      dispatch(updateUserPhoto(response.user.photoURL));
-      dispatch(updateAccessToken(response._tokenResponse.idToken));
-      dispatch(updateRefreshToken(response._tokenResponse.refreshToken));
+      dispatch(updateProfileImage(response.user.photoURL));
+
+      var accessToken = response._tokenResponse.idToken;
+      dispatch(updateAccessToken(accessToken));
+      var refreshToken = response._tokenResponse.refreshToken;
+      dispatch(updateRefreshToken(refreshToken));
+      dispatch(token(accessToken, refreshToken, location));
     });
   };
 
   const handleMicrosoftSignIn = async () => {
     await signInWithPopup(firebaseAuth, microsoft).then((response) => {
-      dispatch(updateName(response.user.displayName));
+      dispatch(updateDisplayName(response.user.displayName));
       dispatch(updateEmail(response.user.email));
-      dispatch(updateUserPhoto(response.user.photoURL));
-      dispatch(updateAccessToken(response._tokenResponse.idToken));
-      dispatch(updateRefreshToken(response._tokenResponse.refreshToken));
+      dispatch(updateProfileImage(response.user.photoURL));
+     
+      var accessToken = response._tokenResponse.idToken;
+      dispatch(updateAccessToken(accessToken));
+      var refreshToken = response._tokenResponse.refreshToken;
+      dispatch(updateRefreshToken(refreshToken));
+      dispatch(token(accessToken, refreshToken, location));
     });
   };
 
   const handleAppleSignIn = async () => {
     await signInWithPopup(firebaseAuth, apple).then((response) => {
-      dispatch(updateName(response.user.displayName));
+      dispatch(updateDisplayName(response.user.displayName));
       dispatch(updateEmail(response.user.email));
-      dispatch(updateUserPhoto(response.user.photoURL));
-      dispatch(updateAccessToken(response._tokenResponse.idToken));
-      dispatch(updateRefreshToken(response._tokenResponse.refreshToken));
+      dispatch(updateProfileImage(response.user.photoURL));
+     
+      var accessToken = response._tokenResponse.idToken;
+      dispatch(updateAccessToken(accessToken));
+      var refreshToken = response._tokenResponse.refreshToken;
+      dispatch(updateRefreshToken(refreshToken));
+      dispatch(token(accessToken, refreshToken, location));
     });
   };
 
@@ -161,10 +172,10 @@ function LoginComponent() {
                   <td>
                     <input
                       type="text"
-                      name="username"
-                      placeholder="Username"
-                      value={formData.username}
-                      onChange={handleInputChange}
+                      name="identity"
+                      placeholder="Username or Email"
+                      value={identity}
+                      onChange={handleIdentityChange}
                       required
                     />
                   </td>
@@ -175,8 +186,8 @@ function LoginComponent() {
                       type="password"
                       name="password"
                       placeholder="Password"
-                      value={formData.password}
-                      onChange={handleInputChange}
+                      value={password}
+                      onChange={handlePasswordChange}
                       required
                     />
                   </td>

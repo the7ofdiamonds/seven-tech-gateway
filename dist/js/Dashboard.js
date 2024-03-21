@@ -1,2 +1,2 @@
-import{j as s}from"./index.js";function r(){return s.jsx("section",{className:"dashboard",children:s.jsx("h2",{className:"title",children:"Dashboard"})})}export{r as default};
+import{u as o,j as e}from"./index.js";function d(){var a=o(function(t){return t}),s=a.profileImage,r=a.displayName,i=s||localStorage.getItem("profile_image"),l=r||localStorage.getItem("display_name");return e.jsxs("section",{className:"dashboard",children:[e.jsx("h2",{className:"title",children:"Dashboard"}),e.jsxs("div",{children:[e.jsx("div",{children:e.jsx("img",{src:"".concat(i),alt:""})}),e.jsx("span",{children:l})]}),e.jsx("div",{})]})}export{d as default};
 //# sourceMappingURL=Dashboard.js.map

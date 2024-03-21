@@ -9,16 +9,22 @@ const initialState = {
     tokenErrorMessage: '',
 };
 
-export const token = createAsyncThunk('token/token', async () => {
+export const token = createAsyncThunk('token/token', async (location) => {
     try {
 
-        const response = await fetch(`${apiUrl}/`, {
+        const response = await fetch(`${apiUrl}`, {
             method: 'POST',
             headers: {
                 'Authentication': "Bearer " + localStorage.getItem('access_token'),
                 'refresh-token': localStorage.getItem('refresh_token'),
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                "location": {
+                    "longitude": location.longitude,
+                    "latitude": location.latitude
+                }
+            })
         });
 
         const responseData = await response.json();
