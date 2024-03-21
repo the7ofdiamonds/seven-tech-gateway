@@ -55,6 +55,7 @@ class API
       $login = new Login($auth);
       $logout = new Logout();
       $signup = new Signup($auth);
+      $token = new Token($auth);
     } else {
       error_log('A path to the Google Service Account file is required.');
     }
@@ -109,6 +110,12 @@ class API
     register_rest_route('seven-tech/v1', '/users/signup', array(
       'methods' => 'POST',
       'callback' => array($signup, 'signup'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/token', array(
+      'methods' => 'POST',
+      'callback' => [$token, 'token'],
       'permission_callback' => '__return_true',
     ));
 

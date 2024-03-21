@@ -6,6 +6,7 @@ import { teamSlice } from '../controllers/teamSlice.js';
 import { founderSlice } from '../controllers/founderSlice.js';
 import { loginSlice } from '../controllers/loginSlice.js';
 import { logoutSlice } from '../controllers/logoutSlice.js';
+import { tokenSlice } from '../controllers/tokenSlice.js';
 
 const store = configureStore({
     reducer: {
@@ -14,7 +15,8 @@ const store = configureStore({
         content: contentSlice.reducer,
         users: usersSlice.reducer,
         team: teamSlice.reducer,
-        founder: founderSlice.reducer
+        founder: founderSlice.reducer,
+        token: tokenSlice.reducer
     }
 });
 

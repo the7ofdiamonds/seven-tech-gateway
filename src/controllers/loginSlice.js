@@ -73,7 +73,7 @@ export const login = createAsyncThunk('login/login', async ({ username, password
                 "location": location
             })
         });
-
+console.log("login function called");
         const responseData = await response.json();
         return responseData;
     } catch (error) {
@@ -136,7 +136,7 @@ export const loginSlice = createSlice({
                 (state, action) => {
                     state.loginLoading = false;
                     state.loginError = action.error;
-                    state.loginErrorMessage = action.error.errorMessage;
+                    state.loginErrorMessage = action.error;
                 });
     }
 })

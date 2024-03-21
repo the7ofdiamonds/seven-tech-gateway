@@ -5,7 +5,6 @@ import NavigationComponent from './components/NavigationLogin';
 
 import {
   login,
-  updateUsername,
   updateName,
   updateEmail,
   updateUserPhoto,
@@ -13,8 +12,9 @@ import {
   updateRefreshToken,
 } from '../controllers/loginSlice';
 
+import { token } from '../controllers/tokenSlice';
+
 import {
-  onAuthStateChanged,
   getAuth,
   GoogleAuthProvider,
   OAuthProvider,
@@ -40,6 +40,9 @@ function LoginComponent() {
     refreshToken,
     username,
   } = useSelector((state) => state.login);
+  const { tokenSuccessMessage, tokenErrorMessage } = useSelector(
+    (state) => state.token
+  );
 
   const [formData, setFormData] = useState({
     username: username,
@@ -61,28 +64,26 @@ function LoginComponent() {
   }, []);
 
   useEffect(() => {
-    if (loginSuccessMessage) {
-      setMessage(loginSuccessMessage);
+    if (loginSuccessMessage || tokenSuccessMessage) {
+      const msg = loginSuccessMessage ?  loginSuccessMessage : tokenSuccessMessage;
+
+      setMessage(msg);
       setMessageType('success');
     }
-  }, [loginSuccessMessage]);
+  }, [loginSuccessMessage, tokenSuccessMessage]);
 
   useEffect(() => {
-    if (loginErrorMessage) {
-      setMessage(loginErrorMessage);
+    if (loginErrorMessage || tokenErrorMessage) {
+      const msg = loginErrorMessage ? loginErrorMessage : tokenErrorMessage;
+
+      setMessage(msg);
       setMessageType('error');
     }
-  }, [loginErrorMessage]);
-
-  // useEffect(() => {
-  //   dispatch(updateUsername(username));
-  //   dispatch(updateAccessToken(accessToken));
-  //   dispatch(updateRefreshToken(refreshToken));
-  // }, [dispatch, username, accessToken, refreshToken]);
+  }, [loginErrorMessage, tokenErrorMessage]);
 
   useEffect(() => {
     if (accessToken && refreshToken) {
-      dispatch(login()).then(() => {
+      dispatch(token()).then(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const redirectTo = urlParams.get('redirectTo');
 
@@ -127,11 +128,23 @@ function LoginComponent() {
   };
 
   const handleMicrosoftSignIn = async () => {
-    await signInWithPopup(firebaseAuth, microsoft);
+    await signInWithPopup(firebaseAuth, microsoft).then((response) => {
+      dispatch(updateName(response.user.displayName));
+      dispatch(updateEmail(response.user.email));
+      dispatch(updateUserPhoto(response.user.photoURL));
+      dispatch(updateAccessToken(response._tokenResponse.idToken));
+      dispatch(updateRefreshToken(response._tokenResponse.refreshToken));
+    });
   };
 
   const handleAppleSignIn = async () => {
-    await signInWithPopup(firebaseAuth, apple);
+    await signInWithPopup(firebaseAuth, apple).then((response) => {
+      dispatch(updateName(response.user.displayName));
+      dispatch(updateEmail(response.user.email));
+      dispatch(updateUserPhoto(response.user.photoURL));
+      dispatch(updateAccessToken(response._tokenResponse.idToken));
+      dispatch(updateRefreshToken(response._tokenResponse.refreshToken));
+    });
   };
 
   return (
