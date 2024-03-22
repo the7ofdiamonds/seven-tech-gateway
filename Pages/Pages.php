@@ -59,7 +59,7 @@ class Pages
                 'file_name' => 'Dashboard',
                 'title' => 'DASHBOARD',
                 'name' => 'dashboard'
-            ],
+            ]
         ];
 
         $this->protected_pages_list = [];
@@ -72,6 +72,13 @@ class Pages
                 'title' => 'ABOUT',
                 'name' => 'about'
             ],
+            [
+                'url' => 'password-recovery',
+                'regex' => '#^/password-recovery/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9\-]+)/$#',
+                'file_name' => 'PasswordRecovery',
+                'title' => 'PASSWORD RECOVERY',
+                'name' => 'password-recovery'
+            ]
         ];
 
         $this->page_titles = [

@@ -6,8 +6,6 @@ use Exception;
 
 use WP_REST_Request;
 
-use Kreait\Firebase\Auth\SignInResult\SignInResult;
-
 class Login
 {
 

@@ -64,10 +64,17 @@ class API
     $founders = new Founders;
     $location = new Location;
     $users = new Users;
+    $change = new Change;
 
     register_rest_route('seven-tech/v1', '/content/(?P<slug>[a-zA-Z0-9-_]+)', array(
       'methods' => 'GET',
       'callback' => array($content, 'get_content'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/password-recovery', array(
+      'methods' => 'POST',
+      'callback' => array($change, 'updatePassword'),
       'permission_callback' => '__return_true',
     ));
 

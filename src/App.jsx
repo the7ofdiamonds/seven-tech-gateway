@@ -16,6 +16,7 @@ const Founders = lazy(() => import('./views/Founders.jsx'));
 const Founder = lazy(() => import('./views/Founder.jsx'));
 const Team = lazy(() => import('./views/Team.jsx'));
 const TeamMember = lazy(() => import('./views/TeamMember.jsx'));
+const PasswordRecovery = lazy(() => import('./views/PasswordRecovery.jsx'));
 
 function App() {
   return (
@@ -35,6 +36,10 @@ function App() {
               <Route path="/founders/:founder" element={<Founder />} />
               <Route path="/team" element={<Team />} />
               <Route path="/team/:teammember" element={<TeamMember />} />
+              <Route
+                path="/password-recovery/:username/:confirmationCode"
+                element={<PasswordRecovery />}
+              />
             </Routes>
           </Suspense>
         </Router>
