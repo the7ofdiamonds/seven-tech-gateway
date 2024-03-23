@@ -15,7 +15,7 @@ class Signup
     {
         $this->auth = $auth;
     }
-    
+
     public function signup(WP_REST_Request $request)
     {
         try {
@@ -23,31 +23,45 @@ class Signup
             $user_login = $request['user_login'];
             $user_email = $request['user_email'];
             $user_password = $request['user_password'];
-
             $hashedPassword = password_hash($user_password, PASSWORD_BCRYPT);
+            $firstname = $request['first_name'];
+            $lastname = $request['last_name'];
 
             $userLogin = get_user_by('login', $user_login);
 
             if ($userLogin) {
-                return rest_ensure_response("A user already exists with this user name. Choose another user name.");
+                $signupResponse = [
+                    'errorMessage' => 'A user already exists with this user name. Choose another user name.',
+                ];
+
+                $response = rest_ensure_response($signupResponse);
+                $response->set_status(400);
+
+                return $response;
             }
-            
+
             $userEmail = get_user_by('email', $user_email);
 
             if ($userEmail) {
-                return rest_ensure_response("A user already exists with this email. Please go to the forgot page to reset your password.");
+                $signupResponse = [
+                    'errorMessage' => 'A user already exists with this email. Please go to the forgot page to reset your password.',
+                ];
+
+                $response = rest_ensure_response($signupResponse);
+                $response->set_status(400);
+
+                return $response;
             }
 
             $user_data = array(
                 'user_login' => $user_login,
-                'user_pass'  => $hashedPassword, // Note: This should be a hashed password, not plain text
+                'user_pass'  => $hashedPassword,
                 'user_email' => $user_email,
-                'first_name' => 'John',
-                'last_name'  => 'Doe',
-                'role'       => 'user', // Set the user role (e.g., subscriber, author, editor, administrator)
+                'first_name' => $firstname,
+                'last_name'  => $lastname,
+                'role'       => 'subscriber'
             );
-            
-            // Insert the new user
+
             wp_insert_user($user_data);
 
             $credentials = [
@@ -60,7 +74,7 @@ class Signup
 
             if (is_wp_error($signedInUser)) {
                 $message = [
-                    'message' => $signedInUser->get_error_message(),
+                    'errorMessage' => $signedInUser->get_error_message(),
                 ];
                 $response = rest_ensure_response($message);
                 $response->set_status(401);
@@ -71,9 +85,18 @@ class Signup
             wp_set_current_user($signedInUser->ID, $signedInUser->user_login);
             wp_set_auth_cookie($signedInUser->ID, true);
 
-            if (is_user_logged_in()) {
-                return rest_ensure_response('You have logged in successfully as ' . $user_login . ' using the email ' . $user_email);
+            if (!is_user_logged_in()) {
+                throw new Exception("there was an error signing up a new user.");
             }
+
+            $signupResponse = [
+                'successMessage' => 'You have logged in successfully as ' . $user_login . ' using the email ' . $user_email . '.',
+            ];
+
+            $response = rest_ensure_response($signupResponse);
+            $response->set_status(400);
+
+            return $response;
         } catch (Exception $e) {
             $error_message = $e->getMessage();
             $status_code = $e->getCode();

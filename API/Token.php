@@ -38,15 +38,15 @@ class Token
 
             if ($wpdb->last_error) {
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
             }
 
             if ($results == null) {
-                $loginResponse = [
-                    'message_type' => 'error',
-                    'message' => 'This username could not be found',
+               $tokenResponse = [
+                    'errorMessage' => 'This username could not be found',
                 ];
 
-                $response = rest_ensure_response($loginResponse);
+                $response = rest_ensure_response($tokenResponse);
                 $response->set_status(404);
 
                 return $response;
@@ -58,25 +58,25 @@ class Token
             wp_set_auth_cookie($userData->id, true);
 
             if (!is_user_logged_in()) {
-                $loginResponse = [
+               $tokenResponse = [
                     'errorMessage' => 'You could not be logged in successfully',
                 ];
 
-                $response = rest_ensure_response($loginResponse);
+                $response = rest_ensure_response($tokenResponse);
                 $response->set_status(400);
-                error_log('User could not be logged');
+                return $response;
             }
 
-            $loginResponse = [
+           $tokenResponse = [
                 'successMessage' => 'You have been logged in successfully'
             ];
 
-            $response = rest_ensure_response($loginResponse);
+            $response = rest_ensure_response($tokenResponse);
             $response->set_status(200);
 
             return $response;
         } catch (Exception $e) {
-            error_log('There has been an error at login');
+            error_log('There has been an error at loging in using the tokens provided.');
             $message = [
                 'message' => $e->getMessage(),
             ];

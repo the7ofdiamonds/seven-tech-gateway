@@ -52,8 +52,11 @@ class API
       $factory = (new Factory)->withServiceAccount($credentialsPath);
       $auth = $factory->createAuth();
 
+      $change = new Change;
+      $email = new Email;
       $login = new Login($auth);
       $logout = new Logout();
+      $password = new Password;
       $signup = new Signup($auth);
       $token = new Token($auth);
     } else {
@@ -63,8 +66,24 @@ class API
     $content = new Content;
     $founders = new Founders;
     $location = new Location;
-    $users = new Users;
-    $change = new Change;
+
+    register_rest_route('seven-tech/v1', '/users/change-username', array(
+      'methods' => 'POST',
+      'callback' => array($change, 'changeUsername'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/change-name', array(
+      'methods' => 'POST',
+      'callback' => array($change, 'changeName'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/change-phone', array(
+      'methods' => 'POST',
+      'callback' => array($change, 'changePhone'),
+      'permission_callback' => '__return_true',
+    ));
 
     register_rest_route('seven-tech/v1', '/content/(?P<slug>[a-zA-Z0-9-_]+)', array(
       'methods' => 'GET',
@@ -72,9 +91,21 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/password-recovery', array(
-      'methods' => 'POST',
-      'callback' => array($change, 'updatePassword'),
+    register_rest_route('seven-tech/v1', '/users/verify-email', array(
+      'methods' => 'GET',
+      'callback' => array($email, 'verifyEmail'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/add-email', array(
+      'methods' => 'GET',
+      'callback' => array($email, 'addEmail'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/remove-email', array(
+      'methods' => 'GET',
+      'callback' => array($email, 'removeEmail'),
       'permission_callback' => '__return_true',
     ));
 
@@ -114,6 +145,24 @@ class API
       'permission_callback' => '__return_true',
     ));
 
+    register_rest_route('seven-tech/v1', '/users/change-password', array(
+      'methods' => 'POST',
+      'callback' => array($password, 'changePassword'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/update-password', array(
+      'methods' => 'POST',
+      'callback' => array($password, 'updatePassword'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/users/forgot-password', array(
+      'methods' => 'POST',
+      'callback' => array($password, 'forgotPassword'),
+      'permission_callback' => '__return_true',
+    ));
+    
     register_rest_route('seven-tech/v1', '/users/signup', array(
       'methods' => 'POST',
       'callback' => array($signup, 'signup'),
@@ -123,12 +172,6 @@ class API
     register_rest_route('seven-tech/v1', '/users/token', array(
       'methods' => 'POST',
       'callback' => [$token, 'token'],
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/(?P<slug>[a-zA-Z0-9-_%.]+)', array(
-      'methods' => 'GET',
-      'callback' => array($users, 'get_user'),
       'permission_callback' => '__return_true',
     ));
   }

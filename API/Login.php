@@ -26,11 +26,25 @@ class Login
             error_log(print_r($location, true));
 
             if (empty($display_name) && empty($email)) {
-                return rest_ensure_response('A Username or email is required for login');
+                $loginResponse = [
+                    'errorMessage' => 'A Username or email is required for login',
+                ];
+
+                $response = rest_ensure_response($loginResponse);
+                $response->set_status(400);
+
+                return $response;
             }
 
             if (empty($password)) {
-                return rest_ensure_response('A Password is required for login');
+                $loginResponse = [
+                    'errorMessage' => 'A Password is required for login',
+                ];
+
+                $response = rest_ensure_response($loginResponse);
+                $response->set_status(400);
+
+                return $response;
             }
 
             global $wpdb;
@@ -46,8 +60,7 @@ class Login
 
                 if ($results == null) {
                     $loginResponse = [
-                        'message_type' => 'error',
-                        'message' => 'This username could not be found',
+                        'errorMessage' => 'This username could not be found',
                     ];
 
                     $response = rest_ensure_response($loginResponse);
@@ -68,8 +81,7 @@ class Login
 
                 if ($results == null) {
                     $loginResponse = [
-                        'message_type' => 'error',
-                        'message' => 'This email could not be found',
+                        'errorMessage' => 'This email could not be found',
                     ];
 
                     $response = rest_ensure_response($loginResponse);
@@ -85,8 +97,7 @@ class Login
 
             if (!$password_check) {
                 $loginResponse = [
-                    'message_type' => 'error',
-                    'message' => 'The password you entered for this username is not correct.',
+                    'errorMessage' => 'The password you entered for this username is not correct.',
                 ];
 
                 $response = rest_ensure_response($loginResponse);
@@ -105,8 +116,7 @@ class Login
 
             if (is_wp_error($user)) {
                 $loginResponse = [
-                    'message_type' => 'error',
-                    'message' => $user->get_error_message(),
+                    'errorMessage' => $user->get_error_message(),
                 ];
 
                 $response = rest_ensure_response($loginResponse);
@@ -120,13 +130,13 @@ class Login
 
             if (!is_user_logged_in()) {
                 $loginResponse = [
-                    'message_type' => 'error',
-                    'message' => 'You could not be logged in successfully',
+                    'errorMessage' => 'You could not be logged in successfully',
                 ];
 
                 $response = rest_ensure_response($loginResponse);
                 $response->set_status(400);
-                error_log('User could not be logged');
+
+                return $response;
             }
 
             $signedInUser = $this->auth->signInWithEmailAndPassword($userData->email, $password);
@@ -137,7 +147,7 @@ class Login
                 'successMessage' => 'You have been logged in successfully',
                 'accessToken' => $accessToken,
                 'refreshToken' => $refreshToken,
-                'username' => $userData->username
+                'email' => $userData->email
             ];
 
             $response = rest_ensure_response($loginResponse);

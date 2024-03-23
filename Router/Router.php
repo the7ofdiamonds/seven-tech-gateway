@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Router;
 
+use Error;
 use Exception;
 
 use SEVEN_TECH\Pages\Pages;
@@ -71,7 +72,7 @@ class Router
                 foreach ($this->protected_pages_list as $protected_page) {
                     if (preg_match($protected_page['regex'], $path)) {
                         $filename = $protected_page['file_name'];
-
+                        
                         add_filter('template_include',  function ($template_include) use ($filename) {
                             return $this->templates->get_protected_page_template($template_include, $filename);
                         });

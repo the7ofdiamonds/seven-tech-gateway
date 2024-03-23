@@ -6,23 +6,14 @@ use Exception;
 
 use WP_REST_Request;
 
-use SEVEN_TECH\Admin\AdminAccountManagement;
-
-class Account
+class Email
 {
-    private $adminaccountmngmnt;
 
-    public function __construct()
-    {
-        $this->adminaccountmngmnt = new AdminAccountManagement;
-    }
-
-    function unlockAccount(WP_REST_Request $request)
+    function verifyEmail(WP_REST_Request $request)
     {
         try {
-            $this->adminaccountmngmnt->unlockAccount();
         } catch (Exception $e) {
-            error_log('There has been an error at unlock account');
+            error_log('There has been an error at verify email.');
             $message = [
                 'message' => $e->getMessage(),
             ];
@@ -32,12 +23,25 @@ class Account
         }
     }
 
-    function removeAccount(WP_REST_Request $request)
+    function addEmail(WP_REST_Request $request)
     {
         try {
-            $this->adminaccountmngmnt->removeAccount();
         } catch (Exception $e) {
-            error_log('There has been an error at remove account');
+            error_log('There has been an error at add email.');
+            $message = [
+                'message' => $e->getMessage(),
+            ];
+            $response = rest_ensure_response($message);
+            $response->set_status($e->getCode());
+            return $response;
+        }
+    }
+
+    function removeEmail(WP_REST_Request $request)
+    {
+        try {
+        } catch (Exception $e) {
+            error_log('There has been an error at remove email.');
             $message = [
                 'message' => $e->getMessage(),
             ];

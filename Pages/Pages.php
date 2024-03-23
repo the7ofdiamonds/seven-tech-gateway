@@ -19,6 +19,13 @@ class Pages
 
         $this->custom_pages_list = [
             [
+                'url' => 'about',
+                'regex' => '#^/about#',
+                'file_name' => 'About',
+                'title' => 'ABOUT',
+                'name' => 'about'
+            ],
+            [
                 'url' => 'forgot',
                 'regex' => '#^/forgot#',
                 'file_name' => 'Forgot',
@@ -66,13 +73,6 @@ class Pages
 
         $this->pages_list = [
             [
-                'url' => 'about',
-                'regex' => '#^/about$#',
-                'file_name' => 'About',
-                'title' => 'ABOUT',
-                'name' => 'about'
-            ],
-            [
                 'url' => 'password-recovery',
                 'regex' => '#^/password-recovery/([a-zA-Z0-9_\-]+)/([a-zA-Z0-9\-]+)/$#',
                 'file_name' => 'PasswordRecovery',
@@ -90,7 +90,10 @@ class Pages
         $this->pages = [
             [
                 'title' => 'ABOUT',
-                'filename' => 'About'
+                'filename' => 'About',
+                'url' => 'about',
+                'regex' => '#^/about/$#',
+                'name' => 'about'
             ]
         ];
     }

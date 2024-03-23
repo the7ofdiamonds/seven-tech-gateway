@@ -26,7 +26,9 @@ function PasswordRecovery() {
     'Enter your preferred password twice.'
   );
   const [messageType, setMessageType] = useState('');
+  
 console.log(isValidPassword("1Test$22"));
+
   useEffect(() => {
     if (
       password != '' &&

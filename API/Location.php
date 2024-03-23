@@ -9,7 +9,7 @@ class Location
     function get_headquarters()
     {
         try {
-            $headquarters = get_option('orb-headquarters');
+            $headquarters = get_option('seven-tech-headquarters');
 
             return rest_ensure_response($headquarters);
         } catch (Exception $e) {

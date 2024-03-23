@@ -3,29 +3,33 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { displayStatus } from '../utils/DisplayStatus';
 
-import { logout, signout } from '../controllers/logoutSlice';
+import { logout } from '../controllers/logoutSlice';
 
 function LogOutComponent() {
   const dispatch = useDispatch();
 
-  const { logoutMessage, logoutMessageType, display_name, firebaseUserID } =
+  const { logoutSuccessMessage, logoutErrorMessage } =
     useSelector((state) => state.logout);
 
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (logoutMessage && logoutMessageType) {
-      setMessageType(logoutMessageType);
-      setMessage(logoutMessage);
+    if (logoutSuccessMessage) {
+      setMessageType('success');
+      setMessage(logoutSuccessMessage);
     }
-  }, [logoutMessage, logoutMessageType]);
+  }, [logoutSuccessMessage]);
+
+  useEffect(() => {
+    if (logoutErrorMessage) {
+      setMessageType('error');
+      setMessage(logoutErrorMessage);
+    }
+  }, [logoutErrorMessage]);
 
   const handleClick = () => {
     dispatch(logout())
-      // .then(() => {
-      //   dispatch(signout());
-      // })
       .then(() => {
         setTimeout(() => {
           window.location.href = '/';

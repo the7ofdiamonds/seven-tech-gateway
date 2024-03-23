@@ -21,18 +21,16 @@ function Founders() {
     return <LoadingComponent />;
   }
 
-  if (founderError) {
-    return <ErrorComponent error={founderError} />;
-  }
-
   return (
     <>
       <section className="founders">
-        <h4 className="title">Founders</h4>
-
         {Array.isArray(founders) &&
           founders.map((founder) => (
-            <GroupMembers key={founder.id} group={founder} />
+            <>
+              <h4 className="title">Founders</h4>
+
+              <GroupMembers key={founder.id} group={founder} />
+            </>
           ))}
       </section>
     </>

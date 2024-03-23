@@ -9,7 +9,7 @@ export function isValidUsername(username) {
 }
 
 export function isValidPassword(password) {
-    const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&+!])(?!.*\s)(?=.*[0-9a-zA-Z@#$%&+!])$/;
+    const passwordRegex = /^[0-9a-zA-Z$@#%^&*_-]+$/;
     return passwordRegex.test(password);
 }
 

@@ -58,7 +58,6 @@
     "imports": [
       "src/index.jsx",
       "src/views/Founders.jsx",
-      "_ErrorComponent.js",
       "_GroupMembers.js",
       "_useDispatch.js"
     ],
@@ -68,7 +67,8 @@
   "src/views/Dashboard.jsx": {
     "file": "Dashboard.js",
     "imports": [
-      "src/index.jsx"
+      "src/index.jsx",
+      "_useDispatch.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Dashboard.jsx"
@@ -98,7 +98,6 @@
     "file": "Founders.js",
     "imports": [
       "src/index.jsx",
-      "_ErrorComponent.js",
       "_GroupMembers.js",
       "_useDispatch.js"
     ],

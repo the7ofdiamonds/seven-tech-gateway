@@ -4,15 +4,26 @@ namespace SEVEN_TECH\Admin;
 
 class Admin
 {
+    private $adminAccountMngmnt;
+
     public function __construct()
     {
-        $this->register_custom_menu_page();
-        (new AdminMissionStatement)->register_custom_submenu_page();
-        (new AdminSocialBar)->register_custom_submenu_page();
+        // $this->register_custom_menu_page();
+        // (new AdminMissionStatement)->register_custom_submenu_page();
+        // (new AdminSocialBar)->register_custom_submenu_page();
 
         // add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
 
         // add_filter('map_meta_cap', [$this, 'allow_founder_edit_capabilities'], 10, 4);
+
+        // (new AdminAccountManagement)->deleteAccount("jamel.c.lyons@me.com");
+    }
+
+    function hide_admin_bar()
+    {
+        if (!current_user_can('administrator') && !is_admin()) {
+            show_admin_bar(false);
+        }
     }
 
     function register_custom_menu_page()

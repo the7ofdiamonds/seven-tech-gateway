@@ -1,28 +1,24 @@
 <?php
 
-namespace SEVEN_TECH\API;
+namespace SEVEN_TECH\Admin;
 
 use Exception;
 
-use WP_REST_Request;
-
-class Users
+class AdminUserManagement
 {
-    public function get_user(WP_REST_Request $request)
+    public function getUser($email)
     {
         try {
-            $user_email_encoded = $request->get_param('slug');
-            $user_email = urldecode($user_email_encoded);
-            $user = get_user_by('email', $user_email);
+            $user = get_user_by('email', $email);
             $user_id = $user->id;
-
+// Get all user info
             return rest_ensure_response($user_id);
         } catch (Exception $e) {
             $error_message = $e->getMessage();
             $status_code = $e->getCode();
 
             $response_data = [
-                'message' => $error_message,
+                'errorMessage' => $error_message,
                 'status' => $status_code
             ];
 

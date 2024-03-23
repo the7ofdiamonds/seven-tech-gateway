@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 
 const logoutUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout" : "/wp-json/seven-tech/v1/users/logout";
-const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout-all" : "/wp-json/seven-tech/v1/users/logout-all";
+export const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout-all" : null;
 
 const initialState = {
     logoutLoading: false,
@@ -10,22 +10,22 @@ const initialState = {
     logoutErrorMessage: ''
 };
 
-export const logout = createAsyncThunk('logout/logout', async (_, { getState }) => {
+export const logout = createAsyncThunk('logout/logout', async () => {
     try {
-        const { username } = getState().loginSlice;
+        const email = localStorage.getItem('email');
+
         const response = await fetch(logoutUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
+                "email": email
             })
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
             const errorMessage = errorData.message;
             throw new Error(errorMessage);
         }
@@ -33,6 +33,7 @@ export const logout = createAsyncThunk('logout/logout', async (_, { getState }) 
         const responseData = await response.json();
 
         localStorage.removeItem('display_name');
+        localStorage.removeItem('email');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
 
@@ -42,22 +43,22 @@ export const logout = createAsyncThunk('logout/logout', async (_, { getState }) 
     }
 });
 
-export const logoutAll = createAsyncThunk('logout/logoutAll', async (_, { getState }) => {
+export const logoutAll = createAsyncThunk('logout/logoutAll', async () => {
     try {
-        const { username } = getState().loginSlice;
+        const email = localStorage.getItem('email');
+
         const response = await fetch(logoutAllUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
+                "email": email,
             })
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
             const errorMessage = errorData.message;
             throw new Error(errorMessage);
         }
@@ -65,6 +66,7 @@ export const logoutAll = createAsyncThunk('logout/logoutAll', async (_, { getSta
         const responseData = await response.json();
 
         localStorage.removeItem('display_name');
+        localStorage.removeItem('email');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
 
@@ -85,7 +87,7 @@ export const logoutSlice = createSlice({
                 state.logoutSuccessMessage = action.payload.successMessage;
                 state.logoutErrorMessage = action.payload.errorMessage;
             })
-            .addCase(logoutAll.fulfilled, (state) => {
+            .addCase(logoutAll.fulfilled, (state, action) => {
                 state.logoutLoading = false;
                 state.logoutError = '';
                 state.logoutSuccessMessage = action.payload.successMessage;
@@ -106,9 +108,8 @@ export const logoutSlice = createSlice({
             ),
                 (state, action) => {
                     state.logoutLoading = false;
-                    state.logoutError = action.error.stack;
-                    state.logoutSuccessMessage = action.payload.successMessage;
-                    state.logoutErrorMessage = action.payload.errorMessage;
+                    state.logoutError = action.error;
+                    state.logoutErrorMessage = action.error.message;
                 });
     }
 })
