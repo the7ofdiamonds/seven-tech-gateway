@@ -6,21 +6,34 @@ use Exception;
 
 use WP_REST_Request;
 
-use SEVEN_TECH\Admin\AdminAccountManagement;
+use SEVEN_TECH\Admin\AdminUserManagement;
 
 class Password
 {
-    private $adminaccountmngmnt;
+    private $adminusermngmnt;
 
     public function __construct()
     {
-        $this->adminaccountmngmnt = new AdminAccountManagement;
+        $this->adminusermngmnt = new AdminUserManagement;
     }
 
     function forgotPassword(WP_REST_Request $request)
     {
         try {
-            $this->adminaccountmngmnt->forgotPassword();
+            $email = $request['email'];
+
+            if (empty($email)) {
+                $message = [
+                    'errorMessage' => 'An email is required to reset password.',
+                ];
+                $response = rest_ensure_response($message);
+                $response->set_status(400);
+                return $response;
+            }
+
+            $response = $this->adminusermngmnt->forgotPassword($email);
+            
+            return rest_ensure_response($response);
         } catch (Exception $e) {
             error_log('There has been an error at forgot password.');
             $message = [

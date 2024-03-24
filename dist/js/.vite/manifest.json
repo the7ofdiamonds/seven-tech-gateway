@@ -23,12 +23,6 @@
       "src/index.jsx"
     ]
   },
-  "_index-dd468b12.js": {
-    "file": "index-dd468b12.js",
-    "imports": [
-      "src/index.jsx"
-    ]
-  },
   "_useDispatch.js": {
     "file": "useDispatch.js",
     "imports": [
@@ -68,7 +62,9 @@
     "file": "Dashboard.js",
     "imports": [
       "src/index.jsx",
-      "_useDispatch.js"
+      "src/views/Login.jsx",
+      "_useDispatch.js",
+      "_NavigationLogin.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Dashboard.jsx"

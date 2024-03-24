@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidConfirmationCode, isValidUsername, isValidPassword } from '../utils/Validation';
+import { isValidEmail, isValidConfirmationCode, isValidUsername, isValidPassword } from '../utils/Validation';
 
 const forgotPasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/forgot-password" : "/wp-json/seven-tech/v1/users/forgot-password";
 const changePasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/change-password" : "/wp-json/seven-tech/v1/users/change-password";
@@ -30,6 +30,7 @@ export const forgotPassword = createAsyncThunk('password/forgotPassword', async 
         });
 
         const responseData = await response.json();
+        
         return responseData;
     } catch (error) {
         console.error(error)
@@ -69,6 +70,7 @@ export const changePassword = createAsyncThunk('password/changePassword', async 
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -108,6 +110,7 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
         });
 
         const responseData = await response.json();
+        
         return responseData;
     } catch (error) {
         console.error(error)
@@ -138,8 +141,8 @@ export const passwordSlice = createSlice({
             ), (state) => {
                 state.passwordLoading = true;
                 state.passwordError = null;
-                state.passwordSuccessMessage = null;
-                state.passwordErrorMessage = null;
+                state.passwordSuccessMessage = '';
+                state.passwordErrorMessage = '';
             })
             .addMatcher(isAnyOf(
                 forgotPassword.rejected,
@@ -148,7 +151,7 @@ export const passwordSlice = createSlice({
             ), (state, action) => {
                 state.passwordLoading = false;
                 state.passwordError = action.error;
-                state.passwordErrorMessage = action.error;
+                state.passwordErrorMessage = action.error.message;
             });
     }
 })

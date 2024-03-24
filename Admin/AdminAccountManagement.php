@@ -6,19 +6,6 @@ use Exception;
 
 class AdminAccountManagement
 {
-    function forgotPassword()
-    {
-        try {
-        } catch (Exception $e) {
-            error_log('There has been an error at forgot password.');
-            $message = [
-                'message' => $e->getMessage(),
-            ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
-            return $response;
-        }
-    }
 
     function lockAccount()
     {
