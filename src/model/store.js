@@ -9,11 +9,13 @@ import { logoutSlice } from '../controllers/logoutSlice.js';
 import { tokenSlice } from '../controllers/tokenSlice.js';
 import { changeSlice } from '../controllers/changeSlice.js';
 import { passwordSlice } from '../controllers/passwordSlice.js';
+import accountSlice from '../controllers/accountSlice.js';
 
 const store = configureStore({
     reducer: {
         login: loginSlice.reducer,
         logout: logoutSlice.reducer,
+        account: accountSlice.reducer,
         content: contentSlice.reducer,
         team: teamSlice.reducer,
         email: emailSlice.reducer,

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { changePassword, forgotPassword } from '../controllers/passwordSlice';
 import {
   changeName,
-  changeUsername,
   changePhone,
+  changeUsername,
 } from '../controllers/changeSlice';
-import { changePassword, forgotPassword } from '../controllers/passwordSlice';
+import { removeEmail } from '../controllers/emailSlice';
 import { logout, logoutAllUrl, logoutAll } from '../controllers/logoutSlice';
 import { removeAccount } from '../controllers/accountSlice';
 import LoginComponent from '../views/Login';
@@ -22,15 +23,44 @@ function Dashboard() {
     ? displayName
     : localStorage.getItem('display_name');
 
-  const { changeName, changePhone, changeUsername } = useSelector(
-    (state) => state.change
-  );
-  const { removeEmail } = useSelector((state) => state.email);
-  const { changePassword } = useSelector((state) => state.password);
-  const { logoutSuccessMessage, logoutErrorMessage } = useSelector(
-    (state) => state.logout
-  );
+  const {
+    changeLoading,
+    changeError,
+    changeSuccessMessage,
+    changeErrorMessage,
+  } = useSelector((state) => state.change);
+  const { emailLoading, emailError, emailSuccessMessage, emailErrorMessage } =
+    useSelector((state) => state.email);
+  const {
+    passwordLoading,
+    passwordError,
+    passwordSuccessMessage,
+    passwordErrorMessage,
+  } = useSelector((state) => state.password);
+  const {
+    logoutLoading,
+    logoutError,
+    logoutSuccessMessage,
+    logoutErrorMessage,
+  } = useSelector((state) => state.logout);
+  const {
+    accountLoading,
+    accountError,
+    accountSuccessMessage,
+    accountErrorMessage,
+  } = useSelector((state) => state.account);
 
+  const firstname = 'Jamel';
+  const lastname = 'Lyons';
+  const [firstNameChange, setFirstNameChange] = useState(firstname);
+  const [lastNameChange, setLastNameChange] = useState(lastname);
+  const username = 'TestUser';
+  const [usernameChange, setUsernameChange] = useState(username);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const phone = 7186172583;
+  const [phoneChange, setPhoneChange] = useState(phone);
+  const [emailRemove, setEmailRemove] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');
 
@@ -45,26 +75,78 @@ function Dashboard() {
     if (logoutErrorMessage) {
       setMessageType('error');
       setMessage(logoutErrorMessage);
+    } else if (changeErrorMessage) {
+      setMessageType('error');
+      setMessage(changeErrorMessage);
+    } else if (passwordErrorMessage) {
+      setMessageType('error');
+      setMessage(passwordErrorMessage);
+    } else if (accountErrorMessage) {
+      setMessageType('error');
+      setMessage(accountErrorMessage);
     }
-  }, [logoutErrorMessage]);
+  }, [
+    changeErrorMessage,
+    passwordErrorMessage,
+    logoutErrorMessage,
+    accountErrorMessage,
+  ]);
 
-  const handleChangeName = () => {
-    dispatch(changeName());
+  const handleChangeNameChangeFirst = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'firstname') {
+      setFirstNameChange(e.target.value);
+    }
   };
-  const firstname = 'Jamel';
-  const lastname = 'Lyons';
+
+  const handleChangeNameChangeLast = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'lastname') {
+      setLastNameChange(e.target.value);
+    }
+  };
+
+  const handleChangeName = (e) => {
+    e.preventDefault();
+    dispatch(changeName(firstNameChange + ' ' + lastNameChange));
+  };
 
   {
     /* Create Change Title (roles) */
   }
 
-  const handleChangeUsername = () => {
-    dispatch(changeUsername());
-  };
-  const username = 'TestUser';
+  const handleChangeUsernameChange = (e) => {
+    e.preventDefault();
 
-  const handleChangePassword = () => {
-    dispatch(changePassword());
+    setUsernameChange(usernameChange);
+  };
+
+  const handleChangeUsername = (e) => {
+    e.preventDefault();
+
+    dispatch(changeUsername(usernameChange));
+  };
+
+  const handleChangePasswordChange = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'password') {
+      setPassword(e.target.value);
+    }
+
+    if (e.target.name == 'confirmPassword') {
+      setConfirmPassword(e.target.value);
+    }
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+
+    if (password == confirmPassword) {
+      dispatch(changePassword());
+    }
   };
 
   const handleForgotPassword = (e) => {
@@ -77,13 +159,24 @@ function Dashboard() {
     }
   };
 
-  const handleChangePhone = () => {
-    dispatch(changePhone());
+  const handleChangePhoneChange = (e) => {
+    e.preventDefault();
+    setPhoneChange(e.target.value);
   };
-  const phone = 7186172583;
 
-  const handleRemoveEmail = () => {
-    dispatch(removeEmail());
+  const handleChangePhone = (e) => {
+    e.preventDefault();
+    dispatch(changePhone(phoneChange));
+  };
+
+  const handleRemoveEmailChange = (e) => {
+    e.preventDefault();
+    setEmailRemove(e.target.value);
+  };
+
+  const handleRemoveEmail = (e) => {
+    e.preventDefault();
+    dispatch(removeEmail(emailRemove));
   };
   const email = 'jamel.c.lyons@gmail.com';
 
@@ -139,16 +232,16 @@ function Dashboard() {
                           type="text"
                           name="firstname"
                           placeholder="First Name"
-                          value={firstname}
-                          onChange={handleChangeName}
+                          value={firstNameChange}
+                          onChange={handleChangeNameChangeFirst}
                         />
 
                         <input
                           type="text"
                           name="lastname"
                           placeholder="Last Name"
-                          value={lastname}
-                          onChange={handleChangeName}
+                          value={lastNameChange}
+                          onChange={handleChangeNameChangeLast}
                         />
 
                         <button onClick={handleChangeName}>
@@ -163,8 +256,8 @@ function Dashboard() {
                           type="text"
                           name="username"
                           placeholder="Username"
-                          value={username}
-                          onChange={handleChangeUsername}
+                          value={usernameChange}
+                          onChange={handleChangeUsernameChange}
                         />
 
                         <button onClick={handleChangeUsername}>
@@ -177,16 +270,16 @@ function Dashboard() {
                           type="password"
                           name="password"
                           placeholder="Password"
-                          value={''}
-                          onChange={handleChangePassword}
+                          value={password}
+                          onChange={handleChangePasswordChange}
                         />
 
                         <input
                           type="password"
                           name="confirmPassword"
                           placeholder="Confirm Password"
-                          value={''}
-                          onChange={handleChangePassword}
+                          value={confirmPassword}
+                          onChange={handleChangePasswordChange}
                         />
 
                         <button onClick={handleChangePassword}>
@@ -205,8 +298,8 @@ function Dashboard() {
                           type="text"
                           name="phone"
                           placeholder="Phone Number"
-                          value={phone}
-                          onChange={handleChangePhone}
+                          value={phoneChange}
+                          onChange={handleChangePhoneChange}
                         />
 
                         <button onClick={handleChangePhone}>
@@ -219,8 +312,8 @@ function Dashboard() {
                           type="text"
                           name="email"
                           placeholder="Email"
-                          value={email}
-                          onChange={handleRemoveEmail}
+                          value={emailRemove}
+                          onChange={handleRemoveEmailChange}
                         />
 
                         <button onClick={handleRemoveEmail}>

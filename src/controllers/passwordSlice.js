@@ -30,7 +30,7 @@ export const forgotPassword = createAsyncThunk('password/forgotPassword', async 
         });
 
         const responseData = await response.json();
-        
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -38,16 +38,16 @@ export const forgotPassword = createAsyncThunk('password/forgotPassword', async 
     }
 });
 
-export const changePassword = createAsyncThunk('password/changePassword', async ({ username, password, newPassword, confirmNewPassword }) => {
+export const changePassword = createAsyncThunk('password/changePassword', async ({ newPassword, confirmNewPassword }) => {
     try {
 
-        if (isValidUsername(username) == false) {
-            throw new Error("Username is not valid.");
-        }
+        // if (isValidUsername(username) == false) {
+        //     throw new Error("Username is not valid.");
+        // }
 
-        if (isValidPassword(password) == false) {
-            throw new Error("Password is not valid.");
-        }
+        // if (isValidPassword(password) == false) {
+        //     throw new Error("Password is not valid.");
+        // }
 
         if (isValidPassword(newPassword) == false) {
             throw new Error("The new Password you entered is not valid.");
@@ -110,7 +110,7 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
         });
 
         const responseData = await response.json();
-        
+
         return responseData;
     } catch (error) {
         console.error(error)

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidEmail, isValidUsername, isValidPassword } from '../utils/Validation';
+import { isValidEmail, isValidUsername, isValidPassword, isValidPhone, isValidName } from '../utils/Validation';
 
 const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-name' : "/wp-json/seven-tech/v1/users/change-name";
 const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-phone' : "/wp-json/seven-tech/v1/users/change-phone";
@@ -12,16 +12,15 @@ const initialState = {
     changeErrorMessage: ''
 };
 
-export const changeName = createAsyncThunk('change/changeName', async ({ username, password, name }) => {
+export const changeName = createAsyncThunk('change/changeName', async (name) => {
     try {
+        // if (isValidUsername(username) == false) {
+        //     throw new Error("Username is not valid.");
+        // }
 
-        if (isValidUsername(username) == false) {
-            throw new Error("Username is not valid.");
-        }
-
-        if (isValidPassword(password) == false) {
-            throw new Error("Password is not valid.");
-        }
+        // if (isValidPassword(password) == false) {
+        //     throw new Error("Password is not valid.");
+        // }
 
         if (isValidName(name) == false) {
             throw new Error("Name is not valid.");
@@ -47,16 +46,15 @@ export const changeName = createAsyncThunk('change/changeName', async ({ usernam
     }
 });
 
-export const changePhone = createAsyncThunk('change/changePhone', async ({ username, password, phone }) => {
+export const changePhone = createAsyncThunk('change/changePhone', async (phone) => {
     try {
+        // if (isValidUsername(username) == false) {
+        //     throw new Error("Username is not valid.");
+        // }
 
-        if (isValidUsername(username) == false) {
-            throw new Error("Username is not valid.");
-        }
-
-        if (isValidPassword(password) == false) {
-            throw new Error("Password is not valid.");
-        }
+        // if (isValidPassword(password) == false) {
+        //     throw new Error("Password is not valid.");
+        // }
 
         if (isValidPhone(phone) == false) {
             throw new Error("Phone is not valid.");
@@ -82,16 +80,15 @@ export const changePhone = createAsyncThunk('change/changePhone', async ({ usern
     }
 });
 
-export const changeUsername = createAsyncThunk('change/changeUsername', async ({ email, password, username }) => {
+export const changeUsername = createAsyncThunk('change/changeUsername', async (username) => {
     try {
+        // if (isValidEmail(email) == false) {
+        //     throw new Error("Email is not valid.");
+        // }
 
-        if (isValidEmail(email) == false) {
-            throw new Error("Email is not valid.");
-        }
-
-        if (isValidPassword(password) == false) {
-            throw new Error("Password is not valid.");
-        }
+        // if (isValidPassword(password) == false) {
+        //     throw new Error("Password is not valid.");
+        // }
 
         if (isValidUsername(username) == false) {
             throw new Error("Username is not valid.");
@@ -103,8 +100,8 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async ({
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email,
-                "password": password,
+                // "email": email,
+                // "password": password,
                 "username": username
             })
         });
@@ -140,8 +137,8 @@ export const changeSlice = createSlice({
             ), (state) => {
                 state.changeLoading = true;
                 state.changeError = null;
-                state.changeSuccessMessage = null;
-                state.changeErrorMessage = null;
+                state.changeSuccessMessage = '';
+                state.changeErrorMessage = '';
             })
             .addMatcher(isAnyOf(
                 changeName.rejected,
@@ -150,7 +147,7 @@ export const changeSlice = createSlice({
             ), (state, action) => {
                 state.changeLoading = false;
                 state.changeError = action.error;
-                state.changeErrorMessage = action.error;
+                state.changeErrorMessage = action.error.message;
             });
     }
 })
