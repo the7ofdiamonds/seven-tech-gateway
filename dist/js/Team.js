@@ -1,2 +1,0 @@
-import{u as n,r as i,ad as u,j as r,aa as c}from"./index.js";import{E as p}from"./ErrorComponent.js";import{G as f}from"./GroupMembers.js";import{u as x}from"./useDispatch.js";function g(){var e=n(function(m){return m.team}),s=e.teamLoading,a=e.teamError,o=e.team,t=x();return i.useEffect(function(){t(u())},[t]),s?r.jsx(c,{}):a?r.jsx(p,{error:a}):r.jsx(r.Fragment,{children:r.jsxs("section",{className:"team",children:[r.jsx("h4",{className:"title",children:"Team"}),r.jsx(f,{group:o})]})})}export{g as default};
-//# sourceMappingURL=Team.js.map
