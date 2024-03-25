@@ -11,12 +11,14 @@ const initialState = {
 
 export const token = createAsyncThunk('token/token', async (location) => {
     try {
+        const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         const response = await fetch(`${apiUrl}`, {
             method: 'POST',
             headers: {
-                'Authentication': "Bearer " + localStorage.getItem('access_token'),
-                'refresh-token': localStorage.getItem('refresh_token'),
+                'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({

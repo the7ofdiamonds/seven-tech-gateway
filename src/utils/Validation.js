@@ -71,11 +71,11 @@ export function isValidName(name) {
 
 export function isValidPhone(phone) {
 
-    if (phone == '') {
+    if (phone == '' || phone == undefined) {
         throw new Error("A phone number is required to be validated.");
     }
-
-    const phoneRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+console.log(phone);
+    const phoneRegex = /^[0-9]{11,}$/;
 
     if (phoneRegex.test(phone) == false) {
         throw new Error("The phone number provided is not valid.");

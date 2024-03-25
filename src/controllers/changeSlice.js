@@ -71,7 +71,7 @@ export const changePhone = createAsyncThunk('change/changePhone', async (phone) 
         const response = await fetch(`${changePhoneUrl}`, {
             method: 'POST',
             headers: {
-                'Authentication': "Bearer " + accessToken,
+                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -102,7 +102,7 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
         const response = await fetch(`${changeUsernameUrl}`, {
             method: 'POST',
             headers: {
-                'Authentication': "Bearer " + accessToken,
+                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -132,7 +132,7 @@ export const changeSlice = createSlice({
                 state.changeLoading = false;
                 state.changeError = '';
                 state.changeSuccessMessage = action.payload.successMessage;
-                state.changeErrorMessage = action.payload.errorMessage;
+                state.changeErrorMessage = '';
             })
             .addMatcher(isAnyOf(
                 changeName.pending,

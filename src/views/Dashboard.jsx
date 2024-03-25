@@ -65,27 +65,55 @@ function Dashboard() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (logoutSuccessMessage) {
+    if (logoutSuccessMessage != '') {
       setMessageType('success');
       setMessage(logoutSuccessMessage);
     }
-  }, [logoutSuccessMessage]);
+
+    if (changeSuccessMessage != '') {
+      setMessageType('success');
+      setMessage(changeSuccessMessage);
+    }
+
+    if (passwordSuccessMessage != '') {
+      setMessageType('success');
+      setMessage(passwordSuccessMessage);
+    }
+
+    if (accountSuccessMessage != '') {
+      setMessageType('success');
+      setMessage(accountSuccessMessage);
+    }
+  }, [
+    dispatch,
+    changeSuccessMessage,
+    passwordSuccessMessage,
+    logoutSuccessMessage,
+    accountSuccessMessage,
+  ]);
 
   useEffect(() => {
-    if (logoutErrorMessage) {
+    if (logoutErrorMessage != '') {
       setMessageType('error');
       setMessage(logoutErrorMessage);
-    } else if (changeErrorMessage) {
+    }
+
+    if (changeErrorMessage != '') {
       setMessageType('error');
       setMessage(changeErrorMessage);
-    } else if (passwordErrorMessage) {
+    }
+
+    if (passwordErrorMessage != '') {
       setMessageType('error');
       setMessage(passwordErrorMessage);
-    } else if (accountErrorMessage) {
+    }
+
+    if (accountErrorMessage != '') {
       setMessageType('error');
       setMessage(accountErrorMessage);
     }
   }, [
+    dispatch,
     changeErrorMessage,
     passwordErrorMessage,
     logoutErrorMessage,
@@ -94,7 +122,7 @@ function Dashboard() {
 
   const handleChangeNameChangeFirst = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
+
     if (e.target.name == 'firstname') {
       setFirstNameChange(e.target.value);
     }
@@ -102,7 +130,6 @@ function Dashboard() {
 
   const handleChangeNameChangeLast = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
 
     if (e.target.name == 'lastname') {
       setLastNameChange(e.target.value);
@@ -111,7 +138,7 @@ function Dashboard() {
 
   const handleChangeName = (e) => {
     e.preventDefault();
-    
+
     if (firstNameChange != '' || lastNameChange != '') {
       dispatch(changeName({ firstNameChange, lastNameChange }));
     }
@@ -155,7 +182,8 @@ function Dashboard() {
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    if (email != '' && localStorage.getItem('email') != '') {
+
+    if (email != '' || localStorage.getItem('email') != '') {
       dispatch(forgotPassword(email ? email : localStorage.getItem('email')));
     } else {
       setMessageType('error');
@@ -165,22 +193,34 @@ function Dashboard() {
 
   const handleChangePhoneChange = (e) => {
     e.preventDefault();
-    setPhoneChange(e.target.value);
+
+    if (e.target.name == 'phone') {
+      setPhoneChange(e.target.value);
+    }
   };
 
   const handleChangePhone = (e) => {
     e.preventDefault();
-    dispatch(changePhone(phoneChange));
+
+    if (phoneChange != 'confirmPassword' || phoneChange != undefined) {
+      dispatch(changePhone(phoneChange));
+    }
   };
 
   const handleRemoveEmailChange = (e) => {
     e.preventDefault();
-    setEmailRemove(e.target.value);
+
+    if (e.target.name == 'email') {
+      setEmailRemove(e.target.value);
+    }
   };
 
   const handleRemoveEmail = (e) => {
     e.preventDefault();
-    dispatch(removeEmail(emailRemove));
+
+    if (emailRemove != '' || emailRemove != undefined) {
+      dispatch(removeEmail(emailRemove));
+    }
   };
   const email = 'jamel.c.lyons@gmail.com';
 

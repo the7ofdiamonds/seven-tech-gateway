@@ -63,7 +63,7 @@ class Token
     {
         try {
             $headers = $request->get_headers();
-            $authentication = $headers['authentication'][0];
+            $authentication = $headers['authorization'][0];
             $idToken = substr($authentication, 7);
 
             return $this->auth->verifyIdToken($idToken);
