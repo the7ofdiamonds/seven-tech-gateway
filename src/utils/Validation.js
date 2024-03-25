@@ -1,6 +1,6 @@
 
 export function isValidEmail(email) {
-    if (email == '') {
+    if (email == '' || email == undefined) {
         throw new Error("Email is required to be validated.");
     }
 
@@ -15,7 +15,7 @@ export function isValidEmail(email) {
 
 export function isValidUsername(username) {
 
-    if (username == '') {
+    if (username == '' || username == undefined) {
         throw new Error("A username is required to be validated.");
     }
 
@@ -74,7 +74,7 @@ export function isValidPhone(phone) {
     if (phone == '' || phone == undefined) {
         throw new Error("A phone number is required to be validated.");
     }
-console.log(phone);
+
     const phoneRegex = /^[0-9]{11,}$/;
 
     if (phoneRegex.test(phone) == false) {

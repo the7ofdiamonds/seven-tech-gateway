@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidConfirmationCode, isValidEmail, isValidPassword, isValidUsername } from '../utils/Validation';
+import { isValidConfirmationCode, isValidEmail } from '../utils/Validation';
 
 const veryEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/verify-email' : "/wp-json/seven-tech/v1/users/verify-email";
 const addEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/add-email' : "/wp-json/seven-tech/v1/users/add-email";
@@ -12,11 +12,26 @@ const initialState = {
     emailErrorMessage: ''
 };
 
-export const verifyEmail = createAsyncThunk('email/verifyEmail', async ({ username, password, token, email, confirmationCode }) => {
-    try {
+export const updateEmailSuccessMessage = () => {
+    return {
+        type: 'email/updateEmailSuccessMessage',
+        payload: ''
+    };
+};
 
-        if (isValidUsername(username) == false || isValidPassword(password) == false && token == '') {
-            throw new Error("A token or Username and password is required to verify the this email.");
+export const updateEmailErrorMessage = () => {
+    return {
+        type: 'email/updateEmailErrorMessage',
+        payload: ''
+    };
+};
+
+export const verifyEmail = createAsyncThunk('email/verifyEmail', async (email, confirmationCode) => {
+    try {
+        const accessToken = localStorage.getItem('access_token');
+
+        if (!accessToken) {
+            throw new Error("An access token is required to change your name.");
         }
 
         if (isValidConfirmationCode(confirmationCode) == false) {
@@ -30,18 +45,17 @@ export const verifyEmail = createAsyncThunk('email/verifyEmail', async ({ userna
         const response = await fetch(`${veryEmailUrl}`, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
-                "password": password,
-                "accessToken": token,
                 "confirmationCode": confirmationCode,
                 "email": email
             })
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -49,11 +63,12 @@ export const verifyEmail = createAsyncThunk('email/verifyEmail', async ({ userna
     }
 });
 
-export const addEmail = createAsyncThunk('email/addEmail', async ({ username, password, token, email }) => {
+export const addEmail = createAsyncThunk('email/addEmail', async (email) => {
     try {
+        const accessToken = localStorage.getItem('access_token');
 
-        if (isValidUsername(username) == false || isValidPassword(password) == false && token == '') {
-            throw new Error("A token or Username and password is required to verify the this email.");
+        if (!accessToken) {
+            throw new Error("An access token is required to change your name.");
         }
 
         if (isValidEmail(email) == false) {
@@ -63,17 +78,16 @@ export const addEmail = createAsyncThunk('email/addEmail', async ({ username, pa
         const response = await fetch(`${addEmailUrl}`, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
-                "password": password,
-                "accessToken": token,
                 "email": email
             })
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -81,11 +95,12 @@ export const addEmail = createAsyncThunk('email/addEmail', async ({ username, pa
     }
 });
 
-export const removeEmail = createAsyncThunk('email/removeEmail', async ({ username, password, token, email }) => {
+export const removeEmail = createAsyncThunk('email/removeEmail', async (email) => {
     try {
+        const accessToken = localStorage.getItem('access_token');
 
-        if (isValidUsername(username) == false || isValidPassword(password) == false && token == '') {
-            throw new Error("A token or Username and password is required to verify the this email.");
+        if (!accessToken) {
+            throw new Error("An access token is required to change your name.");
         }
 
         if (isValidEmail(email) == false) {
@@ -95,17 +110,16 @@ export const removeEmail = createAsyncThunk('email/removeEmail', async ({ userna
         const response = await fetch(`${removeEmailUrl}`, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
-                "password": password,
-                "accessToken": token,
                 "email": email
             })
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -116,7 +130,15 @@ export const removeEmail = createAsyncThunk('email/removeEmail', async ({ userna
 export const emailSlice = createSlice({
     name: 'email',
     initialState,
-    reducers: {},
+    reducers: {
+        updateEmailSuccessMessage: (state, action) => {
+            state.emailSuccessMessage = action.payload;
+        },
+        updateEmailErrorMessage: (state, action) => {
+            state.emailError = action.payload;
+            state.emailErrorMessage = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(

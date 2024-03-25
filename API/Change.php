@@ -73,6 +73,8 @@ class Change
 
             $changeNameResponse = [
                 'successMessage' => "Your name has been changed to {$firstname} {$lastname} succesfully.",
+                'firstname' => $firstname,
+                'lastname' => $lastname
             ];
 
             return rest_ensure_response($changeNameResponse);
@@ -91,7 +93,7 @@ class Change
     function changePhone(WP_REST_Request $request)
     {
         try {
-            $phone = '+'.$request['phone'];
+            $phone = '+' . $request['phone'];
             $accessToken = $this->token->getToken($request);
             $userData = $this->token->findUserWithToken($accessToken);
             $email = $userData->email;

@@ -11,10 +11,12 @@ use SEVEN_TECH\Admin\AdminUserManagement;
 class Password
 {
     private $adminusermngmnt;
+    private $token;
 
-    public function __construct()
+    public function __construct($auth)
     {
         $this->adminusermngmnt = new AdminUserManagement;
+        $this->token = new Token($auth);
     }
 
     function forgotPassword(WP_REST_Request $request)
@@ -32,7 +34,7 @@ class Password
             }
 
             $response = $this->adminusermngmnt->forgotPassword($email);
-            
+
             return rest_ensure_response($response);
         } catch (Exception $e) {
             error_log('There has been an error at forgot password.');
@@ -48,6 +50,70 @@ class Password
     function changePassword(WP_REST_Request $request)
     {
         try {
+            $newPassword = $request['password'];
+            $confirmPassword = $request['confirmPassword'];
+
+            if (empty($newPassword)) {
+                $message = [
+                    'errorMessage' => 'Enter your new preferred password.',
+                ];
+                $response = rest_ensure_response($message);
+                $response->set_status(400);
+                return $response;
+            }
+
+            if (empty($confirmPassword)) {
+                $message = [
+                    'errorMessage' => 'Enter your new preferred password twice.',
+                ];
+                $response = rest_ensure_response($message);
+                $response->set_status(400);
+                return $response;
+            }
+
+            if ($newPassword != $confirmPassword) {
+                $message = [
+                    'errorMessage' => 'Enter your new preferred password exactly the same twice.',
+                ];
+                $response = rest_ensure_response($message);
+                $response->set_status(400);
+                return $response;
+            }
+
+            $accessToken = $this->token->getToken($request);
+            $userData = $this->token->findUserWithToken($accessToken);
+            $email = $userData->email;
+            $password = $userData->password;
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                "CALL changePassword('$email', '$password', '$newPassword')"
+            );
+
+            if ($wpdb->last_error) {
+                error_log("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+            }
+
+            $results = $results[0]->resultSet;
+
+            if (!$results) {
+                $removeEmailResponse = [
+                    'errorMessage' => 'Password could not be updated at this time.',
+                ];
+
+                $response = rest_ensure_response($removeEmailResponse);
+                $response->set_status(400);
+
+                return $response;
+            }
+
+            $removeEmailResponse = [
+                'successMessage' => "The email {$email} has been removed from your account successfuly."
+            ];
+
+            return rest_ensure_response($removeEmailResponse);
         } catch (Exception $e) {
             error_log('There has been an error at change password.');
             $message = [

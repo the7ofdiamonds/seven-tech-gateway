@@ -90,6 +90,7 @@ export const login = createAsyncThunk('login/login', async ({ identity, password
         });
 
         const responseData = await response.json();
+        
         return responseData;
     } catch (error) {
         console.error(error)

@@ -1,15 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { changePassword, forgotPassword } from '../controllers/passwordSlice';
 import {
+  updatePasswordSuccessMessage,
+  updatePasswordErrorMessage,
+  changePassword,
+  forgotPassword,
+} from '../controllers/passwordSlice';
+import {
+  updateChangeSuccessMessage,
+  updateChangeErrorMessage,
   changeName,
   changePhone,
   changeUsername,
 } from '../controllers/changeSlice';
-import { removeEmail } from '../controllers/emailSlice';
+import {
+  updateEmailSuccessMessage,
+  updateEmailErrorMessage,
+  removeEmail,
+} from '../controllers/emailSlice';
 import { logout, logoutAllUrl, logoutAll } from '../controllers/logoutSlice';
-import { removeAccount } from '../controllers/accountSlice';
+import {
+  updateAccountSuccessMessage,
+  updateAccountErrorMessage,
+  removeAccount,
+  updateAccountFirstName,
+  updateAccountLastName,
+} from '../controllers/accountSlice';
 import LoginComponent from '../views/Login';
 
 function Dashboard() {
@@ -48,77 +65,140 @@ function Dashboard() {
     accountError,
     accountSuccessMessage,
     accountErrorMessage,
+    email,
+    username,
+    firstname,
+    lastname,
+    phone,
   } = useSelector((state) => state.account);
 
-  const firstname = 'Jamel';
-  const lastname = 'Lyons';
   const [firstNameChange, setFirstNameChange] = useState(firstname);
   const [lastNameChange, setLastNameChange] = useState(lastname);
-  const username = 'TestUser';
   const [usernameChange, setUsernameChange] = useState(username);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const phone = 7186172583;
   const [phoneChange, setPhoneChange] = useState(phone);
   const [emailRemove, setEmailRemove] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (logoutSuccessMessage != '') {
+    if (changeLoading) {
+      setMessage('');
+      // dispatch(updateEmailSuccessMessage());
+      // dispatch(updatePasswordSuccessMessage());
+      // dispatch(updateAccountSuccessMessage());
+      // dispatch(updateEmailErrorMessage());
+      // dispatch(updatePasswordErrorMessage());
+      // dispatch(updateAccountErrorMessage());
+    }
+  }, [dispatch, changeLoading]);
+
+  useEffect(() => {
+    if (emailLoading) {
+      setMessage('');
+      // dispatch(updateChangeSuccessMessage());
+      // dispatch(updatePasswordSuccessMessage());
+      // dispatch(updateAccountSuccessMessage());
+      // dispatch(updateChangeErrorMessage());
+      // dispatch(updatePasswordErrorMessage());
+      // dispatch(updateAccountErrorMessage());
+    }
+  }, [dispatch, emailLoading]);
+
+  useEffect(() => {
+    if (passwordLoading) {
+      setMessage('');
+      // dispatch(updateEmailSuccessMessage());
+      // dispatch(updateChangeSuccessMessage());
+      // dispatch(updateAccountSuccessMessage());
+      // dispatch(updateEmailErrorMessage());
+      // dispatch(updateChangeErrorMessage());
+      // dispatch(updateAccountErrorMessage());
+    }
+  }, [dispatch, passwordLoading]);
+
+  useEffect(() => {
+    if (accountLoading) {
+      setMessage('');
+      // dispatch(updateEmailSuccessMessage());
+      // dispatch(updatePasswordSuccessMessage());
+      // dispatch(updateChangeSuccessMessage());
+      // dispatch(updateEmailErrorMessage());
+      // dispatch(updatePasswordErrorMessage());
+      // dispatch(updateChangeErrorMessage());
+    }
+  }, [dispatch, accountLoading]);
+
+  useEffect(() => {
+    if (logoutSuccessMessage) {
       setMessageType('success');
       setMessage(logoutSuccessMessage);
     }
+  }, [dispatch, logoutSuccessMessage]);
 
-    if (changeSuccessMessage != '') {
+  useEffect(() => {
+    if (changeSuccessMessage) {
       setMessageType('success');
       setMessage(changeSuccessMessage);
     }
+  }, [dispatch, changeSuccessMessage]);
 
-    if (passwordSuccessMessage != '') {
+  useEffect(() => {
+    if (emailSuccessMessage) {
+      setMessageType('success');
+      setMessage(emailSuccessMessage);
+    }
+  }, [dispatch, emailSuccessMessage]);
+
+  useEffect(() => {
+    if (passwordSuccessMessage) {
       setMessageType('success');
       setMessage(passwordSuccessMessage);
     }
+  }, [dispatch, passwordSuccessMessage]);
 
-    if (accountSuccessMessage != '') {
+  useEffect(() => {
+    if (accountSuccessMessage) {
       setMessageType('success');
       setMessage(accountSuccessMessage);
     }
-  }, [
-    dispatch,
-    changeSuccessMessage,
-    passwordSuccessMessage,
-    logoutSuccessMessage,
-    accountSuccessMessage,
-  ]);
+  }, [dispatch, accountSuccessMessage]);
 
   useEffect(() => {
-    if (logoutErrorMessage != '') {
+    if (logoutErrorMessage) {
       setMessageType('error');
       setMessage(logoutErrorMessage);
     }
+  }, [dispatch, logoutErrorMessage]);
 
-    if (changeErrorMessage != '') {
+  useEffect(() => {
+    if (changeErrorMessage) {
       setMessageType('error');
       setMessage(changeErrorMessage);
     }
+  }, [dispatch, changeErrorMessage]);
 
-    if (passwordErrorMessage != '') {
+  useEffect(() => {
+    if (emailErrorMessage) {
+      setMessageType('error');
+      setMessage(emailErrorMessage);
+    }
+  }, [dispatch, emailErrorMessage]);
+
+  useEffect(() => {
+    if (passwordErrorMessage) {
       setMessageType('error');
       setMessage(passwordErrorMessage);
     }
+  }, [dispatch, passwordErrorMessage]);
 
-    if (accountErrorMessage != '') {
+  useEffect(() => {
+    if (accountErrorMessage) {
       setMessageType('error');
       setMessage(accountErrorMessage);
     }
-  }, [
-    dispatch,
-    changeErrorMessage,
-    passwordErrorMessage,
-    logoutErrorMessage,
-    accountErrorMessage,
-  ]);
+  }, [dispatch, accountErrorMessage]);
 
   const handleChangeNameChangeFirst = (e) => {
     e.preventDefault();
@@ -140,7 +220,12 @@ function Dashboard() {
     e.preventDefault();
 
     if (firstNameChange != '' || lastNameChange != '') {
-      dispatch(changeName({ firstNameChange, lastNameChange }));
+      dispatch(changeName({ firstNameChange, lastNameChange })).then(
+        (response) => {
+          dispatch(updateAccountFirstName(response.payload.firstname));
+          dispatch(updateAccountLastName(response.payload.lastname));
+        }
+      );
     }
   };
 
@@ -176,7 +261,7 @@ function Dashboard() {
     e.preventDefault();
 
     if (password == confirmPassword) {
-      dispatch(changePassword());
+      dispatch(changePassword({ password, confirmPassword }));
     }
   };
 
@@ -222,7 +307,6 @@ function Dashboard() {
       dispatch(removeEmail(emailRemove));
     }
   };
-  const email = 'jamel.c.lyons@gmail.com';
 
   const handleLogout = () => {
     dispatch(logout()).then(() => {

@@ -54,10 +54,10 @@ class API
 
       $account = new Account;
       $change = new Change($auth);
-      $email = new Email;
+      $email = new Email($auth);
       $login = new Login($auth);
       $logout = new Logout();
-      $password = new Password;
+      $password = new Password($auth);
       $signup = new Signup($auth);
       $token = new Token($auth);
     } else {
@@ -105,19 +105,19 @@ class API
     ));
 
     register_rest_route('seven-tech/v1', '/users/verify-email', array(
-      'methods' => 'GET',
+      'methods' => 'POST',
       'callback' => array($email, 'verifyEmail'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/users/add-email', array(
-      'methods' => 'GET',
+      'methods' => 'POST',
       'callback' => array($email, 'addEmail'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/users/remove-email', array(
-      'methods' => 'GET',
+      'methods' => 'POST',
       'callback' => array($email, 'removeEmail'),
       'permission_callback' => '__return_true',
     ));

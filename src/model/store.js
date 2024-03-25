@@ -9,7 +9,7 @@ import { logoutSlice } from '../controllers/logoutSlice.js';
 import { tokenSlice } from '../controllers/tokenSlice.js';
 import { changeSlice } from '../controllers/changeSlice.js';
 import { passwordSlice } from '../controllers/passwordSlice.js';
-import accountSlice from '../controllers/accountSlice.js';
+import { accountSlice } from '../controllers/accountSlice.js';
 
 const store = configureStore({
     reducer: {

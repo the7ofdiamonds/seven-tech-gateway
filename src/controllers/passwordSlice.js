@@ -12,6 +12,20 @@ const initialState = {
     passwordErrorMessage: ''
 };
 
+export const updatePasswordSuccessMessage = () => {
+    return {
+        type: 'password/updatePasswordSuccessMessage',
+        payload: ''
+    };
+};
+
+export const updatePasswordErrorMessage = () => {
+    return {
+        type: 'password/updatePasswordErrorMessage',
+        payload: ''
+    };
+};
+
 export const forgotPassword = createAsyncThunk('password/forgotPassword', async (email) => {
     try {
 
@@ -38,34 +52,39 @@ export const forgotPassword = createAsyncThunk('password/forgotPassword', async 
     }
 });
 
-export const changePassword = createAsyncThunk('password/changePassword', async ({ newPassword, confirmNewPassword }) => {
+export const changePassword = createAsyncThunk('password/changePassword', async ({ password, confirmPassword }) => {
     try {
+        const accessToken = localStorage.getItem('access_token');
 
-        // if (isValidUsername(username) == false) {
-        //     throw new Error("Username is not valid.");
-        // }
+        if (!accessToken) {
+            throw new Error("An access token is required to change your name.");
+        }
 
-        // if (isValidPassword(password) == false) {
-        //     throw new Error("Password is not valid.");
-        // }
+        if (!password) {
+            throw new Error("Enter your new preferred password.");
+        }
 
-        if (isValidPassword(newPassword) == false) {
+        if (!confirmPassword) {
+            throw new Error("Please enter your preferred new password twice.");
+        }
+
+        if (isValidPassword(password) == false) {
             throw new Error("The new Password you entered is not valid.");
         }
 
-        if (newPassword != confirmNewPassword) {
-            throw new Error("Please enter your prefered new password twice.")
+        if (password != confirmPassword) {
+            throw new Error("Enter your new preferred password exactly the same twice.")
         }
 
         const response = await fetch(`${changePasswordUrl}`, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
                 "password": password,
-                "newPassword": newPassword
+                "confirmPassword": confirmPassword
             })
         });
 
@@ -94,7 +113,7 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
         }
 
         if (password != confirmPassword) {
-            throw new Error("Please enter your prefered new password twice.")
+            throw new Error("Please enter your new prefered password twice.")
         }
 
         const response = await fetch(`${updatePasswordUrl}`, {
@@ -121,7 +140,15 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
 export const passwordSlice = createSlice({
     name: 'password',
     initialState,
-    reducers: {},
+    reducers: {
+        updatePasswordSuccessMessage: (state, action) => {
+            state.passwordSuccessMessage= action.payload;
+        },
+        updatePasswordErrorMessage: (state, action) => {
+            state.passwordError = action.payload;
+            state.passwordErrorMessage = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(

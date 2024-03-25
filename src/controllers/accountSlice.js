@@ -8,7 +8,61 @@ const initialState = {
     accountLoading: false,
     accountError: '',
     accountSuccessMessage: '',
-    accountErrorMessage: ''
+    accountErrorMessage: '',
+    email: '',
+    username: '',
+    firstname: '',
+    lastname: '',
+    phone: ''
+};
+
+export const updateAccountEmail = (email) => {
+    return {
+        type: 'account/updateAccountEmail',
+        payload: email
+    };
+};
+
+export const updateAccountUsername = (username) => {
+    return {
+        type: 'account/updateAccountUsername',
+        payload: username
+    };
+}; 
+
+export const updateAccountFirstName = (firstname) => {
+    return {
+        type: 'account/updateAccountFirstName',
+        payload: firstname
+    };
+};
+
+export const updateAccountLastName = (lastname) => {
+    return {
+        type: 'account/updateAccountLastName',
+        payload: lastname
+    };
+};
+
+export const updateAccountPhone = (phone) => {
+    return {
+        type: 'account/updateAccountPhone',
+        payload: phone
+    };
+};
+
+export const updateAccountSuccessMessage = () => {
+    return {
+        type: 'account/updateAccountSuccessMessage',
+        payload: ''
+    };
+};
+
+export const updateAccountErrorMessage = () => {
+    return {
+        type: 'account/updateAccountErrorMessage',
+        payload: ''
+    };
 };
 
 export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ username, password, confirmationCode }) => {
@@ -84,7 +138,32 @@ export const removeAccount = createAsyncThunk('account/removeAccount', async ({ 
 export const accountSlice = createSlice({
     name: 'account',
     initialState,
-    reducers: {},
+    reducers: {
+        updateAccountSuccessMessage: (state, action) => {
+            state.accountSuccessMessage = action.payload;
+        },
+        updateAccountErrorMessage: (state, action) => {
+            state.accountError = action.payload;
+            state.accountErrorMessage = action.payload;
+        },
+        updateAccountEmail: (state, action) => {
+            state.email = action.payload;
+        },
+        updateAccountUsername: (state, action) => {
+            state.username = action.payload;
+        },
+        updateAccountFirstName: (state, action) => {
+            console.log(action.payload);
+            state.firstname = action.payload;
+        },
+        updateAccountLastName: (state, action) => {
+            console.log(action.payload);
+            state.lastname = action.payload;
+        },
+        updateAccountPhone: (state, action) => {
+            state.phone = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(
@@ -102,8 +181,8 @@ export const accountSlice = createSlice({
             ), (state) => {
                 state.accountLoading = true;
                 state.accountError = null;
-                state.accountSuccessMessage = null;
-                state.accountErrorMessage = null;
+                state.accountSuccessMessage = '';
+                state.accountErrorMessage = '';
             })
             .addMatcher(isAnyOf(
                 unlockAccount.rejected,
@@ -111,7 +190,7 @@ export const accountSlice = createSlice({
             ), (state, action) => {
                 state.accountLoading = false;
                 state.accountError = action.error;
-                state.accountErrorMessage = action.error;
+                state.accountErrorMessage = action.error.message;
             });
     }
 })

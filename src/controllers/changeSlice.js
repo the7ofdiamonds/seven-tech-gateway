@@ -9,7 +9,25 @@ const initialState = {
     changeLoading: false,
     changeError: '',
     changeSuccessMessage: '',
-    changeErrorMessage: ''
+    changeErrorMessage: '',
+    username: '',
+    firstname: '',
+    lastname: '',
+    phone: ''
+};
+
+export const updateChangeSuccessMessage = () => {
+    return {
+        type: 'change/updateChangeSuccessMessage',
+        payload: ''
+    };
+};
+
+export const updateChangeErrorMessage = () => {
+    return {
+        type: 'change/updateChangeErrorMessage',
+        payload: ''
+    };
 };
 
 export const changeName = createAsyncThunk('change/changeName', async ({ firstNameChange, lastNameChange }) => {
@@ -49,6 +67,7 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error);
@@ -80,6 +99,7 @@ export const changePhone = createAsyncThunk('change/changePhone', async (phone) 
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -111,6 +131,7 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -121,7 +142,15 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
 export const changeSlice = createSlice({
     name: 'change',
     initialState,
-    reducers: {},
+    reducers: {
+        updateChangeSuccessMessage: (state, action) => {
+            state.errorSuccessMessage = action.payload;
+        },
+        updateChangeErrorMessage: (state, action) => {
+            state.changeError = action.payload;
+            state.changeErrorMessage = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(
@@ -132,7 +161,11 @@ export const changeSlice = createSlice({
                 state.changeLoading = false;
                 state.changeError = '';
                 state.changeSuccessMessage = action.payload.successMessage;
-                state.changeErrorMessage = '';
+                state.changeErrorMessage = action.payload.errorMessage;
+                state.username = action.payload.username;
+                state.firstname = action.payload.firstname;
+                state.lastname = action.payload.lastname;
+                state.phone = action.payload.phone;
             })
             .addMatcher(isAnyOf(
                 changeName.pending,
