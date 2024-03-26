@@ -255,7 +255,11 @@ function Dashboard() {
   const handleChangePassword = (e) => {
     e.preventDefault();
 
-    if (password == confirmPassword) {
+    if (
+      password == confirmPassword &&
+      password != '' &&
+      confirmPassword != ''
+    ) {
       dispatch(changePassword({ password, confirmPassword }));
     }
   };
@@ -477,7 +481,11 @@ function Dashboard() {
           </tfoot>
         </table>
       </section>
-      {showLogin && <LoginComponent />}
+      {/* {showLogin && ( */}
+        <section className="modal-overlay">
+          <LoginComponent />
+        </section>
+      {/* )} */}
     </>
   );
 }

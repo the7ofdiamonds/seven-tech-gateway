@@ -155,11 +155,9 @@ export const accountSlice = createSlice({
             state.username = action.payload;
         },
         updateAccountFirstName: (state, action) => {
-            console.log(action.payload);
             state.firstname = action.payload;
         },
         updateAccountLastName: (state, action) => {
-            console.log(action.payload);
             state.lastname = action.payload;
         },
         updateAccountPhone: (state, action) => {
