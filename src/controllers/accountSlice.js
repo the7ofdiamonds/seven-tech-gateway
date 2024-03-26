@@ -93,6 +93,7 @@ export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ 
         });
 
         const responseData = await response.json();
+        
         return responseData;
     } catch (error) {
         console.error(error)
@@ -128,6 +129,7 @@ export const removeAccount = createAsyncThunk('account/removeAccount', async ({ 
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error)

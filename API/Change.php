@@ -6,6 +6,8 @@ use Exception;
 
 use WP_REST_Request;
 
+use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+
 class Change
 {
     private $token;
@@ -18,12 +20,39 @@ class Change
     function changeName(WP_REST_Request $request)
     {
         try {
-            $firstname = $request['firstname'];
-            $lastname = $request['lastname'];
             $accessToken = $this->token->getToken($request);
             $userData = $this->token->findUserWithToken($accessToken);
+
             $email = $userData->email;
             $password = $userData->password;
+
+            $firstname = $request['firstname'];
+
+            if (empty($firstname)) {
+                $statusCode = 400;
+                $changeNameResponse = [
+                    'errorMessage' => 'First name is required.',
+                ];
+
+                $response = rest_ensure_response($changeNameResponse);
+                $response->set_status($statusCode);
+
+                return $response;
+            }
+
+            $lastname = $request['lastname'];
+
+            if (empty($lastname)) {
+                $statusCode = 400;
+                $changeNameResponse = [
+                    'errorMessage' => 'Last name is required.',
+                ];
+
+                $response = rest_ensure_response($changeNameResponse);
+                $response->set_status($statusCode);
+
+                return $response;
+            }
 
             global $wpdb;
 
@@ -39,12 +68,13 @@ class Change
             $results = $results[0]->resultSet;
 
             if (!$results) {
+                $statusCode = 400;
                 $changeNameResponse = [
                     'errorMessage' => 'First name could not be changed at this time.',
                 ];
 
                 $response = rest_ensure_response($changeNameResponse);
-                $response->set_status(500);
+                $response->set_status($statusCode);
 
                 return $response;
             }
@@ -61,27 +91,46 @@ class Change
             $results = $results[0]->resultSet;
 
             if (!$results) {
+                $statusCode = 400;
                 $changeNameResponse = [
                     'errorMessage' => 'Last name could not be changed at this time.',
                 ];
 
                 $response = rest_ensure_response($changeNameResponse);
-                $response->set_status(500);
+                $response->set_status($statusCode);
 
                 return $response;
             }
 
+            $statusCode = 201;
             $changeNameResponse = [
                 'successMessage' => "Your name has been changed to {$firstname} {$lastname} succesfully.",
                 'firstname' => $firstname,
-                'lastname' => $lastname
+                'lastname' => $lastname,
+                'statusCode' => $statusCode
             ];
 
-            return rest_ensure_response($changeNameResponse);
+            $response = rest_ensure_response($changeNameResponse);
+            $response->set_status($statusCode);
+
+            return $response;
+        } catch (FailedToVerifyToken $e) {
+            $statusCode = 403;
+            $tokenResponse = [
+                'message' => $e->getMessage(),
+                'errorMessage' => "Please login to gain access and permission.",
+                'statusCode' => $statusCode
+            ];
+
+            $response = rest_ensure_response($tokenResponse);
+            $response->set_status($statusCode);
+
+            return $response;
         } catch (Exception $e) {
             error_log('There has been an error at change name.');
             $message = [
                 'message' => $e->getMessage(),
+                'statusCode' => $e->getCode()
             ];
             $response = rest_ensure_response($message);
             $response->set_status($e->getCode());
@@ -113,25 +162,45 @@ class Change
             $results = $results[0]->resultSet;
 
             if (!$results) {
+                $statusCode = 500;
                 $changePhoneResponse = [
                     'errorMessage' => 'Phone number could not be changed at this time.',
+                    'statusCode' => $statusCode
                 ];
 
                 $response = rest_ensure_response($changePhoneResponse);
-                $response->set_status(500);
+                $response->set_status($statusCode);
 
                 return $response;
             }
 
+            $statusCode = 201;
             $changePhoneResponse = [
                 'successMessage' => "You phone number has been changed to {$phone} succesfully.",
+                'statusCode' => $statusCode
             ];
 
-            return rest_ensure_response($changePhoneResponse);
+            $response = rest_ensure_response($changePhoneResponse);
+            $response->set_status($statusCode);
+
+            return $response;
+        } catch (FailedToVerifyToken $e) {
+            $statusCode = 403;
+            $tokenResponse = [
+                'message' => $e->getMessage(),
+                'errorMessage' => "Please login to gain access and permission.",
+                'statusCode' => $statusCode
+            ];
+
+            $response = rest_ensure_response($tokenResponse);
+            $response->set_status($statusCode);
+
+            return $response;
         } catch (Exception $e) {
             error_log('There has been an error at change phone.');
             $message = [
                 'message' => $e->getMessage(),
+                'statusCode' => $e->getCode()
             ];
             $response = rest_ensure_response($message);
             $response->set_status($e->getCode());
@@ -162,25 +231,45 @@ class Change
             $results = $results[0]->resultSet;
 
             if (!$results) {
+                $statusCode = 500;
                 $updateUsernameResponse = [
                     'errorMessage' => 'Username could not be updated at this time.',
+                    'statusCode' => $statusCode
                 ];
 
                 $response = rest_ensure_response($updateUsernameResponse);
-                $response->set_status(500);
+                $response->set_status($statusCode);
 
                 return $response;
             }
 
+            $statusCode = 201;
             $updateUsernameResponse = [
                 'successMessage' => "Username has been changed to {$username} succesfully.",
+                'statusCode' => $statusCode
             ];
 
-            return rest_ensure_response($updateUsernameResponse);
+            $response = rest_ensure_response($updateUsernameResponse);
+            $response->set_status($statusCode);
+
+            return $response;
+        } catch (FailedToVerifyToken $e) {
+            $statusCode = 403;
+            $tokenResponse = [
+                'message' => $e->getMessage(),
+                'errorMessage' => "Please login to gain access and permission.",
+                'statusCode' => $statusCode
+            ];
+
+            $response = rest_ensure_response($tokenResponse);
+            $response->set_status($statusCode);
+
+            return $response;
         } catch (Exception $e) {
             error_log('There has been an error at change username');
             $message = [
-                'errorMessage' => $e->getMessage(),
+                'message' => $e->getMessage(),
+                'statusCode' => $e->getCode()
             ];
             $response = rest_ensure_response($message);
             $response->set_status($e->getCode());

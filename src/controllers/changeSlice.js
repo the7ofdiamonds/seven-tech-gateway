@@ -10,6 +10,7 @@ const initialState = {
     changeError: '',
     changeSuccessMessage: '',
     changeErrorMessage: '',
+    changeStatusCode: '',
     username: '',
     firstname: '',
     lastname: '',
@@ -144,7 +145,7 @@ export const changeSlice = createSlice({
     initialState,
     reducers: {
         updateChangeSuccessMessage: (state, action) => {
-            state.errorSuccessMessage = action.payload;
+            state.changeSuccessMessage = action.payload;
         },
         updateChangeErrorMessage: (state, action) => {
             state.changeError = action.payload;
@@ -162,6 +163,7 @@ export const changeSlice = createSlice({
                 state.changeError = '';
                 state.changeSuccessMessage = action.payload.successMessage;
                 state.changeErrorMessage = action.payload.errorMessage;
+                state.changeStatusCode = action.payload.statusCode;
                 state.username = action.payload.username;
                 state.firstname = action.payload.firstname;
                 state.lastname = action.payload.lastname;
@@ -176,6 +178,7 @@ export const changeSlice = createSlice({
                 state.changeError = null;
                 state.changeSuccessMessage = '';
                 state.changeErrorMessage = '';
+                state.changeStatusCode = '';
             })
             .addMatcher(isAnyOf(
                 changeName.rejected,
@@ -185,6 +188,7 @@ export const changeSlice = createSlice({
                 state.changeLoading = false;
                 state.changeError = action.error;
                 state.changeErrorMessage = action.error.message;
+                state.changeStatusCode = action.error.code;
             });
     }
 })

@@ -1,28 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { changePassword, forgotPassword } from '../controllers/passwordSlice';
 import {
-  updatePasswordSuccessMessage,
-  updatePasswordErrorMessage,
-  changePassword,
-  forgotPassword,
-} from '../controllers/passwordSlice';
-import {
-  updateChangeSuccessMessage,
-  updateChangeErrorMessage,
   changeName,
   changePhone,
   changeUsername,
 } from '../controllers/changeSlice';
-import {
-  updateEmailSuccessMessage,
-  updateEmailErrorMessage,
-  removeEmail,
-} from '../controllers/emailSlice';
+import { removeEmail } from '../controllers/emailSlice';
 import { logout, logoutAllUrl, logoutAll } from '../controllers/logoutSlice';
 import {
-  updateAccountSuccessMessage,
-  updateAccountErrorMessage,
   removeAccount,
   updateAccountFirstName,
   updateAccountLastName,
@@ -45,14 +32,21 @@ function Dashboard() {
     changeError,
     changeSuccessMessage,
     changeErrorMessage,
+    changeStatusCode,
   } = useSelector((state) => state.change);
-  const { emailLoading, emailError, emailSuccessMessage, emailErrorMessage } =
-    useSelector((state) => state.email);
+  const {
+    emailLoading,
+    emailError,
+    emailSuccessMessage,
+    emailErrorMessage,
+    emailStatusCode,
+  } = useSelector((state) => state.email);
   const {
     passwordLoading,
     passwordError,
     passwordSuccessMessage,
     passwordErrorMessage,
+    passwordStatusCode,
   } = useSelector((state) => state.password);
   const {
     logoutLoading,
@@ -65,6 +59,7 @@ function Dashboard() {
     accountError,
     accountSuccessMessage,
     accountErrorMessage,
+    accountStatusCode,
     email,
     username,
     firstname,
@@ -79,54 +74,48 @@ function Dashboard() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneChange, setPhoneChange] = useState(phone);
   const [emailRemove, setEmailRemove] = useState('');
+  const [showLogin, setShowLogin] = useState(false);
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    if (
+      changeStatusCode == 403 ||
+      emailStatusCode == 403 ||
+      passwordStatusCode == 403 ||
+      accountStatusCode == 403
+    ) {
+      setShowLogin(true);
+    }
+  }, [
+    dispatch,
+    changeStatusCode,
+    emailStatusCode,
+    passwordStatusCode,
+    accountStatusCode,
+  ]);
+
+  useEffect(() => {
     if (changeLoading) {
       setMessage('');
-      // dispatch(updateEmailSuccessMessage());
-      // dispatch(updatePasswordSuccessMessage());
-      // dispatch(updateAccountSuccessMessage());
-      // dispatch(updateEmailErrorMessage());
-      // dispatch(updatePasswordErrorMessage());
-      // dispatch(updateAccountErrorMessage());
     }
   }, [dispatch, changeLoading]);
 
   useEffect(() => {
     if (emailLoading) {
       setMessage('');
-      // dispatch(updateChangeSuccessMessage());
-      // dispatch(updatePasswordSuccessMessage());
-      // dispatch(updateAccountSuccessMessage());
-      // dispatch(updateChangeErrorMessage());
-      // dispatch(updatePasswordErrorMessage());
-      // dispatch(updateAccountErrorMessage());
     }
   }, [dispatch, emailLoading]);
 
   useEffect(() => {
     if (passwordLoading) {
       setMessage('');
-      // dispatch(updateEmailSuccessMessage());
-      // dispatch(updateChangeSuccessMessage());
-      // dispatch(updateAccountSuccessMessage());
-      // dispatch(updateEmailErrorMessage());
-      // dispatch(updateChangeErrorMessage());
-      // dispatch(updateAccountErrorMessage());
     }
   }, [dispatch, passwordLoading]);
 
   useEffect(() => {
     if (accountLoading) {
       setMessage('');
-      // dispatch(updateEmailSuccessMessage());
-      // dispatch(updatePasswordSuccessMessage());
-      // dispatch(updateChangeSuccessMessage());
-      // dispatch(updateEmailErrorMessage());
-      // dispatch(updatePasswordErrorMessage());
-      // dispatch(updateChangeErrorMessage());
     }
   }, [dispatch, accountLoading]);
 
@@ -219,11 +208,13 @@ function Dashboard() {
   const handleChangeName = (e) => {
     e.preventDefault();
 
-    if (firstNameChange != '' || lastNameChange != '') {
+    if (firstNameChange !== '' || lastNameChange !== '') {
       dispatch(changeName({ firstNameChange, lastNameChange })).then(
         (response) => {
-          dispatch(updateAccountFirstName(response.payload.firstname));
-          dispatch(updateAccountLastName(response.payload.lastname));
+          if (response.payload.statusCode == 201) {
+            dispatch(updateAccountFirstName(response.payload.firstname));
+            dispatch(updateAccountLastName(response.payload.lastname));
+          }
         }
       );
     }
@@ -236,13 +227,17 @@ function Dashboard() {
   const handleChangeUsernameChange = (e) => {
     e.preventDefault();
 
-    setUsernameChange(usernameChange);
+    if (e.target.name == 'username') {
+      setUsernameChange(e.target.value);
+    }
   };
 
   const handleChangeUsername = (e) => {
     e.preventDefault();
 
-    dispatch(changeUsername(usernameChange));
+    if (usernameChange != '') {
+      dispatch(changeUsername(usernameChange));
+    }
   };
 
   const handleChangePasswordChange = (e) => {
@@ -287,7 +282,7 @@ function Dashboard() {
   const handleChangePhone = (e) => {
     e.preventDefault();
 
-    if (phoneChange != 'confirmPassword' || phoneChange != undefined) {
+    if (phoneChange != '') {
       dispatch(changePhone(phoneChange));
     }
   };
@@ -303,7 +298,7 @@ function Dashboard() {
   const handleRemoveEmail = (e) => {
     e.preventDefault();
 
-    if (emailRemove != '' || emailRemove != undefined) {
+    if (emailRemove != '') {
       dispatch(removeEmail(emailRemove));
     }
   };
@@ -482,8 +477,7 @@ function Dashboard() {
           </tfoot>
         </table>
       </section>
-      {/* Login pop up */}
-      {/* <LoginComponent /> */}
+      {showLogin && <LoginComponent />}
     </>
   );
 }

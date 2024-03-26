@@ -3,12 +3,14 @@
 namespace SEVEN_TECH\API;
 
 use Exception;
-
+use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
 use WP_REST_Request;
+
+use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use Kreait\Firebase\Exception\RuntimeException;
 
 class Token
 {
-
     private $auth;
 
     public function __construct($auth)
@@ -24,7 +26,7 @@ class Token
             error_log(print_r($location, true));
 
             $verifiedIdToken = $this->getToken($request);
-            
+
             $userData = $this->findUserWithToken($verifiedIdToken);
 
             wp_set_current_user($userData->id);
@@ -48,6 +50,16 @@ class Token
             $response->set_status(200);
 
             return $response;
+        } catch (FailedToVerifyAppCheckToken $e) {
+            $tokenResponse = [
+                'message' => $e->getMessage(),
+                'errorMessage' => "Please login to gain access and permission."
+            ];
+
+            $response = rest_ensure_response($tokenResponse);
+            $response->set_status(403);
+
+            return $response;
         } catch (Exception $e) {
             error_log('There has been an error at loging in using the tokens provided.');
             $message = [
@@ -67,6 +79,8 @@ class Token
             $idToken = substr($authentication, 7);
 
             return $this->auth->verifyIdToken($idToken);
+        } catch (FailedToVerifyToken $e) {
+            throw new FailedToVerifyToken($e);
         } catch (Exception $e) {
             throw new Exception($e);
         }
@@ -93,6 +107,8 @@ class Token
             }
 
             return $results[0];
+        } catch (FailedToVerifyToken $e) {
+            throw new FailedToVerifyToken($e);
         } catch (Exception $e) {
             throw new Exception($e);
         }
