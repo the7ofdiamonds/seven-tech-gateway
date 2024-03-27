@@ -1,3 +1,5 @@
+import React from 'react';
+
 function NavigationLoginComponent(props) {
   const { page } = props;
 

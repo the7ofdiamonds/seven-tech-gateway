@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import NavigationComponent from './components/NavigationLogin';
+import NavigationComponent from './components/NavigationLoginComponent';
 
 import { signup } from '../controllers/signupSlice';
 

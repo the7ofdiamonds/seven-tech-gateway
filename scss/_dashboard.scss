@@ -1,33 +1,29 @@
-section.dashboard {
-  .change-name,
-  .change-username,
-  .change-password,
-  .forgot-password,
-  .change-phone,
-  .remove-email,
-  .logout,
-  .remove-account {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem;
-  }
+.dashboard {
+  .header {
+    .profile-image {
+      width: 100%;
+    }
 
-  .forgot-password,
-  .logout,
-  .remove-account {
-    justify-content: center;
-  }
+    .display-name {
+      padding: 0.25rem;
+    }
+    
+    .options {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
 
-  .change-name,
-  .change-username,
-  .change-password,
-  .change-phone,
-  .remove-email {
-    justify-content: start;
+      button {
+        &.settings-button {
+          background-color: transparent;
+          padding: 0.25rem;
+          i {
+            color: black;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -43,4 +39,5 @@ section.dashboard {
   justify-content: center;
 }
 
+@import '_settings.scss';
 @import '_login.scss';

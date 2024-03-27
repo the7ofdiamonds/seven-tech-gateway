@@ -23,31 +23,31 @@
     display: flex;
 }
 
-.authentication {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    padding-top: 4rem;
-    width: 100%;
+// .authentication {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     gap: 2rem;
+//     padding-top: 4rem;
+//     width: 100%;
 
-    .show.login-card,
-    .show.signup-card,
-    .show.reset-card {
-        display: flex;
-    }
+//     .show.login-card,
+//     .show.signup-card,
+//     .show.reset-card {
+//         display: flex;
+//     }
 
-    .hide {
-        display: none;
-    }
+//     .hide {
+//         display: none;
+//     }
 
-    .hide.login-card,
-    .hide.signup-card,
-    .hide.reset-card {
-        display: none;
-    }
-}
+//     .hide.login-card,
+//     .hide.signup-card,
+//     .hide.reset-card {
+//         display: none;
+//     }
+// }
 
 .modal-close {
     cursor: pointer;

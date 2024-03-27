@@ -19,7 +19,7 @@ export function isValidUsername(username) {
         throw new Error("A username is required to be validated.");
     }
 
-    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    const usernameRegex = /^[a-zA-Z0-9]{3,20}$/;
 
     if (usernameRegex.test(username) == false) {
         throw new Error("The username provided is not valid.");
@@ -34,7 +34,7 @@ export function isValidPassword(password) {
         throw new Error("A password is required to be validated.");
     }
 
-    const passwordRegex = /^[0-9a-zA-Z$@#%^&*_-]+$/;
+    const passwordRegex = /^[0-9a-zA-Z$@#%^&*_-]{8,20}$/;
 
     if (passwordRegex.test(password) == false) {
         throw new Error("The password provided is not valid.");

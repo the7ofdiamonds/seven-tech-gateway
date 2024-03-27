@@ -1,0 +1,32 @@
+.settings {
+  .change-name,
+  .change-username,
+  .change-password,
+  .forgot-password,
+  .change-phone,
+  .remove-email,
+  .logout,
+  .remove-account {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+  }
+
+  .forgot-password,
+  .logout,
+  .remove-account {
+    justify-content: center;
+  }
+
+  .change-name,
+  .change-username,
+  .change-password,
+  .change-phone,
+  .remove-email {
+    justify-content: start;
+  }
+}
