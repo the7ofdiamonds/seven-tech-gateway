@@ -5,14 +5,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updatePassword } from '../controllers/passwordSlice';
 import {
   isValidConfirmationCode,
-  isValidPassword,
-  isValidUsername,
+  isValidEmail,
+  isValidPassword
 } from '../utils/Validation';
 
 function PasswordRecovery() {
-  const { username, confirmationCode } = useParams();
+  const { emailEncoded, confirmationCode } = useParams();
+
+  const email = emailEncoded.replace(/%40/g, '@');
 
   const dispatch = useDispatch();
+
   const {
     changeLoading,
     changeError,
@@ -26,7 +29,14 @@ function PasswordRecovery() {
     'Enter your preferred password twice.'
   );
   const [messageType, setMessageType] = useState('');
-  
+
+  useEffect(() => {
+    if (isValidEmail(email) != true) {
+      setMessageType('error');
+      setMessage("Email is not valid.");
+    }
+  }, [email]);
+
   useEffect(() => {
     if (
       password != '' &&
@@ -72,22 +82,28 @@ function PasswordRecovery() {
   }, [changeErrorMessage]);
 
   const handleChangePassword = (e) => {
-    setPassword(e.target.value);
+    if (e.target.name == 'password') {
+      setPassword(e.target.value);
+    }
   };
 
   const handleChangeConfirmPassword = (e) => {
-    setConfirmPassword(e.target.value);
+    if (e.target.name == 'confirmPassword') {
+      setConfirmPassword(e.target.value);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
-      username &&
-      confirmationCode &&
+      isValidEmail(email) &&
+      isValidConfirmationCode(confirmationCode) &&
       isValidPassword(password) &&
       password === confirmPassword
     ) {
-      dispatch(updatePassword({ username, confirmationCode, password }));
+      dispatch(
+        updatePassword({ email, password, confirmPassword, confirmationCode })
+      );
     }
   };
 

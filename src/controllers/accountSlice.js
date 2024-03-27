@@ -9,6 +9,7 @@ const initialState = {
     accountError: '',
     accountSuccessMessage: '',
     accountErrorMessage: '',
+    accountStatusCode: '',
     email: '',
     username: '',
     firstname: '',
@@ -68,15 +69,15 @@ export const updateAccountErrorMessage = () => {
 export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ username, password, confirmationCode }) => {
     try {
 
-        if (isValidUsername(username) == false) {
+        if (isValidUsername(username) != true) {
             throw new Error("Username is not valid.");
         }
 
-        if (isValidPassword(password) == false) {
+        if (isValidPassword(password) != true) {
             throw new Error("Password is not valid.");
         }
 
-        if (isValidConfirmationCode(confirmationCode) == false) {
+        if (isValidConfirmationCode(confirmationCode) != true) {
             throw new Error("Confirmation Code is not valid.");
         }
 
@@ -174,15 +175,17 @@ export const accountSlice = createSlice({
                 state.accountError = '';
                 state.accountSuccessMessage = action.payload.successMessage;
                 state.accountErrorMessage = action.payload.errorMessage;
+                state.accountStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
                 unlockAccount.pending,
                 removeAccount.pending
             ), (state) => {
                 state.accountLoading = true;
-                state.accountError = null;
+                state.accountError = '';
                 state.accountSuccessMessage = '';
                 state.accountErrorMessage = '';
+                state.accountStatusCode = '';
             })
             .addMatcher(isAnyOf(
                 unlockAccount.rejected,
@@ -191,6 +194,7 @@ export const accountSlice = createSlice({
                 state.accountLoading = false;
                 state.accountError = action.error;
                 state.accountErrorMessage = action.error.message;
+                state.accountStatusCode = action.error.code;
             });
     }
 })

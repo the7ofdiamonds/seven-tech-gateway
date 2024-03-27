@@ -31,13 +31,13 @@ function App() {
               <Route path="/logout" element={<LogOut />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/forgot" element={<Forgot />} />
-              <Route path="/Dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/founders" element={<Founders />} />
               <Route path="/founders/:founder" element={<Founder />} />
               <Route path="/team" element={<Team />} />
               <Route path="/team/:teammember" element={<TeamMember />} />
               <Route
-                path="/password-recovery/:username/:confirmationCode"
+                path="/password-recovery/:emailEncoded/:confirmationCode"
                 element={<PasswordRecovery />}
               />
             </Routes>

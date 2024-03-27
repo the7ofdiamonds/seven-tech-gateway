@@ -24,11 +24,13 @@ function Dashboard() {
   const [showSettings, setShowSettings] = useState('');
   const [showLogin, setShowLogin] = useState(false);
 
+  const { accessToken, refreshToken } = useSelector((state) => state.login);
+
   useEffect(() => {
-    if (loginStatusCode == 200) {
+    if (accessToken && refreshToken) {
       setShowLogin(false);
     }
-  }, [loginStatusCode]);
+  }, [accessToken, refreshToken]);
 
   useEffect(() => {
     if (
@@ -78,9 +80,9 @@ function Dashboard() {
       {showSettings && <SettingsComponent />}
 
       {showLogin && (
-        <section className="modal-overlay">
+        <div className="modal-overlay">
           <LoginComponent />
-        </section>
+        </div>
       )}
     </>
   );

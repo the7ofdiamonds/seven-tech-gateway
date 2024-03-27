@@ -1,19 +1,14 @@
-section.about {
-  margin-top: 0;
-  min-height: fit-content;
+.mission-statement-card.card {
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0.375em;
+  width: fit-content;
+  background-color: black;
 
-  .mission-statement-card.card {
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 0.375em;
-    width: fit-content;
-    background-color: black;
-  
-    h3 {
-      color: white;
-    }
-  }  
-}
+  h3 {
+    color: white;
+  }
+} 
 
 .about-where {
   text-align: center;

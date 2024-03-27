@@ -9,7 +9,8 @@ const initialState = {
     passwordLoading: false,
     passwordError: '',
     passwordSuccessMessage: '',
-    passwordErrorMessage: ''
+    passwordErrorMessage: '',
+    passwordStatusCode: ''
 };
 
 export const updatePasswordSuccessMessage = () => {
@@ -97,11 +98,11 @@ export const changePassword = createAsyncThunk('password/changePassword', async 
     }
 });
 
-export const updatePassword = createAsyncThunk('password/updatePassword', async ({ username, confirmationCode, password, confirmPassword }) => {
+export const updatePassword = createAsyncThunk('password/updatePassword', async ({ email, confirmationCode, password, confirmPassword }) => {
     try {
 
-        if (isValidUsername(username) == false) {
-            throw new Error("Username is not valid.");
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
         }
 
         if (isValidConfirmationCode(confirmationCode) == false) {
@@ -122,9 +123,10 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
+                "email": email,
                 "confirmationCode": confirmationCode,
-                "password": password
+                "password": password,
+                "confirmPassword": confirmPassword
             })
         });
 
@@ -160,6 +162,7 @@ export const passwordSlice = createSlice({
                 state.passwordError = '';
                 state.passwordSuccessMessage = action.payload.successMessage;
                 state.passwordErrorMessage = action.payload.errorMessage;
+                state.passwordStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
                 forgotPassword.pending,
@@ -167,9 +170,10 @@ export const passwordSlice = createSlice({
                 updatePassword.pending
             ), (state) => {
                 state.passwordLoading = true;
-                state.passwordError = null;
+                state.passwordError = '';
                 state.passwordSuccessMessage = '';
                 state.passwordErrorMessage = '';
+                state.passwordStatusCode = '';
             })
             .addMatcher(isAnyOf(
                 forgotPassword.rejected,
@@ -179,6 +183,7 @@ export const passwordSlice = createSlice({
                 state.passwordLoading = false;
                 state.passwordError = action.error;
                 state.passwordErrorMessage = action.error.message;
+                state.passwordStatusCode = action.payload.code;
             });
     }
 })

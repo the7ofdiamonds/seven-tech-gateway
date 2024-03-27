@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { changePassword, forgotPassword } from '../../controllers/passwordSlice';
+import {
+  changePassword,
+  forgotPassword,
+} from '../../controllers/passwordSlice';
 import {
   changeName,
   changePhone,
   changeUsername,
 } from '../../controllers/changeSlice';
-import { removeEmail } from '../../controllers/emailSlice';
+// import { removeEmail } from '../../controllers/emailSlice';
 import { logout, logoutAllUrl, logoutAll } from '../../controllers/logoutSlice';
 import {
   removeAccount,
@@ -73,28 +76,10 @@ function SettingsComponent() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (changeLoading) {
+    if (accountLoading || changeLoading || emailLoading || passwordLoading) {
       setMessage('');
     }
-  }, [dispatch, changeLoading]);
-
-  useEffect(() => {
-    if (emailLoading) {
-      setMessage('');
-    }
-  }, [dispatch, emailLoading]);
-
-  useEffect(() => {
-    if (passwordLoading) {
-      setMessage('');
-    }
-  }, [dispatch, passwordLoading]);
-
-  useEffect(() => {
-    if (accountLoading) {
-      setMessage('');
-    }
-  }, [dispatch, accountLoading]);
+  }, [dispatch, accountLoading, changeLoading, emailLoading, passwordLoading]);
 
   useEffect(() => {
     if (logoutSuccessMessage) {
@@ -139,28 +124,35 @@ function SettingsComponent() {
   }, [dispatch, logoutErrorMessage]);
 
   useEffect(() => {
-    if (changeErrorMessage) {
+    if (logoutErrorMessage) {
+      setMessageType('error');
+      setMessage(logoutErrorMessage);
+    }
+  }, [dispatch, logoutErrorMessage]);
+
+  useEffect(() => {
+    if (changeErrorMessage && changeStatusCode != 403) {
       setMessageType('error');
       setMessage(changeErrorMessage);
     }
   }, [dispatch, changeErrorMessage]);
 
   useEffect(() => {
-    if (emailErrorMessage) {
+    if (emailErrorMessage && emailStatusCode != 403) {
       setMessageType('error');
       setMessage(emailErrorMessage);
     }
   }, [dispatch, emailErrorMessage]);
 
   useEffect(() => {
-    if (passwordErrorMessage) {
+    if (passwordErrorMessage && passwordStatusCode != 403) {
       setMessageType('error');
       setMessage(passwordErrorMessage);
     }
   }, [dispatch, passwordErrorMessage]);
 
   useEffect(() => {
-    if (accountErrorMessage) {
+    if (accountErrorMessage && accountStatusCode != 403) {
       setMessageType('error');
       setMessage(accountErrorMessage);
     }
@@ -290,21 +282,21 @@ function SettingsComponent() {
     }
   };
 
-  const handleRemoveEmailChange = (e) => {
-    e.preventDefault();
+  // const handleRemoveEmailChange = (e) => {
+  //   e.preventDefault();
 
-    if (e.target.name == 'email') {
-      setEmailRemove(e.target.value);
-    }
-  };
+  //   if (e.target.name == 'email') {
+  //     setEmailRemove(e.target.value);
+  //   }
+  // };
 
-  const handleRemoveEmail = (e) => {
-    e.preventDefault();
+  // const handleRemoveEmail = (e) => {
+  //   e.preventDefault();
 
-    if (emailRemove != '') {
-      dispatch(removeEmail(emailRemove));
-    }
-  };
+  //   if (emailRemove != '') {
+  //     dispatch(removeEmail(emailRemove));
+  //   }
+  // };
 
   const handleLogout = () => {
     dispatch(logout()).then(() => {
@@ -330,7 +322,7 @@ function SettingsComponent() {
 
   return (
     <>
-      <table className='settings'>
+      <table className="settings">
         <thead>
           <th>
             <h2>Settings</h2>
@@ -382,6 +374,20 @@ function SettingsComponent() {
                       </button>
                     </tr>
 
+                    <tr className="change-phone">
+                      <input
+                        type="text"
+                        name="phone"
+                        placeholder="Phone Number"
+                        value={phoneChange}
+                        onChange={handleChangePhoneChange}
+                      />
+
+                      <button onClick={handleChangePhone}>
+                        <h3>Change Phone</h3>
+                      </button>
+                    </tr>
+
                     <tr className="change-password">
                       <input
                         type="password"
@@ -404,27 +410,7 @@ function SettingsComponent() {
                       </button>
                     </tr>
 
-                    <tr className="forgot-password">
-                      <button onClick={handleForgotPassword}>
-                        <h3>Forgot Password</h3>
-                      </button>
-                    </tr>
-
-                    <tr className="change-phone">
-                      <input
-                        type="text"
-                        name="phone"
-                        placeholder="Phone Number"
-                        value={phoneChange}
-                        onChange={handleChangePhoneChange}
-                      />
-
-                      <button onClick={handleChangePhone}>
-                        <h3>Change Phone</h3>
-                      </button>
-                    </tr>
-
-                    <tr className="remove-email">
+                    {/* <tr className="remove-email">
                       <input
                         type="text"
                         name="email"
@@ -436,11 +422,19 @@ function SettingsComponent() {
                       <button onClick={handleRemoveEmail}>
                         <h3>Remove Email</h3>
                       </button>
-                    </tr>
+                    </tr> */}
                   </tbody>
                 </table>
               </form>
             </td>
+          </tr>
+        </tbody>
+
+        <tfoot>
+          <tr className="forgot-password">
+            <button onClick={handleForgotPassword}>
+              <h3>Forgot Password</h3>
+            </button>
           </tr>
 
           <tr className="logout">
@@ -460,14 +454,12 @@ function SettingsComponent() {
               <h3>REMOVE ACCOUNT</h3>
             </button>
           </tr>
-        </tbody>
 
-        <tfoot>
-          {message !== '' && (
-            <span className={showStatusbar}>
+          <span className={showStatusbar}>
+            {message !== '' && (
               <StatusBarComponent messageType={messageType} message={message} />
-            </span>
-          )}
+            )}
+          </span>
         </tfoot>
       </table>
     </>

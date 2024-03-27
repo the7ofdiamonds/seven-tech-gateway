@@ -8,6 +8,8 @@ use WP_REST_Request;
 
 use SEVEN_TECH\Admin\AdminAccountManagement;
 
+use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+
 class Account
 {
     private $adminaccountmngmnt;
@@ -42,8 +44,20 @@ class Account
             $username = $request['username'];
             $password = $request['password'];
             $confirmationCode = $request['confirmationCode'];
-            
+
             $this->adminaccountmngmnt->removeAccount($username, $password, $confirmationCode);
+        } catch (FailedToVerifyToken $e) {
+            $statusCode = 403;
+            $tokenResponse = [
+                'message' => $e->getMessage(),
+                'errorMessage' => "Please login to gain access and permission.",
+                'statusCode' => $statusCode
+            ];
+
+            $response = rest_ensure_response($tokenResponse);
+            $response->set_status($statusCode);
+
+            return $response;
         } catch (Exception $e) {
             error_log('There has been an error at remove account');
             $message = [

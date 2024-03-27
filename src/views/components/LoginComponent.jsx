@@ -34,12 +34,7 @@ function LoginComponent() {
 
   const {
     loginSuccessMessage,
-    loginErrorMessage,
-    loginError,
-    accessToken,
-    refreshToken,
-    displayName,
-    profileImage,
+    loginErrorMessage
   } = useSelector((state) => state.login);
   const { tokenSuccessMessage, tokenErrorMessage } = useSelector(
     (state) => state.token
@@ -81,21 +76,6 @@ function LoginComponent() {
       setMessageType('error');
     }
   }, [loginErrorMessage, tokenErrorMessage]);
-
-  useEffect(() => {
-    if (accessToken && refreshToken) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectTo = urlParams.get('redirectTo');
-
-      setTimeout(() => {
-        if (redirectTo == null) {
-          window.location.href = '/dashboard';
-        } else {
-          window.location.href = redirectTo;
-        }
-      }, 5000);
-    }
-  }, [accessToken, refreshToken]);
 
   const handleIdentityChange = async (e) => {
     setIdentity(e.target.value);
