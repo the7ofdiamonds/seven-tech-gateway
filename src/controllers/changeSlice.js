@@ -62,8 +62,8 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "firstname": firstNameChange,
-                "lastname": lastNameChange
+                firstName: firstNameChange,
+                lastName: lastNameChange
             })
         });
 
@@ -95,7 +95,7 @@ export const changePhone = createAsyncThunk('change/changePhone', async (phone) 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "phone": phone
+                phone: phone
             })
         });
 
@@ -127,7 +127,7 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username
+                username: username
             })
         });
 

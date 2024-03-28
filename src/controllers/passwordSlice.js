@@ -84,8 +84,8 @@ export const changePassword = createAsyncThunk('password/changePassword', async 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "password": password,
-                "confirmPassword": confirmPassword
+                password: password,
+                confirmPassword: confirmPassword
             })
         });
 
