@@ -3,11 +3,11 @@
 namespace SEVEN_TECH\API;
 
 use Exception;
-use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
+
 use WP_REST_Request;
 
+use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
-use Kreait\Firebase\Exception\RuntimeException;
 
 class Token
 {
@@ -33,40 +33,47 @@ class Token
             wp_set_auth_cookie($userData->id, true);
 
             if (!is_user_logged_in()) {
+                $statusCode = 400;
                 $tokenResponse = [
                     'errorMessage' => 'You could not be logged in successfully',
                 ];
 
                 $response = rest_ensure_response($tokenResponse);
-                $response->set_status(400);
+                $response->set_status($statusCode);
                 return $response;
             }
 
+            $statusCode = 200;
             $tokenResponse = [
-                'successMessage' => 'You have been logged in successfully'
+                'successMessage' => 'You have been logged in successfully',
+                "statusCode" => $statusCode
             ];
 
             $response = rest_ensure_response($tokenResponse);
-            $response->set_status(200);
+            $response->set_status($statusCode);
 
             return $response;
         } catch (FailedToVerifyAppCheckToken $e) {
+            $statusCode = 403;
             $tokenResponse = [
                 'message' => $e->getMessage(),
-                'errorMessage' => "Please login to gain access and permission."
+                'errorMessage' => "Please login to gain access and permission.",
+                "statusCode" => $statusCode
             ];
 
             $response = rest_ensure_response($tokenResponse);
-            $response->set_status(403);
+            $response->set_status($statusCode);
 
             return $response;
         } catch (Exception $e) {
             error_log('There has been an error at loging in using the tokens provided.');
+            $statusCode = $e->getCode();
             $message = [
                 'message' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
             $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response->set_status($statusCode);
             return $response;
         }
     }

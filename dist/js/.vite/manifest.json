@@ -11,6 +11,15 @@
       "src/index.jsx"
     ]
   },
+  "_Login.js": {
+    "file": "Login.js",
+    "imports": [
+      "src/index.jsx",
+      "_NavigationLoginComponent.js",
+      "_useDispatch.js"
+    ],
+    "isDynamicEntry": true
+  },
   "_LoginComponent.js": {
     "file": "LoginComponent.js",
     "imports": [
@@ -40,7 +49,7 @@
   "src/index.jsx": {
     "dynamicImports": [
       "src/views/About.jsx",
-      "src/views/Login.jsx",
+      "_Login.js",
       "src/views/Logout.jsx",
       "src/views/Signup.jsx",
       "src/views/Forgot.jsx",
@@ -70,7 +79,7 @@
     "file": "Dashboard.js",
     "imports": [
       "src/index.jsx",
-      "_LoginComponent.js",
+      "_Login.js",
       "_useDispatch.js",
       "_NavigationLoginComponent.js"
     ],

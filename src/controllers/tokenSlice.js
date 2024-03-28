@@ -7,6 +7,7 @@ const initialState = {
     tokenError: '',
     tokenSuccessMessage: '',
     tokenErrorMessage: '',
+    tokenStatusCode: ''
 };
 
 export const token = createAsyncThunk('token/token', async (location) => {
@@ -22,9 +23,9 @@ export const token = createAsyncThunk('token/token', async (location) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "location": {
-                    "longitude": location.longitude,
-                    "latitude": location.latitude
+                location: {
+                    longitude: location.longitude,
+                    latitude: location.latitude
                 }
             })
         });
@@ -48,14 +49,17 @@ export const tokenSlice = createSlice({
                 state.tokenError = '';
                 state.tokenSuccessMessage = action.payload.successMessage;
                 state.tokenErrorMessage = action.payload.errorMessage;
+                state.tokenStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
                 token.pending,
             ), (state) => {
                 state.tokenLoading = true;
-                state.tokenError = null;
-                state.tokenSuccessMessage = null;
-                state.tokenErrorMessage = null;
+                state.tokenError = '';
+                state.tokenSuccessMessage = '';
+                state.tokenErrorMessage = '';
+                state.tokenStatusCode = '';
+
             })
             .addMatcher(isAnyOf(
                 token.rejected,
@@ -64,6 +68,7 @@ export const tokenSlice = createSlice({
                     state.tokenLoading = false;
                     state.tokenError = action.error;
                     state.tokenErrorMessage = action.error.message;
+                    state.tokenStatusCode = action.error.statusCode;
                 });
     }
 })

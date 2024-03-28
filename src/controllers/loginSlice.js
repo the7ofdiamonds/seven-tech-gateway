@@ -103,7 +103,6 @@ export const loginSlice = createSlice({
     initialState,
     reducers: {
         updateDisplayName: (state, action) => {
-            console.log(action.payload);
             state.displayName = action.payload;
             localStorage.setItem('display_name', action.payload);
         },
@@ -116,7 +115,6 @@ export const loginSlice = createSlice({
             localStorage.setItem('email', action.payload);
         },
         updateProfileImage: (state, action) => {
-            console.log(action.payload);
             state.profileImage = action.payload;
             localStorage.setItem('profile_image', action.payload);
         },

@@ -1,12 +1,14 @@
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 import LoginComponent from './components/LoginComponent';
 
 function Login() {
-  let page = 'login';
-
-  const { accessToken, refreshToken } = useSelector((state) => state.login);
+  const { loginStatusCode } = useSelector((state) => state.login);
+  const { tokenStatusCode } = useSelector((state) => state.token);
 
   useEffect(() => {
-    if (accessToken && refreshToken) {
+    if (loginStatusCode == 200 || tokenStatusCode == 200) {
       const urlParams = new URLSearchParams(window.location.search);
       const redirectTo = urlParams.get('redirectTo');
 
@@ -18,7 +20,7 @@ function Login() {
         }
       }, 5000);
     }
-  }, [accessToken, refreshToken]);
+  }, [loginStatusCode, tokenStatusCode]);
 
   return (
     <>
@@ -27,4 +29,4 @@ function Login() {
   );
 }
 
-export default LoginComponent;
+export default Login;

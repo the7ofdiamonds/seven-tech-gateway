@@ -24,13 +24,11 @@ function Dashboard() {
   const [showSettings, setShowSettings] = useState('');
   const [showLogin, setShowLogin] = useState(false);
 
-  const { accessToken, refreshToken } = useSelector((state) => state.login);
-
   useEffect(() => {
-    if (accessToken && refreshToken) {
+    if (loginStatusCode == 200) {
       setShowLogin(false);
     }
-  }, [accessToken, refreshToken]);
+  }, [loginStatusCode]);
 
   useEffect(() => {
     if (
