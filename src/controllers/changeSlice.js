@@ -31,7 +31,7 @@ export const updateChangeErrorMessage = () => {
     };
 };
 
-export const changeName = createAsyncThunk('change/changeName', async ({ firstNameChange, lastNameChange }) => {
+export const changeName = createAsyncThunk('change/changeName', async ({ firstName, lastName }) => {
     try {
         const accessToken = localStorage.getItem('access_token');
 
@@ -39,19 +39,19 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
             throw new Error("An access token is required to change your name.");
         }
 
-        if (!firstNameChange) {
+        if (!firstName) {
             throw new Error("The first name is blank.");
         }
 
-        if (!lastNameChange) {
+        if (!lastName) {
             throw new Error("The last name is blank.");
         }
 
-        if (!isValidName(firstNameChange)) {
+        if (!isValidName(firstName)) {
             throw new Error("The first name provided is not valid.");
         }
 
-        if (!isValidName(lastNameChange)) {
+        if (!isValidName(lastName)) {
             throw new Error("The last name provided is not valid.");
         }
 
@@ -62,8 +62,8 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                firstName: firstNameChange,
-                lastName: lastNameChange
+                firstName: firstName,
+                lastName: lastName
             })
         });
 

@@ -26,7 +26,7 @@ class Change
             $email = $userData->email;
             $password = $userData->password;
 
-            $firstname = $request['firstname'];
+            $firstname = $request['firstName'];
 
             if (empty($firstname)) {
                 $statusCode = 400;
@@ -40,7 +40,7 @@ class Change
                 return $response;
             }
 
-            $lastname = $request['lastname'];
+            $lastname = $request['lastName'];
 
             if (empty($lastname)) {
                 $statusCode = 400;

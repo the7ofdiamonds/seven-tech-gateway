@@ -122,7 +122,7 @@ class Password
 
             $statusCode = 200;
             $removeEmailResponse = [
-                'successMessage' => "The email {$email} has been removed from your account successfuly.",
+                'successMessage' => "Your password has been changed successfully an email has been sent to {$email} check your inbox.",
                 'statusCode' => $statusCode
             ];
 

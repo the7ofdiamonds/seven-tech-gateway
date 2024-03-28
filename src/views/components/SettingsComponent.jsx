@@ -63,8 +63,8 @@ function SettingsComponent() {
     phone,
   } = useSelector((state) => state.account);
 
-  const [firstNameChange, setFirstNameChange] = useState(firstname);
-  const [lastNameChange, setLastNameChange] = useState(lastname);
+  const [firstName, setFirstNameChange] = useState(firstname);
+  const [lastName, setLastNameChange] = useState(lastname);
   const [usernameChange, setUsernameChange] = useState(username);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -199,8 +199,8 @@ function SettingsComponent() {
   const handleChangeName = (e) => {
     e.preventDefault();
 
-    if (firstNameChange !== '' || lastNameChange !== '') {
-      dispatch(changeName({ firstNameChange, lastNameChange })).then(
+    if (firstName !== '' || lastName !== '') {
+      dispatch(changeName({ firstName, lastName })).then(
         (response) => {
           if (response.payload.statusCode == 201) {
             dispatch(updateAccountFirstName(response.payload.firstname));
@@ -341,7 +341,7 @@ function SettingsComponent() {
                         type="text"
                         name="firstname"
                         placeholder="First Name"
-                        value={firstNameChange}
+                        value={firstName}
                         onChange={handleChangeNameChangeFirst}
                       />
 
@@ -349,7 +349,7 @@ function SettingsComponent() {
                         type="text"
                         name="lastname"
                         placeholder="Last Name"
-                        value={lastNameChange}
+                        value={lastName}
                         onChange={handleChangeNameChangeLast}
                       />
 
