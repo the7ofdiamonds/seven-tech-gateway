@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidEmail, isValidConfirmationCode, isValidUsername, isValidPassword } from '../utils/Validation';
+import { isValidEmail, isValidConfirmationCode, isValidPassword } from '../utils/Validation';
 
-const forgotPasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/forgot-password" : "/wp-json/seven-tech/v1/users/forgot-password";
+const sendForgotPasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/forgot-password" : "/wp-json/seven-tech/v1/users/forgot-password";
+const sendChangePasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/change-password" : "/wp-json/seven-tech/v1/users/change-password";
+const sendUpdatePasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/update-password" : "/wp-json/seven-tech/v1/users/update-password";
 const changePasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/change-password" : "/wp-json/seven-tech/v1/users/change-password";
 const updatePasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/update-password" : "/wp-json/seven-tech/v1/users/update-password";
 
@@ -27,20 +29,72 @@ export const updatePasswordErrorMessage = () => {
     };
 };
 
-export const forgotPassword = createAsyncThunk('password/forgotPassword', async (email) => {
+export const sendForgotPasswordEmail = createAsyncThunk('password/sendForgotPasswordEmail', async (email) => {
     try {
 
         if (isValidEmail(email) == false) {
             throw new Error("Email is not valid.");
         }
 
-        const response = await fetch(`${forgotPasswordUrl}`, {
+        const response = await fetch(`${sendForgotPasswordEmailUrl}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email
+                email: email
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+});
+
+export const sendChangePasswordEmail = createAsyncThunk('password/sendChangePasswordEmail', async (email) => {
+    try {
+
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
+        }
+
+        const response = await fetch(`${sendChangePasswordEmailUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+});
+
+export const sendUpdatePasswordEmail = createAsyncThunk('password/sendUpdatePasswordEmail', async (email) => {
+    try {
+
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
+        }
+
+        const response = await fetch(`${sendUpdatePasswordEmailUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email
             })
         });
 
@@ -123,10 +177,10 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email,
-                "confirmationCode": confirmationCode,
-                "password": password,
-                "confirmPassword": confirmPassword
+                email: email,
+                confirmationCode: confirmationCode,
+                password: password,
+                confirmPassword: confirmPassword
             })
         });
 
@@ -154,8 +208,10 @@ export const passwordSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(
-                forgotPassword.fulfilled,
+                sendForgotPasswordEmail.fulfilled,
+                sendChangePasswordEmail.fulfilled,
                 changePassword.fulfilled,
+                sendUpdatePasswordEmail.fulfilled,
                 updatePassword.fulfilled
             ), (state, action) => {
                 state.passwordLoading = false;
@@ -165,8 +221,10 @@ export const passwordSlice = createSlice({
                 state.passwordStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
-                forgotPassword.pending,
+                sendForgotPasswordEmail.pending,
+                sendChangePasswordEmail.pending,
                 changePassword.pending,
+                sendUpdatePasswordEmail.pending,
                 updatePassword.pending
             ), (state) => {
                 state.passwordLoading = true;
@@ -176,8 +234,10 @@ export const passwordSlice = createSlice({
                 state.passwordStatusCode = '';
             })
             .addMatcher(isAnyOf(
-                forgotPassword.rejected,
+                sendForgotPasswordEmail.rejected,
+                sendChangePasswordEmail.rejected,
                 changePassword.rejected,
+                sendUpdatePasswordEmail.rejected,
                 updatePassword.rejected
             ), (state, action) => {
                 state.passwordLoading = false;

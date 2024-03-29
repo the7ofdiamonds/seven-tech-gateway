@@ -2,8 +2,11 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import LoginComponent from './components/LoginComponent';
+import NavigationLoginComponent from './components/NavigationLoginComponent';
 
 function Login() {
+  let page = 'login';
+
   const { loginStatusCode } = useSelector((state) => state.login);
   const { tokenStatusCode } = useSelector((state) => state.token);
 
@@ -24,7 +27,10 @@ function Login() {
 
   return (
     <>
-      <LoginComponent />
+      <main className="login">
+        <NavigationLoginComponent page={page} />
+        <LoginComponent />
+      </main>
     </>
   );
 }

@@ -79,7 +79,9 @@ function Dashboard() {
 
       {showLogin && (
         <div className="modal-overlay">
-          <LoginComponent />
+          <main className="login">
+            <LoginComponent />
+          </main>
         </div>
       )}
     </>

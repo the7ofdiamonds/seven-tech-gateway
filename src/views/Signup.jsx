@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import NavigationComponent from './components/NavigationLoginComponent';
+import NavigationLoginComponent from './components/NavigationLoginComponent';
 
 import { signup } from '../controllers/signupSlice';
 
 function SignUpComponent() {
+  let page = 'signup';
+
   const [UserName, setUserName] = useState('');
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
@@ -89,7 +91,7 @@ function SignUpComponent() {
   return (
     <>
       <main className="signup">
-        <NavigationComponent />
+        <NavigationLoginComponent page={page}/>
 
         <div className="login card">
           <form>

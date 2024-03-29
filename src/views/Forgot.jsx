@@ -1,21 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import NavigationComponent from './components/NavigationLoginComponent';
+import NavigationLoginComponent from './components/NavigationLoginComponent';
 
-import { displayStatus } from '../utils/DisplayStatus';
+import ForgotComponent from './components/ForgotComponent';
 
-import { forgotPassword } from '../controllers/passwordSlice';
+function Forgot() {
+  let page = 'forgot';
+  
+  const dispatch = useDispatch();
 
-function ForgotComponent() {
-  const [email, setEmail] = useState('');
+  const { passwordSuccessMessage, passwordErrorMessage, passwordStatusCode } =
+    useSelector((state) => state.password);
+
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState(
     'If you forgot your password, enter your username or email.'
   );
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    forgotPassword(email).then(() => {
+  useEffect(() => {
+    if (passwordSuccessMessage) {
       const urlParams = new URLSearchParams(window.location.search);
       const redirectTo = urlParams.get('redirectTo');
 
@@ -27,48 +31,23 @@ function ForgotComponent() {
         }
       }, 5000);
 
-      setMessage(displayStatus(`Check your inbox and spam for ${Email}`));
-      setMessageType('info');
-    });
-  };
-
-  const handleChange = (e) => {
-    if (e.target.name === 'email') {
-      setEmail(e.target.value);
+      setMessageType('success');
+      setMessage(passwordSuccessMessage);
     }
-  };
+  }, [dispatch, passwordSuccessMessage]);
+
+  useEffect(() => {
+    if (passwordErrorMessage && passwordStatusCode != 403) {
+      setMessageType('error');
+      setMessage(passwordErrorMessage);
+    }
+  }, [dispatch, passwordErrorMessage]);
 
   return (
     <>
       <main className="forgot">
-        <NavigationComponent />
-        <div className="login card">
-          <form>
-            <table>
-              <thead></thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                      onChange={handleChange}
-                      required
-                    />
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <td>
-                  <button type="submit" onClick={handleSubmit}>
-                    <h3>RESET</h3>
-                  </button>
-                </td>
-              </tfoot>
-            </table>
-          </form>
-        </div>
+      <NavigationLoginComponent page={page}/>
+        <ForgotComponent />
 
         {message !== '' && (
           <div className={`status-bar card ${messageType}`}>
@@ -80,4 +59,4 @@ function ForgotComponent() {
   );
 }
 
-export default ForgotComponent;
+export default Forgot;

@@ -3,19 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   changePassword,
-  forgotPassword,
+  sendForgotPasswordEmail
 } from '../../controllers/passwordSlice';
 import {
   changeName,
   changePhone,
-  changeUsername,
+  changeUsername
 } from '../../controllers/changeSlice';
 // import { removeEmail } from '../../controllers/emailSlice';
-import { logout, logoutAllUrl, logoutAll } from '../../controllers/logoutSlice';
+import { logout, logoutAll } from '../../controllers/logoutSlice';
 import {
-  removeAccount,
-  updateAccountFirstName,
-  updateAccountLastName,
+  sendRemoveAccountEmail
 } from '../../controllers/accountSlice';
 
 import StatusBarComponent from '../components/StatusBarComponent';
@@ -200,14 +198,12 @@ function SettingsComponent() {
     e.preventDefault();
 
     if (firstName !== '' || lastName !== '') {
-      dispatch(changeName({ firstName, lastName })).then(
-        (response) => {
-          if (response.payload.statusCode == 201) {
-            dispatch(updateAccountFirstName(response.payload.firstname));
-            dispatch(updateAccountLastName(response.payload.lastname));
-          }
+      dispatch(changeName({ firstName, lastName })).then((response) => {
+        if (response.payload.statusCode == 201) {
+          dispatch(updateAccountFirstName(response.payload.firstname));
+          dispatch(updateAccountLastName(response.payload.lastname));
         }
-      );
+      });
     }
   };
 
@@ -259,7 +255,9 @@ function SettingsComponent() {
     e.preventDefault();
 
     if (email != '' || localStorage.getItem('email') != '') {
-      dispatch(forgotPassword(email ? email : localStorage.getItem('email')));
+      dispatch(
+        sendForgotPasswordEmail(email ? email : localStorage.getItem('email'))
+      );
     } else {
       setMessageType('error');
       setMessage('An email is required to reset password.');
@@ -317,7 +315,14 @@ function SettingsComponent() {
   };
 
   const handleRemoveAccount = () => {
-    dispatch(removeAccount());
+    if (email != '' || localStorage.getItem('email') != '') {
+      dispatch(
+        sendRemoveAccountEmail(email ? email : localStorage.getItem('email'))
+      );
+    }else {
+      setMessageType('error');
+      setMessage('An email is required to remove your account.');
+    }
   };
 
   return (
@@ -388,6 +393,8 @@ function SettingsComponent() {
                       </button>
                     </tr>
 
+                    {/* Needs send email */}
+
                     <tr className="change-password">
                       <input
                         type="password"
@@ -433,7 +440,7 @@ function SettingsComponent() {
         <tfoot>
           <tr className="forgot-password">
             <button onClick={handleForgotPassword}>
-              <h3>Forgot Password</h3>
+              <h3>FORGOT PASSWORD</h3>
             </button>
           </tr>
 

@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidUsername, isValidPassword, isValidConfirmationCode } from '../utils/Validation';
+import { isValidEmail, isValidPassword, isValidConfirmationCode } from '../utils/Validation';
 
+const sendUnlockAccountEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/unlock-account" : "/wp-json/seven-tech/v1/users/unlock-account";
+const sendRemoveAccountEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/remove-account" : "/wp-json/seven-tech/v1/users/remove-account";
 const unlockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/unlock-account" : "/wp-json/seven-tech/v1/users/unlock-account";
 const removeAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/remove-account" : "/wp-json/seven-tech/v1/users/remove-account";
 
@@ -29,7 +31,7 @@ export const updateAccountUsername = (username) => {
         type: 'account/updateAccountUsername',
         payload: username
     };
-}; 
+};
 
 export const updateAccountFirstName = (firstname) => {
     return {
@@ -66,15 +68,65 @@ export const updateAccountErrorMessage = () => {
     };
 };
 
-export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ username, password, confirmationCode }) => {
+export const sendUnlockAccountEmail = createAsyncThunk('account/sendUnlockAccountEmail', async (email) => {
     try {
 
-        if (isValidUsername(username) != true) {
-            throw new Error("Username is not valid.");
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
         }
 
-        if (isValidPassword(password) != true) {
-            throw new Error("Password is not valid.");
+        const response = await fetch(`${sendUnlockAccountEmailUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+});
+
+export const sendRemoveAccountEmail = createAsyncThunk('account/sendRemoveAccountEmail', async (email) => {
+    try {
+
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
+        }
+
+        const response = await fetch(`${sendRemoveAccountEmailUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+});
+
+export const unlockAccount = createAsyncThunk('account/unlockAccount', async (confirmationCode) => {
+    try {
+
+        const accessToken = localStorage.getItem('access_token');
+
+        if (accessToken == '') {
+            throw Error("An access token is required to remove your account.")
         }
 
         if (isValidConfirmationCode(confirmationCode) != true) {
@@ -84,17 +136,16 @@ export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ 
         const response = await fetch(`${unlockAccountUrl}`, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
-                "password": password,
-                "confirmationCode": confirmationCode
+                confirmationCode: confirmationCode
             })
         });
 
         const responseData = await response.json();
-        
+
         return responseData;
     } catch (error) {
         console.error(error)
@@ -102,11 +153,11 @@ export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ 
     }
 });
 
-export const removeAccount = createAsyncThunk('account/removeAccount', async ({ username, password, confirmationCode }) => {
+export const removeAccount = createAsyncThunk('account/removeAccount', async ({ email, password, confirmationCode }) => {
     try {
 
-        if (isValidUsername(username) == false) {
-            throw new Error("Username is not valid.");
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
         }
 
         if (isValidPassword(password) == false) {
@@ -123,9 +174,9 @@ export const removeAccount = createAsyncThunk('account/removeAccount', async ({ 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
-                "password": password,
-                "confirmationCode": confirmationCode
+                email: email,
+                password: password,
+                confirmationCode: confirmationCode
             })
         });
 
@@ -168,7 +219,9 @@ export const accountSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(
+                sendUnlockAccountEmail.fulfilled,
                 unlockAccount.fulfilled,
+                sendRemoveAccountEmail.fulfilled,
                 removeAccount.fulfilled
             ), (state, action) => {
                 state.accountLoading = false;
@@ -178,7 +231,9 @@ export const accountSlice = createSlice({
                 state.accountStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
+                sendUnlockAccountEmail.pending,
                 unlockAccount.pending,
+                sendRemoveAccountEmail.pending,
                 removeAccount.pending
             ), (state) => {
                 state.accountLoading = true;
@@ -188,7 +243,9 @@ export const accountSlice = createSlice({
                 state.accountStatusCode = '';
             })
             .addMatcher(isAnyOf(
+                sendUnlockAccountEmail.rejected,
                 unlockAccount.rejected,
+                sendRemoveAccountEmail.rejected,
                 removeAccount.rejected
             ), (state, action) => {
                 state.accountLoading = false;
