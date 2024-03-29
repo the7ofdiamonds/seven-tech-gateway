@@ -27,13 +27,8 @@ export const updateEmailErrorMessage = () => {
     };
 };
 
-export const verifyEmail = createAsyncThunk('email/verifyEmail', async (email, confirmationCode) => {
+export const verifyEmail = createAsyncThunk('email/verifyEmail', async ({email, confirmationCode}) => {
     try {
-        const accessToken = localStorage.getItem('access_token');
-
-        if (!accessToken) {
-            throw new Error("An access token is required to verify your password.");
-        }
 
         if (isValidConfirmationCode(confirmationCode) == false) {
             throw new Error("Confirmation Code is not valid.");
@@ -46,12 +41,11 @@ export const verifyEmail = createAsyncThunk('email/verifyEmail', async (email, c
         const response = await fetch(`${veryEmailUrl}`, {
             method: 'POST',
             headers: {
-                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "confirmationCode": confirmationCode,
-                "email": email
+                confirmationCode: confirmationCode,
+                email: email
             })
         });
 

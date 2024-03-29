@@ -2,164 +2,153 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { updatePassword } from '../controllers/passwordSlice';
 import {
   isValidConfirmationCode,
   isValidEmail,
-  isValidPassword
+  isValidPassword,
 } from '../utils/Validation';
+
+import { removeAccount } from '../controllers/accountSlice';
+
+import StatusBarComponent from './components/StatusBarComponent';
 
 function RemoveAcount() {
   const { emailEncoded, confirmationCode } = useParams();
 
-  const email = emailEncoded.replace(/%40/g, '@');
-
   const dispatch = useDispatch();
 
-  const {
-    changeLoading,
-    changeError,
-    changeSuccessMessage,
-    changeErrorMessage,
-  } = useSelector((state) => state.change);
+  const { accountSuccessMessage, accountErrorMessage, accountStatusCode } =
+    useSelector((state) => state.account);
 
+  const [email, setEmail] = useState(emailEncoded.replace(/%40/g, '@'));
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState(
-    'Enter your preferred password twice.'
-  );
+  const [showStatusbar, setShowStatusBar] = useState('');
+  const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
   useEffect(() => {
+    if (email == '' || email == undefined) {
+      setMessageType('error');
+      setMessage('Email is not valid.');
+    }
+
     if (isValidEmail(email) != true) {
       setMessageType('error');
-      setMessage("Email is not valid.");
+      setMessage('Enter your email to remove your account.');
     }
   }, [email]);
 
   useEffect(() => {
-    if (
-      password != '' &&
-      confirmPassword != '' &&
-      password === confirmPassword
-    ) {
-      setMessage('You have entered your password twice.');
-      setMessageType('success');
-    }
-  }, [password, confirmPassword]);
-
-  useEffect(() => {
-    if (password != '' && isValidPassword(password) == false) {
-      setMessage('Password is not valid.');
+    if (password == '' || password == undefined) {
+      setMessage('Enter your password to remove account.');
       setMessageType('error');
     }
   }, [password]);
 
   useEffect(() => {
-    if (
-      password != '' &&
-      confirmPassword != '' &&
-      !isValidPassword(password) &&
-      password != confirmPassword
-    ) {
-      setMessage('Passwords do not match.');
-      setMessageType('error');
+    if (accountStatusCode != 403 && message != '') {
+      setShowStatusBar('modal-overlay');
+      setTimeout(() => {
+        setShowStatusBar(true);
+      }, 3000);
     }
-  }, [password, confirmPassword]);
+  }, [accountStatusCode, message]);
 
   useEffect(() => {
-    if (changeSuccessMessage) {
-      setMessage(changeSuccessMessage);
+    if (accountSuccessMessage) {
+      setMessage(accountSuccessMessage);
       setMessageType('success');
     }
-  }, [changeSuccessMessage]);
+  }, [accountSuccessMessage]);
 
   useEffect(() => {
-    if (changeErrorMessage) {
-      setMessage(changeErrorMessage);
+    if (accountErrorMessage) {
+      console.log(accountErrorMessage);
+
+      setMessage(accountErrorMessage);
       setMessageType('error');
     }
-  }, [changeErrorMessage]);
+  }, [accountErrorMessage]);
 
-  const handleChangePassword = (e) => {
-    if (e.target.name == 'password') {
-      setPassword(e.target.value);
-    }
+  const handleChangeEmail = (e) => {
+    e.preventDefault();
+
+    setEmail(e.target.value);
   };
 
-  const handleChangeConfirmPassword = (e) => {
-    if (e.target.name == 'confirmPassword') {
-      setConfirmPassword(e.target.value);
-    }
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+
+    setPassword(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (
       isValidEmail(email) &&
       isValidConfirmationCode(confirmationCode) &&
-      isValidPassword(password) &&
-      password === confirmPassword
+      isValidPassword(password)
     ) {
-      dispatch(
-        updatePassword({ email, password, confirmPassword, confirmationCode })
-      );
+      dispatch(removeAccount({ email, password, confirmationCode }));
     }
   };
 
   return (
     <>
-      <section>
-        <main>
-          <form action="">
-            <table>
-              <thead></thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Password"
-                      onChange={handleChangePassword}
-                      required
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      placeholder="Confirm Password"
-                      onChange={handleChangeConfirmPassword}
-                      required
-                    />
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td>
-                    <button type="submit" onClick={handleSubmit}>
-                      <h3>CONFIRM</h3>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
+      <main>
+        <form action="">
+          <table>
+            <thead></thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    name="email"
+                    placeholder="Email"
+                    onChange={handleChangeEmail}
+                    value={email}
+                    required
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleChangePassword}
+                    required
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  <button type="submit" onClick={handleSubmit}>
+                    <h3>CONFIRM</h3>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span className={showStatusbar}>
                     {message !== '' && (
-                      <div className={`status-bar card ${messageType}`}>
-                        <span>{message}</span>
-                      </div>
+                      <StatusBarComponent
+                        messageType={messageType}
+                        message={message}
+                      />
                     )}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </form>
-        </main>
-      </section>
+                  </span>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </form>
+      </main>
     </>
   );
 }

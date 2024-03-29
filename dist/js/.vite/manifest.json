@@ -11,15 +11,6 @@
       "src/index.jsx"
     ]
   },
-  "_Login.js": {
-    "file": "Login.js",
-    "imports": [
-      "src/index.jsx",
-      "_useDispatch.js",
-      "_NavigationLoginComponent.js"
-    ],
-    "isDynamicEntry": true
-  },
   "_MemberIntroductionComponent.js": {
     "file": "MemberIntroductionComponent.js",
     "imports": [
@@ -28,6 +19,12 @@
   },
   "_NavigationLoginComponent.js": {
     "file": "NavigationLoginComponent.js",
+    "imports": [
+      "src/index.jsx"
+    ]
+  },
+  "_StatusBarComponent.js": {
+    "file": "StatusBarComponent.js",
     "imports": [
       "src/index.jsx"
     ]
@@ -45,7 +42,7 @@
       "src/views/Founder.jsx",
       "src/views/Team.jsx",
       "src/views/TeamMember.jsx",
-      "_Login.js",
+      "src/views/Login.jsx",
       "src/views/Logout.jsx",
       "src/views/Signup.jsx",
       "src/views/Forgot.jsx",
@@ -74,6 +71,7 @@
     "file": "AccountRecovery.js",
     "imports": [
       "src/index.jsx",
+      "_StatusBarComponent.js",
       "_useDispatch.js"
     ],
     "isDynamicEntry": true,
@@ -83,7 +81,8 @@
     "file": "Dashboard.js",
     "imports": [
       "src/index.jsx",
-      "_Login.js",
+      "src/views/Login.jsx",
+      "_StatusBarComponent.js",
       "_useDispatch.js",
       "_NavigationLoginComponent.js"
     ],
@@ -121,6 +120,17 @@
     "isDynamicEntry": true,
     "src": "src/views/Founders.jsx"
   },
+  "src/views/Login.jsx": {
+    "file": "Login.js",
+    "imports": [
+      "src/index.jsx",
+      "_StatusBarComponent.js",
+      "_useDispatch.js",
+      "_NavigationLoginComponent.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/views/Login.jsx"
+  },
   "src/views/Logout.jsx": {
     "file": "Logout.js",
     "imports": [
@@ -134,6 +144,7 @@
     "file": "PasswordRecovery.js",
     "imports": [
       "src/index.jsx",
+      "_StatusBarComponent.js",
       "_useDispatch.js"
     ],
     "isDynamicEntry": true,
@@ -143,6 +154,7 @@
     "file": "RemoveAccount.js",
     "imports": [
       "src/index.jsx",
+      "_StatusBarComponent.js",
       "_useDispatch.js"
     ],
     "isDynamicEntry": true,
@@ -184,6 +196,7 @@
     "file": "VerifyEmail.js",
     "imports": [
       "src/index.jsx",
+      "_StatusBarComponent.js",
       "_useDispatch.js"
     ],
     "isDynamicEntry": true,

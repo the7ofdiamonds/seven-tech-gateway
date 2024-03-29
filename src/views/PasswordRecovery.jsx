@@ -3,11 +3,14 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { updatePassword } from '../controllers/passwordSlice';
+
 import {
   isValidConfirmationCode,
   isValidEmail,
   isValidPassword
 } from '../utils/Validation';
+
+import StatusBarComponent from './components/StatusBarComponent';
 
 function PasswordRecovery() {
   const { emailEncoded, confirmationCode } = useParams();
@@ -17,25 +20,18 @@ function PasswordRecovery() {
   const dispatch = useDispatch();
 
   const {
-    changeLoading,
-    changeError,
-    changeSuccessMessage,
-    changeErrorMessage,
-  } = useSelector((state) => state.change);
+    passwordSuccessMessage,
+    passwordErrorMessage,
+    passwordStatusCode
+  } = useSelector((state) => state.password);
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showStatusbar, setShowStatusBar] = useState(false);
   const [message, setMessage] = useState(
     'Enter your preferred password twice.'
   );
   const [messageType, setMessageType] = useState('');
-
-  useEffect(() => {
-    if (isValidEmail(email) != true) {
-      setMessageType('error');
-      setMessage("Email is not valid.");
-    }
-  }, [email]);
 
   useEffect(() => {
     if (
@@ -49,17 +45,9 @@ function PasswordRecovery() {
   }, [password, confirmPassword]);
 
   useEffect(() => {
-    if (password != '' && isValidPassword(password) == false) {
-      setMessage('Password is not valid.');
-      setMessageType('error');
-    }
-  }, [password]);
-
-  useEffect(() => {
     if (
       password != '' &&
       confirmPassword != '' &&
-      !isValidPassword(password) &&
       password != confirmPassword
     ) {
       setMessage('Passwords do not match.');
@@ -68,18 +56,27 @@ function PasswordRecovery() {
   }, [password, confirmPassword]);
 
   useEffect(() => {
-    if (changeSuccessMessage) {
-      setMessage(changeSuccessMessage);
+    if (passwordSuccessMessage) {
+      setMessage(passwordSuccessMessage);
       setMessageType('success');
     }
-  }, [changeSuccessMessage]);
+  }, [passwordSuccessMessage]);
 
   useEffect(() => {
-    if (changeErrorMessage) {
-      setMessage(changeErrorMessage);
+    if (passwordErrorMessage) {
+      setMessage(passwordErrorMessage);
       setMessageType('error');
     }
-  }, [changeErrorMessage]);
+  }, [passwordErrorMessage]);
+
+  useEffect(() => {
+    if (passwordStatusCode != 403 && message != '') {
+      setShowStatusBar('modal-overlay');
+      setTimeout(() => {
+        setShowStatusBar(true);
+      }, 3000);
+    }
+  }, [passwordStatusCode, message]);
 
   const handleChangePassword = (e) => {
     if (e.target.name == 'password') {
@@ -148,11 +145,14 @@ function PasswordRecovery() {
                 </tr>
                 <tr>
                   <td>
-                    {message !== '' && (
-                      <div className={`status-bar card ${messageType}`}>
-                        <span>{message}</span>
-                      </div>
+                  <span className={showStatusbar}>
+                    {message != '' && (
+                      <StatusBarComponent
+                        messageType={messageType}
+                        message={message}
+                      />
                     )}
+                  </span>
                   </td>
                 </tr>
               </tfoot>

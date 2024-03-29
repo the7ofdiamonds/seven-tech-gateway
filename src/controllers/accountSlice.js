@@ -120,27 +120,25 @@ export const sendRemoveAccountEmail = createAsyncThunk('account/sendRemoveAccoun
     }
 });
 
-export const unlockAccount = createAsyncThunk('account/unlockAccount', async (confirmationCode) => {
+export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ email, confirmationCode }) => {
     try {
-
-        const accessToken = localStorage.getItem('access_token');
-
-        if (accessToken == '') {
-            throw Error("An access token is required to remove your account.")
-        }
 
         if (isValidConfirmationCode(confirmationCode) != true) {
             throw new Error("Confirmation Code is not valid.");
         }
 
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
+        }
+
         const response = await fetch(`${unlockAccountUrl}`, {
             method: 'POST',
             headers: {
-                'Authorization': "Bearer " + accessToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                confirmationCode: confirmationCode
+                confirmationCode: confirmationCode,
+                email: email
             })
         });
 

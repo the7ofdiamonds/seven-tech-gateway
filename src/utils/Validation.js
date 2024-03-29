@@ -49,10 +49,10 @@ export function isValidConfirmationCode(confirmationCode) {
         throw new Error("A confirmation code is required to be validated.");
     }
 
-    const confirmationCodeRegex = /^[a-zA-Z0-9\-]+$/;
+    const confirmationCodeRegex = /^[a-zA-Z0-9-]+$/;
 
     if (confirmationCodeRegex.test(confirmationCode) == false) {
-        throw new Error("A confirmation code is not valid.");
+        throw new Error("Confirmation code is not valid.");
     }
 
     return true;

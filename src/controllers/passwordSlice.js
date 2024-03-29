@@ -196,15 +196,7 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
 export const passwordSlice = createSlice({
     name: 'password',
     initialState,
-    reducers: {
-        updatePasswordSuccessMessage: (state, action) => {
-            state.passwordSuccessMessage= action.payload;
-        },
-        updatePasswordErrorMessage: (state, action) => {
-            state.passwordError = action.payload;
-            state.passwordErrorMessage = action.payload;
-        }
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(
