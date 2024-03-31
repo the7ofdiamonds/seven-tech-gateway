@@ -4,50 +4,68 @@ namespace SEVEN_TECH\Admin;
 
 use Exception;
 
+use SEVEN_TECH\Validator\Validator;
+use SEVEN_TECH\User\User;
+
 class AdminUserManagement
 {
+    private $validator;
+    private $user;
+
+    public function __construct()
+    {
+        $this->register_custom_submenu_page();
+
+        $this->validator = new Validator;
+        $this->user = new User;
+    }
+
+    function register_custom_submenu_page()
+    {
+        add_submenu_page('seven_tech_admin', '', 'User', 'manage_options', 'seven_tech_user_management', [$this, 'create_section'], 4);
+        $this->register_section();
+    }
+
+    function create_section()
+    {
+        include SEVEN_TECH . 'Admin/includes/admin-user-management.php';
+    }
+
+    function register_section()
+    {
+        add_settings_section('seven-tech-admin-user-management', 'User Management', [$this, 'section_description'], 'seven_tech_user_management');
+    }
+
+    function section_description()
+    {
+        echo 'Manage Users';
+    }
+
     public function getUser($email)
     {
         try {
-            $user = get_user_by('email', $email);
-            $user_id = $user->id;
-            // Get all user info
-            return rest_ensure_response($user_id);
+            $user = $this->user->findUserByEmail($email);
+
+            if (!$user) {
+                return "User could not be found.";
+            }
+
+            return $user;
         } catch (Exception $e) {
-            $error_message = $e->getMessage();
-            $status_code = $e->getCode();
-
-            $response_data = [
-                'errorMessage' => $error_message,
-                'status' => $status_code
-            ];
-
-            $response = rest_ensure_response($response_data);
-            $response->set_status($status_code);
-
-            return $response;
+            throw new Exception($e);
         }
     }
 
     function forgotPassword($email)
     {
         try {
-            
 
+            $this->validator->validEmail($email);
 
-            $message = [
-                'successMessage' => "An email has been sent to {$email} check your inbox for directions on how to reset your password."
-            ];
-
-            return $message;
+            // Send email
+            return "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
         } catch (Exception $e) {
-            error_log('There has been an error at forgot password.');
-            $message = [
-                'message' => $e->getMessage(),
-            ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
-            return $response;
+            throw new Exception($e);
         }
     }
 }

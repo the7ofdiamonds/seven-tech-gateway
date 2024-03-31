@@ -27,6 +27,10 @@ define('SEVEN_TECH_URL', WP_PLUGIN_URL . '/seven-tech/');
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
 use SEVEN_TECH\Admin\Admin;
+use SEVEN_TECH\Admin\AdminMissionStatement;
+use SEVEN_TECH\Admin\AdminSocialBar;
+use SEVEN_TECH\Admin\AdminAccountManagement;
+
 use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\CSS\Customizer\Customizer;
@@ -59,7 +63,8 @@ class SEVEN_TECH
 
     public function __construct()
     {
-        add_action('admin_init', function () {
+
+        add_action('admin_menu', function () {
             new Admin;
         });
 
