@@ -216,7 +216,7 @@ class Password
                 return $response;
             }
 
-            $statusCode = 201;
+            $statusCode = 200;
             $updatePasswordResponse = [
                 'successMessage' => 'Password updated succesfully.',
                 'statusCode' => $statusCode

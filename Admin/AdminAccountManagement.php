@@ -4,31 +4,28 @@ namespace SEVEN_TECH\Admin;
 
 use Exception;
 
-use SEVEN_TECH\Validator\Validator;
 use SEVEN_TECH\User\User;
 
 class AdminAccountManagement
 {
-    private $validator;
     private $user;
 
     public function __construct()
     {
-        $this->register_custom_submenu_page();
+        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
+        add_action('admin_menu', [$this, 'register_section']);
 
-        $this->validator = new Validator;
         $this->user = new User;
     }
 
     function register_custom_submenu_page()
     {
         add_submenu_page('seven_tech_admin', '', 'Account', 'manage_options', 'seven_tech_account_management', [$this, 'create_section'], 4);
-        $this->register_section();
     }
 
     function create_section()
     {
-        include SEVEN_TECH . 'Admin/includes/admin-account-management.php';
+        include_once SEVEN_TECH . 'Admin/includes/admin-account-management.php';
     }
 
     function register_section()
@@ -45,6 +42,19 @@ class AdminAccountManagement
     {
         try {
             $user = $this->user->findUserByEmail($email);
+
+            if ($user == '') {
+                error_log("User could not be found.");
+                return "User could not be found.";
+            }
+
+            $user_id = $user->id;
+
+            $accountLocked = add_user_meta($user_id, 'is_account_non_locked', 0, true);
+
+            if (is_int($accountLocked)) {
+                return 'Account removed succesfully.';
+            }
 
             $password = $user->password;
 
@@ -75,6 +85,11 @@ class AdminAccountManagement
         try {
             $user = $this->user->findUserByEmail($email);
 
+            if ($user == '') {
+                error_log("User could not be found.");
+                return "User could not be found.";
+            }
+
             global $wpdb;
 
             $password = $user->password;
@@ -104,20 +119,35 @@ class AdminAccountManagement
         try {
             $user = $this->user->findUserByEmail($email);
 
-            global $wpdb;
+            if ($user == '') {
+                error_log("User could not be found.");
+                return "User could not be found.";
+            }
+
+            $user_id = $user->id;
+
+            $accountDisabled = add_user_meta($user_id, 'is_enabled', 0, true);
+
+            if (is_int($accountDisabled)) {
+                return 'Account removed succesfully.';
+            }
 
             $password = $user->password;
+
+            global $wpdb;
 
             $results = $wpdb->get_results(
                 $wpdb->prepare("CALL disableAccount('%s', '%s')", $email, $password)
             );
+
+            $accountDisabled = $results[0]->resultSet;
 
             if ($wpdb->last_error) {
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
             }
 
-            if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
+            if (!$accountDisabled) {
                 throw new Exception('Account could not be removed at this time.');
             }
 
@@ -130,12 +160,20 @@ class AdminAccountManagement
     function deleteAccount($email)
     {
         try {
-            $validEmail = $this->validator->validEmail($email);
+            $user = $this->user->findUserByEmail($email);
 
-            if (!$validEmail) {
-                throw new Exception('Email is not valid');
+            if ($user == '') {
+                error_log("User could not be found.");
+                return "User could not be found.";
             }
-// Check if user is removed first
+
+            $is_enabled = $user->is_enabled;
+
+            if (!is_numeric($is_enabled) || $is_enabled == 1) {
+                error_log('User must first be removed.');
+                return 'User must first be removed.';
+            }
+
             global $wpdb;
 
             $results = $wpdb->get_results(

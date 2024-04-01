@@ -2,37 +2,34 @@
 
 namespace SEVEN_TECH\Admin;
 
-use SEVEN_TECH\Validator\Validator;
-use SEVEN_TECH\User\User;
-
 class Admin
 {
     public function __construct()
     {
-        $validator = new Validator;
-        $user = new User;
-        $this->register_custom_menu_page();
-        (new AdminMissionStatement);
-        (new AdminSocialBar);
-        (new AdminAccountManagement($validator, $user));
-        (new AdminUserManagement($validator, $user));
-
+        add_action('admin_menu', [$this, 'register_custom_menu_page']);
+        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
+        add_action('admin_menu', [$this, 'register_section']);
+        
         // add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
 
         // add_filter('map_meta_cap', [$this, 'allow_founder_edit_capabilities'], 10, 4);
     }
 
-    function register_custom_menu_page()
+    public function register_custom_menu_page()
     {
         add_menu_page(
             'SEVEN TECH',
             'SEVEN TECH',
             'manage_options',
             'seven_tech_admin',
-            [$this, 'create_section'],
+            '',
             'dashicons-info',
             3
         );
+    }
+
+    public function register_custom_submenu_page()
+    {
         add_submenu_page(
             'seven_tech_admin',
             'SEVEN TECH Dashboard',
@@ -42,12 +39,11 @@ class Admin
             [$this, 'create_section'],
             0
         );
-        add_action('admin_menu', [$this, 'register_section']);
     }
 
     function create_section()
     {
-        include SEVEN_TECH . 'Admin/includes/admin.php';
+        include_once SEVEN_TECH . 'Admin/includes/admin.php';
     }
 
     function register_section()

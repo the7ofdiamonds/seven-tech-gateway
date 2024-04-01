@@ -1,13 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { isValidUsername, isValidPassword, isValidName, isValidPhone } from '../utils/Validation';
+import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { isValidUsername, isValidPassword, isValidName, isValidPhone, isValidEmail } from '../utils/Validation';
 
-const signupUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/signup' : '/wp-json/seven-tech/v1/users/v1/signup';
+const signupUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/signup' : '/wp-json/seven-tech/v1/users/signup';
 
 const initialState = {
     signupLoading: false,
     signupError: '',
     signupSuccessMessage: '',
     signupErrorMessage: '',
+    signupStatusCode: ''
 };
 
 export const signup = createAsyncThunk('signup/signup', async (credentials) => {
@@ -40,7 +41,8 @@ export const signup = createAsyncThunk('signup/signup', async (credentials) => {
         if (isValidPhone(credentials.phone) == false) {
             throw new Error("Please provide a valid phone number.");
         }
-// Validate location
+
+        // Validate location
         const response = await fetch(signupUrl, {
             method: 'POST',
             headers: {
@@ -58,19 +60,12 @@ export const signup = createAsyncThunk('signup/signup', async (credentials) => {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMessage = errorData.message;
-            throw new Error(errorMessage);
-        }
-
         const responseData = await response.json();
+        
         return responseData;
     } catch (error) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-
-        return `Error (${errorCode}): ${errorMessage}`;
+        console.error(error)
+        throw error;
     }
 });
 
@@ -85,14 +80,16 @@ export const signupSlice = createSlice({
                 state.signupError = '';
                 state.signupSuccessMessage = action.payload.successMessage;
                 state.signupErrorMessage = action.payload.errorMessage;
+                state.signupStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
                 signup.pending,
             ), (state) => {
                 state.signupLoading = true;
-                state.signupError = null;
-                state.signupSuccessMessage = null;
-                state.signupErrorMessage = null;
+                state.signupError = '';
+                state.signupSuccessMessage = '';
+                state.signupErrorMessage = '';
+                state.signupStatusCode = '';
             })
             .addMatcher(isAnyOf(
                 signup.rejected,
@@ -100,6 +97,7 @@ export const signupSlice = createSlice({
                 state.signupLoading = false;
                 state.signupError = action.error.stack;
                 state.signupErrorMessage = action.error.message;
+                state.signupStatusCode = action.payload.code;
             });
     }
 })

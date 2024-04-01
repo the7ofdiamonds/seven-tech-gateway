@@ -14,8 +14,9 @@ class AdminUserManagement
 
     public function __construct()
     {
-        $this->register_custom_submenu_page();
-
+        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
+        add_action('admin_menu', [$this, 'register_section']);
+        
         $this->validator = new Validator;
         $this->user = new User;
     }
@@ -23,12 +24,11 @@ class AdminUserManagement
     function register_custom_submenu_page()
     {
         add_submenu_page('seven_tech_admin', '', 'User', 'manage_options', 'seven_tech_user_management', [$this, 'create_section'], 4);
-        $this->register_section();
     }
 
     function create_section()
     {
-        include SEVEN_TECH . 'Admin/includes/admin-user-management.php';
+        include_once SEVEN_TECH . 'Admin/includes/admin-user-management.php';
     }
 
     function register_section()

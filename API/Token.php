@@ -36,6 +36,7 @@ class Token
                 $statusCode = 400;
                 $tokenResponse = [
                     'errorMessage' => 'You could not be logged in successfully',
+                    'statusCode' => $statusCode
                 ];
 
                 $response = rest_ensure_response($tokenResponse);

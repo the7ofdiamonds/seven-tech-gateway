@@ -12,7 +12,7 @@ class User
 
     public function __construct()
     {
-        $this->validator = new Validator();
+        $this->validator = new Validator;
     }
 
     public function findUserByEmail($email)
@@ -33,8 +33,9 @@ class User
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
             }
-            
-            if (!$results || empty($results)) {
+
+            if (empty($results[0])) {
+                error_log("User could not be found.");
                 return '';
             }
 
@@ -46,7 +47,7 @@ class User
 
     function verifyAccount($email, $password, $confirmationCode)
     {
-        $validConfirmationCode = $this->validator->validateConfirmationCode($email, $confirmationCode);
+        $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
 
         if (!$validConfirmationCode) {
             return false;

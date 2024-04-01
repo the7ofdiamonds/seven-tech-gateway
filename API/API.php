@@ -66,7 +66,7 @@ class API
 
     $content = new Content;
     $founders = new Founders;
-    $location = new Location;
+    // $location = new Location;
 
     register_rest_route('seven-tech/v1', '/users/unlock-account', array(
       'methods' => 'POST',
@@ -140,11 +140,11 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/location/v1', '/headquarters', array(
-      'methods' => 'GET',
-      'callback' => array($location, 'get_headquarters'),
-      'permission_callback' => '__return_true',
-    ));
+    // register_rest_route('seven-tech/location/v1', '/headquarters', array(
+    //   'methods' => 'GET',
+    //   'callback' => array($location, 'get_headquarters'),
+    //   'permission_callback' => '__return_true',
+    // ));
 
     register_rest_route('seven-tech/v1', '/users/login', array(
       'methods' => 'POST',

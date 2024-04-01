@@ -6,9 +6,6 @@ use Exception;
 
 class Validator
 {
-    public function __construct()
-    {
-    }
 
     function validEmail($email)
     {
@@ -53,19 +50,5 @@ class Validator
         }
 
         return false;
-    }
-
-    function validateConfirmationCode($email, $confirmationCode)
-    {
-
-        if ($this->validEmail($email) == false) {
-            throw new Exception('Email is not valid.');
-        }
-
-        if ($this->validConfirmationCode($confirmationCode) == false) {
-            throw new Exception('Confirmation code is not valid.');
-        }
-
-        
     }
 }

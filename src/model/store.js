@@ -10,6 +10,7 @@ import { tokenSlice } from '../controllers/tokenSlice.js';
 import { changeSlice } from '../controllers/changeSlice.js';
 import { passwordSlice } from '../controllers/passwordSlice.js';
 import { accountSlice } from '../controllers/accountSlice.js';
+import { signupSlice } from '../controllers/signupSlice.js';
 
 const store = configureStore({
     reducer: {
@@ -22,7 +23,8 @@ const store = configureStore({
         founder: founderSlice.reducer,
         token: tokenSlice.reducer,
         change: changeSlice.reducer,
-        password: passwordSlice.reducer
+        password: passwordSlice.reducer,
+        signup: signupSlice.reducer
     }
 });
 

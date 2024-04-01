@@ -22,7 +22,10 @@ function SignUpComponent() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const { signupStatusCode, signupSuccessMessage, signupErrorMessage } =
+    useSelector((state) => state.signup);
+
+    useEffect(() => {
     if (
       Password !== '' &&
       ConfirmPassword !== '' &&
@@ -30,13 +33,35 @@ function SignUpComponent() {
     ) {
       const msg = 'You have successfully entered your password twice.';
       setMessage(msg);
-      setMessageType("success");
+      setMessageType('success');
     } else if (Password !== '' && Password !== ConfirmPassword) {
       const msg = 'You have not entered your password twice.';
       setMessage(msg);
-      setMessageType("error");
+      setMessageType('error');
     }
   }, [Password, ConfirmPassword]);
+
+  useEffect(() => {
+    if (signupStatusCode == 201) {
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 5000);
+    }
+  }, [signupStatusCode]);
+
+  useEffect(() => {
+    if (signupSuccessMessage) {
+      setMessageType('success');
+      setMessage(signupSuccessMessage);
+    }
+  }, [signupSuccessMessage]);
+
+  useEffect(() => {
+    if (signupErrorMessage) {
+      setMessageType('error');
+      setMessage(signupErrorMessage);
+    }
+  }, [signupErrorMessage]);
 
   const credentials = {
     username: UserName,
@@ -51,23 +76,7 @@ function SignUpComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signup(credentials))
-      .then((response) => {
-        console.log(response);
-
-        setMessage(response);
-        setMessageType("success");
-      })
-      .then(() => {
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 5000);
-      })
-      .catch((error) => {
-        console.log(error.message);
-        setMessage(error.message);
-        setMessageType(error.message);
-      });
+    dispatch(signup(credentials));
   };
 
   const handleChange = (e) => {
@@ -91,7 +100,7 @@ function SignUpComponent() {
   return (
     <>
       <main className="signup">
-        <NavigationLoginComponent page={page}/>
+        <NavigationLoginComponent page={page} />
 
         <div className="login card">
           <form>
