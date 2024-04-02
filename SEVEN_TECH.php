@@ -115,10 +115,10 @@ class SEVEN_TECH
 
         $this->roles = new Roles;
 
-        // add_action('update_option_wp_user_roles', array($this->roles, 'update_roles'), 10, 2);
-        // add_action('add_user_role', array($this->roles, 'update_user_roles'), 10, 2);
+        add_action('update_option_wp_user_roles', [$this->roles, 'update_roles'], 10, 2);
+        add_action('add_user_role', [$this->roles, 'update_user_roles'], 10, 2);
 
-        // add_action('after_setup_theme', array(new Admin, 'hide_admin_bar'));
+        add_action('after_setup_theme', [new Admin, 'hide_admin_bar']);
     }
 
     function activate()
@@ -136,14 +136,4 @@ class SEVEN_TECH
 $seven_tech = new SEVEN_TECH();
 register_activation_hook(__FILE__, array($seven_tech, 'activate'));
 
-// $seven_tech_roles = new Roles();
-// register_activation_hook(__FILE__, array($seven_tech_roles, 'add_roles'));
-
-
-// $seven_tech_pages = new Pages();
-// register_activation_hook(__FILE__, array($seven_tech_pages, 'add_pages'));
-// register_activation_hook(__FILE__, [$seven_tech_pages, 'add_founder_subpages']);
-
-// register_deactivation_hook(__FILE__, array($thfw_users, 'deactivate'));
-
-//Uninstall move post type to trash
+//Uninstall move post type to trash ???

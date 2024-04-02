@@ -81,6 +81,18 @@ class User
             return false;
         }
 
-        return $this->findUserByEmail($email);
+        $user = $this->findUserByEmail($email);
+
+        $password_check = wp_check_password($password, $user->password, $user->id);
+
+        if (!$password_check) {
+            return false;
+        }
+
+        if ($confirmationCode != $user->confirmationCode) {
+            return false;
+        }
+
+        return true;
     }
 }

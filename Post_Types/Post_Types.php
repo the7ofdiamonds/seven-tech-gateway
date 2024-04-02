@@ -8,25 +8,8 @@ class Post_Types
 
     public function __construct()
     {
-        // 1. Investor
-        // 2. Founder
-        // 3. Executive
-        // 4. Managing Member
-        // 5. Freelancer
-        // 6. Employee
 
         $this->post_types_list = [
-            [
-                'name' => 'investors',
-                'menu_icon' => '',
-                'menu_position' => 11,
-                'title' => 'INVESTORS',
-                'singular' => 'Investor',
-                'plural' => 'Investors',
-                'archive_page' => 'investors',
-                'single_page' => 'investor',
-                'file_name' => "Investors"
-            ],
             [
                 'name' => 'founders',
                 'menu_icon' => '',

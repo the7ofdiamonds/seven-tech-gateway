@@ -15,21 +15,15 @@ class Logout
             $email = $request['email'];
 
             if (empty($email)) {
-                $logoutResponse = [
-                    'errorMessage' => 'A Email is required to logout'
-                ];
-
-                $response = rest_ensure_response($logoutResponse);
-                $response->set_status(400);
-
-                return $response;
+                $statusCode = 400;
+                throw new Exception('An Email is required to logout', $statusCode);
             }
 
             global $wpdb;
 
-            $storedProcedureName = 'findUserByEmail';
-
-            $results = $wpdb->get_results($wpdb->prepare("CALL $storedProcedureName(%s)", $email));
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL findUserByEmail(%s)", $email)
+            );
 
             if ($wpdb->last_error) {
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
@@ -37,51 +31,48 @@ class Logout
             }
 
             if ($results == null) {
-                $loginResponse = [
-                    'errorMessage' => 'This email could not be found'
-                ];
-
-                $response = rest_ensure_response($loginResponse);
-                $response->set_status(404);
-
-                return $response;
+                $statusCode = 404;
+                throw new Exception('This email could not be found', $statusCode);
             }
 
             $userData = $results[0];
+
             wp_set_current_user($userData->id);
 
             wp_logout();
 
             if (is_user_logged_in()) {
+                $statusCode = 400;
                 $logoutResponse = [
-                    'errorMessage' => 'User could not be logged out.'
+                    'errorMessage' => 'User could not be logged out.',
+                    'statusCode' => $statusCode
                 ];
 
                 $response = rest_ensure_response($logoutResponse);
-                $response->set_status(400);
+                $response->set_status($statusCode);
 
                 return $response;
             }
 
+            $statusCode = 200;
             $logoutResponse = [
-                'successMessage' => 'You have been logged out'
+                'successMessage' => 'You have been logged out',
+                'statusCode' => $statusCode
             ];
 
             $response = rest_ensure_response($logoutResponse);
-            $response->set_status(200);
+            $response->set_status($statusCode);
 
             return $response;
         } catch (Exception $e) {
-            $error_message = $e->getMessage();
-            $status_code = $e->getCode();
-
+            $statusCode = $e->getCode();
             $response_data = [
-                'message' => $error_message,
-                'status' => $status_code
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
 
             $response = rest_ensure_response($response_data);
-            $response->set_status($status_code);
+            $response->set_status($statusCode);
 
             return $response;
         }

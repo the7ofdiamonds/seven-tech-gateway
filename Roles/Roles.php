@@ -18,12 +18,7 @@ class Roles
 
     function add_roles()
     {
-        add_role('investor', 'Investor', get_role('contributor')->capabilities);
         add_role('founder', 'Founder', get_role('editor')->capabilities);
-        add_role('managing_member', 'Managing Member', get_role('editor')->capabilities);
-        add_role('executive', 'Executive', get_role('editor')->capabilities);
-        add_role('employee', 'Employee', get_role('author')->capabilities);
-        add_role('freelancer', 'Freelancer', get_role('author')->capabilities);
     }
 
 

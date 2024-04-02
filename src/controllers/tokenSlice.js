@@ -67,7 +67,7 @@ export const tokenSlice = createSlice({
                 (state, action) => {
                     state.tokenLoading = false;
                     state.tokenError = action.error;
-                    state.tokenErrorMessage = action.error.message;
+                    state.tokenErrorMessage = action.error.errorMessage;
                     state.tokenStatusCode = action.error.statusCode;
                 });
     }

@@ -6,14 +6,16 @@ use Exception;
 
 use WP_REST_Request;
 
+use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 
 class Token
 {
     private $auth;
 
-    public function __construct($auth)
+    public function __construct(Auth $auth)
     {
         $this->auth = $auth;
     }
@@ -27,21 +29,24 @@ class Token
 
             $verifiedIdToken = $this->getToken($request);
 
-            $userData = $this->findUserWithToken($verifiedIdToken);
+            if($verifiedIdToken == ''){
+                $statusCode = 403;
+                throw new Exception('Valid token is required.', $statusCode);
+            }
 
-            wp_set_current_user($userData->id);
-            wp_set_auth_cookie($userData->id, true);
+            $user = $this->findUserWithToken($verifiedIdToken);
+
+            if ($user == null) {
+                $statusCode = 404;
+                throw new Exception('User could not be found please signup to gain permission and access.', $statusCode);
+            }
+
+            wp_set_current_user($user->id);
+            wp_set_auth_cookie($user->id, true);
 
             if (!is_user_logged_in()) {
                 $statusCode = 400;
-                $tokenResponse = [
-                    'errorMessage' => 'You could not be logged in successfully',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($tokenResponse);
-                $response->set_status($statusCode);
-                return $response;
+                throw new Exception('You could not be logged in successfully', $statusCode);
             }
 
             $statusCode = 200;
@@ -59,7 +64,7 @@ class Token
             $tokenResponse = [
                 'message' => $e->getMessage(),
                 'errorMessage' => "Please login to gain access and permission.",
-                "statusCode" => $statusCode
+                'statusCode' => $statusCode
             ];
 
             $response = rest_ensure_response($tokenResponse);
@@ -70,11 +75,12 @@ class Token
             error_log('There has been an error at loging in using the tokens provided.');
             $statusCode = $e->getCode();
             $message = [
-                'message' => $e->getMessage(),
+                'errorMessage' => $e->getMessage(),
                 'statusCode' => $statusCode
             ];
             $response = rest_ensure_response($message);
             $response->set_status($statusCode);
+
             return $response;
         }
     }
@@ -98,22 +104,24 @@ class Token
     {
         try {
             $verifiedIdToken = $this->auth->verifyIdToken($token);
+
             $email = $verifiedIdToken->claims()->get('email');
 
             global $wpdb;
 
-            $storedProcedureName = 'findUserByEmail';
-
-            $results = $wpdb->get_results($wpdb->prepare("CALL $storedProcedureName(%s)", $email));
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL findUserByEmail(%s)", $email)
+            );
 
             if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                $statusCode = 500;
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
             if ($results == null) {
-                throw new Exception('This username could not be found');
+                return '';
             }
-
+// catch revoked id tokens
             return $results[0];
         } catch (FailedToVerifyToken $e) {
             throw new FailedToVerifyToken($e);

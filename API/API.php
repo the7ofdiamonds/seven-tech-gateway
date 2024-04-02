@@ -2,7 +2,6 @@
 
 namespace SEVEN_TECH\API;
 
-use SEVEN_TECH\API\Google\Google;
 use SEVEN_TECH\User\User;
 
 use Kreait\Firebase\Factory;
@@ -13,6 +12,11 @@ class API
   public function __construct()
   {
     $credentialsPath = SEVEN_TECH . 'serviceAccount.json';
+
+    $user = new User;
+    $account = new Account;
+    $content = new Content;
+    $founders = new Founders;
 
     if (file_exists($credentialsPath)) {
       $jsonFileContents = file_get_contents($credentialsPath);
@@ -48,13 +52,9 @@ class API
     }
 
     if ($credentialsPath !== null) {
-      new Google($credentialsPath);
-
       $factory = (new Factory)->withServiceAccount($credentialsPath);
       $auth = $factory->createAuth();
-      $user = new User;
 
-      $account = new Account;
       $change = new Change($auth);
       $email = new Email($auth);
       $login = new Login($auth);
@@ -65,10 +65,6 @@ class API
     } else {
       error_log('A path to the Google Service Account file is required.');
     }
-
-    $content = new Content;
-    $founders = new Founders;
-    // $location = new Location;
 
     register_rest_route('seven-tech/v1', '/users/unlock-account', array(
       'methods' => 'POST',
@@ -141,12 +137,6 @@ class API
       'callback' => array($founders, 'get_founder_resume'),
       'permission_callback' => '__return_true',
     ));
-
-    // register_rest_route('seven-tech/location/v1', '/headquarters', array(
-    //   'methods' => 'GET',
-    //   'callback' => array($location, 'get_headquarters'),
-    //   'permission_callback' => '__return_true',
-    // ));
 
     register_rest_route('seven-tech/v1', '/users/login', array(
       'methods' => 'POST',

@@ -6,12 +6,14 @@ use Exception;
 
 use WP_REST_Request;
 
+use Kreait\Firebase\Auth;
+
 class Login
 {
 
     private $auth;
 
-    public function __construct($auth)
+    public function __construct(Auth $auth)
     {
         $this->auth = $auth;
     }

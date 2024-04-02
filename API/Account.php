@@ -79,6 +79,7 @@ class Account
             error_log('There has been an error at unlock account');
             $message = [
                 'message' => $e->getMessage(),
+                'code' => $e->getCode()
             ];
             $response = rest_ensure_response($message);
             $response->set_status($e->getCode());
@@ -155,6 +156,7 @@ class Account
             error_log('There has been an error at remove account');
             $message = [
                 'message' => $e->getMessage(),
+                'code' => $e->getCode()
             ];
             $response = rest_ensure_response($message);
             $response->set_status($e->getCode());

@@ -6,13 +6,14 @@ use Exception;
 
 use WP_REST_Request;
 
+use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
 class Change
 {
     private $token;
 
-    public function __construct($auth)
+    public function __construct(Auth $auth)
     {
         $this->token = new Token($auth);
     }

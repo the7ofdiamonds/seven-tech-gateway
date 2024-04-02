@@ -20,6 +20,7 @@ import {
 } from 'firebase/auth';
 
 import { getLocation } from '../../utils/location';
+
 import StatusBarComponent from './StatusBarComponent';
 
 const firebaseAuth = getAuth();
@@ -40,6 +41,7 @@ function LoginComponent() {
   const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
   const [location, setLocation] = useState('');
+  const [showStatusbar, setShowStatusBar] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState(
     'Enter your email and password to log in.'
@@ -73,6 +75,15 @@ function LoginComponent() {
       setMessageType('error');
     }
   }, [loginErrorMessage, tokenErrorMessage]);
+
+  useEffect(() => {
+    if (message != '') {
+      setShowStatusBar('modal-overlay');
+      setTimeout(() => {
+        setShowStatusBar('');
+      }, 5000);
+    }
+  }, [message]);
 
   const handleIdentityChange = async (e) => {
     setIdentity(e.target.value);
@@ -237,8 +248,12 @@ function LoginComponent() {
           </button>
         </div>
       </div>
-      
-      <StatusBarComponent messageType={messageType} message={message} />
+
+      <span className={showStatusbar}>
+        {message !== '' && (
+          <StatusBarComponent messageType={messageType} message={message} />
+        )}
+      </span>
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { isValidEmail } from '../utils/Validation';
 
 const logoutUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout" : "/wp-json/seven-tech/v1/users/logout";
 export const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout-all" : null;
@@ -14,13 +15,17 @@ export const logout = createAsyncThunk('logout/logout', async () => {
     try {
         const email = localStorage.getItem('email');
 
+        if (isValidEmail(email) == false) {
+            throw new Error('Email is not valid.');
+        }
+
         const response = await fetch(logoutUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email
+                email: email
             })
         });
 
@@ -47,13 +52,17 @@ export const logoutAll = createAsyncThunk('logout/logoutAll', async () => {
     try {
         const email = localStorage.getItem('email');
 
+        if (isValidEmail(email) == false) {
+            throw new Error('Email is not valid.');
+        }
+
         const response = await fetch(logoutAllUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email,
+                email: email,
             })
         });
 

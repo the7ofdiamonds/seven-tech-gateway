@@ -8,17 +8,21 @@ use WP_REST_Request;
 
 use SEVEN_TECH\Admin\AdminUserManagement;
 
+use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use SEVEN_TECH\User\User;
 
 class Password
 {
     private $adminusermngmnt;
     private $token;
+    private $user;
 
-    public function __construct($auth)
+    public function __construct(Auth $auth)
     {
         $this->adminusermngmnt = new AdminUserManagement;
         $this->token = new Token($auth);
+        $this->user = new User;
     }
 
     function forgotPassword(WP_REST_Request $request)
@@ -153,7 +157,7 @@ class Password
     function updatePassword(WP_REST_Request $request)
     {
         try {
-            $username = $request['username'];
+            $email = $request['email'];
             $confirmationCode = $request['confirmationCode'];
             $password = password_hash($request['password'], PASSWORD_DEFAULT);;
 
@@ -190,10 +194,25 @@ class Password
                 return $response;
             }
 
+            $verifiedAccount = $this->user->verifyAccount($email, $password, $confirmationCode);
+
+            if (!$verifiedAccount) {
+                $statusCode = 403;
+                $updatePasswordResponse = [
+                    'errorMessage' => 'Credentials are not valid password could not be updated at this time.',
+                    'statusCode' => $statusCode
+                ];
+
+                $response = rest_ensure_response($updatePasswordResponse);
+                $response->set_status($statusCode);
+
+                return $response;
+            }
+
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL updatePassword('$username', '$confirmationCode', '$password')"
+                "CALL updatePassword('$email', '$confirmationCode', '$password')"
             );
 
             if ($wpdb->last_error) {

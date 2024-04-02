@@ -25,6 +25,14 @@ function Login() {
     }
   }, [loginStatusCode, tokenStatusCode]);
 
+  useEffect(() => {
+    if (loginStatusCode == 404 || tokenStatusCode == 404) {
+      setTimeout(() => {
+        window.location.href = '/signup';
+      }, 5000);
+    }
+  }, [loginStatusCode, tokenStatusCode]);
+
   return (
     <>
       <main className="login">

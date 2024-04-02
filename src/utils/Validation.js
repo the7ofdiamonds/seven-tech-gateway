@@ -6,11 +6,7 @@ export function isValidEmail(email) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (emailRegex.test(email) == false) {
-        throw new Error("Email is not valid.");
-    }
-
-    return true;
+    return emailRegex.test(email);
 }
 
 export function isValidUsername(username) {

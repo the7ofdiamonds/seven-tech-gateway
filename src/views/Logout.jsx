@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { displayStatus } from '../utils/DisplayStatus';
-
 import { logout } from '../controllers/logoutSlice';
 
 function LogOutComponent() {

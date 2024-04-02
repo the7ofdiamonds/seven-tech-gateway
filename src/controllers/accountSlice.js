@@ -137,8 +137,8 @@ export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                confirmationCode: confirmationCode,
-                email: email
+                email: email,
+                confirmationCode: confirmationCode
             })
         });
 
