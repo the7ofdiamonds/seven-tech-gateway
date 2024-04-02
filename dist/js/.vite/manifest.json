@@ -94,7 +94,8 @@
     "imports": [
       "src/index.jsx",
       "_NavigationLoginComponent.js",
-      "_useDispatch.js"
+      "_useDispatch.js",
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Forgot.jsx"
@@ -165,6 +166,7 @@
     "imports": [
       "src/index.jsx",
       "_NavigationLoginComponent.js",
+      "_StatusBarComponent.js",
       "_useDispatch.js"
     ],
     "isDynamicEntry": true,

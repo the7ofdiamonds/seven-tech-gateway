@@ -1,53 +1,64 @@
-.login.card {
-  padding: 0.5rem;
-  min-width: 17.5rem;
-
-  form {
+main.login {
+  .flex-box {
     display: flex;
-    flex-direction: column;
-    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    width: 100vw;
 
-    table {
-      border-spacing: 0.75em;
+    .login.card {
+      padding: 0.5rem;
+      min-width: 17.5rem;
 
-      tfoot {
-        td {
-          button {
-            margin: auto;
+      form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        table {
+          border-spacing: 0.75em;
+
+          tfoot {
+            td {
+              button {
+                margin: auto;
+              }
+            }
           }
         }
       }
     }
-  }
-}
 
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
 
-  .login-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    width: 18rem;
-    text-align: left;
+      .login-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 18rem;
+        text-align: left;
 
-    svg {
-      width: 3rem;
-      height: auto;
-      padding: 0.5em;
-    }
+        svg {
+          width: 3rem;
+          height: auto;
+          padding: 0.5em;
+        }
 
-    &.apple {
-      svg {
-        color: white;
+        &.apple {
+          svg {
+            color: white;
+          }
+        }
+
+        h3 {
+          width: 100%;
+          letter-spacing: unset;
+        }
       }
-    }
-
-    h3 {
-      width: 100%;
-      letter-spacing: unset;
     }
   }
 }

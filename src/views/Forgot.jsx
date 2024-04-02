@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import NavigationLoginComponent from './components/NavigationLoginComponent';
-
 import ForgotComponent from './components/ForgotComponent';
+import StatusBarComponent from './components/StatusBarComponent';
 
 function Forgot() {
   let page = 'forgot';
-  
+
   const dispatch = useDispatch();
 
   const { passwordSuccessMessage, passwordErrorMessage, passwordStatusCode } =
@@ -46,13 +46,11 @@ function Forgot() {
   return (
     <>
       <main className="forgot">
-      <NavigationLoginComponent page={page}/>
+        <NavigationLoginComponent page={page} />
         <ForgotComponent />
 
         {message !== '' && (
-          <div className={`status-bar card ${messageType}`}>
-            <span>{message}</span>
-          </div>
+          <StatusBarComponent messageType={messageType} message={message} />
         )}
       </main>
     </>

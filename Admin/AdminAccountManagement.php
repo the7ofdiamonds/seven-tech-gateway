@@ -12,15 +12,13 @@ class AdminAccountManagement
 
     public function __construct()
     {
-        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
-        add_action('admin_menu', [$this, 'register_section']);
-
         $this->user = new User;
     }
 
     function register_custom_submenu_page()
     {
         add_submenu_page('seven_tech_admin', '', 'Account', 'manage_options', 'seven_tech_account_management', [$this, 'create_section'], 4);
+        $this->register_section();
     }
 
     function create_section()

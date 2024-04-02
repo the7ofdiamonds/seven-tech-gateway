@@ -21,10 +21,9 @@ function ForgotComponent() {
 
   return (
     <>
-      <div className="card">
+      <div className="forgot card">
         <form>
           <table>
-            <thead></thead>
             <tbody>
               <tr>
                 <td>

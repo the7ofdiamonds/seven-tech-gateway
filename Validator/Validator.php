@@ -13,7 +13,7 @@ class Validator
             throw new Exception('Email is required.');
         }
 
-        $pattern = '/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/';
+        $pattern = '/^\^([a-zA-Z0-9._-]+)@([a-zA-Z0-9._-]+)\.([a-zA-Z]+)$/';
 
         if (preg_match($pattern, $email)) {
             return true;
@@ -28,7 +28,7 @@ class Validator
             throw new Exception('Password is required.');
         }
 
-        $pattern = '/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/';
+        $pattern = '/^\[a-zA-Z0-9!@#\$%\^&\*]+$/';
 
         if (preg_match($pattern, $password)) {
             return true;
@@ -43,7 +43,7 @@ class Validator
             throw new Exception('Confirmation code is required.');
         }
 
-        $pattern = '/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/';
+        $pattern = '/^\[a-zA-Z0-9-]+$/';
 
         if (preg_match($pattern, $confirmationCode)) {
             return true;

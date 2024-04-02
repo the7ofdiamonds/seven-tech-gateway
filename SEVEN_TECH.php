@@ -27,10 +27,10 @@ define('SEVEN_TECH_URL', WP_PLUGIN_URL . '/seven-tech/');
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
 use SEVEN_TECH\Admin\Admin;
+use SEVEN_TECH\Admin\AdminMissionStatement;
+use SEVEN_TECH\Admin\AdminSocialBar;
 use SEVEN_TECH\Admin\AdminAccountManagement;
 use SEVEN_TECH\Admin\AdminUserManagement;
-use SEVEN_TECH\Admin\AdminSocialBar;
-use SEVEN_TECH\Admin\AdminMissionStatement;
 
 use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
@@ -64,19 +64,11 @@ class SEVEN_TECH
 
     public function __construct()
     {
-        $admin = new Admin;
-        $adminMission = new AdminMissionStatement;
-        $adminSocial = new AdminSocialBar;
-        $adminAccount = new AdminAccountManagement;
-        $adminUser = new AdminUserManagement;
-
-        add_action('admin_init', function () use ($admin, $adminMission, $adminSocial, $adminAccount, $adminUser) {
-            $admin;
-            // $adminMission;
-            // $adminSocial;
-            // $adminAccount;
-            // $adminUser;
-        });
+        add_action('admin_menu', [(new Admin), 'register_custom_menu_page']);
+        add_action('admin_menu', [(new AdminMissionStatement), 'register_custom_submenu_page']);
+        add_action('admin_menu', [(new AdminSocialBar), 'register_custom_submenu_page']);
+        add_action('admin_menu', [(new AdminAccountManagement), 'register_custom_submenu_page']);
+        add_action('admin_menu', [(new AdminUserManagement), 'register_custom_submenu_page']);
 
         add_action('rest_api_init', function () {
             new API();

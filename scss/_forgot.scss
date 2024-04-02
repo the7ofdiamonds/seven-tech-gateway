@@ -1,0 +1,30 @@
+main.forgot {
+  .forgot.card {
+    padding: 0.5rem;
+    min-width: 17.5rem;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      table {
+        border-spacing: 0.75em;
+
+        td {
+          display: flex;
+          justify-content: center;
+          gap: 0.5rem;
+        }
+
+        tfoot {
+          td {
+            button {
+              margin: auto;
+            }
+          }
+        }
+      }
+    }
+  }
+}

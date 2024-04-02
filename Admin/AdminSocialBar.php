@@ -7,13 +7,12 @@ class AdminSocialBar
 
     public function __construct()
     {
-        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
-        add_action('admin_menu', [$this, 'register_section']);
     }
 
     function register_custom_submenu_page()
     {
         add_submenu_page('seven_tech_admin', 'Add Social Media', 'Add Social', 'manage_options', 'seven_tech_social_bar', [$this, 'create_section'], 4);
+        $this->register_section();
     }
 
     function create_section()

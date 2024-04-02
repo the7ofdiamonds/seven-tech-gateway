@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import NavigationLoginComponent from './components/NavigationLoginComponent';
+import StatusBarComponent from './components/StatusBarComponent';
 
 import { signup } from '../controllers/signupSlice';
 
 function SignUpComponent() {
   let page = 'signup';
 
-  const [UserName, setUserName] = useState('');
-  const [Email, setEmail] = useState('');
-  const [Password, setPassword] = useState('');
-  const [ConfirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [nicename, setNicename] = useState('');
   const [nickname, setNickname] = useState('');
   const [firstname, setFirstname] = useState('');
@@ -29,19 +30,19 @@ function SignUpComponent() {
 
   useEffect(() => {
     if (
-      Password !== '' &&
-      ConfirmPassword !== '' &&
-      Password === ConfirmPassword
+      password !== '' &&
+      confirmPassword !== '' &&
+      password === confirmPassword
     ) {
       const msg = 'You have successfully entered your password twice.';
       setMessage(msg);
       setMessageType('success');
-    } else if (Password !== '' && Password !== ConfirmPassword) {
+    } else if (password !== '' && password !== confirmPassword) {
       const msg = 'You have not entered your password twice.';
       setMessage(msg);
       setMessageType('error');
     }
-  }, [Password, ConfirmPassword]);
+  }, [password, confirmPassword]);
 
   useEffect(() => {
     if (signupStatusCode == 201) {
@@ -66,10 +67,10 @@ function SignUpComponent() {
   }, [signupErrorMessage]);
 
   const credentials = {
-    username: UserName,
-    email: Email,
-    password: Password,
-    confirmPassword: ConfirmPassword,
+    username: username,
+    email: email,
+    password: password,
+    confirmPassword: confirmPassword,
     nicename: nicename,
     nickname: nickname,
     firstname: firstname,
@@ -85,7 +86,7 @@ function SignUpComponent() {
 
   const handleChange = (e) => {
     if (e.target.name === 'user-name') {
-      setUserName(e.target.value);
+      setUsername(e.target.value);
     } else if (e.target.name === 'email') {
       setEmail(e.target.value);
     } else if (e.target.name === 'password') {
@@ -110,24 +111,19 @@ function SignUpComponent() {
       <main className="signup">
         <NavigationLoginComponent page={page} />
 
-        <div className="login card">
+        <div className="signup card">
           <form>
             <table>
-              <thead></thead>
               <tbody>
                 <tr>
                   <td>
                     <input
                       type="text"
-                      name="user-name"
-                      placeholder="User Name"
+                      name="username"
+                      placeholder="Username"
                       onChange={handleChange}
                       required
                     />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
                     <input
                       type="email"
                       name="email"
@@ -146,10 +142,6 @@ function SignUpComponent() {
                       onChange={handleChange}
                       required
                     />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
                     <input
                       type="password"
                       name="confirm-password"
@@ -168,10 +160,6 @@ function SignUpComponent() {
                       onChange={handleChange}
                       required
                     />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
                     <input
                       type="text"
                       name="nickname"
@@ -190,10 +178,6 @@ function SignUpComponent() {
                       onChange={handleChange}
                       required
                     />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
                     <input
                       type="text"
                       name="lastname"
@@ -227,9 +211,7 @@ function SignUpComponent() {
         </div>
 
         {message !== '' && (
-          <div className={`status-bar card ${messageType}`}>
-            <span>{message}</span>
-          </div>
+          <StatusBarComponent messageType={messageType} message={message} />
         )}
       </main>
     </>

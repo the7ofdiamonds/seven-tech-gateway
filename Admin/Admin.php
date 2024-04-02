@@ -6,10 +6,6 @@ class Admin
 {
     public function __construct()
     {
-        add_action('admin_menu', [$this, 'register_custom_menu_page']);
-        add_action('admin_menu', [$this, 'register_custom_submenu_page']);
-        add_action('admin_menu', [$this, 'register_section']);
-        
         // add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
 
         // add_filter('map_meta_cap', [$this, 'allow_founder_edit_capabilities'], 10, 4);
@@ -26,10 +22,6 @@ class Admin
             'dashicons-info',
             3
         );
-    }
-
-    public function register_custom_submenu_page()
-    {
         add_submenu_page(
             'seven_tech_admin',
             'SEVEN TECH Dashboard',
@@ -39,16 +31,12 @@ class Admin
             [$this, 'create_section'],
             0
         );
+        add_settings_section('seven-tech-admin-group', '', [$this, 'create_section'], 'seven_tech_admin');
     }
 
     function create_section()
     {
         include_once SEVEN_TECH . 'Admin/includes/admin.php';
-    }
-
-    function register_section()
-    {
-        add_settings_section('seven-tech-admin-group', '', [$this, 'create_section'], 'seven_tech_admin');
     }
 
     function hide_admin_bar()
