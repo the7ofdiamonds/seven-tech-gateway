@@ -8,7 +8,8 @@ const initialState = {
     logoutLoading: false,
     logoutError: '',
     logoutSuccessMessage: '',
-    logoutErrorMessage: ''
+    logoutErrorMessage: '',
+    logoutStatusCode: ''
 };
 
 export const logout = createAsyncThunk('logout/logout', async () => {
@@ -29,12 +30,6 @@ export const logout = createAsyncThunk('logout/logout', async () => {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMessage = errorData.message;
-            throw new Error(errorMessage);
-        }
-
         const responseData = await response.json();
 
         localStorage.removeItem('display_name');
@@ -44,7 +39,8 @@ export const logout = createAsyncThunk('logout/logout', async () => {
 
         return responseData;
     } catch (error) {
-        console.error('Error:', error.message);
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -66,12 +62,6 @@ export const logoutAll = createAsyncThunk('logout/logoutAll', async () => {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMessage = errorData.message;
-            throw new Error(errorMessage);
-        }
-
         const responseData = await response.json();
 
         localStorage.removeItem('display_name');
@@ -81,7 +71,8 @@ export const logoutAll = createAsyncThunk('logout/logoutAll', async () => {
 
         return responseData;
     } catch (error) {
-        console.error('Error:', error.message);
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -95,21 +86,25 @@ export const logoutSlice = createSlice({
                 state.logoutError = '';
                 state.logoutSuccessMessage = action.payload.successMessage;
                 state.logoutErrorMessage = action.payload.errorMessage;
+                state.logoutStatusCode = action.payload.statusCode;
             })
             .addCase(logoutAll.fulfilled, (state, action) => {
                 state.logoutLoading = false;
                 state.logoutError = '';
                 state.logoutSuccessMessage = action.payload.successMessage;
                 state.logoutErrorMessage = action.payload.errorMessage;
+                state.logoutStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
                 logout.pending,
                 logoutAll.pending
             ), (state) => {
                 state.logoutLoading = true;
-                state.logoutError = null;
-                state.logoutSuccessMessage = null;
-                state.logoutErrorMessage = null;
+                state.logoutError = '';
+                state.logoutSuccessMessage = '';
+                state.logoutErrorMessage = '';
+                state.logoutStatusCode = '';
+
             })
             .addMatcher(isAnyOf(
                 logout.rejected,

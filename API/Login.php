@@ -21,105 +21,47 @@ class Login
     function login(WP_REST_Request $request)
     {
         try {
-            $display_name = $request['username'];
             $email = $request['email'];
             $password = $request['password'];
             $location = $request['location'];
             error_log(print_r($location, true));
 
-            if (empty($display_name) && empty($email)) {
+            if (empty($email)) {
                 $statusCode = 400;
-                $loginResponse = [
-                    'errorMessage' => 'A Username or email is required for login',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($loginResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('An email is required for login.', $statusCode);
             }
 
             if (empty($password)) {
                 $statusCode = 400;
-                $loginResponse = [
-                    'errorMessage' => 'A Password is required for login',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($loginResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('A Password is required for login', $statusCode);
             }
 
             global $wpdb;
 
-            if (!empty($display_name)) {
-                $storedProcedureName = 'findUserByUsername';
+            $results = $wpdb->get_results($wpdb->prepare("CALL findUserByEmail(%s)", $email));
 
-                $results = $wpdb->get_results($wpdb->prepare("CALL $storedProcedureName(%s)", $display_name));
-
-                if ($wpdb->last_error) {
-                    error_log("Error executing stored procedure: " . $wpdb->last_error);
-                }
-
-                if ($results == null) {
-                    $statusCode = 404;
-                    $loginResponse = [
-                        'errorMessage' => 'This username could not be found',
-                        'statusCode' => $statusCode
-                    ];
-
-                    $response = rest_ensure_response($loginResponse);
-                    $response->set_status($statusCode);
-
-                    return $response;
-                }
+            if ($wpdb->last_error) {
+                $statusCode = 500;
+                error_log("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
-            if (!empty($email)) {
-                $storedProcedureName = 'findUserByEmail';
+            $user = $results[0];
 
-                $results = $wpdb->get_results($wpdb->prepare("CALL $storedProcedureName(%s)", $email));
-
-                if ($wpdb->last_error) {
-                    error_log("Error executing stored procedure: " . $wpdb->last_error);
-                }
-
-                if ($results == null) {
-                    $statusCode = 404;
-                    $loginResponse = [
-                        'errorMessage' => 'This email could not be found',
-                        'statusCode' => $statusCode
-                    ];
-
-                    $response = rest_ensure_response($loginResponse);
-                    $response->set_status($statusCode);
-
-                    return $response;
-                }
+            if ($user == null) {
+                $statusCode = 404;
+                throw new Exception('This email could not be found', $statusCode);
             }
 
-            $userData = $results[0];
-
-            $password_check = wp_check_password($password, $userData->password, $userData->id);
+            $password_check = wp_check_password($password, $user->password, $user->id);
 
             if (!$password_check) {
                 $statusCode = 404;
-                $loginResponse = [
-                    'errorMessage' => 'The password you entered for this username is not correct.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($loginResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('The password you entered for this username is not correct.', $statusCode);
             }
 
             $credentials = array(
-                'user_login'    => $userData->email,
+                'user_login'    => $user->email,
                 'user_password' => $password,
                 'remember'      => true,
             );
@@ -127,16 +69,7 @@ class Login
             $user = wp_signon($credentials, false);
 
             if (is_wp_error($user)) {
-                $statusCode = 404;
-                $loginResponse = [
-                    'errorMessage' => $user->get_error_message(),
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($loginResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception($user->get_error_message(), $user->get_error_code());
             }
 
             wp_set_current_user($user->ID);
@@ -144,18 +77,10 @@ class Login
 
             if (!is_user_logged_in()) {
                 $statusCode = 400;
-                $loginResponse = [
-                    'errorMessage' => 'You could not be logged in successfully',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($loginResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('You could not be logged in successfully', $statusCode);
             }
 
-            $signedInUser = $this->auth->signInWithEmailAndPassword($userData->email, $password);
+            $signedInUser = $this->auth->signInWithEmailAndPassword($user->email, $password);
             $accessToken = $signedInUser->idToken();
             $refreshToken = $signedInUser->refreshToken();
 
@@ -164,7 +89,7 @@ class Login
                 'successMessage' => 'You have been logged in successfully',
                 'accessToken' => $accessToken,
                 'refreshToken' => $refreshToken,
-                'email' => $userData->email,
+                'email' => $user->email,
                 'statusCode' => $statusCode
             ];
 
@@ -174,11 +99,14 @@ class Login
             return $response;
         } catch (Exception $e) {
             error_log('There has been an error at login');
-            $message = [
-                'message' => $e->getMessage(),
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
             return $response;
         }
     }

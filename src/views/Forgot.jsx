@@ -13,6 +13,7 @@ function Forgot() {
   const { passwordSuccessMessage, passwordErrorMessage, passwordStatusCode } =
     useSelector((state) => state.password);
 
+  const [showStatusbar, setShowStatusBar] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState(
     'If you forgot your password, enter your username or email.'
@@ -43,15 +44,26 @@ function Forgot() {
     }
   }, [dispatch, passwordErrorMessage]);
 
+  useEffect(() => {
+    if (message != '') {
+      setShowStatusBar('modal-overlay');
+      setTimeout(() => {
+        setShowStatusBar('');
+      }, 5000);
+    }
+  }, [message]);
+
   return (
     <>
       <main className="forgot">
         <NavigationLoginComponent page={page} />
         <ForgotComponent />
 
-        {message !== '' && (
-          <StatusBarComponent messageType={messageType} message={message} />
-        )}
+        <span className={showStatusbar}>
+          {message !== '' && (
+            <StatusBarComponent messageType={messageType} message={message} />
+          )}
+        </span>
       </main>
     </>
   );

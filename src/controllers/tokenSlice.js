@@ -31,10 +31,11 @@ export const token = createAsyncThunk('token/token', async (location) => {
         });
 
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -67,8 +68,7 @@ export const tokenSlice = createSlice({
                 (state, action) => {
                     state.tokenLoading = false;
                     state.tokenError = action.error;
-                    state.tokenErrorMessage = action.error.errorMessage;
-                    state.tokenStatusCode = action.error.statusCode;
+                    state.tokenErrorMessage = action.error.message;
                 });
     }
 })

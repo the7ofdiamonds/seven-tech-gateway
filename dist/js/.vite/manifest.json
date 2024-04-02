@@ -104,7 +104,6 @@
     "file": "Founder.js",
     "imports": [
       "src/index.jsx",
-      "_ErrorComponent.js",
       "_MemberIntroductionComponent.js",
       "_useDispatch.js"
     ],
@@ -136,6 +135,7 @@
     "file": "Logout.js",
     "imports": [
       "src/index.jsx",
+      "_StatusBarComponent.js",
       "_useDispatch.js"
     ],
     "isDynamicEntry": true,
@@ -176,7 +176,6 @@
     "file": "Team.js",
     "imports": [
       "src/index.jsx",
-      "_ErrorComponent.js",
       "_GroupMembers.js",
       "_useDispatch.js"
     ],
@@ -187,7 +186,6 @@
     "file": "TeamMember.js",
     "imports": [
       "src/index.jsx",
-      "_ErrorComponent.js",
       "_MemberIntroductionComponent.js",
       "_useDispatch.js"
     ],

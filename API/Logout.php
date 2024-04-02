@@ -22,7 +22,7 @@ class Logout
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL findUserByEmail(%s)", $email)
+                $wpdb->prepare("CALL existsByEmail(%s)", $email)
             );
 
             if ($wpdb->last_error) {
@@ -30,28 +30,18 @@ class Logout
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
             }
 
-            if ($results == null) {
+            $userExists = $results[0]->resultSet;
+
+            if (!$userExists) {
                 $statusCode = 404;
-                throw new Exception('This email could not be found', $statusCode);
+                throw new Exception('User could not be found', $statusCode);
             }
-
-            $userData = $results[0];
-
-            wp_set_current_user($userData->id);
 
             wp_logout();
 
             if (is_user_logged_in()) {
                 $statusCode = 400;
-                $logoutResponse = [
-                    'errorMessage' => 'User could not be logged out.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($logoutResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('User could not be logged out.', $statusCode);
             }
 
             $statusCode = 200;
@@ -70,7 +60,6 @@ class Logout
                 'errorMessage' => $e->getMessage(),
                 'statusCode' => $statusCode
             ];
-
             $response = rest_ensure_response($response_data);
             $response->set_status($statusCode);
 

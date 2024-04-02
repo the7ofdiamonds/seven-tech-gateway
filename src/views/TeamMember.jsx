@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTeamMember } from '../controllers/teamSlice';
 
 import LoadingComponent from '../loading/LoadingComponent';
-import ErrorComponent from '../error/ErrorComponent';
 
 import MemberNavigationComponent from './components/MemberNavigationComponent';
 import MemberProgrammingSkillsComponent from './components/MemberProgrammingSkillsComponent';
@@ -32,10 +31,6 @@ function TeamMember() {
 
   if (teamLoading) {
     return <LoadingComponent />;
-  }
-
-  if (teamError) {
-    return <ErrorComponent error={teamError} />;
   }
 
   return (

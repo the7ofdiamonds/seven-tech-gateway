@@ -50,8 +50,8 @@ export const sendForgotPasswordEmail = createAsyncThunk('password/sendForgotPass
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -76,8 +76,8 @@ export const sendChangePasswordEmail = createAsyncThunk('password/sendChangePass
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -102,8 +102,8 @@ export const sendUpdatePasswordEmail = createAsyncThunk('password/sendUpdatePass
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -147,8 +147,8 @@ export const changePassword = createAsyncThunk('password/changePassword', async 
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -188,8 +188,8 @@ export const updatePassword = createAsyncThunk('password/updatePassword', async 
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -235,7 +235,6 @@ export const passwordSlice = createSlice({
                 state.passwordLoading = false;
                 state.passwordError = action.error;
                 state.passwordErrorMessage = action.error.message;
-                state.passwordStatusCode = action.payload.code;
             });
     }
 })

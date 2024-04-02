@@ -37,30 +37,14 @@ class Signup
 
             if ($userLogin) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'A user already exists with this user name. Choose another user name.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('A user already exists with this user name. Choose another user name.', $statusCode);
             }
 
             $userEmail = get_user_by('email', $user_email);
 
             if ($userEmail) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'A user already exists with this email. Please go to the forgot page to reset your password.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('A user already exists with this email. Please go to the forgot page to reset your password.', $statusCode);
             }
 
             $hashedPassword = password_hash($user_password, PASSWORD_BCRYPT);
@@ -106,21 +90,15 @@ class Signup
 
             if (is_wp_error($signedInUser)) {
                 $statusCode = 400;
-                $message = [
-                    'errorMessage' => $signedInUser->get_error_message(),
-                    'statusCode' => $statusCode
-                ];
-                $response = rest_ensure_response($message);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception($signedInUser->get_error_message(), $statusCode);
             }
 
             wp_set_current_user($signedInUser->ID, $signedInUser->user_login);
             wp_set_auth_cookie($signedInUser->ID, true);
 
             if (!is_user_logged_in()) {
-                throw new Exception("There was an error signing in new user.");
+                $statusCode = 500;
+                throw new Exception("There was an error signing in new user.", $statusCode);
             }
 
             $statusCode = 201;
@@ -134,15 +112,13 @@ class Signup
 
             return $response;
         } catch (Exception $e) {
-            $status_code = $e->getCode();
-
+            $statusCode = $e->getCode();
             $response_data = [
                 'errorMessage' => $e->getMessage(),
-                'statusCode' => $e->getCode()
+                'statusCode' => $statusCode
             ];
-
             $response = rest_ensure_response($response_data);
-            $response->set_status($status_code);
+            $response->set_status($statusCode);
 
             return $response;
         }

@@ -89,8 +89,8 @@ export const sendUnlockAccountEmail = createAsyncThunk('account/sendUnlockAccoun
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -115,8 +115,8 @@ export const sendRemoveAccountEmail = createAsyncThunk('account/sendRemoveAccoun
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -146,8 +146,8 @@ export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ 
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -182,8 +182,8 @@ export const removeAccount = createAsyncThunk('account/removeAccount', async ({ 
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 

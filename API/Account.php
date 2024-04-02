@@ -33,56 +33,33 @@ class Account
 
             if (!$validEmail) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'Email is not valid.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Email is not valid.', $statusCode);
             }
 
             $validPassword = $this->validator->validPassword($password);
 
             if (!$validPassword) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'Password is not valid.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Password is not valid.', $statusCode);
             }
 
             $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
 
             if (!$validConfirmationCode) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'Confirmation code is not valid.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Confirmation code is not valid.', $statusCode);
             }
 
             return $this->adminaccountmngmnt->unlockAccount($email);
         } catch (Exception $e) {
-            error_log('There has been an error at unlock account');
-            $message = [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode()
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
             return $response;
         }
     }
@@ -98,45 +75,21 @@ class Account
 
             if (!$validEmail) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'Email is not valid.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Email is not valid.', $statusCode);
             }
 
             $validPassword = $this->validator->validPassword($password);
 
             if (!$validPassword) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'Password is not valid.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Password is not valid.', $statusCode);
             }
 
             $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
 
             if (!$validConfirmationCode) {
                 $statusCode = 400;
-                $signupResponse = [
-                    'errorMessage' => 'Confirmation code is not valid.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($signupResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Confirmation code is not valid.', $statusCode);
             }
 
             return $this->adminaccountmngmnt->removeAccount($email);
@@ -154,12 +107,14 @@ class Account
             return $response;
         } catch (Exception $e) {
             error_log('There has been an error at remove account');
-            $message = [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode()
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
             return $response;
         }
     }

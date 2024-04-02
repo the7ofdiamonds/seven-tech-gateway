@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getFounder } from '../controllers/founderSlice.js';
 
 import LoadingComponent from '../loading/LoadingComponent';
-import ErrorComponent from '../error/ErrorComponent';
 
 import MemberNavigationComponent from './components/MemberNavigationComponent';
 import MemberProgrammingSkillsComponent from './components/MemberProgrammingSkillsComponent';
@@ -35,10 +34,6 @@ function Founder() {
 
   if (founderLoading) {
     return <LoadingComponent />;
-  }
-
-  if (founderError) {
-    return <ErrorComponent error={founderError} />;
   }
 
   return (

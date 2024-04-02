@@ -18,6 +18,8 @@ function SignUpComponent() {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [phone, setPhone] = useState('');
+
+  const [showStatusbar, setShowStatusBar] = useState('');
   const [message, setMessage] = useState(
     'Enter the username, email, and password of your choice to sign up.'
   );
@@ -66,6 +68,15 @@ function SignUpComponent() {
     }
   }, [signupErrorMessage]);
 
+  useEffect(() => {
+    if (message != '') {
+      setShowStatusBar('modal-overlay');
+      setTimeout(() => {
+        setShowStatusBar('');
+      }, 5000);
+    }
+  }, [message]);
+  
   const credentials = {
     username: username,
     email: email,
@@ -210,9 +221,11 @@ function SignUpComponent() {
           </form>
         </div>
 
-        {message !== '' && (
-          <StatusBarComponent messageType={messageType} message={message} />
-        )}
+        <span className={showStatusbar}>
+          {message !== '' && (
+            <StatusBarComponent messageType={messageType} message={message} />
+          )}
+        </span>
       </main>
     </>
   );

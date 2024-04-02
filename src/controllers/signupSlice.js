@@ -66,8 +66,8 @@ export const signup = createAsyncThunk('signup/signup', async (credentials) => {
         
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -97,9 +97,8 @@ export const signupSlice = createSlice({
                 signup.rejected,
             ), (state, action) => {
                 state.signupLoading = false;
-                state.signupError = action.error.stack;
+                state.signupError = action.error;
                 state.signupErrorMessage = action.error.message;
-                state.signupStatusCode = action.payload.code;
             });
     }
 })

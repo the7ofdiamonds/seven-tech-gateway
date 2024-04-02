@@ -59,16 +59,13 @@ class Content
 
             return rest_ensure_response($paragraphArray);
         } catch (Exception $e) {
-            $error_message = $e->getMessage();
-            $status_code = $e->getCode();
-
+            $statusCode = $e->getCode();
             $response_data = [
-                'message' => $error_message,
-                'status' => $status_code,
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-
             $response = rest_ensure_response($response_data);
-            $response->set_status($status_code);
+            $response->set_status($statusCode);
 
             return $response;
         }

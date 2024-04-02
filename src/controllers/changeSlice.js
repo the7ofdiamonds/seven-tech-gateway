@@ -72,7 +72,7 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
         return responseData;
     } catch (error) {
         console.error(error);
-        throw error;
+        throw new Error(error.message);
     }
 });
 
@@ -103,8 +103,8 @@ export const changePhone = createAsyncThunk('change/changePhone', async (phone) 
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -135,8 +135,8 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 

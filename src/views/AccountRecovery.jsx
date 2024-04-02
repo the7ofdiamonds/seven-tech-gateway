@@ -15,7 +15,7 @@ function AccountRecovery() {
 
   const dispatch = useDispatch();
 
-  const { accountSuccessMessage, accountErrorMessage, accountStatusCode } =
+  const { accountSuccessMessage, accountErrorMessage } =
     useSelector((state) => state.account);
 
   const [message, setMessage] = useState(

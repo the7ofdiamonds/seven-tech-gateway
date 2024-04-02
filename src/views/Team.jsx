@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTeam } from '../controllers/teamSlice';
 
 import LoadingComponent from '../loading/LoadingComponent';
-import ErrorComponent from '../error/ErrorComponent';
+
 import GroupMembers from './components/GroupMembers';
 
 function Team() {
@@ -17,10 +17,6 @@ function Team() {
 
   if (teamLoading) {
     return <LoadingComponent />;
-  }
-
-  if (teamError) {
-    return <ErrorComponent error={teamError} />;
   }
 
   return (

@@ -46,15 +46,6 @@ function RemoveAcount() {
   }, [password]);
 
   useEffect(() => {
-    if (accountStatusCode != 403 && message != '') {
-      setShowStatusBar('modal-overlay');
-      setTimeout(() => {
-        setShowStatusBar(true);
-      }, 3000);
-    }
-  }, [accountStatusCode, message]);
-
-  useEffect(() => {
     if (accountSuccessMessage) {
       setMessage(accountSuccessMessage);
       setMessageType('success');
@@ -70,6 +61,15 @@ function RemoveAcount() {
     }
   }, [accountErrorMessage]);
 
+  useEffect(() => {
+    if (message != '') {
+      setShowStatusBar('modal-overlay');
+      setTimeout(() => {
+        setShowStatusBar('');
+      }, 5000);
+    }
+  }, [message]);
+  
   const handleChangeEmail = (e) => {
     e.preventDefault();
 

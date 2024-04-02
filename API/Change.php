@@ -31,28 +31,14 @@ class Change
 
             if (empty($firstname)) {
                 $statusCode = 400;
-                $changeNameResponse = [
-                    'errorMessage' => 'First name is required.',
-                ];
-
-                $response = rest_ensure_response($changeNameResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('First name is required.', $statusCode);
             }
 
             $lastname = $request['lastName'];
 
             if (empty($lastname)) {
                 $statusCode = 400;
-                $changeNameResponse = [
-                    'errorMessage' => 'Last name is required.',
-                ];
-
-                $response = rest_ensure_response($changeNameResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Last name is required.', $statusCode);
             }
 
             global $wpdb;
@@ -62,22 +48,16 @@ class Change
             );
 
             if ($wpdb->last_error) {
+                $statusCode = 500;
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
             $results = $results[0]->resultSet;
 
             if (!$results) {
                 $statusCode = 400;
-                $changeNameResponse = [
-                    'errorMessage' => 'First name could not be changed at this time.',
-                ];
-
-                $response = rest_ensure_response($changeNameResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('First name could not be changed at this time.', $statusCode);
             }
 
             $results = $wpdb->get_results(
@@ -85,22 +65,16 @@ class Change
             );
 
             if ($wpdb->last_error) {
+                $statusCode = 500;
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
             $results = $results[0]->resultSet;
 
             if (!$results) {
                 $statusCode = 400;
-                $changeNameResponse = [
-                    'errorMessage' => 'Last name could not be changed at this time.',
-                ];
-
-                $response = rest_ensure_response($changeNameResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Last name could not be changed at this time.', $statusCode);
             }
 
             $statusCode = 201;
@@ -129,12 +103,14 @@ class Change
             return $response;
         } catch (Exception $e) {
             error_log('There has been an error at change name.');
-            $message = [
-                'message' => $e->getMessage(),
-                'statusCode' => $e->getCode()
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
             return $response;
         }
     }
@@ -156,23 +132,16 @@ class Change
             );
 
             if ($wpdb->last_error) {
+                $statusCode = 500;
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
             $results = $results[0]->resultSet;
 
             if (!$results) {
                 $statusCode = 500;
-                $changePhoneResponse = [
-                    'errorMessage' => 'Phone number could not be changed at this time.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($changePhoneResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Phone number could not be changed at this time.', $statusCode);
             }
 
             $statusCode = 201;
@@ -199,12 +168,14 @@ class Change
             return $response;
         } catch (Exception $e) {
             error_log('There has been an error at change phone.');
-            $message = [
-                'message' => $e->getMessage(),
-                'statusCode' => $e->getCode()
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
             return $response;
         }
     }
@@ -225,23 +196,16 @@ class Change
             );
 
             if ($wpdb->last_error) {
+                $statusCode = 500;
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
             $results = $results[0]->resultSet;
 
             if (!$results) {
                 $statusCode = 500;
-                $updateUsernameResponse = [
-                    'errorMessage' => 'Username could not be updated at this time.',
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($updateUsernameResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception('Username could not be updated at this time.', $statusCode);
             }
 
             $statusCode = 201;
@@ -268,12 +232,14 @@ class Change
             return $response;
         } catch (Exception $e) {
             error_log('There has been an error at change username');
-            $message = [
-                'message' => $e->getMessage(),
-                'statusCode' => $e->getCode()
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
             return $response;
         }
     }

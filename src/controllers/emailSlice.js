@@ -53,8 +53,8 @@ export const verifyEmail = createAsyncThunk('email/verifyEmail', async ({email, 
 
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 

@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getFounders } from '../controllers/founderSlice';
 
 import LoadingComponent from '../loading/LoadingComponent';
-import ErrorComponent from '../error/ErrorComponent';
 import GroupMembers from './components/GroupMembers';
 
 function Founders() {

@@ -61,8 +61,13 @@ export const updateRefreshToken = (refresh_token) => {
 export const login = createAsyncThunk('login/login', async ({ email, password, location }) => {
     try {
 
-        isValidEmail(email);
-        isValidPassword(password);
+        if (isValidEmail(email) == false) {
+            throw new Error('Email is not valid.');
+        }
+
+        if (isValidPassword(email) == false) {
+            throw new Error('Password is not valid.');
+        }
 
         const response = await fetch(`${loginUrl}`, {
             method: 'POST',
@@ -70,9 +75,9 @@ export const login = createAsyncThunk('login/login', async ({ email, password, l
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email,
-                "password": password,
-                "location": location
+                email: email,
+                password: password,
+                location: location
             })
         });
 
@@ -80,8 +85,8 @@ export const login = createAsyncThunk('login/login', async ({ email, password, l
         
         return responseData;
     } catch (error) {
-        console.error(error)
-        throw error;
+        console.error(error);
+        throw new Error(error.message);
     }
 });
 
@@ -142,7 +147,6 @@ export const loginSlice = createSlice({
                     state.loginLoading = false;
                     state.loginError = action.error;
                     state.loginErrorMessage = action.error.message;
-                    state.loginStatusCode = action.payload.statusCode;
                 });
     }
 })

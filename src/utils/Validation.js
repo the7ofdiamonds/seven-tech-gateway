@@ -1,5 +1,6 @@
 
 export function isValidEmail(email) {
+
     if (email == '' || email == undefined) {
         throw new Error("Email is required to be validated.");
     }
@@ -17,26 +18,18 @@ export function isValidUsername(username) {
 
     const usernameRegex = /^[a-zA-Z0-9]{3,20}$/;
 
-    if (usernameRegex.test(username) == false) {
-        throw new Error("The username provided is not valid.");
-    }
-
-    return true;
+    return usernameRegex.test(username);
 }
 
 export function isValidPassword(password) {
 
-    if (password == '') {
+    if (password == '' || password == undefined) {
         throw new Error("A password is required to be validated.");
     }
 
     const passwordRegex = /^[0-9a-zA-Z$@#%^&*_-]{8,20}$/;
 
-    if (passwordRegex.test(password) == false) {
-        throw new Error("The password provided is not valid.");
-    }
-
-    return true;
+    return passwordRegex.test(password);
 }
 
 export function isValidConfirmationCode(confirmationCode) {
@@ -47,11 +40,7 @@ export function isValidConfirmationCode(confirmationCode) {
 
     const confirmationCodeRegex = /^[a-zA-Z0-9-]+$/;
 
-    if (confirmationCodeRegex.test(confirmationCode) == false) {
-        throw new Error("Confirmation code is not valid.");
-    }
-
-    return true;
+    return confirmationCodeRegex.test(confirmationCode);
 }
 
 export function isValidName(name) {
@@ -73,9 +62,5 @@ export function isValidPhone(phone) {
 
     const phoneRegex = /^[0-9]{11,}$/;
 
-    if (phoneRegex.test(phone) == false) {
-        throw new Error("The phone number provided is not valid.");
-    }
-
-    return true;
+    return phoneRegex.test(phone);
 }

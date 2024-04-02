@@ -17,7 +17,7 @@ class Email
     {
         $this->token = new Token($auth);
     }
-// Send email from this class
+    // Send email from this class
     function verifyEmail(WP_REST_Request $request)
     {
         try {
@@ -29,13 +29,7 @@ class Email
 
             if (empty($confirmationCode)) {
                 $statusCode = 400;
-                $message = [
-                    'errorMessage' => 'A Confirmation Code is required to verify your email. Check your inbox.',
-                    'statusCode' => $statusCode
-                ];
-                $response = rest_ensure_response($message);
-                $response->set_status($statusCode);
-                return $response;
+                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', $statusCode);
             }
 
             global $wpdb;
@@ -45,23 +39,16 @@ class Email
             );
 
             if ($wpdb->last_error) {
+                $statusCode = 500;
                 error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
             $results = $results[0]->resultSet;
 
             if (!$results) {
                 $statusCode = 400;
-                $updatePasswordResponse = [
-                    'errorMessage' => "There was an error verifying your account please try again at another time.",
-                    'statusCode' => $statusCode
-                ];
-
-                $response = rest_ensure_response($updatePasswordResponse);
-                $response->set_status($statusCode);
-
-                return $response;
+                throw new Exception("There was an error verifying your account please try again at another time.", $statusCode);
             }
 
             $statusCode = 200;
@@ -73,11 +60,14 @@ class Email
             return rest_ensure_response($verifyEmailResponse);
         } catch (Exception $e) {
             error_log('There has been an error at verify email.');
-            $message = [
-                'message' => $e->getMessage(),
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
             ];
-            $response = rest_ensure_response($message);
-            $response->set_status($e->getCode());
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
             return $response;
         }
     }

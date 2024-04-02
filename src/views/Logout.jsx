@@ -3,12 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { logout } from '../controllers/logoutSlice';
 
+import StatusBarComponent from './components/StatusBarComponent';
+
 function LogOutComponent() {
   const dispatch = useDispatch();
 
-  const { logoutSuccessMessage, logoutErrorMessage } =
-    useSelector((state) => state.logout);
+  const { logoutSuccessMessage, logoutErrorMessage, logoutError, logoutStatusCode } = useSelector(
+    (state) => state.logout
+  );
 
+  const [showStatusbar, setShowStatusBar] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');
 
@@ -26,13 +30,32 @@ function LogOutComponent() {
     }
   }, [logoutErrorMessage]);
 
+  useEffect(() => {
+    if (logoutError) {
+      setMessageType('error');
+      setMessage(logoutError.message);
+    }
+  }, [logoutError]);
+
+  useEffect(() => {
+    if (logoutStatusCode == 200) {
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 5000);
+    }
+  }, [logoutStatusCode]);
+
+  useEffect(() => {
+    if (message != '') {
+      setShowStatusBar('modal-overlay');
+      setTimeout(() => {
+        setShowStatusBar('');
+      }, 5000);
+    }
+  }, [message]);
+
   const handleClick = () => {
-    dispatch(logout())
-      .then(() => {
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 5000);
-      });
+    dispatch(logout());
   };
 
   return (
@@ -42,11 +65,11 @@ function LogOutComponent() {
           <h3>LOG OUT</h3>
         </button>
 
-        {message !== '' && (
-          <div className={`status-bar card ${messageType}`}>
-            <span>{message}</span>
-          </div>
-        )}
+        <span className={showStatusbar}>
+          {message !== '' && (
+            <StatusBarComponent messageType={messageType} message={message} />
+          )}
+        </span>
       </main>
     </>
   );

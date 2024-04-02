@@ -70,13 +70,13 @@ function PasswordRecovery() {
   }, [passwordErrorMessage]);
 
   useEffect(() => {
-    if (passwordStatusCode != 403 && message != '') {
+    if (message != '') {
       setShowStatusBar('modal-overlay');
       setTimeout(() => {
-        setShowStatusBar(true);
-      }, 3000);
+        setShowStatusBar('');
+      }, 5000);
     }
-  }, [passwordStatusCode, message]);
+  }, [message]);
 
   const handleChangePassword = (e) => {
     if (e.target.name == 'password') {
