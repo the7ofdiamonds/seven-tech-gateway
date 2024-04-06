@@ -21,6 +21,7 @@ class Signup
         $this->user = $user;
     }
 
+// Send verify email
     public function signup(WP_REST_Request $request)
     {
         try {

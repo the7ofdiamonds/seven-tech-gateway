@@ -18,6 +18,7 @@ class Login
         $this->auth = $auth;
     }
 
+// Send password needs to be updated email
     function login(WP_REST_Request $request)
     {
         try {

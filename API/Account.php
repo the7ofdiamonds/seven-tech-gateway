@@ -9,17 +9,74 @@ use WP_REST_Request;
 use SEVEN_TECH\Admin\AdminAccountManagement;
 use SEVEN_TECH\Validator\Validator;
 
+use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
 class Account
 {
     private $adminaccountmngmnt;
     private $validator;
+    private $token;
 
-    public function __construct()
+    public function __construct(Auth $auth)
     {
+        $this->token = new Token($auth);
         $this->adminaccountmngmnt = new AdminAccountManagement;
         $this->validator = new Validator;
+    }
+
+    function verifyAccount(WP_REST_Request $request)
+    {
+        try {
+            $accessToken = $this->token->getToken($request);
+            $userData = $this->token->findUserWithToken($accessToken);
+            $email = $userData->email;
+            $password = $userData->password;
+            $confirmationCode = $request['confirmationCode'];
+
+            if (empty($confirmationCode)) {
+                $statusCode = 400;
+                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', $statusCode);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                "CALL enableAccount('$email', '$password', '$confirmationCode')"
+            );
+
+            if ($wpdb->last_error) {
+                $statusCode = 500;
+                error_log("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
+            }
+
+            $results = $results[0]->resultSet;
+
+            if (!$results) {
+                $statusCode = 400;
+                throw new Exception("There was an error verifying your account please try again at another time.", $statusCode);
+            }
+
+            $statusCode = 200;
+            $verifyEmailResponse = [
+                'successMessage' => 'Email has been verified.',
+                'statusCode' => $statusCode
+            ];
+
+            return rest_ensure_response($verifyEmailResponse);
+        } catch (Exception $e) {
+            error_log('There has been an error at verify email.');
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
+            ];
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
+            return $response;
+        }
     }
 
     function unlockAccount(WP_REST_Request $request)

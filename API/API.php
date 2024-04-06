@@ -14,7 +14,6 @@ class API
     $credentialsPath = SEVEN_TECH . 'serviceAccount.json';
 
     $user = new User;
-    $account = new Account;
     $content = new Content;
     $founders = new Founders;
 
@@ -55,8 +54,8 @@ class API
       $factory = (new Factory)->withServiceAccount($credentialsPath);
       $auth = $factory->createAuth();
 
+      $account = new Account($auth);
       $change = new Change($auth);
-      $email = new Email($auth);
       $login = new Login($auth);
       $logout = new Logout();
       $password = new Password($auth);
@@ -65,6 +64,12 @@ class API
     } else {
       error_log('A path to the Google Service Account file is required.');
     }
+
+    register_rest_route('seven-tech/v1', '/users/verify-email', array(
+      'methods' => 'POST',
+      'callback' => array($account, 'verifyAccount'),
+      'permission_callback' => '__return_true',
+    ));
 
     register_rest_route('seven-tech/v1', '/users/unlock-account', array(
       'methods' => 'POST',
@@ -99,24 +104,6 @@ class API
     register_rest_route('seven-tech/v1', '/content/(?P<slug>[a-zA-Z0-9-_]+)', array(
       'methods' => 'GET',
       'callback' => array($content, 'get_content'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/verify-email', array(
-      'methods' => 'POST',
-      'callback' => array($email, 'verifyEmail'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/add-email', array(
-      'methods' => 'POST',
-      'callback' => array($email, 'addEmail'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/remove-email', array(
-      'methods' => 'POST',
-      'callback' => array($email, 'removeEmail'),
       'permission_callback' => '__return_true',
     ));
 

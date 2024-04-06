@@ -20,7 +20,7 @@ class AdminUserManagement
 
     function register_custom_submenu_page()
     {
-        add_submenu_page('seven_tech_admin', '', 'User', 'manage_options', 'seven_tech_user_management', [$this, 'create_section'], 4);
+        add_submenu_page('seven-tech', '', 'User', 'manage_options', 'seven_tech_user_management', [$this, 'create_section'], 4);
         $this->register_section();
     }
 
@@ -54,13 +54,13 @@ class AdminUserManagement
         }
     }
 
+// Send password recovery email
     function forgotPassword($email)
     {
         try {
 
             $this->validator->validEmail($email);
 
-            // Send email
             return "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
         } catch (Exception $e) {
             throw new Exception($e);

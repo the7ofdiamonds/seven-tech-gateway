@@ -11,7 +11,7 @@ class AdminMissionStatement
 
     function register_custom_submenu_page()
     {
-        add_submenu_page('seven_tech_admin', 'Add Mission Statement', 'Add Mission', 'manage_options', 'seven_tech_mission_statement', [$this, 'create_section'], 1);
+        add_submenu_page('seven-tech', 'Add Mission Statement', 'Add Mission', 'manage_options', 'seven_tech_mission_statement', [$this, 'create_section'], 1);
         $this->register_section();
     }
 

@@ -17,8 +17,8 @@ class AdminAccountManagement
 
     function register_custom_submenu_page()
     {
-        add_submenu_page('seven_tech_admin', '', 'Account', 'manage_options', 'seven_tech_account_management', [$this, 'create_section'], 4);
-        $this->register_section();
+        add_submenu_page('seven-tech', '', 'Account', 'manage_options', 'seven_tech_account_management', [$this, 'create_section'], 4);
+        add_settings_section('seven-tech-admin-account-management', 'Account Management', [$this, 'section_description'], 'seven_tech_account_management');
     }
 
     function create_section()
@@ -26,16 +26,12 @@ class AdminAccountManagement
         include_once SEVEN_TECH . 'Admin/includes/admin-account-management.php';
     }
 
-    function register_section()
-    {
-        add_settings_section('seven-tech-admin-account-management', 'Account Management', [$this, 'section_description'], 'seven_tech_account_management');
-    }
-
     function section_description()
     {
         echo 'Manage User Accounts';
     }
 
+// Send account locked email
     public function lockAccount($email)
     {
         try {
@@ -77,7 +73,6 @@ class AdminAccountManagement
         }
     }
 
-
     function unlockAccount($email)
     {
         try {
@@ -111,7 +106,8 @@ class AdminAccountManagement
             throw new Exception($e);
         }
     }
-
+    
+// Send account removed email
     function removeAccount($email)
     {
         try {
@@ -155,6 +151,7 @@ class AdminAccountManagement
         }
     }
 
+    // Send Account deleted email
     function deleteAccount($email)
     {
         try {

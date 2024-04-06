@@ -13,7 +13,7 @@ class Post_Types
             [
                 'name' => 'founders',
                 'menu_icon' => '',
-                'menu_position' => 12,
+                'menu_position' => 11,
                 'title' => 'FOUNDERS',
                 'singular' => 'Founder',
                 'plural' => 'Founders',

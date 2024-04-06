@@ -8,7 +8,7 @@ namespace SEVEN_TECH;
 /*
 Plugin Name: SEVEN TECH
 Plugin URI: 
-Description: Users.
+Description: Gateway.
 Version: 1.0.0
 Author: THE7OFDIAMONDS.TECH
 Author URI: http://THE7OFDIAMONDS.TECH
@@ -27,10 +27,6 @@ define('SEVEN_TECH_URL', WP_PLUGIN_URL . '/seven-tech/');
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
 use SEVEN_TECH\Admin\Admin;
-use SEVEN_TECH\Admin\AdminMissionStatement;
-use SEVEN_TECH\Admin\AdminSocialBar;
-use SEVEN_TECH\Admin\AdminAccountManagement;
-use SEVEN_TECH\Admin\AdminUserManagement;
 
 use SEVEN_TECH\API\API;
 use SEVEN_TECH\CSS\CSS;
@@ -54,7 +50,6 @@ use SEVEN_TECH\Templates\TemplatesCustom;
 class SEVEN_TECH
 {
     public $pages;
-    public $plugin;
     public $css;
     public $js;
     public $posttypes;
@@ -64,12 +59,15 @@ class SEVEN_TECH
 
     public function __construct()
     {
-        add_action('admin_menu', [(new Admin), 'register_custom_menu_page']);
-        add_action('admin_menu', [(new AdminMissionStatement), 'register_custom_submenu_page']);
-        add_action('admin_menu', [(new AdminSocialBar), 'register_custom_submenu_page']);
-        add_action('admin_menu', [(new AdminAccountManagement), 'register_custom_submenu_page']);
-        add_action('admin_menu', [(new AdminUserManagement), 'register_custom_submenu_page']);
+        $plugin = plugin_basename(__FILE__);
+        add_filter("plugin_action_links_{$plugin}", [$this, 'settings_link']);
 
+        $admin = new Admin;
+
+        add_action('admin_init', function () use ($admin) {
+            $admin;
+        });
+        
         add_action('rest_api_init', function () {
             new API();
         });
@@ -117,8 +115,6 @@ class SEVEN_TECH
 
         add_action('update_option_wp_user_roles', [$this->roles, 'update_roles'], 10, 2);
         add_action('add_user_role', [$this->roles, 'update_user_roles'], 10, 2);
-
-        add_action('after_setup_theme', [new Admin, 'hide_admin_bar']);
     }
 
     function activate()
@@ -130,6 +126,14 @@ class SEVEN_TECH
         (new Founders)->add_founder_pages();
 
         flush_rewrite_rules();
+    }
+
+    public function settings_link($links)
+    {
+        $settings_link = '<a href="' . admin_url('admin.php?page=seven-tech') . '">Settings</a>';
+        array_push($links, $settings_link);
+
+        return $links;
     }
 }
 

@@ -18,6 +18,7 @@ class Change
         $this->token = new Token($auth);
     }
 
+// Send name changed email
     function changeName(WP_REST_Request $request)
     {
         try {
@@ -115,7 +116,7 @@ class Change
         }
     }
 
-
+// Send phone number changed email
     function changePhone(WP_REST_Request $request)
     {
         try {
@@ -180,6 +181,7 @@ class Change
         }
     }
 
+// Send username changed email
     function changeUsername(WP_REST_Request $request)
     {
         try {

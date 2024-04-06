@@ -52,6 +52,7 @@ class Password
         }
     }
 
+// Send password changed email
     function changePassword(WP_REST_Request $request)
     {
         try {
@@ -129,6 +130,7 @@ class Password
         }
     }
 
+// Send password changed email
     function updatePassword(WP_REST_Request $request)
     {
         try {
