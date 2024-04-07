@@ -1,10 +1,4 @@
 {
-  "_ErrorComponent.js": {
-    "file": "ErrorComponent.js",
-    "imports": [
-      "src/index.jsx"
-    ]
-  },
   "_GroupMembers.js": {
     "file": "GroupMembers.js",
     "imports": [

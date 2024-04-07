@@ -8,7 +8,6 @@ class Post_Types
 
     public function __construct()
     {
-
         $this->post_types_list = [
             [
                 'name' => 'founders',

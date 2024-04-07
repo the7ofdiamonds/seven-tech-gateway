@@ -22,16 +22,14 @@ function Founders() {
 
   return (
     <>
-      <section className="founders">
-        {Array.isArray(founders) &&
-          founders.map((founder) => (
-            <>
-              <h4 className="title">Founders</h4>
+      {Array.isArray(founders) &&
+        founders.map((founder) => (
+          <>
+            <h4 className="title">Founders</h4>
 
-              <GroupMembers key={founder.id} group={founder} />
-            </>
-          ))}
-      </section>
+            <GroupMembers key={founder.id} group={founder} />
+          </>
+        ))}
     </>
   );
 }

@@ -8,7 +8,7 @@
   h3 {
     color: white;
   }
-} 
+}
 
 .about-where {
   text-align: center;
@@ -35,5 +35,14 @@
       width: 100%;
       height: 100%;
     }
+  }
+}
+
+.about {
+  margin-top: 5rem;
+  min-height: 100vh;
+  section {
+    margin-top: 0;
+    min-height: fit-content;
   }
 }
