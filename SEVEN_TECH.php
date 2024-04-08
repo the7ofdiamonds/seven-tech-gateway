@@ -34,13 +34,10 @@ use SEVEN_TECH\CSS\Customizer\Customizer;
 use SEVEN_TECH\CSS\Customizer\BorderRadius;
 use SEVEN_TECH\CSS\Customizer\Color;
 use SEVEN_TECH\CSS\Customizer\Shadow;
-use SEVEN_TECH\CSS\Customizer\SocialBar;
 use SEVEN_TECH\Database\Database;
 use SEVEN_TECH\JS\JS;
 use SEVEN_TECH\Pages\Pages;
-use SEVEN_TECH\Post_Types\Founders\Founders;
 use SEVEN_TECH\Post_Types\Post_Types;
-use SEVEN_TECH\Roles\Roles;
 use SEVEN_TECH\Router\Router;
 use SEVEN_TECH\Shortcodes\Shortcodes;
 use SEVEN_TECH\Taxonomies\Taxonomies;
@@ -67,32 +64,32 @@ class SEVEN_TECH
         add_action('admin_init', function () use ($admin) {
             $admin;
         });
-        
+
         add_action('rest_api_init', function () {
             new API();
         });
 
+        $pages = new Pages;
+        $posttypes = new Post_Types;
+        $taxonomies = new Taxonomies;
         $css = new CSS;
         $js = new JS;
-        $this->pages = new Pages;
+        $templates = new Templates(
+            $css,
+            $js,
+        );
         $templates_custom = new TemplatesCustom;
+        $router = new Router(
+            $pages,
+            $posttypes,
+            $taxonomies,
+            $templates,
+            $templates_custom
+        );
 
-        add_action('init', function () use ($css, $js, $templates_custom) {
-            $posttypes = new Post_Types;
+        add_action('init', function () use ($posttypes, $taxonomies, $router) {
             $posttypes->custom_post_types();
-            $taxonomies = new Taxonomies;
             $taxonomies->custom_taxonomy();
-            $templates = new Templates(
-                $css,
-                $js,
-            );
-            $router = new Router(
-                $this->pages,
-                $posttypes,
-                $taxonomies,
-                $templates,
-                $templates_custom
-            );
             $router->load_page();
             $router->react_rewrite_rules();
             new Shortcodes;
@@ -105,20 +102,22 @@ class SEVEN_TECH
             (new Shadow)->seven_tech_shadow_section($wp_customize);
         });
 
-        $this->roles = new Roles;
-
-        add_action('update_option_wp_user_roles', [$this->roles, 'update_roles'], 10, 2);
-        add_action('add_user_role', [$this->roles, 'update_user_roles'], 10, 2);
+        $this->router = new Router(
+            $pages,
+            $posttypes,
+            $taxonomies,
+            $templates,
+            $templates_custom
+        );
+        $this->pages = new Pages;
     }
 
     function activate()
     {
         (new Database)->establishConnection();
         (new Database)->createTables();
-        (new Pages)->add_pages();
-        $this->roles->add_roles();
-
-        flush_rewrite_rules();
+        $this->pages->add_pages();
+        $this->router->react_rewrite_rules();
     }
 
     public function settings_link($links)
