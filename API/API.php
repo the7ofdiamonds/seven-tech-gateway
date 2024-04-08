@@ -14,8 +14,6 @@ class API
     $credentialsPath = SEVEN_TECH . 'serviceAccount.json';
 
     $user = new User;
-    $content = new Content;
-    $founders = new Founders;
 
     if (file_exists($credentialsPath)) {
       $jsonFileContents = file_get_contents($credentialsPath);
@@ -98,30 +96,6 @@ class API
     register_rest_route('seven-tech/v1', '/users/change-phone', array(
       'methods' => 'POST',
       'callback' => array($change, 'changePhone'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/content/(?P<slug>[a-zA-Z0-9-_]+)', array(
-      'methods' => 'GET',
-      'callback' => array($content, 'get_content'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/founders', array(
-      'methods' => 'GET',
-      'callback' => array($founders, 'get_founders'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/founder/(?P<slug>[a-zA-Z0-9-_]+)', array(
-      'methods' => 'GET',
-      'callback' => array($founders, 'get_founder'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/founder/(?P<slug>[a-zA-Z0-9-_]+)/resume', array(
-      'methods' => 'GET',
-      'callback' => array($founders, 'get_founder_resume'),
       'permission_callback' => '__return_true',
     ));
 

@@ -173,28 +173,4 @@ class CSS
             return $response;
         }
     }
-
-    function load_social_bar_css()
-    {
-        try {
-            $filename = 'social-bar.css';
-            $cssFilePath = $this->cssFolderPath . $filename;
-            $cssFilePathURL = $this->cssFolderPathURL . $filename;
-
-            if (file_exists($cssFilePath)) {
-                wp_register_style($this->handle_prefix . 'social_bar_css',  $cssFilePathURL, array(), false, 'all');
-                wp_enqueue_style($this->handle_prefix . 'social_bar_css');
-            } else {
-                throw new Exception('CSS file ' . $filename . ' is missing at :' . $this->cssFolderPath, 404);
-            }
-        } catch (Exception $e) {
-            $errorMessage = $e->getMessage();
-            $errorCode = $e->getCode();
-            $response = $errorMessage . ' ' . $errorCode;
-
-            error_log($response . ' at load_social_bar_css');
-
-            return $response;
-        }
-    }
 }

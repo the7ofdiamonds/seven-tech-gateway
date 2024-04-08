@@ -1,2 +1,0 @@
-import{j as s}from"./index.js";import e from"./Founders.js";import"./GroupMembers.js";import"./useDispatch.js";function m(){var t="Turning ideas into tangible assets ";return s.jsxs(s.Fragment,{children:[s.jsx("h2",{children:"ABOUT"}),s.jsx("div",{className:"mission-statement-card card",children:s.jsx("h3",{className:"mission-statement",children:s.jsx("q",{children:t})})}),s.jsx(e,{})]})}export{m as default};
-//# sourceMappingURL=About.js.map

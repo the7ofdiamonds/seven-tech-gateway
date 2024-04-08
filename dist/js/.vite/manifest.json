@@ -1,16 +1,4 @@
 {
-  "_GroupMembers.js": {
-    "file": "GroupMembers.js",
-    "imports": [
-      "src/index.jsx"
-    ]
-  },
-  "_MemberIntroductionComponent.js": {
-    "file": "MemberIntroductionComponent.js",
-    "imports": [
-      "src/index.jsx"
-    ]
-  },
   "_NavigationLoginComponent.js": {
     "file": "NavigationLoginComponent.js",
     "imports": [
@@ -23,19 +11,8 @@
       "src/index.jsx"
     ]
   },
-  "_useDispatch.js": {
-    "file": "useDispatch.js",
-    "imports": [
-      "src/index.jsx"
-    ]
-  },
   "src/index.jsx": {
     "dynamicImports": [
-      "src/views/About.jsx",
-      "src/views/Founders.jsx",
-      "src/views/Founder.jsx",
-      "src/views/Team.jsx",
-      "src/views/TeamMember.jsx",
       "src/views/Login.jsx",
       "src/views/Logout.jsx",
       "src/views/Signup.jsx",
@@ -50,23 +27,11 @@
     "isEntry": true,
     "src": "src/index.jsx"
   },
-  "src/views/About.jsx": {
-    "file": "About.js",
-    "imports": [
-      "src/index.jsx",
-      "src/views/Founders.jsx",
-      "_GroupMembers.js",
-      "_useDispatch.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/views/About.jsx"
-  },
   "src/views/AccountRecovery.jsx": {
     "file": "AccountRecovery.js",
     "imports": [
       "src/index.jsx",
-      "_StatusBarComponent.js",
-      "_useDispatch.js"
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/AccountRecovery.jsx"
@@ -77,7 +42,6 @@
       "src/index.jsx",
       "src/views/Login.jsx",
       "_StatusBarComponent.js",
-      "_useDispatch.js",
       "_NavigationLoginComponent.js"
     ],
     "isDynamicEntry": true,
@@ -88,38 +52,16 @@
     "imports": [
       "src/index.jsx",
       "_NavigationLoginComponent.js",
-      "_useDispatch.js",
       "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Forgot.jsx"
-  },
-  "src/views/Founder.jsx": {
-    "file": "Founder.js",
-    "imports": [
-      "src/index.jsx",
-      "_MemberIntroductionComponent.js",
-      "_useDispatch.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/views/Founder.jsx"
-  },
-  "src/views/Founders.jsx": {
-    "file": "Founders.js",
-    "imports": [
-      "src/index.jsx",
-      "_GroupMembers.js",
-      "_useDispatch.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/views/Founders.jsx"
   },
   "src/views/Login.jsx": {
     "file": "Login.js",
     "imports": [
       "src/index.jsx",
       "_StatusBarComponent.js",
-      "_useDispatch.js",
       "_NavigationLoginComponent.js"
     ],
     "isDynamicEntry": true,
@@ -129,8 +71,7 @@
     "file": "Logout.js",
     "imports": [
       "src/index.jsx",
-      "_StatusBarComponent.js",
-      "_useDispatch.js"
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Logout.jsx"
@@ -139,8 +80,7 @@
     "file": "PasswordRecovery.js",
     "imports": [
       "src/index.jsx",
-      "_StatusBarComponent.js",
-      "_useDispatch.js"
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/PasswordRecovery.jsx"
@@ -149,8 +89,7 @@
     "file": "RemoveAccount.js",
     "imports": [
       "src/index.jsx",
-      "_StatusBarComponent.js",
-      "_useDispatch.js"
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/RemoveAccount.jsx"
@@ -160,38 +99,16 @@
     "imports": [
       "src/index.jsx",
       "_NavigationLoginComponent.js",
-      "_StatusBarComponent.js",
-      "_useDispatch.js"
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Signup.jsx"
-  },
-  "src/views/Team.jsx": {
-    "file": "Team.js",
-    "imports": [
-      "src/index.jsx",
-      "_GroupMembers.js",
-      "_useDispatch.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/views/Team.jsx"
-  },
-  "src/views/TeamMember.jsx": {
-    "file": "TeamMember.js",
-    "imports": [
-      "src/index.jsx",
-      "_MemberIntroductionComponent.js",
-      "_useDispatch.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/views/TeamMember.jsx"
   },
   "src/views/VerifyEmail.jsx": {
     "file": "VerifyEmail.js",
     "imports": [
       "src/index.jsx",
-      "_StatusBarComponent.js",
-      "_useDispatch.js"
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/VerifyEmail.jsx"

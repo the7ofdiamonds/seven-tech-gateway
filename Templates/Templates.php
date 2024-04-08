@@ -2,8 +2,6 @@
 
 namespace SEVEN_TECH\Templates;
 
-use Exception;
-
 use SEVEN_TECH\CSS\CSS;
 use SEVEN_TECH\JS\JS;
 
@@ -25,23 +23,17 @@ class Templates
     function get_front_page_template($frontpage_template, $section)
     {
         if (is_front_page()) {
-            $frontpage_template = SEVEN_TECH . 'Pages/front-page.php';
 
-            if (file_exists($frontpage_template)) {
-                add_action('wp_head', function () use ($section) {
-                    $this->css->load_front_page_css($section);
-                });
-                add_action('wp_footer', function () use ($section) {
-                    $this->js->load_front_page_react($section);
-                });
-
-                return $frontpage_template;
-            }
+            add_action('wp_head', function () use ($section) {
+                $this->css->load_front_page_css($section);
+            });
+            add_action('wp_footer', function () use ($section) {
+                $this->js->load_front_page_react($section);
+            });
 
             return $frontpage_template;
         }
     }
-
 
     function get_custom_page_template($template_include, $custom_page)
     {

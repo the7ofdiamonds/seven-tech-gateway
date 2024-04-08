@@ -1,9 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { contentSlice } from '../controllers/contentSlice.js';
-import { teamSlice } from '../controllers/teamSlice.js';
 import { emailSlice } from '../controllers/emailSlice.js';
-import { founderSlice } from '../controllers/founderSlice.js';
 import { loginSlice } from '../controllers/loginSlice.js';
 import { logoutSlice } from '../controllers/logoutSlice.js';
 import { tokenSlice } from '../controllers/tokenSlice.js';
@@ -17,10 +14,7 @@ const store = configureStore({
         login: loginSlice.reducer,
         logout: logoutSlice.reducer,
         account: accountSlice.reducer,
-        content: contentSlice.reducer,
-        team: teamSlice.reducer,
         email: emailSlice.reducer,
-        founder: founderSlice.reducer,
         token: tokenSlice.reducer,
         change: changeSlice.reducer,
         password: passwordSlice.reducer,

@@ -8,19 +8,7 @@ class Post_Types
 
     public function __construct()
     {
-        $this->post_types_list = [
-            [
-                'name' => 'founders',
-                'menu_icon' => '',
-                'menu_position' => 11,
-                'title' => 'FOUNDERS',
-                'singular' => 'Founder',
-                'plural' => 'Founders',
-                'archive_page' => 'founders',
-                'single_page' => 'founder',
-                'file_name' => "Founders"
-            ],
-        ];
+        $this->post_types_list = [];
     }
 
     function custom_post_types()

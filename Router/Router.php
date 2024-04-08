@@ -137,6 +137,5 @@ class Router
         add_rewrite_rule('^logout/?', 'index.php?', 'top');
         add_rewrite_rule('^signup/?', 'index.php?', 'top');
         add_rewrite_rule('^dashboard/?', 'index.php?', 'top');
-        add_rewrite_rule('^founders/([a-zA-Z\-]+)/resume/?$', 'index.php?founder_name=$matches[1]', 'top');
     }
 }

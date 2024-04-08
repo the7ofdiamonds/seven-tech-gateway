@@ -98,17 +98,11 @@ class SEVEN_TECH
             new Shortcodes;
         });
 
-        add_action('wp_head', function () {
-            (new SocialBar)->load_css();
-            (new CSS)->load_social_bar_css();
-        });
-
         add_action('customize_register', function ($wp_customize) {
             (new Customizer)->register_customizer_panel($wp_customize);
             (new BorderRadius)->seven_tech_border_radius_section($wp_customize);
             (new Color)->seven_tech_color_section($wp_customize);
             (new Shadow)->seven_tech_shadow_section($wp_customize);
-            (new SocialBar)->seven_tech_social_bar_section($wp_customize);
         });
 
         $this->roles = new Roles;
@@ -123,7 +117,6 @@ class SEVEN_TECH
         (new Database)->createTables();
         (new Pages)->add_pages();
         $this->roles->add_roles();
-        (new Founders)->add_founder_pages();
 
         flush_rewrite_rules();
     }

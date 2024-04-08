@@ -7,8 +7,6 @@ class Admin
     public function __construct()
     {
         add_action('admin_menu', [$this, 'register_custom_menu_page']);
-        add_action('admin_menu', [(new AdminMissionStatement), 'register_custom_submenu_page']);
-        add_action('admin_menu', [(new AdminSocialBar), 'register_custom_submenu_page']);
         add_action('admin_menu', [(new AdminAccountManagement), 'register_custom_submenu_page']);
         add_action('admin_menu', [(new AdminUserManagement), 'register_custom_submenu_page']);
 

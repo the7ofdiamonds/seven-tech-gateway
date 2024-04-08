@@ -13,31 +13,15 @@ class Pages
 
     public function __construct()
     {
-        $this->front_page_react = [
-            'About',
-        ];
+        $this->front_page_react = [];
 
         $this->custom_pages_list = [
-            [
-                'url' => 'about',
-                'regex' => '#^/about#',
-                'file_name' => 'About',
-                'title' => 'ABOUT',
-                'name' => 'about'
-            ],
             [
                 'url' => 'forgot',
                 'regex' => '#^/forgot#',
                 'file_name' => 'Forgot',
                 'title' => 'FORGOT',
                 'name' => 'forgot'
-            ],
-            [
-                'url' => 'founders/([a-zA-Z-]+)/resume',
-                'regex' => '#^/founders/([a-zA-Z-]+)/resume#',
-                'file_name' => 'FounderResume',
-                'title' => '',
-                'name' => 'founder-resume'
             ],
             [
                 'url' => 'login',
@@ -108,15 +92,7 @@ class Pages
             ...$this->pages_list,
         ];
 
-        $this->pages = [
-            [
-                'title' => 'ABOUT',
-                'filename' => 'About',
-                'url' => 'about',
-                'regex' => '#^/about/$#',
-                'name' => 'about'
-            ]
-        ];
+        $this->pages = [];
     }
 
     function add_pages()
