@@ -149,47 +149,34 @@ function LoginComponent() {
   return (
     <>
       <div className="flex-box">
-        <div className="login card">
-          <form onSubmit={handleSubmit}>
-            <table>
-              <thead></thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <input
-                      type="text"
-                      name="identity"
-                      placeholder="Username or Email"
-                      value={identity}
-                      onChange={handleIdentityChange}
-                      required
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      required
-                    />
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td>
-                    <button type="submit">
-                      <h3>LOGIN</h3>
-                    </button>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+        <div className="email-pass">
+          <form className="login-card card" onSubmit={handleSubmit}>
+            <input
+              className="input-email"
+              type="text"
+              name="identity"
+              placeholder="Username or Email"
+              value={identity}
+              onChange={handleIdentityChange}
+              required
+            />
+
+            <input
+              className="input-password"
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              required
+            />
+
+            <button type="submit">
+              <h3>LOGIN</h3>
+            </button>
           </form>
+
+          <StatusBarComponent messageType={messageType} message={message} />
         </div>
 
         <div className="actions">
@@ -248,12 +235,6 @@ function LoginComponent() {
           </button>
         </div>
       </div>
-
-      <span className={showStatusbar}>
-        {message !== '' && (
-          <StatusBarComponent messageType={messageType} message={message} />
-        )}
-      </span>
     </>
   );
 }

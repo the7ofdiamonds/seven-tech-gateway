@@ -5,55 +5,54 @@ namespace SEVEN_TECH\Pages;
 class Pages
 {
     public $front_page_react;
-    public $custom_pages_list;
-    public $protected_pages_list;
+    public $custom_pages;
+    public $protected_pages;
     public $pages_list;
     public $pages;
-    public $page_titles;
 
     public function __construct()
     {
         $this->front_page_react = [];
 
-        $this->custom_pages_list = [
+        $this->custom_pages = [
             [
                 'url' => 'forgot',
                 'regex' => '#^/forgot#',
                 'file_name' => 'Forgot',
                 'title' => 'FORGOT',
-                'name' => 'forgot'
+                'page_name' => 'forgot'
             ],
             [
                 'url' => 'login',
                 'regex' => '#^/login#',
                 'file_name' => 'Login',
                 'title' => 'LOGIN',
-                'name' => 'login'
+                'page_name' => 'login'
             ],
             [
                 'url' => 'logout',
                 'regex' => '#^/logout#',
                 'file_name' => 'Logout',
                 'title' => 'LOGOUT',
-                'name' => 'logout'
+                'page_name' => 'logout'
             ],
             [
                 'url' => 'signup',
                 'regex' => '#^/signup#',
                 'file_name' => 'Signup',
                 'title' => 'SIGNUP',
-                'name' => 'signup'
+                'page_name' => 'signup'
             ],
             [
                 'url' => 'dashboard',
                 'regex' => '#^/dashboard#',
                 'file_name' => 'Dashboard',
                 'title' => 'DASHBOARD',
-                'name' => 'dashboard'
+                'page_name' => 'dashboard'
             ]
         ];
 
-        $this->protected_pages_list = [];
+        $this->protected_pages = [];
 
         $this->pages = [
             [
@@ -86,7 +85,9 @@ class Pages
             ]
         ];
 
-        $this->pages_list = [];
+        $this->pages_list = [
+            ['title' => 'LOGIN']
+        ];
     }
 
     function add_pages()

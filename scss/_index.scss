@@ -26,19 +26,12 @@ body {
 }
 
 section {
-  grid-area: Section;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100vw;
-  min-height: 100vh;
-  padding: 0 1rem 1.5rem;
-  margin-top: 5rem;
+  padding: 0 1rem;
   gap: 1.5rem;
-
-  main {
-    margin-top: -5rem;
-  }
 }
 
 .options {
@@ -121,7 +114,7 @@ button,
 
   h2,
   h3 {
-    padding: 0.25em;
+    padding: 0.5em;
   }
 }
 

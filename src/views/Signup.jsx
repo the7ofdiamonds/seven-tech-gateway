@@ -76,7 +76,7 @@ function SignUpComponent() {
       }, 5000);
     }
   }, [message]);
-  
+
   const credentials = {
     username: username,
     email: email,
@@ -129,6 +129,7 @@ function SignUpComponent() {
                 <tr>
                   <td>
                     <input
+                      className="input-username"
                       type="text"
                       name="username"
                       placeholder="Username"
@@ -136,6 +137,7 @@ function SignUpComponent() {
                       required
                     />
                     <input
+                      className="input-email"
                       type="email"
                       name="email"
                       placeholder="Email"
@@ -147,6 +149,7 @@ function SignUpComponent() {
                 <tr>
                   <td>
                     <input
+                      className="input-password"
                       type="password"
                       name="password"
                       placeholder="Password"
@@ -154,6 +157,7 @@ function SignUpComponent() {
                       required
                     />
                     <input
+                      className="input-password"
                       type="password"
                       name="confirm-password"
                       placeholder="Confirm Password"
@@ -165,6 +169,7 @@ function SignUpComponent() {
                 <tr>
                   <td>
                     <input
+                      className="input-name"
                       type="text"
                       name="nicename"
                       placeholder="Nice Name (eg. /nicename)"
@@ -172,6 +177,7 @@ function SignUpComponent() {
                       required
                     />
                     <input
+                      className="input-name"
                       type="text"
                       name="nickname"
                       placeholder="Nickname"
@@ -183,6 +189,7 @@ function SignUpComponent() {
                 <tr>
                   <td>
                     <input
+                      className="input-name"
                       type="text"
                       name="firstname"
                       placeholder="First Name"
@@ -190,6 +197,7 @@ function SignUpComponent() {
                       required
                     />
                     <input
+                      className="input-name"
                       type="text"
                       name="lastname"
                       placeholder="Last Name"
@@ -201,7 +209,8 @@ function SignUpComponent() {
                 <tr>
                   <td>
                     <input
-                      type="text"
+                      className="input-phone"
+                      type="tel"
                       name="phone"
                       placeholder="Phone"
                       onChange={handleChange}

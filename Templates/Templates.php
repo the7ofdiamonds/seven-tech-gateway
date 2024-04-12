@@ -23,25 +23,28 @@ class Templates
     function get_front_page_template($frontpage_template, $sections)
     {
         if (is_front_page()) {
-            foreach ($sections as $section) {
-                add_action('wp_head', function () use ($section) {
-                    $this->css->load_front_page_css($section);
-                });
-                add_action('wp_footer', function () use ($section) {
-                    $this->js->load_front_page_react($section);
-                });
+            $frontpage_template = $this->pluginDir . 'Pages/front-page.php';
+
+            if (file_exists($frontpage_template)) {
+                foreach ($sections as $section) {
+                    add_action('wp_head', function () use ($section) {
+                        $this->css->load_front_page_css($section);
+                    });
+                    add_action('wp_footer', function () use ($section) {
+                        $this->js->load_front_page_react($section);
+                    });
+                }
+
+                return $frontpage_template;
             }
 
             return $frontpage_template;
         }
-
-        return $frontpage_template;
     }
-
 
     function get_custom_page_template($template_include, $custom_page)
     {
-        $custom_template = $this->pluginDir . "Pages/page-{$custom_page['name']}.php";
+        $custom_template = $this->pluginDir . "Pages/page-{$custom_page['page_name']}.php";
 
         if (file_exists($custom_template)) {
             $filename = $custom_page['file_name'];

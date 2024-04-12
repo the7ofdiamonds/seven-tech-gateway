@@ -28,6 +28,7 @@ function ForgotComponent() {
               <tr>
                 <td>
                   <input
+                    className="input-email"
                     type="email"
                     name="email"
                     placeholder="Email"

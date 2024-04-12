@@ -42,7 +42,6 @@ use SEVEN_TECH\Router\Router;
 use SEVEN_TECH\Shortcodes\Shortcodes;
 use SEVEN_TECH\Taxonomies\Taxonomies;
 use SEVEN_TECH\Templates\Templates;
-use SEVEN_TECH\Templates\TemplatesCustom;
 
 class SEVEN_TECH
 {
@@ -78,13 +77,11 @@ class SEVEN_TECH
             $css,
             $js,
         );
-        $templates_custom = new TemplatesCustom;
         $router = new Router(
             $pages,
             $posttypes,
             $taxonomies,
-            $templates,
-            $templates_custom
+            $templates
         );
 
         add_action('init', function () use ($posttypes, $taxonomies, $router) {
@@ -106,8 +103,7 @@ class SEVEN_TECH
             $pages,
             $posttypes,
             $taxonomies,
-            $templates,
-            $templates_custom
+            $templates
         );
         $this->pages = new Pages;
     }
@@ -118,6 +114,11 @@ class SEVEN_TECH
         (new Database)->createTables();
         $this->pages->add_pages();
         $this->router->react_rewrite_rules();
+    }
+
+    function deactivate()
+    {
+        flush_rewrite_rules();
     }
 
     public function settings_link($links)
@@ -131,5 +132,4 @@ class SEVEN_TECH
 
 $seven_tech = new SEVEN_TECH();
 register_activation_hook(__FILE__, array($seven_tech, 'activate'));
-
-//Uninstall move post type to trash ???
+register_deactivation_hook(__FILE__, array($seven_tech, 'deactivate'));

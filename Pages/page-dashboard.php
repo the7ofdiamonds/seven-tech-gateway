@@ -22,13 +22,13 @@ get_header(); ?>
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
     }
     
-    if (is_plugin_active('seven-tech-schedule/SEVEN_TECH_Schedule.php')) {
-        echo do_shortcode('[seven-tech-schedule]');
-    }
+    // if (is_plugin_active('seven-tech-schedule/SEVEN_TECH_Schedule.php')) {
+    //     echo do_shortcode('[seven-tech-schedule]');
+    // }
 
-    if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
-        echo do_shortcode('[seven-tech-portfolio]');
-    }
+    // if (is_plugin_active('seven-tech-portfolio/SEVEN_TECH_Portfolio.php')) {
+    //     echo do_shortcode('[seven-tech-portfolio]');
+    // }
 
     if (is_plugin_active('orb-products-services/ORB_Products_Services.php')) {
         echo do_shortcode('[orb-dashboard]');

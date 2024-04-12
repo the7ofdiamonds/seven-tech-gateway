@@ -60,12 +60,12 @@ export const updateRefreshToken = (refresh_token) => {
 
 export const login = createAsyncThunk('login/login', async ({ email, password, location }) => {
     try {
-
+console.log(email);
         if (isValidEmail(email) == false) {
             throw new Error('Email is not valid.');
         }
 
-        if (isValidPassword(email) == false) {
+        if (isValidPassword(password) == false) {
             throw new Error('Password is not valid.');
         }
 

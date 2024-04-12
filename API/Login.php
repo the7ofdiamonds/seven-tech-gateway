@@ -18,7 +18,6 @@ class Login
         $this->auth = $auth;
     }
 
-// Send password needs to be updated email
     function login(WP_REST_Request $request)
     {
         try {
@@ -57,7 +56,7 @@ class Login
             $password_check = wp_check_password($password, $user->password, $user->id);
 
             if (!$password_check) {
-                $statusCode = 404;
+                $statusCode = 400;
                 throw new Exception('The password you entered for this username is not correct.', $statusCode);
             }
 
