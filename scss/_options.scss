@@ -1,0 +1,16 @@
+.options {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+
+  a {
+    button {
+      padding: 0.5em;
+    }
+    &.active button {
+      background-color: white;
+      color: black;
+      box-shadow: none;
+    }
+  }
+}

@@ -1,31 +1,30 @@
-section {
-  margin: 5rem 0;
-  
-  main.signup {
-    .signup.card {
-      padding: 0.5rem;
-      min-width: 17.5rem;
+main.signup {
+  min-height: 100vh;
+  justify-content: center;
 
-      form {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
+  .signup.card {
+    padding: 0.5rem;
+    min-width: 17.5rem;
 
-        table {
-          border-spacing: 0.75em;
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
 
+      table {
+        border-spacing: 0.75em;
+
+        td {
+          display: flex;
+          justify-content: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        tfoot {
           td {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-          }
-
-          tfoot {
-            td {
-              button {
-                margin: auto;
-              }
+            button {
+              margin: auto;
             }
           }
         }

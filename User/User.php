@@ -57,7 +57,6 @@ class User
             }
 
             if (empty($results[0])) {
-                error_log("User could not be found.");
                 return '';
             }
 

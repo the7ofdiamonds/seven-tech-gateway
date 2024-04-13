@@ -12,7 +12,9 @@ class Pages
 
     public function __construct()
     {
-        $this->front_page_react = [];
+        $this->front_page_react = [
+            'FrontPage'
+        ];
 
         $this->custom_pages = [
             [
@@ -49,6 +51,14 @@ class Pages
                 'file_name' => 'Dashboard',
                 'title' => 'DASHBOARD',
                 'page_name' => 'dashboard'
+            ],
+            [
+                'file_name' => 'About',
+                'regex' => '#^/about#'
+            ],
+            [
+                'file_name' => 'Schedule',
+                'regex' => '#^/schedule#'
             ]
         ];
 

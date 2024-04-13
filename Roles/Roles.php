@@ -18,7 +18,7 @@ class Roles
 
     function add_roles()
     {
-        add_role('founder', 'Founder', get_role('editor')->capabilities);
+        // add_role('founder', 'Founder', get_role('editor')->capabilities);
     }
 
 

@@ -1,11 +1,14 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Provider } from 'react-redux'; 
+import { Provider } from 'react-redux';
 
 import store from './model/store.js';
 
 import LoadingComponent from './loading/LoadingComponent';
 
+const FrontPage = lazy(() => import('./views/FrontPage.jsx'));
+const About = lazy(() => import('./views/About.jsx'));
+const Schedule = lazy(() => import('./views/Schedule.jsx'));
 const Login = lazy(() => import('./views/Login.jsx'));
 const LogOut = lazy(() => import('./views/Logout.jsx'));
 const SignUp = lazy(() => import('./views/Signup.jsx'));
@@ -23,6 +26,9 @@ function App() {
         <Router>
           <Suspense fallback={<LoadingComponent />}>
             <Routes>
+              <Route path="/" element={<FrontPage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/schedule" element={<Schedule />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<LogOut />} />
               <Route path="/signup" element={<SignUp />} />
