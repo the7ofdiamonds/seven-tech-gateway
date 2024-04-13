@@ -24,15 +24,18 @@
     padding: 0.25rem;
   }
 
-  .change-name {
-    justify-content: start;
-  }
-
+  .change-name,
   .change-username,
   .change-password,
   .change-phone,
   .remove-email {
     justify-content: center;
+
+    .action {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
   }
 
   .forgot-password,

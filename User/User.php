@@ -40,11 +40,11 @@ class User
     public function findUserByEmail($email)
     {
         try {
-            $validEmail = $this->validator->validEmail($email);
+            // $validEmail = $this->validator->validEmail($email);
 
-            if (!$validEmail) {
-                throw new Exception('Email is not valid');
-            }
+            // if (!$validEmail) {
+            //     throw new Exception('Email is not valid', 400);
+            // }
 
             global $wpdb;
 

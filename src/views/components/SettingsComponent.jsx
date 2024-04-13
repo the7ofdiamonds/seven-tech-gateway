@@ -3,18 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   changePassword,
-  sendForgotPasswordEmail
+  sendForgotPasswordEmail,
 } from '../../controllers/passwordSlice';
 import {
   changeName,
   changePhone,
-  changeUsername
+  changeUsername,
 } from '../../controllers/changeSlice';
 // import { removeEmail } from '../../controllers/emailSlice';
 import { logout, logoutAll, logoutAllUrl } from '../../controllers/logoutSlice';
-import {
-  sendRemoveAccountEmail
-} from '../../controllers/accountSlice';
+import { sendRemoveAccountEmail } from '../../controllers/accountSlice';
 
 import StatusBarComponent from '../components/StatusBarComponent';
 
@@ -69,7 +67,7 @@ function SettingsComponent() {
   const [phoneChange, setPhoneChange] = useState(phone);
   const [emailRemove, setEmailRemove] = useState('');
 
-  const [showStatusbar, setShowStatusBar] = useState('');
+  const [showStatusBar, setShowStatusBar] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');
 
@@ -319,7 +317,7 @@ function SettingsComponent() {
       dispatch(
         sendRemoveAccountEmail(email ? email : localStorage.getItem('email'))
       );
-    }else {
+    } else {
       setMessageType('error');
       setMessage('An email is required to remove your account.');
     }
@@ -327,97 +325,100 @@ function SettingsComponent() {
 
   return (
     <>
-      <table className="settings">
-        <thead>
-          <th>
-            <h2>Settings</h2>
-          </th>
-        </thead>
+      <main className="settings">
+        <h2>Settings</h2>
 
-        <tbody>
-          <tr>
-            <td>
-              <form action="">
-                <table>
-                  <thead></thead>
-                  <tbody>
-                    <tr className="change-name">
-                      <input
-                        type="text"
-                        name="firstname"
-                        placeholder="First Name"
-                        value={firstName}
-                        onChange={handleChangeNameChangeFirst}
-                      />
+        <span className="change-name">
+          <input
+            className="input-name"
+            type="text"
+            name="firstname"
+            placeholder="First Name"
+            value={firstName}
+            onChange={handleChangeNameChangeFirst}
+          />
 
-                      <input
-                        type="text"
-                        name="lastname"
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChange={handleChangeNameChangeLast}
-                      />
+          <input
+            className="input-name"
+            type="text"
+            name="lastname"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={handleChangeNameChangeLast}
+          />
 
-                      <button onClick={handleChangeName}>
-                        <h3>Change Name</h3>
-                      </button>
-                    </tr>
+          <div className="action">
+            <button onClick={handleChangeName}>
+              <h3>Change Name</h3>
+            </button>
+          </div>
+        </span>
 
-                    <tr>{/* Create Change Title (roles) */}</tr>
+        {/* Create Change Title (roles) */}
 
-                    <tr className="change-username">
-                      <input
-                        type="text"
-                        name="username"
-                        placeholder="Username"
-                        value={usernameChange}
-                        onChange={handleChangeUsernameChange}
-                      />
+        <span className="change-username">
+          <input
+            className="input-username"
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={usernameChange}
+            onChange={handleChangeUsernameChange}
+          />
+          
+          <div className="action">
+            <button onClick={handleChangeUsername}>
+              <h3>Change Username</h3>
+            </button>
+          </div>
+        </span>
 
-                      <button onClick={handleChangeUsername}>
-                        <h3>Change Username</h3>
-                      </button>
-                    </tr>
+        <span className="change-phone">
+          <input
+            className="input-phone"
+            type="text"
+            name="phone"
+            placeholder="Phone Number"
+            value={phoneChange}
+            onChange={handleChangePhoneChange}
+          />
 
-                    <tr className="change-phone">
-                      <input
-                        type="text"
-                        name="phone"
-                        placeholder="Phone Number"
-                        value={phoneChange}
-                        onChange={handleChangePhoneChange}
-                      />
+          <div className="action">
+            <button onClick={handleChangePhone}>
+              <h3>Change Phone</h3>
+            </button>
+          </div>
+        </span>
 
-                      <button onClick={handleChangePhone}>
-                        <h3>Change Phone</h3>
-                      </button>
-                    </tr>
+        {/* Needs send email */}
 
-                    {/* Needs send email */}
+        <span className="change-password">
+          <input
+            className="input-password"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onChange={handleChangePasswordChange}
+          />
 
-                    <tr className="change-password">
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={handleChangePasswordChange}
-                      />
+          <input
+            className="input-password"
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={handleChangePasswordChange}
+          />
 
-                      <input
-                        type="password"
-                        name="confirmPassword"
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChange={handleChangePasswordChange}
-                      />
+          <div className="action">
+            <button onClick={handleChangePassword}>
+              <h3>Change Password</h3>
+            </button>
+          </div>
+        </span>
 
-                      <button onClick={handleChangePassword}>
-                        <h3>Change Password</h3>
-                      </button>
-                    </tr>
-
-                    {/* <tr className="remove-email">
+        {/* <tr className="remove-email">
                       <input
                         type="text"
                         name="email"
@@ -430,45 +431,37 @@ function SettingsComponent() {
                         <h3>Remove Email</h3>
                       </button>
                     </tr> */}
-                  </tbody>
-                </table>
-              </form>
-            </td>
-          </tr>
-        </tbody>
 
-        <tfoot>
-          <tr className="forgot-password">
-            <button onClick={handleForgotPassword}>
-              <h3>FORGOT PASSWORD</h3>
+        <span className="forgot-password">
+          <button onClick={handleForgotPassword}>
+            <h3>FORGOT PASSWORD</h3>
+          </button>
+        </span>
+
+        <span className="logout">
+          <button onClick={handleLogout}>
+            <h3>LOG OUT</h3>
+          </button>
+
+          {logoutAllUrl != null && (
+            <button onClick={handleLogoutAll}>
+              <h3>LOG OUT ALL</h3>
             </button>
-          </tr>
+          )}
+        </span>
 
-          <tr className="logout">
-            <button onClick={handleLogout}>
-              <h3>LOG OUT</h3>
-            </button>
+        <span className="remove-account">
+          <button onClick={handleRemoveAccount}>
+            <h3>REMOVE ACCOUNT</h3>
+          </button>
+        </span>
 
-            {logoutAllUrl != null && (
-              <button onClick={handleLogoutAll}>
-                <h3>LOG OUT ALL</h3>
-              </button>
-            )}
-          </tr>
-
-          <tr className="remove-account">
-            <button onClick={handleRemoveAccount}>
-              <h3>REMOVE ACCOUNT</h3>
-            </button>
-          </tr>
-
-          <span className={showStatusbar}>
-            {message !== '' && (
-              <StatusBarComponent messageType={messageType} message={message} />
-            )}
-          </span>
-        </tfoot>
-      </table>
+        <span className={showStatusBar}>
+          {message != '' && (
+            <StatusBarComponent messageType={messageType} message={message} />
+          )}
+        </span>
+      </main>
     </>
   );
 }
