@@ -20,9 +20,9 @@ class DatabaseOptions
 
     public function update_options($option_name, $option_value)
     {
-        $sql = "UPDATE {$this->table_name} SET option_value = :option_value WHERE option_name = :option_name";
-
         try {
+            $sql = "UPDATE {$this->table_name} SET option_value = :option_value WHERE option_name = :option_name";
+
             $this->connection->exec("USE {$this->db_name}");
 
             $checkIfExists = $this->connection->prepare("SELECT COUNT(*) FROM {$this->table_name} WHERE option_name = :option_name");

@@ -43,14 +43,14 @@ class Router
         try {
             $path = $_SERVER['REQUEST_URI'];
 
-            if (!empty($this->front_page_react)) {
+            if (!empty($this->front_page_react) && preg_match("#^/$#", $path)) {
                 $sections = $this->front_page_react;
 
                 add_filter('frontpage_template', function ($frontpage_template) use ($sections) {
                     return $this->templates->get_front_page_template($frontpage_template, $sections);
                 });
             }
-            
+
             if (!empty($this->custom_pages)) {
                 foreach ($this->custom_pages as $custom_page) {
                     if (!isset($custom_page['regex'])) {
@@ -59,14 +59,10 @@ class Router
                     }
 
                     if (preg_match($custom_page['regex'], $path)) {
-                        if (!isset($custom_page['file_name'])) {
-                            error_log('Filename is required for custom_pages at Pages.');
-                            return;
-                        }
-
                         add_filter('template_include', function ($template_include) use ($custom_page) {
                             return $this->templates->get_custom_page_template($template_include, $custom_page);
                         });
+                        break;
                     }
                 }
             }
@@ -88,6 +84,7 @@ class Router
                         add_filter('template_include',  function ($template_include) use ($protected_page) {
                             return $this->templates->get_protected_page_template($template_include, $protected_page);
                         });
+                        break;
                     }
                 }
             }
@@ -109,54 +106,59 @@ class Router
                         add_filter('template_include', function ($template_include) use ($page) {
                             return $this->templates->get_page_template($template_include, $page);
                         });
-                    }
-                }
-            }
 
-            if (!empty($this->pages_list)) {
-                foreach ($this->pages_list as $page) {
-                    if (!isset($page['regex'])) {
                         break;
-                    }
-
-                    if (preg_match($page['regex'], $path)) {
-
-                        if (!isset($page['file_name'])) {
-                            error_log('Filename is required for pages_list at Pages.');
-                            return;
-                        }
-
-                        add_filter('template_include', function ($template_include) use ($page) {
-                            return $this->templates->get_page_list_template($template_include, $page);
-                        });
                     }
                 }
             }
 
             if (!empty($this->taxonomies_list)) {
                 foreach ($this->taxonomies_list as $taxonomy) {
-                    if (is_tax($taxonomy['name'])) {
+                    if (!isset($taxonomy['slug'])) {
+                        error_log('Regex is required for taxonomies at Taxonomies.');
+                        break;
+                    }
 
-                        add_filter('taxonomy_template', function ($taxonomy_template) use ($taxonomy) {
-                            return $this->templates->get_archive_page_template($taxonomy_template, $taxonomy);
+                    if (preg_match("#^/{$taxonomy['slug']}/([a-zA-Z-]+)#", $path)) {
+                        $filename = str_replace(' ', '', $taxonomy['singular']);
+
+                        add_filter('template_include', function ($template_include) use ($taxonomy, $filename) {
+                            return $this->templates->get_taxonomy_page_template($template_include, $taxonomy, $filename);
                         });
+                        break;
+                    }
+
+                    if (preg_match("#^/{$taxonomy['slug']}#", $path)) {
+                        $filename = str_replace(' ', '', $taxonomy['plural']);
+
+                        add_filter('template_include', function ($template_include) use ($taxonomy, $filename) {
+                            return $this->templates->get_taxonomy_page_template($template_include, $taxonomy, $filename);
+                        });
+                        break;
                     }
                 }
             }
 
             if (!empty($this->post_types_list)) {
                 foreach ($this->post_types_list as $post_type) {
-                    add_filter('single_template', function ($single_template) use ($post_type) {
-                        return $this->templates->get_single_page_template($single_template, $post_type);
-                    });
-                }
-            }
+                    if (!isset($post_type['slug'])) {
+                        error_log('Regex is required for post types at Post_Types.');
+                        break;
+                    }
 
-            if (!empty($this->taxonomies_list)) {
-                foreach ($this->taxonomies_list as $taxonomy) {
-                    add_filter('taxonomy_template', function ($taxonomy_template) use ($taxonomy) {
-                        return $this->templates->get_archive_page_template($taxonomy_template, $taxonomy);
-                    });
+                    if (preg_match("#^/{$post_type['slug']}/([a-zA-Z-]+)#", $path)) {
+                        add_filter('single_template', function ($single_template) use ($post_type) {
+                            return $this->templates->get_single_page_template($single_template, $post_type);
+                        });
+                        break;
+                    }
+
+                    if (preg_match("#^/{$post_type['slug']}#", $path)) {
+                        add_filter('archive_template', function ($archive_template) use ($post_type) {
+                            return $this->templates->get_archive_page_template($archive_template, $post_type);
+                        });
+                        break;
+                    }
                 }
             }
         } catch (Exception $e) {

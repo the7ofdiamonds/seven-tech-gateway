@@ -12,7 +12,7 @@ class Validator
         if (empty($email)) {
             throw new Exception('Email is required.');
         }
-error_log($email);
+
         $pattern = '/^\^([a-zA-Z0-9._-]+)@([a-zA-Z0-9._-]+)\.([a-zA-Z]+)$/';
 
         if (preg_match($pattern, $email)) {
