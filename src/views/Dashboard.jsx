@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import LoginComponent from '../views/Login';
+import LoginComponent from './Login';
 import SettingsComponent from './components/SettingsComponent';
 
 function Dashboard() {

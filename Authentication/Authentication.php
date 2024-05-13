@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Authentication;
+namespace SEVEN_TECH\Gateway\Authentication;
 
 use Exception;
 

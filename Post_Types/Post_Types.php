@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Post_Types;
+namespace SEVEN_TECH\Gateway\Post_Types;
 
 class Post_Types
 {

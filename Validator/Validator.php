@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Validator;
+namespace SEVEN_TECH\Gateway\Validator;
 
 use Exception;
 

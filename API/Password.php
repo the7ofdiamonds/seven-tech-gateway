@@ -1,16 +1,16 @@
 <?php
 
-namespace SEVEN_TECH\API;
+namespace SEVEN_TECH\Gateway\API;
 
 use Exception;
 
 use WP_REST_Request;
 
-use SEVEN_TECH\Admin\AdminUserManagement;
+use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
+use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
-use SEVEN_TECH\User\User;
 
 class Password
 {

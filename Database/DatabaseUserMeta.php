@@ -1,8 +1,8 @@
 <?php
 
-namespace SEVEN_TECH\Database;
+namespace SEVEN_TECH\Gateway\Database;
 
-use SEVEN_TECH\Database\Database;
+use SEVEN_TECH\Gateway\Database\Database;
 
 class DatabaseUserMeta
 {

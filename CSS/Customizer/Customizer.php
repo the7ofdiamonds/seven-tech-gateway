@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\CSS\Customizer;
+namespace SEVEN_TECH\Gateway\CSS\Customizer;
 
 class Customizer
 {

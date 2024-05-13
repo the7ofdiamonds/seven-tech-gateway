@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Shortcodes;
+namespace SEVEN_TECH\Gateway\Shortcodes;
 
 class Shortcodes
 {

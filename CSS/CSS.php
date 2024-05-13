@@ -1,12 +1,12 @@
 <?php
 
-namespace SEVEN_TECH\CSS;
+namespace SEVEN_TECH\Gateway\CSS;
 
 use Exception;
 
-use SEVEN_TECH\CSS\Customizer\BorderRadius;
-use SEVEN_TECH\CSS\Customizer\Color;
-use SEVEN_TECH\CSS\Customizer\Shadow;
+use SEVEN_TECH\Gateway\CSS\Customizer\BorderRadius;
+use SEVEN_TECH\Gateway\CSS\Customizer\Color;
+use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
 
 class CSS
 {

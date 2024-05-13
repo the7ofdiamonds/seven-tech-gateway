@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Taxonomies;
+namespace SEVEN_TECH\Gateway\Taxonomies;
 
 use Exception;
 

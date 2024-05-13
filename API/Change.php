@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\API;
+namespace SEVEN_TECH\Gateway\API;
 
 use Exception;
 

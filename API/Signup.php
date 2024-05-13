@@ -1,12 +1,12 @@
 <?php
 
-namespace SEVEN_TECH\API;
+namespace SEVEN_TECH\Gateway\API;
 
 use Exception;
 
 use WP_REST_Request;
 
-use SEVEN_TECH\User\User;
+use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Auth;
 

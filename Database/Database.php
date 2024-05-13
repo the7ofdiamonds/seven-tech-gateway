@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Database;
+namespace SEVEN_TECH\Gateway\Database;
 
 use PDO;
 use PDOException;

@@ -1,9 +1,19 @@
 {
-    "name": "jamelclyons/seven-tech",
+    "name": "the7ofdiamonds/seven-tech-gateway",
+    "description": "Wordpress Plugin",
+    "type": "project",
     "authors": [
         {
             "name": "Jamel C. Lyons",
-            "email": "32249473+the7ofdiamonds@users.noreply.github.com"
+            "email": "jclyonsenterprises@gmail.com",
+            "homepage": "https://the7ofdiamonds.tech/founders/jamelclyons",
+            "role": "Developer"
+        },
+        {
+            "name": "THE7OFDIAMONDS.TECH",
+            "email": "jclyonsenterprises@gmail.com",
+            "homepage": "https://the7ofdiamonds.tech",
+            "role": "Maintainer"
         }
     ],
     "require": {
@@ -18,7 +28,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SEVEN_TECH\\": ""
+            "SEVEN_TECH\\Gateway\\": ""
         }
     }
 }

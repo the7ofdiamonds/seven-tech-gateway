@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Pages;
+namespace SEVEN_TECH\Gateway\Pages;
 
 class Pages
 {

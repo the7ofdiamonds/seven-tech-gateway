@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH;
+namespace SEVEN_TECH\Gateway;
 
 /**
  * @package SEVEN_TECH
@@ -21,27 +21,27 @@ Licensing Info is needed
 */
 
 defined('ABSPATH') or die('Hey, what are you doing here? You silly human!');
-define('SEVEN_TECH', WP_PLUGIN_DIR . '/seven-tech/');
-define('SEVEN_TECH_URL', WP_PLUGIN_URL . '/seven-tech/');
+define('SEVEN_TECH', WP_PLUGIN_DIR . '/seven-tech-gateway/');
+define('SEVEN_TECH_URL', WP_PLUGIN_URL . '/seven-tech-gateway/');
 
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
-use SEVEN_TECH\Admin\Admin;
+use SEVEN_TECH\Gateway\Admin\Admin;
 
-use SEVEN_TECH\API\API;
-use SEVEN_TECH\CSS\CSS;
-use SEVEN_TECH\CSS\Customizer\Customizer;
-use SEVEN_TECH\CSS\Customizer\BorderRadius;
-use SEVEN_TECH\CSS\Customizer\Color;
-use SEVEN_TECH\CSS\Customizer\Shadow;
-use SEVEN_TECH\Database\Database;
-use SEVEN_TECH\JS\JS;
-use SEVEN_TECH\Pages\Pages;
-use SEVEN_TECH\Post_Types\Post_Types;
-use SEVEN_TECH\Router\Router;
-use SEVEN_TECH\Shortcodes\Shortcodes;
-use SEVEN_TECH\Taxonomies\Taxonomies;
-use SEVEN_TECH\Templates\Templates;
+use SEVEN_TECH\Gateway\API\API;
+use SEVEN_TECH\Gateway\CSS\CSS;
+use SEVEN_TECH\Gateway\CSS\Customizer\Customizer;
+use SEVEN_TECH\Gateway\CSS\Customizer\BorderRadius;
+use SEVEN_TECH\Gateway\CSS\Customizer\Color;
+use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
+use SEVEN_TECH\Gateway\Database\Database;
+use SEVEN_TECH\Gateway\JS\JS;
+use SEVEN_TECH\Gateway\Pages\Pages;
+use SEVEN_TECH\Gateway\Post_Types\Post_Types;
+use SEVEN_TECH\Gateway\Router\Router;
+use SEVEN_TECH\Gateway\Shortcodes\Shortcodes;
+use SEVEN_TECH\Gateway\Taxonomies\Taxonomies;
+use SEVEN_TECH\Gateway\Templates\Templates;
 
 class SEVEN_TECH
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace SEVEN_TECH\API;
+namespace SEVEN_TECH\Gateway\API;
 
 use Exception;
 
 use WP_REST_Request;
 
-use SEVEN_TECH\Admin\AdminAccountManagement;
-use SEVEN_TECH\Validator\Validator;
+use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
+use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;

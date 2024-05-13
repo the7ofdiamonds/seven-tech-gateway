@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\JS;
+namespace SEVEN_TECH\Gateway\JS;
 
 use Exception;
 

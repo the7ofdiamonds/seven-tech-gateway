@@ -1,9 +1,9 @@
 <?php
 
-namespace SEVEN_TECH\Templates;
+namespace SEVEN_TECH\Gateway\Templates;
 
-use SEVEN_TECH\CSS\CSS;
-use SEVEN_TECH\JS\JS;
+use SEVEN_TECH\Gateway\CSS\CSS;
+use SEVEN_TECH\Gateway\JS\JS;
 
 class Templates
 {

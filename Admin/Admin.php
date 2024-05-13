@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Admin;
+namespace SEVEN_TECH\Gateway\Admin;
 
 class Admin
 {

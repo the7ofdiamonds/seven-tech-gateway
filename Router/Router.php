@@ -1,13 +1,13 @@
 <?php
 
-namespace SEVEN_TECH\Router;
+namespace SEVEN_TECH\Gateway\Router;
 
 use Exception;
 
-use SEVEN_TECH\Pages\Pages;
-use SEVEN_TECH\Post_Types\Post_Types;
-use SEVEN_TECH\Taxonomies\Taxonomies;
-use SEVEN_TECH\Templates\Templates;
+use SEVEN_TECH\Gateway\Pages\Pages;
+use SEVEN_TECH\Gateway\Post_Types\Post_Types;
+use SEVEN_TECH\Gateway\Taxonomies\Taxonomies;
+use SEVEN_TECH\Gateway\Templates\Templates;
 
 class Router
 {

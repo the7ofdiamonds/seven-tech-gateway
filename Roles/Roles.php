@@ -1,9 +1,9 @@
 <?php
 
-namespace SEVEN_TECH\Roles;
+namespace SEVEN_TECH\Gateway\Roles;
 
-use SEVEN_TECH\Database\DatabaseOptions;
-use SEVEN_TECH\Database\DatabaseUserMeta;
+use SEVEN_TECH\Gateway\Database\DatabaseOptions;
+use SEVEN_TECH\Gateway\Database\DatabaseUserMeta;
 
 class Roles
 {

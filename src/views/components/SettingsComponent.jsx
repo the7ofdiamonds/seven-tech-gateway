@@ -14,7 +14,7 @@ import {
 import { logout, logoutAll, logoutAllUrl } from '../../controllers/logoutSlice';
 import { sendRemoveAccountEmail } from '../../controllers/accountSlice';
 
-import StatusBarComponent from '../components/StatusBarComponent';
+import StatusBarComponent from './StatusBarComponent';
 
 function SettingsComponent() {
   const dispatch = useDispatch();

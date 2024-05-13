@@ -1,10 +1,10 @@
 <?php
 
-namespace SEVEN_TECH\User;
+namespace SEVEN_TECH\Gateway\User;
 
 use Exception;
 
-use SEVEN_TECH\Validator\Validator;
+use SEVEN_TECH\Gateway\Validator\Validator;
 
 class User
 {

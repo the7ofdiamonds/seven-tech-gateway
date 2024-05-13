@@ -1,10 +1,10 @@
 <?php
 
-namespace SEVEN_TECH\Admin;
+namespace SEVEN_TECH\Gateway\Admin;
 
 use Exception;
 
-use SEVEN_TECH\User\User;
+use SEVEN_TECH\Gateway\User\User;
 
 class AdminAccountManagement
 {
