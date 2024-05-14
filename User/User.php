@@ -4,20 +4,24 @@ namespace SEVEN_TECH\Gateway\User;
 
 use Exception;
 
+use WP_User;
+
 use SEVEN_TECH\Gateway\Validator\Validator;
+use SEVEN_TECH\Gateway\Roles\Roles;
 
 class User
 {
     private $validator;
+    private $roles;
 
     public function __construct()
     {
         $this->validator = new Validator;
+        $this->roles = new Roles;
     }
 
     public function addNewUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
     {
-
         global $wpdb;
 
         $results = $wpdb->get_results(
@@ -93,5 +97,64 @@ class User
         }
 
         return true;
+    }
+
+    public function addUserRole($id, $roleName, $roleDisplayName)
+    {
+        $roleExists = $this->roles->roleExists($roleName, $roleDisplayName);
+
+        if (!$roleExists) {
+            return "Role {$roleDisplayName} does not exits.";
+        }
+
+        $user = new WP_User($id);
+        $user->add_role($roleName);
+
+        return $user;
+    }
+
+    public function getUserRoles($id)
+    {
+        $user = new WP_User($id);
+        $roles = $user->roles;
+
+        $wp_roles = wp_roles()->get_names();
+
+        $user_roles = [];
+
+        foreach ($wp_roles as $roleKey => $roleValue) {
+            foreach ($roles as $role) {
+                if ($roleKey == $role) {
+                    $user_roles[] = [
+                        'name' => $roleKey,
+                        'display_name' => $roleValue
+                    ];
+                }
+            }
+        }
+
+        return $user_roles;
+    }
+
+    public function removeUserRole($id, $role)
+    {
+        $user = new WP_User($id);
+        $user->remove_role($role);
+
+        return $user;
+    }
+
+    public function changeUserNicename($id, $nicename)
+    {
+        $user_data = get_userdata($id);
+        $user_data->user_nicename = $nicename;
+
+        $updated = wp_update_user($user_data);
+
+        if (!is_int($updated)) {
+            return "There has been an error updating User nice name.";
+        }
+
+        return "User nice name has been updated successfully";
     }
 }

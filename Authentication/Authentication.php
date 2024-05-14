@@ -4,7 +4,7 @@ namespace SEVEN_TECH\Gateway\Authentication;
 
 use Exception;
 
-use SEVEN_TECH\User\User;
+use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Auth;
 

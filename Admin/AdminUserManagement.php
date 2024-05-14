@@ -16,6 +16,10 @@ class AdminUserManagement
     {
         $this->validator = new Validator;
         $this->user = new User;
+
+        add_action('wp_ajax_getUser', [$this, 'getUser']);
+        add_action('wp_ajax_getUserRoles', [$this, 'getUserRoles']);
+
     }
 
     function register_custom_submenu_page()
@@ -42,19 +46,21 @@ class AdminUserManagement
     public function getUser($email)
     {
         try {
+            $email = $_POST['emailGU'];
+
             $user = $this->user->findUserByEmail($email);
 
             if (!$user) {
-                return "User could not be found.";
+                wp_send_json_error("User could not be found.");
             }
 
-            return $user;
+            wp_send_json_success($user);
         } catch (Exception $e) {
-            throw new Exception($e);
+            wp_send_json_error($e->getMessage());
         }
     }
 
-// Send password recovery email
+    // Send password recovery email
     function forgotPassword($email)
     {
         try {
@@ -65,5 +71,61 @@ class AdminUserManagement
         } catch (Exception $e) {
             throw new Exception($e);
         }
+    }
+
+    public function changeUserNicename($email, $nicename)
+    {
+        $user = $this->user->findUserByEmail($email);
+
+        if (empty($user)) {
+            // Show error in admin area
+            error_log('User could not be found.');
+            return '';
+        }
+
+        return $this->user->changeUserNicename($user->id, $nicename);
+    }
+
+    public function addUserRole($email, $roleName, $roleDisplayName)
+    {
+        $user = $this->user->findUserByEmail($email);
+
+        if (empty($user)) {
+            // Show error in admin area
+            error_log('User could not be found.');
+            return '';
+        }
+
+        return $this->user->addUserRole($user->id, $roleName, $roleDisplayName);
+    }
+
+    public function getUserRoles($id)
+    {
+        try {
+            $id = $_POST['id'];
+
+            $user_roles = $this->user->getUserRoles($id);
+
+            if (!is_array($user_roles)) {
+                wp_send_json_error("User could not be found.");
+            }
+
+            wp_send_json_success($user_roles);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
+    public function removeUserRole($email, $roleName, $roleDisplayName)
+    {
+        $user = $this->user->findUserByEmail($email);
+
+        if (empty($user)) {
+            // Show error in admin area
+            error_log('User could not be found.');
+            return '';
+        }
+
+        return $this->user->removeUserRole($user->id, $roleName, $roleDisplayName);
     }
 }
