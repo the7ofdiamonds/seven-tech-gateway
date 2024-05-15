@@ -52,8 +52,6 @@ class AdminAccountManagement
                 throw new Exception("User could not be found.");
             }
 
-            error_log(print_r($account, true));
-
             wp_send_json_success($account);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
