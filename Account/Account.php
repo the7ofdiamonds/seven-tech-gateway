@@ -1,46 +1,81 @@
 <?php
 
-namespace SEVEN_TECH\Gateway\Admin;
+namespace SEVEN_TECH\Gateway\Account;
 
 use Exception;
 
-use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Validator\Validator;
 
-class AdminAccountManagement
+class Account
 {
-    private $account;
+    private $validator;
 
     public function __construct()
     {
-        $this->account = new Account;
+        $this->validator = new Validator;
     }
 
-    function register_custom_submenu_page()
+    function findAccount($email)
     {
-        add_submenu_page('seven-tech', '', 'Account', 'manage_options', 'seven_tech_account_management', [$this, 'create_section'], 4);
-        add_settings_section('seven-tech-admin-account-management', 'Account Management', [$this, 'section_description'], 'seven_tech_account_management');
+        global $wpdb;
 
-        add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
-        add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
-        add_action('wp_ajax_removeAccount', [$this, 'removeAccount']);
-        add_action('wp_ajax_deleteAccount', [$this, 'deleteAccount']);
+        $results = $wpdb->get_results(
+            $wpdb->prepare("CALL findUserByEmail('%s')", $email)
+        );
+
+        if ($wpdb->last_error) {
+            throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+        }
+
+        $account = $results[0];
+
+        if (empty($account)) {
+            return '';
+        }
+
+        return $account;
     }
 
-    function create_section()
+    function verifyAccount($email, $password, $confirmationCode)
     {
-        include_once SEVEN_TECH . 'Admin/includes/admin-account-management.php';
+        $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
+
+        if (!$validConfirmationCode) {
+            return false;
+        }
+
+        $password = $this->validator->validPassword($password);
+
+        if (!$password) {
+            return false;
+        }
+
+        $validEmail = $this->validator->validEmail($email);
+
+        if (!$validEmail) {
+            throw new Exception('Email is not valid', 400);
+        }
+
+        $account = $this->findAccount($email);
+
+        $password_check = wp_check_password($password, $account->password, $account->id);
+
+        if (!$password_check) {
+            return false;
+        }
+
+        if ($confirmationCode != $account->confirmationCode) {
+            return false;
+        }
+
+        return true;
     }
 
-    function section_description()
-    {
-        echo 'Manage User Accounts';
-    }
-
-// Send account locked email
+    // Send account locked email
     public function lockAccount($email)
     {
         try {
-            $user = $this->account->findAccount($email);
+            $user = $this->findAccount($email);
 
             if ($user == '') {
                 error_log("User could not be found.");
@@ -81,7 +116,7 @@ class AdminAccountManagement
     function unlockAccount($email)
     {
         try {
-            $user = $this->account->findAccount($email);
+            $user = $this->findAccount($email);
 
             if ($user == '') {
                 error_log("User could not be found.");
@@ -116,7 +151,7 @@ class AdminAccountManagement
     function removeAccount($email)
     {
         try {
-            $user = $this->account->findAccount($email);
+            $user = $this->findAccount($email);
 
             if ($user == '') {
                 error_log("User could not be found.");
@@ -160,7 +195,7 @@ class AdminAccountManagement
     function deleteAccount($email)
     {
         try {
-            $user = $this->account->findAccount($email);
+            $user = $this->findAccount($email);
 
             if ($user == '') {
                 error_log("User could not be found.");

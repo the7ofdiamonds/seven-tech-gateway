@@ -18,8 +18,10 @@ class AdminUserManagement
         $this->user = new User;
 
         add_action('wp_ajax_getUser', [$this, 'getUser']);
-        add_action('wp_ajax_getUserRoles', [$this, 'getUserRoles']);
-
+        add_action('wp_ajax_forgotPassword', [$this, 'forgotPassword']);
+        add_action('wp_ajax_changeUserNicename', [$this, 'changeUserNicename'], 10, 2);
+        add_action('wp_ajax_addUserRole', [$this, 'addUserRole']);
+        add_action('wp_ajax_removeUserRole', [$this, 'removeUserRole']);
     }
 
     function register_custom_submenu_page()
@@ -43,12 +45,17 @@ class AdminUserManagement
         echo 'Manage Users';
     }
 
-    public function getUser($email)
+    public function getUser()
     {
         try {
-            $email = $_POST['emailGU'];
 
-            $user = $this->user->findUserByEmail($email);
+            if (!isset($_POST['email'])) {
+                throw new Exception("Email is required.", 400);
+            }
+
+            $email = $_POST['email'];
+
+            $user = $this->user->getUser($email);
 
             if (!$user) {
                 wp_send_json_error("User could not be found.");
@@ -61,10 +68,14 @@ class AdminUserManagement
     }
 
     // Send password recovery email
-    function forgotPassword($email)
+    function forgotPassword()
     {
         try {
+            if (!isset($_POST['email'])) {
+                throw new Exception("Email is required.", 400);
+            }
 
+            $email = $_POST['email'];
             $this->validator->validEmail($email);
 
             return "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
@@ -73,59 +84,47 @@ class AdminUserManagement
         }
     }
 
-    public function changeUserNicename($email, $nicename)
-    {
-        $user = $this->user->findUserByEmail($email);
-
-        if (empty($user)) {
-            // Show error in admin area
-            error_log('User could not be found.');
-            return '';
-        }
-
-        return $this->user->changeUserNicename($user->id, $nicename);
-    }
-
-    public function addUserRole($email, $roleName, $roleDisplayName)
-    {
-        $user = $this->user->findUserByEmail($email);
-
-        if (empty($user)) {
-            // Show error in admin area
-            error_log('User could not be found.');
-            return '';
-        }
-
-        return $this->user->addUserRole($user->id, $roleName, $roleDisplayName);
-    }
-
-    public function getUserRoles($id)
+    function changeUserNicename()
     {
         try {
             $id = $_POST['id'];
+            $nicename = $_POST['nicename'];
 
-            $user_roles = $this->user->getUserRoles($id);
+            $change_nicename = $this->user->changeUserNicename($id, $nicename);
 
-            if (!is_array($user_roles)) {
-                wp_send_json_error("User could not be found.");
-            }
-
-            wp_send_json_success($user_roles);
+            wp_send_json_success($change_nicename);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
         }
     }
 
-    public function removeUserRole($email, $roleName, $roleDisplayName)
+    public function addUserRole()
     {
-        $user = $this->user->findUserByEmail($email);
+        try {
+            $id = $_POST['id'];
+            $roleName = $_POST['added_role'];
+            $roleDisplayName = $_POST['display_name_added'];
 
-        if (empty($user)) {
-            // Show error in admin area
-            error_log('User could not be found.');
-            return '';
+            $add_role = $this->user->addUserRole($id, $roleName, $roleDisplayName);
+
+            wp_send_json_success($add_role);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
         }
+    }
 
-        return $this->user->removeUserRole($user->id, $roleName, $roleDisplayName);
+    public function removeUserRole()
+    {
+        try {
+            $id = $_POST['id'];
+            $roleName = $_POST['remove_role'];
+            $roleDisplayName = $_POST['display_name_remove'];
+
+            $remove_role = $this->user->removeUserRole($id, $roleName, $roleDisplayName);
+
+            wp_send_json_success($remove_role);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
     }
 }

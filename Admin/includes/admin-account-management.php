@@ -1,26 +1,28 @@
-<?php
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['emailLA'])) {
-    $email = $_POST['emailLA'];
-    $this->lockAccount($email);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['emailUA'])) {
-    $email = $_POST['emailUA'];
-    $this->unlockAccount($email);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['emailRA'])) {
-    $email = $_POST['emailRA'];
-    $this->removeAccount($email);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['emailDA'])) {
-    $email = $_POST['emailDA'];
-    $this->deleteAccount($email);
-}
-?>
 <h1>Account Management</h1>
+
+<form method="post" id="find_account">
+    <table>
+        <tbody>
+            <tr>
+                <td>Find Account</td>
+                <td>
+                    <input type="email" name="email" placeholder="Email" required>
+                </td>
+
+                <td><button type="submit">Find</button></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+<div class="account" id="account">
+    <input type="text" name="account_id" id="account_id" disabled>
+    <h3 id="first_name"></h3>
+    <h3 id="last_name"></h3>
+    <h3 id="nicename"></h3>
+    <div class="roles-row" id="user_roles"></div>
+    <input type="email" name="email" id="email" disabled>
+</div>
 
 <form method="post">
     <table>

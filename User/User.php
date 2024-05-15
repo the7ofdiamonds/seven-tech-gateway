@@ -6,17 +6,14 @@ use Exception;
 
 use WP_User;
 
-use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
 class User
 {
-    private $validator;
     private $roles;
 
     public function __construct()
     {
-        $this->validator = new Validator;
         $this->roles = new Roles;
     }
 
@@ -41,62 +38,37 @@ class User
         return $results[0];
     }
 
-    public function findUserByEmail($email)
+    public function getUser($query_param)
     {
         try {
-            // $validEmail = $this->validator->validEmail($email);
+            $user_data = new WP_User($query_param);
 
-            // if (!$validEmail) {
-            //     throw new Exception('Email is not valid', 400);
-            // }
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL findUserByEmail('%s')", $email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
-            }
-
-            if (empty($results[0])) {
+            if(empty($user_data->ID)){
                 return '';
             }
 
-            return $results[0];
+            $id = $user_data->ID;
+
+            $firstname = get_user_meta($id, 'first_name');
+            $lastname = get_user_meta($id, 'last_name');
+
+            $user = [
+                'id' => $id,
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'nicename' => $user_data->data->user_nicename,
+                'email' => $user_data->data->user_email,
+                'url' => $user_data->data->user_url,
+                'join_date' => $user_data->data->user_registered,
+                'status' => $user_data->data->user_status,
+                'username' => $user_data->data->display_name,
+                'roles' => $this->getUserRoles($id, $user_data->roles)
+            ];
+
+            return $user;
         } catch (Exception $e) {
             throw new Exception($e);
         }
-    }
-
-    function verifyAccount($email, $password, $confirmationCode)
-    {
-        $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
-
-        if (!$validConfirmationCode) {
-            return false;
-        }
-
-        $password = $this->validator->validPassword($password);
-
-        if (!$password) {
-            return false;
-        }
-
-        $user = $this->findUserByEmail($email);
-
-        $password_check = wp_check_password($password, $user->password, $user->id);
-
-        if (!$password_check) {
-            return false;
-        }
-
-        if ($confirmationCode != $user->confirmationCode) {
-            return false;
-        }
-
-        return true;
     }
 
     public function addUserRole($id, $roleName, $roleDisplayName)
@@ -113,10 +85,12 @@ class User
         return $user;
     }
 
-    public function getUserRoles($id)
+    public function getUserRoles($id, $roles = '')
     {
-        $user = new WP_User($id);
-        $roles = $user->roles;
+        if (empty($roles)) {
+            $user = new WP_User($id);
+            $roles = $user->roles;
+        }
 
         $wp_roles = wp_roles()->get_names();
 
@@ -139,7 +113,19 @@ class User
     public function removeUserRole($id, $role)
     {
         $user = new WP_User($id);
-        $user->remove_role($role);
+        $user_roles = $user->roles;
+
+        $hasRole = false;
+
+        foreach ($user_roles as $user_role) {
+            if ($role == $user_role) {
+                $hasRole = true;
+            }
+        }
+
+        if ($hasRole) {
+            $user->remove_role($role);
+        }
 
         return $user;
     }

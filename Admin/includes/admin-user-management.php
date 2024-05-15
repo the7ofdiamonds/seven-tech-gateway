@@ -1,30 +1,3 @@
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['emailFP'])) {
-    $email = $_POST['emailFP'];
-
-    $this->forgotPassword($email);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nicename'])) {
-    $nicename = $_POST['nicename'];
-
-    $this->changeUserNicename($id, $nicename);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['added_role'])) {
-    $addedRole = $_POST['added_role'];
-    $addedRoleDisplayName = $_POST['display_name_added'];
-
-    $this->addUserRole($id, $addedRole, $addedRoleDisplayName);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_role'])) {
-    $addedRole = $_POST['remove_role'];
-    $addedRoleDisplayName = $_POST['display_name_remove'];
-
-    $this->removeUserRole($id, $addedRole, $addedRoleDisplayName);
-}
-?>
 <h1>User Management</h1>
 
 <form method="post" id="find_user">
@@ -33,8 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_role'])) {
             <tr>
                 <td>Find User</td>
                 <td>
-                    <input type="email" name="email" id="email" placeholder="Email" required>
-                    <input type="hidden" name="find_user_data" id="find_user_data">
+                    <input type="email" name="email" placeholder="Email" required>
                 </td>
 
                 <td><button type="submit">Find</button></td>
@@ -43,12 +15,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_role'])) {
     </table>
 </form>
 
-<?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['responseData'])) {
-    $response = $_POST['responseData']['data'];
-    $id = $response['id'];
-    $user_roles = $this->getUserRoles($id);
-}
-?>
+<div class="user" id="user">
+    <input type="text" name="user_id" id="user_id" disabled>
+    <h3 id="first_name"></h3>
+    <h3 id="last_name"></h3>
+    <h3 id="nicename"></h3>
+    <div class="roles-row" id="user_roles"></div>
+    <input type="email" name="email" id="email" disabled>
+</div>
+
 <form method="post" id="recover_email">
     <table>
         <tbody>
@@ -65,7 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_role'])) {
         <tbody>
             <tr>
                 <td>Change User Nicename</td>
-                <td><input type="text" name="nicename" placeholder="Nicename" required></td>
+                <td>
+                    <input type="text" name="nicename" id="nicename" placeholder="Nicename" required>
+                </td>
                 <td><button type="submit">Change</button></td>
             </tr>
         </tbody>
@@ -117,42 +94,119 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_role'])) {
 
 <script>
     jQuery(document).ready(function($) {
+        function getUser(email) {
+            return $.ajax({
+                    type: 'POST',
+                    url: 'admin-ajax.php',
+                    data: {
+                        action: 'getUser',
+                        email: email
+                    }
+                })
+                .done(function(response) {
+                    $('#user input[name="user_id"]#user_id').val(response.data['id']);
+                    $('#user #first_name').text(response.data['firstname']);
+                    $('#user #last_name').text(response.data['lastname']);
+                    $('#user #nicename').text(response.data['nicename']);
+
+                    $('#user #user_roles').empty();
+                    $.each(response.data['roles'], function(index, role) {
+                        var roleTag = $('<h3>', {
+                            text: role.display_name
+                        });
+                        $('#user #user_roles').append(roleTag);
+                    });
+
+                    $('#user input[name="email"]#email').val(response.data['email']);
+
+                    $('#role_select_remove').empty();
+
+                    $.each(response.data['roles'], function(index, role) {
+                        var option = $('<option>', {
+                            value: role.name,
+                            'data-display-name': role.display_name,
+                            text: role.display_name + ' (' + role.name + ')'
+                        });
+                        $('#role_select_remove').append(option);
+                    });
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('Failed to fetch user data:', error);
+                });
+        }
+
         $('form#find_user').submit(function(event) {
             event.preventDefault();
 
-            var emailGU = $('input#email').val();
+            var email = $('#find_user input[name="email"]').val();
+
+            getUser(email);
+        });
+
+        $('form#recover_email').submit(function(event) {
+            event.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: 'admin-ajax.php',
+                data: {
+                    action: 'forgotPassword',
+                    email: email
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX request failed:', error);
+                }
+            });
+        });
+
+        $('#change_nicename').submit(function(event) {
+            event.preventDefault();
+
+            const id = $('#user input[name="user_id"]#user_id').val();
+            const nicename = $('#change_nicename #nicename').val();
+            const email = $('#user input[name="email"]#email').val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'admin-ajax.php',
+                data: {
+                    action: 'changeUserNicename',
+                    id: id,
+                    nicename: nicename
+                },
+                success: function(response) {
+                    console.log(response.data);
+                    getUser(email);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX request failed:', error);
+                }
+            });
+        });
+
+        $('form#add_user_role').submit(function(event) {
+            event.preventDefault();
+
+            const id = $('#user input[name="user_id"]#user_id').val();
+            const role = $('#add_user_role #role_select_add').val();
+            const displayName = $('#add_user_role #display_name_add').val();
+            const email = $('#user input[name="email"]#email').val();
 
             jQuery.ajax({
                 type: 'POST',
                 url: 'admin-ajax.php',
                 data: {
-                    action: 'getUser',
-                    emailGU: emailGU
+                    action: 'addUserRole',
+                    id: id,
+                    added_role: role,
+                    display_name_added: displayName
                 },
                 success: function(response) {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'admin-ajax.php',
-                        data: {
-                            action: 'getUserRoles',
-                            id: response.data['id']
-                        },
-                        success: function(data) {
-                            $.each(data.data, function(index, role) {
-                                var option = $('<option>', {
-                                    value: role.name,
-                                    'data-display-name': role.display_name,
-                                    text: role.display_name + ' (' + role.name + ')'
-                                });
-
-                                $('#role_select_remove').append(option);
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('AJAX request failed:', error);
-                        }
-                    });
-                    $('input#find_user_data').val(response.data['id']);
+                    console.log(response);
+                    getUser(email);
 
                 },
                 error: function(xhr, status, error) {
@@ -161,24 +215,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_role'])) {
             });
         });
 
-        $('form#remove_user_role input#user_roles').on('change', function() {
-            // Get the value of the input field (assuming it contains JSON data)
-            var rolesArray = JSON.parse($(this).val());
+        $('form#remove_user_role').submit(function(event) {
+            event.preventDefault();
 
-            // Clear existing options in the select dropdown
-            // $('#role_select_remove').empty();
-            console.log(rolesArray);
-            // Loop through the array and create options for each role
-            $.each(rolesArray, function(index, role) {
-                // Create an <option> element with value and display name attributes
-                var option = $('<option>', {
-                    value: role.name,
-                    'data-display-name': role.display_name,
-                    text: role.display_name + ' (' + role.name + ')'
-                });
+            const id = $('#user input[name="user_id"]#user_id').val();
+            const role = $('#role_select_remove').val();
+            const displayName = $('#display_name_remove').val();
+            const email = $('#user input[name="email"]#email').val();
 
-                // Append the <option> element to the select dropdown
-                $('#role_select_remove').append(option);
+            jQuery.ajax({
+                type: 'POST',
+                url: 'admin-ajax.php',
+                data: {
+                    action: 'removeUserRole',
+                    id: id,
+                    remove_role: role,
+                    display_name_remove: displayName
+                },
+                success: function(response) {
+                    console.log(response);
+                    getUser(email);
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX request failed:', error);
+                }
             });
         });
     });
