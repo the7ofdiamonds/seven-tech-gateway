@@ -36,6 +36,17 @@ class Account
         return $account;
     }
 
+    function getAccountStatus($id)
+    {
+        $account_status = get_user_meta($id, 'session_tokens');
+
+        if ($account_status == false) {
+            throw new Exception('User ID is not valid.', 400);
+        }
+
+        return $account_status;
+    }
+
     function verifyAccount($email, $password, $confirmationCode)
     {
         $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
@@ -146,8 +157,8 @@ class Account
             throw new Exception($e);
         }
     }
-    
-// Send account removed email
+
+    // Send account removed email
     function removeAccount($email)
     {
         try {

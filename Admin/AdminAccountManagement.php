@@ -5,16 +5,21 @@ namespace SEVEN_TECH\Gateway\Admin;
 use Exception;
 
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\User\User;
 
 class AdminAccountManagement
 {
     private $account;
+    private $user;
 
     public function __construct()
     {
         $this->account = new Account;
+        $this->user = new User;
 
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
+        add_action('wp_ajax_getAccountStatus', [$this, 'getAccountStatus']);
+        add_action('wp_ajax_getUserRoles', [$this, 'getUserRoles']);
         add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
         add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
         add_action('wp_ajax_removeAccount', [$this, 'removeAccount']);
@@ -53,6 +58,48 @@ class AdminAccountManagement
             }
 
             wp_send_json_success($account);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
+    public function getAccountStatus()
+    {
+        try {
+            if (!isset($_POST['id'])) {
+                throw new Exception("ID is required.", 400);
+            }
+
+            $id = $_POST['id'];
+
+            $accountStatus = $this->account->getAccountStatus($id);
+
+            if ($accountStatus == '') {
+                throw new Exception("Account status could not be found for this user.");
+            }
+
+            wp_send_json_success($accountStatus);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
+    public function getUserRoles()
+    {
+        try {
+            if (!isset($_POST['id'])) {
+                throw new Exception("ID is required.", 400);
+            }
+
+            $id = $_POST['id'];
+
+            $roles = $this->user->getUserRoles($id);
+
+            if ($roles == '') {
+                throw new Exception("Roles could not be found for this user.");
+            }
+
+            wp_send_json_success($roles);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
         }

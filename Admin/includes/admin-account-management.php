@@ -1,10 +1,16 @@
 <style>
+    .account .roles,
+    .account .roles-row {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
     .account .enable-account button.enable-btn,
     .account .enable-account button.disable-btn,
     .account .lock-account button.lock-btn,
     .account .lock-account button.unlock-btn,
-    .account .remove-account button.remove-btn,
-    .account .remove-account button.recover-btn {
+    .account .delete-account {
         display: none;
     }
 </style>
@@ -62,26 +68,30 @@
                 </td>
             </tr>
             <tr>
-                <td>Account Authenticated</td>
+                <td>Account Status</td>
                 <td>
                     <h3 id="authenticated"></h3>
                 </td>
+            </tr>
+            <tr>
                 <td>
+                    <div class="account-status">
+
+                    </div>
                     <!-- Info on user currently logged in if true -->
                 </td>
             </tr>
             <tr>
-                <form method="post" id="subscription_email">
+                <form method="post" class="subscription-email" id="subscription_email">
                     <table>
                         <tbody>
                             <tr>
-                                <td>Subscription Expired</td>
+                                <td>Subscription Current</td>
                                 <td>
                                     <h3 id="expired"></h3>
                                 </td>
                                 <td>
                                     <button type="submit" class="subscription-btn" id="subscription_btn">Send Subscription Email</button>
-                                    <!-- Show roles if they are already subscriped -->
                                 </td>
                             </tr>
                         </tbody>
@@ -89,33 +99,21 @@
                 </form>
             </tr>
             <tr>
-                <form method="post" id="recover_email">
+                <div class="roles" id="roles">
+                    <h3>Roles</h3>
+                    <div class="roles-row" id="roles_row"></div>
+                </div>
+            </tr>
+            <tr>
+                <form method="post" class="recover-email" id="recover_email">
                     <table>
                         <tbody>
                             <tr>
-                                <td>Credentials Expired</td>
+                                <td>Credentials Current</td>
                                 <td>
                                     <h3 id="credentials"></h3>
                                 </td>
                                 <td><button type="submit" class="recover-btn" id="recover_btn">Send Recovery Email</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
-            </tr>
-            <tr>
-                <form method="post" class="enable-account" id="enable_account">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Account Enabled</td>
-                                <td>
-                                    <h3 id="enabled"></h3>
-                                </td>
-                                <td>
-                                    <button type="submit" class="enable-btn" id="enable_btn">enable</button>
-                                    <button type="submit" class="disable-btn" id="disable_btn">disable</button>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -140,39 +138,38 @@
                 </form>
             </tr>
             <tr>
-                <form method="post" class="remove-account" id="remove_account">
+                <form method="post" class="enable-account" id="enable_account">
                     <table>
                         <tbody>
                             <tr>
-                                <td>Account Removed</td>
+                                <td>Account Enabled</td>
                                 <td>
-                                    <button type="submit" class="remove-btn" id="remove_btn">Remove</button>
-                                    <button type="submit" class="recover-btn" id="recover_btn">Recover</button>
+                                    <h3 id="enabled"></h3>
+                                </td>
+                                <td>
+                                    <button type="submit" class="enable-btn" id="enable_btn">enable</button>
+                                    <button type="submit" class="disable-btn" id="disable_btn">disable</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </form>
             </tr>
-            <!-- <tr>
-                <form method="post">
+            <tr>
+                <form method="post" class="delete-account" id="delete_account">
                     <table>
                         <tbody>
                             <tr>
                                 <td>Delete Account</td>
-                                <td><button type="submit">Delete</button></td>
+                                <td><button type="submit" class="delete-btn" id="delete_btn">Delete</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </form>
-            </tr> -->
+            </tr>
         </tbody>
     </table>
 </div>
-
-
-
-
 
 <script>
     jQuery(document).ready(function($) {
@@ -186,7 +183,9 @@
                     }
                 })
                 .done(function(response) {
-                    $('#account input[name="account_id"]#account_id').val(response.data.id);
+                    var id = response.data.id;
+
+                    $('#account input[name="account_id"]#account_id').val(id);
                     $('#account input[name="email"]#email').val(response.data.email);
                     $('#account #username').text(response.data.username);
                     $('#account #first_name').text(response.data.firstname);
@@ -195,22 +194,45 @@
                     $('#account #phone').text(response.data.phone);
                     $('#account #provider_given_id').text(response.data.provider_given_id);
 
-                    var authenticated = response.data.is_authenticated == 1 ? true : false;
-                    var expired = response.data.is_account_non_expired == 1 ? true : false;
+                    var authenticated = response.data.is_authenticated == 1 ? 'logged in' : 'logged out';
+
+                    var unexpired = response.data.is_account_non_expired == 1 ? true : false;
                     var unlocked = response.data.is_account_non_locked == 1 ? true : false;
                     var credentials = response.data.is_credentials_non_expired == 1 ? true : false;
                     var enabled = response.data.is_enabled == 1 ? true : false;
 
                     $('#account #authenticated').text(authenticated);
+                    // if (authenticated) {
+                        $.ajax({
+                                type: 'POST',
+                                url: 'admin-ajax.php',
+                                data: {
+                                    action: 'getAccountStatus',
+                                    id: id
+                                }
+                            })
+                            .done(function(status) {
+                                console.log(status.data[0]);
+                                // $('#account #roles_row').empty();
+                                // $.each(user.data, function(index, role) {
+                                //     var roleTag = $('<h3>', {
+                                //         text: role.display_name
+                                //     });
+                                //     $('#account #roles_row').append(roleTag);
+                                // });
+                            })
+                            .fail(function(xhr, status, error) {
+                                console.error('Failed to fetch user data:', error);
+                            });
+                    // }
 
-                    $('#account #expired').text(expired);
+                    $('#account #expired').text(unexpired);
 
                     $('#account #locked').text(unlocked);
                     if (unlocked) {
                         $('#account #lock_account #lock_btn').css('display', 'block');
                     } else {
                         $('#account #lock_account #unlock_btn').css('display', 'block');
-
                     }
 
                     $('#account #credentials').text(credentials);
@@ -220,7 +242,33 @@
                         $('#account #enable_account #disable_btn').css('display', 'block');
                     } else {
                         $('#account #enable_account #enable_btn').css('display', 'block');
+                    }
 
+                    if (unlocked == false && enabled == false) {
+                        $('#account #delete_account').css('display', 'block');
+                    }
+
+                    if (unexpired) {
+                        $.ajax({
+                                type: 'POST',
+                                url: 'admin-ajax.php',
+                                data: {
+                                    action: 'getUserRoles',
+                                    id: id
+                                }
+                            })
+                            .done(function(user) {
+                                $('#account #roles_row').empty();
+                                $.each(user.data, function(index, role) {
+                                    var roleTag = $('<h3>', {
+                                        text: role.display_name
+                                    });
+                                    $('#account #roles_row').append(roleTag);
+                                });
+                            })
+                            .fail(function(xhr, status, error) {
+                                console.error('Failed to fetch user data:', error);
+                            });
                     }
                 })
                 .fail(function(xhr, status, error) {
@@ -238,29 +286,6 @@
 
 
 
-        $('#change_nicename').submit(function(event) {
-            event.preventDefault();
 
-            const id = $('#user input[name="user_id"]#user_id').val();
-            const nicename = $('#change_nicename #nicename').val();
-            const email = $('#user input[name="email"]#email').val();
-
-            $.ajax({
-                type: 'POST',
-                url: 'admin-ajax.php',
-                data: {
-                    action: 'changeUserNicename',
-                    id: id,
-                    nicename: nicename
-                },
-                success: function(response) {
-                    console.log(response.data);
-                    getUser(email);
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX request failed:', error);
-                }
-            });
-        });
     });
 </script>
