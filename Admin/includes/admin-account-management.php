@@ -1,3 +1,14 @@
+<style>
+    .account .enable-account button.enable-btn,
+    .account .enable-account button.disable-btn,
+    .account .lock-account button.lock-btn,
+    .account .lock-account button.unlock-btn,
+    .account .remove-account button.remove-btn,
+    .account .remove-account button.recover-btn {
+        display: none;
+    }
+</style>
+
 <h1>Account Management</h1>
 
 <form method="post" id="find_account">
@@ -25,8 +36,13 @@
                 <td>
                     <h3 id="provider_given_id"></h3>
                 </td>
+            </tr>
+            <tr>
                 <td>
                     <input type="email" name="email" id="email" disabled>
+                </td>
+                <td>
+                    <h3 id="phone"></h3>
                 </td>
             </tr>
             <tr>
@@ -46,57 +62,49 @@
                 </td>
             </tr>
             <tr>
+                <td>Account Authenticated</td>
                 <td>
-                    <h3 id="phone"></h3>
+                    <h3 id="authenticated"></h3>
+                </td>
+                <td>
+                    <!-- Info on user currently logged in if true -->
                 </td>
             </tr>
             <tr>
-                <form action="">
+                <form method="post" id="subscription_email">
                     <table>
                         <tbody>
                             <tr>
-                                <td>Account Authenticated</td>
-                                <td>
-                                    <h3 id="authenticated"></h3>
-                                </td>
-                                <td><button type="submit" id="auth-btn">Auth</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
-            </tr>
-            <tr>
-                <form action="">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Account Expired</td>
+                                <td>Subscription Expired</td>
                                 <td>
                                     <h3 id="expired"></h3>
                                 </td>
-                                <td><button>Expired</button></td>
+                                <td>
+                                    <button type="submit" class="subscription-btn" id="subscription_btn">Send Subscription Email</button>
+                                    <!-- Show roles if they are already subscriped -->
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </form>
             </tr>
             <tr>
-                <form action="">
+                <form method="post" id="recover_email">
                     <table>
                         <tbody>
                             <tr>
-                                <td>Expired Credentials</td>
+                                <td>Credentials Expired</td>
                                 <td>
                                     <h3 id="credentials"></h3>
                                 </td>
-                                <td><button>Cred</button></td>
+                                <td><button type="submit" class="recover-btn" id="recover_btn">Send Recovery Email</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </form>
             </tr>
             <tr>
-                <form action="">
+                <form method="post" class="enable-account" id="enable_account">
                     <table>
                         <tbody>
                             <tr>
@@ -104,40 +112,49 @@
                                 <td>
                                     <h3 id="enabled"></h3>
                                 </td>
-                                <td><button>enabled</button></td>
+                                <td>
+                                    <button type="submit" class="enable-btn" id="enable_btn">enable</button>
+                                    <button type="submit" class="disable-btn" id="disable_btn">disable</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </form>
             </tr>
             <tr>
-                <table>
-                    <tbody>
-                        <tr>
-                            <form method="post">
-                                <td>Account Locked</td>
-                                <td>
-                                    <h3 id="locked"></h3>
-                                </td>
-                                <td><button type="submit" id="lock-btn">Lock</button></td>
-                            </form>
-                        </tr>
-                    </tbody>
-                </table>
-            </tr>
-            <tr>
-                <form method="post">
+                <form method="post" class="lock-account" id="lock_account">
                     <table>
                         <tbody>
                             <tr>
-                                <td>Remove Account</td>
-                                <td><button type="submit">Remove</button></td>
+                                <td>Account Unlocked</td>
+                                <td>
+                                    <h3 id="locked"></h3>
+                                </td>
+                                <td>
+                                    <button type="submit" class="lock-btn" id="lock_btn">Lock</button>
+                                    <button type="submit" class="unlock-btn" id="unlock_btn">unlock</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </form>
             </tr>
             <tr>
+                <form method="post" class="remove-account" id="remove_account">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Account Removed</td>
+                                <td>
+                                    <button type="submit" class="remove-btn" id="remove_btn">Remove</button>
+                                    <button type="submit" class="recover-btn" id="recover_btn">Recover</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </tr>
+            <!-- <tr>
                 <form method="post">
                     <table>
                         <tbody>
@@ -148,7 +165,7 @@
                         </tbody>
                     </table>
                 </form>
-            </tr>
+            </tr> -->
         </tbody>
     </table>
 </div>
@@ -180,15 +197,31 @@
 
                     var authenticated = response.data.is_authenticated == 1 ? true : false;
                     var expired = response.data.is_account_non_expired == 1 ? true : false;
-                    var locked = response.data.is_account_non_locked == 1 ? true : false;
+                    var unlocked = response.data.is_account_non_locked == 1 ? true : false;
                     var credentials = response.data.is_credentials_non_expired == 1 ? true : false;
                     var enabled = response.data.is_enabled == 1 ? true : false;
 
                     $('#account #authenticated').text(authenticated);
+
                     $('#account #expired').text(expired);
-                    $('#account #locked').text(locked);
+
+                    $('#account #locked').text(unlocked);
+                    if (unlocked) {
+                        $('#account #lock_account #lock_btn').css('display', 'block');
+                    } else {
+                        $('#account #lock_account #unlock_btn').css('display', 'block');
+
+                    }
+
                     $('#account #credentials').text(credentials);
+
                     $('#account #enabled').text(enabled);
+                    if (enabled) {
+                        $('#account #enable_account #disable_btn').css('display', 'block');
+                    } else {
+                        $('#account #enable_account #enable_btn').css('display', 'block');
+
+                    }
                 })
                 .fail(function(xhr, status, error) {
                     console.error('Failed to fetch user data:', error);
