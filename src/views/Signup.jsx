@@ -96,7 +96,7 @@ function SignUpComponent() {
   };
 
   const handleChange = (e) => {
-    if (e.target.name === 'user-name') {
+    if (e.target.name === 'username') {
       setUsername(e.target.value);
     } else if (e.target.name === 'email') {
       setEmail(e.target.value);

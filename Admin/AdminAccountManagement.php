@@ -13,17 +13,18 @@ class AdminAccountManagement
     public function __construct()
     {
         $this->account = new Account;
+
+        add_action('wp_ajax_findAccount', [$this, 'findAccount']);
+        add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
+        add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
+        add_action('wp_ajax_removeAccount', [$this, 'removeAccount']);
+        add_action('wp_ajax_deleteAccount', [$this, 'deleteAccount']);
     }
 
     function register_custom_submenu_page()
     {
         add_submenu_page('seven-tech', '', 'Account', 'manage_options', 'seven_tech_account_management', [$this, 'create_section'], 4);
         add_settings_section('seven-tech-admin-account-management', 'Account Management', [$this, 'section_description'], 'seven_tech_account_management');
-
-        add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
-        add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
-        add_action('wp_ajax_removeAccount', [$this, 'removeAccount']);
-        add_action('wp_ajax_deleteAccount', [$this, 'deleteAccount']);
     }
 
     function create_section()
@@ -36,10 +37,35 @@ class AdminAccountManagement
         echo 'Manage User Accounts';
     }
 
-// Send account locked email
-    public function lockAccount($email)
+    public function findAccount()
     {
         try {
+            if (!isset($_POST['email'])) {
+                throw new Exception("Email is required.", 400);
+            }
+
+            $email = $_POST['email'];
+
+            $account = $this->account->findAccount($email);
+
+            if ($account == '') {
+                throw new Exception("User could not be found.");
+            }
+
+            error_log(print_r($account, true));
+
+            wp_send_json_success($account);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
+    // Send account locked email
+    public function lockAccount()
+    {
+        try {
+            $email = $_POST['email'];
+
             $user = $this->account->findAccount($email);
 
             if ($user == '') {
@@ -78,9 +104,11 @@ class AdminAccountManagement
         }
     }
 
-    function unlockAccount($email)
+    function unlockAccount()
     {
         try {
+            $email = $_POST['email'];
+
             $user = $this->account->findAccount($email);
 
             if ($user == '') {
@@ -111,11 +139,13 @@ class AdminAccountManagement
             throw new Exception($e);
         }
     }
-    
-// Send account removed email
-    function removeAccount($email)
+
+    // Send account removed email
+    function removeAccount()
     {
         try {
+            $email = $_POST['email'];
+
             $user = $this->account->findAccount($email);
 
             if ($user == '') {
@@ -157,9 +187,11 @@ class AdminAccountManagement
     }
 
     // Send Account deleted email
-    function deleteAccount($email)
+    function deleteAccount()
     {
         try {
+            $email = $_POST['email'];
+
             $user = $this->account->findAccount($email);
 
             if ($user == '') {

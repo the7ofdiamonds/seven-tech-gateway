@@ -27,17 +27,12 @@ class AdminUserManagement
     function register_custom_submenu_page()
     {
         add_submenu_page('seven-tech', '', 'User', 'manage_options', 'seven_tech_user_management', [$this, 'create_section'], 4);
-        $this->register_section();
+        add_settings_section('seven-tech-admin-user-management', 'User Management', [$this, 'section_description'], 'seven_tech_user_management');
     }
 
     function create_section()
     {
         include_once SEVEN_TECH . 'Admin/includes/admin-user-management.php';
-    }
-
-    function register_section()
-    {
-        add_settings_section('seven-tech-admin-user-management', 'User Management', [$this, 'section_description'], 'seven_tech_user_management');
     }
 
     function section_description()
@@ -58,7 +53,7 @@ class AdminUserManagement
             $user = $this->user->getUser($email);
 
             if (!$user) {
-                wp_send_json_error("User could not be found.");
+                throw new Exception("User could not be found.");
             }
 
             wp_send_json_success($user);
