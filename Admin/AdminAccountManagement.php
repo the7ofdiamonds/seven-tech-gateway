@@ -52,7 +52,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
 
             $account = $this->account->findAccount($email);
-
+// Needs nicename
             if ($account == '') {
                 throw new Exception("User could not be found.");
             }
