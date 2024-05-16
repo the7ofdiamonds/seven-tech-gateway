@@ -1,0 +1,120 @@
+.account-management {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.account-management h3,
+.account-management h4 {
+  margin: 0;
+  padding: 0.25rem 0;
+}
+
+.find-account {
+  display: flex;
+  flex-direction: column;
+}
+
+.find-account .find-account-submit {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.account {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.account .ids,
+.account .contact,
+.account .names {
+  display: flex;
+  gap: 1rem;
+}
+
+.account .account-id,
+.account .provider-given-id,
+.account .email,
+.account .phone,
+.account .username,
+.account .nicename,
+.account .full-name,
+.account .account-status,
+.account .roles {
+  display: flex;
+  flex-direction: column;
+}
+
+.account .account-status .account-status-label {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+}
+
+.account .account-status .sessions {
+  display: none;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.account .account-status .sessions .session {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: white;
+}
+
+.account .account-status .sessions .session h3,
+.account .account-status .sessions .session h4 {
+  padding: 0;
+}
+
+.account .account-status .sessions .session .session-token,
+.account .account-status .sessions .session .session-ip,
+.account .account-status .sessions .session .session-login-time,
+.account .account-status .sessions .session .session-expiration,
+.account .account-status .sessions .session .session-user-agent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+
+.account .roles .roles-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0.5rem;
+  background-color: white;
+  width: fit-content;
+}
+
+.account-management .subscription-email,
+.account-management .recover-email,
+.account-management .lock-account,
+.account-management .enable-account {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.account-management .delete-account {
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.account .roles,
+.account-management .enable-account button.enable-btn,
+.account-management .enable-account button.disable-btn,
+.account-management .lock-account button.lock-btn,
+.account-management .lock-account button.unlock-btn,
+.account-management .delete-account {
+  display: none;
+}

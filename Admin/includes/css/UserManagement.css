@@ -1,0 +1,63 @@
+.user-management {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.user-management h3,
+.user-management h4 {
+  margin: 0;
+  padding: 0.25rem 0;
+}
+
+.find-user {
+  display: flex;
+  flex-direction: column;
+}
+
+.find-user .find-user-submit {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.user {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.user .user-id,
+.user .email,
+.user .names {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.user .username,
+.user .nicename,
+.user .full-name,
+.user .roles {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.user .roles .roles-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0.5rem;
+  background-color: white;
+  width: fit-content;
+}
+
+form.recover-email,
+form.change-nicename,
+form.add-user-role,
+form.remove-user-role {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}

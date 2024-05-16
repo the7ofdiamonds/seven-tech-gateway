@@ -11,11 +11,17 @@ class AdminAccountManagement
 {
     private $account;
     private $user;
+    private $css_file;
+    private $js_file;
 
     public function __construct()
     {
         $this->account = new Account;
         $this->user = new User;
+        $this->css_file = 'AccountManagement.css';
+        $this->js_file = 'AccountManagement.js';
+
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_custom_admin_scripts']);
 
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
         add_action('wp_ajax_getAccountStatus', [$this, 'getAccountStatus']);
@@ -42,6 +48,14 @@ class AdminAccountManagement
         echo 'Manage User Accounts';
     }
 
+    function enqueue_custom_admin_scripts($hook_suffix)
+    {
+        if ($hook_suffix === 'gateway_page_seven_tech_account_management') {
+            wp_enqueue_style('custom-admin-style', SEVEN_TECH_URL . "Admin/includes/css/{$this->css_file}", array(), '1.0.0');
+            wp_enqueue_script('custom-admin-script',  SEVEN_TECH_URL . "Admin/includes/js/{$this->js_file}", array('jquery'), '1.0.0', true);
+        }
+    }
+
     public function findAccount()
     {
         try {
@@ -52,7 +66,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
 
             $account = $this->account->findAccount($email);
-// Needs nicename
+            // Needs nicename
             if ($account == '') {
                 throw new Exception("User could not be found.");
             }

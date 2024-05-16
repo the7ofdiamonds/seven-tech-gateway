@@ -11,11 +11,17 @@ class AdminUserManagement
 {
     private $validator;
     private $user;
+    private $css_file;
+    private $js_file;
 
     public function __construct()
     {
         $this->validator = new Validator;
         $this->user = new User;
+        $this->css_file = 'UserManagement.css';
+        $this->js_file = 'UserManagement.js';
+
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_custom_admin_scripts']);
 
         add_action('wp_ajax_getUser', [$this, 'getUser']);
         add_action('wp_ajax_forgotPassword', [$this, 'forgotPassword']);
@@ -38,6 +44,14 @@ class AdminUserManagement
     function section_description()
     {
         echo 'Manage Users';
+    }
+
+    function enqueue_custom_admin_scripts($hook_suffix)
+    {
+        if ($hook_suffix === 'gateway_page_seven_tech_user_management') {
+            wp_enqueue_style('custom-admin-style', SEVEN_TECH_URL . "Admin/includes/css/{$this->css_file}", array(), '1.0.0');
+            wp_enqueue_script('custom-admin-script',  SEVEN_TECH_URL . "Admin/includes/js/{$this->js_file}", array('jquery'), '1.0.0', true);
+        }
     }
 
     public function getUser()
