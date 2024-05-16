@@ -36,7 +36,7 @@
     }
 
     .account .account-status .sessions {
-        display: flex;
+        display: none;
         flex-direction: column;
         gap: 1.5rem;
     }
@@ -61,7 +61,6 @@
     }
 
     .account .subscription-email,
-    .account .roles,
     .account .recover-email,
     .account .lock-account,
     .account .enable-account {
@@ -71,19 +70,25 @@
         flex-wrap: wrap;
     }
 
+    .account .roles {
+        padding: 1rem;
+        background-color: white;
+    }
+
+    .account .roles,
     .account .delete-account {
         align-items: center;
         gap: 1.5rem;
         flex-wrap: wrap;
     }
 
-    .account .roles,
     .account .roles-row {
         display: flex;
         gap: 1.5rem;
         flex-wrap: wrap;
     }
 
+    .account .roles,
     .account .enable-account button.enable-btn,
     .account .enable-account button.disable-btn,
     .account .lock-account button.lock-btn,
@@ -209,7 +214,7 @@
                 .done(function(response) {
                     var id = response.data.id;
                     var fullname = `${response.data.firstname} ${response.data.lastname}`;
-console.log(response.data);
+                    console.log(response.data);
                     $('#account input[name="account_id"]#account_id').val(id);
                     $('#account input[name="email"]#email').val(response.data.email);
                     $('#account #username').text(response.data.username);
@@ -241,6 +246,10 @@ console.log(response.data);
                                 var sessions = status.data[0];
                                 var sessionKeys = Object.keys(sessions);
                                 var numberOfSessions = sessionKeys.length;
+
+                                if (numberOfSessions > 0) {
+                                    $('#sessions').css('display', 'flex');
+                                }
 
                                 sessionKeys.forEach(function(token) {
                                     var session = sessions[token];
@@ -317,6 +326,7 @@ console.log(response.data);
                                 }
                             })
                             .done(function(user) {
+                                $('#account #roles').css('display', 'flex');
                                 $('#account #roles_row').empty();
                                 $.each(user.data, function(index, role) {
                                     var roleTag = $('<h3>', {

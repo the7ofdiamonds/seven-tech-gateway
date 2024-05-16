@@ -1,3 +1,27 @@
+<style>
+    .user {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .user h3,
+    .user h4 {
+        margin: 0;
+    }
+
+    .user .user-id,
+    .user .full-name,
+    .user .names,
+    .user .roles,
+    .user .roles .roles-row,
+    .user .email {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+</style>
+
 <h1>User Management</h1>
 
 <form method="post" id="find_user">
@@ -16,12 +40,36 @@
 </form>
 
 <div class="user" id="user">
-    <input type="text" name="user_id" id="user_id" disabled>
-    <h3 id="first_name"></h3>
-    <h3 id="last_name"></h3>
-    <h3 id="nicename"></h3>
-    <div class="roles-row" id="user_roles"></div>
-    <input type="email" name="email" id="email" disabled>
+    <div class="user-id">
+        <h3>user id</h3>
+        <h4 id="user_id"></h4>
+    </div>
+
+    <div class="full-name">
+        <h3>fullname</h3>
+        <h4 id="full_name"></h4>
+    </div>
+
+    <div class="names">
+        <div class="username">
+            <h3>username</h3>
+            <h4 id="username"></h4>
+        </div>
+        <div class="nicename">
+            <h3>nicename</h3>
+            <h4 id="nicename"></h4>
+        </div>
+    </div>
+
+    <div class="roles" id="roles">
+        <h3>Roles</h3>
+        <div class="roles-row" id="roles_row"></div>
+    </div>
+
+    <div class="email">
+        <h3>email</h3>
+        <h4 id="email"></h4>
+    </div>
 </div>
 
 <form method="post" id="recover_email">
@@ -104,20 +152,22 @@
                     }
                 })
                 .done(function(response) {
-                    $('#user input[name="user_id"]#user_id').val(response.data['id']);
-                    $('#user #first_name').text(response.data['firstname']);
-                    $('#user #last_name').text(response.data['lastname']);
+                    var fullname = `${response.data['firstname']} ${response.data['lastname']}`;
+                    console.log(response.data);
+                    $('#user #user_id').text(response.data['id']);
+                    $('#user #full_name').text(fullname);
+                    $('#user #username').text(response.data['username']);
                     $('#user #nicename').text(response.data['nicename']);
 
-                    $('#user #user_roles').empty();
+                    $('#user #roles_row').empty();
                     $.each(response.data['roles'], function(index, role) {
                         var roleTag = $('<h3>', {
                             text: role.display_name
                         });
-                        $('#user #user_roles').append(roleTag);
+                        $('#user #roles_row').append(roleTag);
                     });
 
-                    $('#user input[name="email"]#email').val(response.data['email']);
+                    $('#user #email').text(response.data['email']);
 
                     $('#role_select_remove').empty();
 
