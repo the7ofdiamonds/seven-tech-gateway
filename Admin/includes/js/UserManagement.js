@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
             })
             .done(function(response) {
                 var fullname = `${response.data['firstname']} ${response.data['lastname']}`;
-                console.log(response.data);
+
                 $('#user #user_id').text(response.data['id']);
                 $('#user #full_name').text(fullname);
                 $('#user #username').text(response.data['username']);

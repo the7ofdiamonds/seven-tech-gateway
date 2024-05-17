@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-    function createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, role, confirmationCode) {
+    function createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, role) {
         return $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
@@ -13,12 +13,11 @@ jQuery(document).ready(function ($) {
                 firstname: firstname,
                 lastname: lastname,
                 phone: phone,
-                role: role,
-                confirmationCode: confirmationCode``
+                role: role
             }
         })
             .done(function (response) {
-                var fullname = `${response.data['firstname']} ${response.data['lastname']}`;
+                const fullname = `${response.data['firstname']} ${response.data['lastname']}`;
                 console.log(response.data);
                 $('#user #user_id').text(response.data['id']);
                 $('#user #full_name').text(fullname);
@@ -54,17 +53,16 @@ jQuery(document).ready(function ($) {
     $('form#create_account').submit(function (event) {
         event.preventDefault();
 
-        var email = $('#create_account input[name="email"]').val();
-        var username = $('#create_account input[name="username"]').val();
-        var password = $('#create_account input[name="password"]').val();
-        var nicename = $('#create_account input[name="nicename"]').val();
-        var nickname = $('#create_account input[name="nickname"]').val();
-        var firstname = $('#create_account input[name="firstname"]').val();
-        var lastname = $('#create_account input[name="lastname"]').val();
-        var phone = $('#create_account input[name="phone"]').val();
-        var role = $('#create_account input[name="role"]').val();
-        var confirmationCode = $('#create_account input[name="confirmationCode"]').val();
-
-        createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, role, confirmationCode);
+        const email = $('#create_account input[name="email"]').val();
+        const username = $('#create_account input[name="username"]').val();
+        const password = $('#create_account input[name="password"]').val();
+        const nicename = $('#create_account input[name="nicename"]').val();
+        const nickname = $('#create_account input[name="nickname"]').val();
+        const firstname = $('#create_account input[name="firstname"]').val();
+        const lastname = $('#create_account input[name="lastname"]').val();
+        const phone = $('#create_account input[name="phone"]').val();
+        const role = $('#create_account #role_select_add').val();
+console.log(role);
+        createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, role);
     });
 });

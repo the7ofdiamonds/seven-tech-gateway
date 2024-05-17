@@ -85,9 +85,9 @@ class Admin
             $firstname = $_POST['firstname'];
             $lastname = $_POST['lastname'];
             $phone = $_POST['phone'];
-            $role = 'subscriber';
+            $role = $_POST['role'];
             $confirmationCode = '123';
-
+error_log($role);
             $account = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode);
 
             if ($account == '') {
