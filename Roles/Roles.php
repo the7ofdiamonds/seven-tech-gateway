@@ -9,6 +9,27 @@ class Roles
     {
     }
 
+    public function unserializeRoles($serializedRoles)
+    {
+        $uroles = unserialize($serializedRoles);
+        $wp_roles = wp_roles()->get_names();
+
+        $roles = [];
+
+        foreach ($wp_roles as $roleKey => $roleValue) {
+            foreach ($uroles as $key => $value) {
+                if ($roleKey == $key && $value == 1) {
+                    $roles[] = [
+                        'name' => $roleKey,
+                        'display_name' => $roleValue
+                    ];
+                }
+            }
+        }
+
+        return $roles;
+    }
+
     public function roleExists($roleName, $roleDisplayName)
     {
         $wp_roles = wp_roles()->get_names();

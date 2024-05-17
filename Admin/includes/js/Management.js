@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-    function createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, role) {
+    function createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, roles) {
         return $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
@@ -13,12 +13,12 @@ jQuery(document).ready(function ($) {
                 firstname: firstname,
                 lastname: lastname,
                 phone: phone,
-                role: role
+                roles: roles
             }
         })
             .done(function (response) {
                 const fullname = `${response.data['firstname']} ${response.data['lastname']}`;
-                console.log(response.data);
+                console.log(response);
                 $('#user #user_id').text(response.data['id']);
                 $('#user #full_name').text(fullname);
                 $('#user #username').text(response.data['username']);
@@ -50,6 +50,11 @@ jQuery(document).ready(function ($) {
             });
     }
 
+    $('#role_select_add').on('change', () => {
+        var role = $('#role_select_add').val();
+        console.log(role);
+    });
+
     $('form#create_account').submit(function (event) {
         event.preventDefault();
 
@@ -61,8 +66,8 @@ jQuery(document).ready(function ($) {
         const firstname = $('#create_account input[name="firstname"]').val();
         const lastname = $('#create_account input[name="lastname"]').val();
         const phone = $('#create_account input[name="phone"]').val();
-        const role = $('#create_account #role_select_add').val();
-console.log(role);
-        createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, role);
+        const roles = $('#create_account #role_select_add').val();
+
+        createAccount(email, username, password, nicename, nickname, firstname, lastname, phone, roles);
     });
 });

@@ -8,7 +8,7 @@
         <input className="input-password" type="password" name="password" placeholder="Password" required />
         <input className="input-password" type="password" name="confirm-password" placeholder="Confirm Password" required />
 
-        <select name="added_role" id="role_select_add">
+        <select name="roles[]" id="role_select_add" multiple>
             <?php
             $active_roles = wp_roles()->get_names();
 

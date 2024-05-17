@@ -85,10 +85,9 @@ class Admin
             $firstname = $_POST['firstname'];
             $lastname = $_POST['lastname'];
             $phone = $_POST['phone'];
-            $role = $_POST['role'];
-            $confirmationCode = '123';
-error_log($role);
-            $account = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode);
+            $roles = $_POST['roles'];
+
+            $account = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
             if ($account == '') {
                 throw new Exception("User could not be found.");

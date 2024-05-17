@@ -5,22 +5,36 @@ namespace SEVEN_TECH\Gateway\Account;
 use Exception;
 
 use SEVEN_TECH\Gateway\Validator\Validator;
+use SEVEN_TECH\Gateway\Roles\Roles;
 
 class Account
 {
     private $validator;
+private $roles;
 
     public function __construct()
     {
         $this->validator = new Validator;
+        $this->roles = new Roles;
     }
 
-    function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
+    function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
     {
         global $wpdb;
 
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        $user_roles = [];
+
+        foreach ($roles as $role) {
+            $user_roles[$role] = 1;
+        }
+
+        $added_roles = serialize($user_roles);
+        $user_activation_key = wp_generate_password(20, false);
+
         $results = $wpdb->get_results(
-            $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
+            $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $added_roles, $user_activation_key)
         );
 
         if ($wpdb->last_error) {
@@ -28,12 +42,16 @@ class Account
             throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
         }
 
-        if (empty($results[0])) {
+        $account = $results[0];
+
+        if (empty($account)) {
             error_log("User could not be added.");
             return '';
         }
 
-        return $results[0];
+        $account->roles = $this->roles->unserializeRoles($account->roles);
+
+        return $account;
     }
 
     function findAccount($email)
@@ -49,27 +67,12 @@ class Account
         }
 
         $account = $results[0];
-        $uroles = unserialize($account->roles);
-        $wp_roles = wp_roles()->get_names();
-
-        $roles = [];
-
-        foreach ($wp_roles as $roleKey => $roleValue) {
-            foreach ($uroles as $key => $value) {
-                if ($roleKey == $key && $value == 1) {
-                    $roles[] = [
-                        'name' => $roleKey,
-                        'display_name' => $roleValue
-                    ];
-                }
-            }
-        }
-
-        $account->roles = $roles;
 
         if (empty($account)) {
             return '';
         }
+
+        $account->roles = $this->roles->unserializeRoles($account->roles);
 
         return $account;
     }
