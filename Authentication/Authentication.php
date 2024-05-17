@@ -4,26 +4,26 @@ namespace SEVEN_TECH\Gateway\Authentication;
 
 use Exception;
 
-use SEVEN_TECH\Gateway\User\User;
+use SEVEN_TECH\Gateway\Account\Account;
 
 use Kreait\Firebase\Auth;
 
 class Authentication
 {
     private $auth;
-    private $user;
+    private $account;
 
     public function __construct(Auth $auth)
     {
         $this->auth = $auth;
-        $this->user = new User;
+        $this->account = new Account;
     }
 
     function login($email, $password)
     {
-        $user = $this->user->findUserByEmail($email);
+        $account = $this->account->findAccount($email);
 
-        if ($user == null) {
+        if ($account == null) {
             $statusCode = 404;
             throw new Exception('This email could not be found', $statusCode);
         }
@@ -42,14 +42,14 @@ class Authentication
         //     'remember'      => true,
         // );
 
-        // $user = wp_signon($credentials, false);
+        // $account = wp_signon($credentials, false);
 
         // if (is_wp_error($user)) {
         //     throw new Exception($user->get_error_message(), $user->get_error_code());
         // }
 
-        wp_set_current_user($user->id);
-        wp_set_auth_cookie($user->id, true);
+        wp_set_current_user($account->id);
+        wp_set_auth_cookie($account->id, true);
 
         if (!is_user_logged_in()) {
             $statusCode = 400;
@@ -65,7 +65,7 @@ class Authentication
             'successMessage' => 'You have been logged in successfully',
             // 'accessToken' => $accessToken,
             // 'refreshToken' => $refreshToken,
-            'email' => $user->email,
+            'email' => $account->email,
             'statusCode' => $statusCode
         ];
 

@@ -5,19 +5,16 @@ namespace SEVEN_TECH\Gateway\Admin;
 use Exception;
 
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\User\User;
 
 class AdminAccountManagement
 {
     private $account;
-    private $user;
     private $css_file;
     private $js_file;
 
     public function __construct()
     {
         $this->account = new Account;
-        $this->user = new User;
         $this->css_file = 'AccountManagement.css';
         $this->js_file = 'AccountManagement.js';
 
@@ -66,7 +63,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
 
             $account = $this->account->findAccount($email);
-            // Needs nicename
+
             if ($account == '') {
                 throw new Exception("User could not be found.");
             }
@@ -93,27 +90,6 @@ class AdminAccountManagement
             }
 
             wp_send_json_success($accountStatus);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
-        }
-    }
-
-    public function getUserRoles()
-    {
-        try {
-            if (!isset($_POST['id'])) {
-                throw new Exception("ID is required.", 400);
-            }
-
-            $id = $_POST['id'];
-
-            $roles = $this->user->getUserRoles($id);
-
-            if ($roles == '') {
-                throw new Exception("Roles could not be found for this user.");
-            }
-
-            wp_send_json_success($roles);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
         }

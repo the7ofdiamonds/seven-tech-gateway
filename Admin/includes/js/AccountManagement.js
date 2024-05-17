@@ -1,17 +1,17 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     function findAccount(email) {
         return $.ajax({
-                type: 'POST',
-                url: 'admin-ajax.php',
-                data: {
-                    action: 'findAccount',
-                    email: email
-                }
-            })
-            .done(function(response) {
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'findAccount',
+                email: email
+            }
+        })
+            .done(function (response) {
                 var id = response.data.id;
                 var fullname = `${response.data.firstname} ${response.data.lastname}`;
-                console.log(response.data);
+
                 $('#account #account_id').text(id);
                 $('#account #email').text(response.data.email);
                 $('#account #username').text(response.data.username);
@@ -19,6 +19,15 @@ jQuery(document).ready(function($) {
                 $('#account #nicename').text(response.data.nicename);
                 $('#account #phone').text(response.data.phone);
                 $('#account #provider_given_id').text(response.data.provider_given_id);
+
+                $('#account #roles').css('display', 'flex');
+                $('#account #roles_row').empty();
+                $.each(response.data.roles, function(index, role) {
+                    var roleTag = $('<h3>', {
+                        text: role.display_name
+                    });
+                    $('#account #roles_row').append(roleTag);
+                });
 
                 var authenticated = response.data.is_authenticated == 1 ? 'logged in' : 'logged out';
 
@@ -30,14 +39,14 @@ jQuery(document).ready(function($) {
                 $('#account #authenticated').text(authenticated);
                 if (authenticated) {
                     $.ajax({
-                            type: 'POST',
-                            url: 'admin-ajax.php',
-                            data: {
-                                action: 'getAccountStatus',
-                                id: id
-                            }
-                        })
-                        .done(function(status) {
+                        type: 'POST',
+                        url: 'admin-ajax.php',
+                        data: {
+                            action: 'getAccountStatus',
+                            id: id
+                        }
+                    })
+                        .done(function (status) {
                             $('#sessions').empty();
 
                             var sessions = status.data[0];
@@ -48,7 +57,7 @@ jQuery(document).ready(function($) {
                                 $('#sessions').css('display', 'flex');
                             }
 
-                            sessionKeys.forEach(function(token) {
+                            sessionKeys.forEach(function (token) {
                                 var session = sessions[token];
                                 var sessionContainer = $(`<div class='session' id='session_${token}'></div>`);
 
@@ -86,7 +95,7 @@ jQuery(document).ready(function($) {
                             });
 
                         })
-                        .fail(function(xhr, status, error) {
+                        .fail(function (xhr, status, error) {
                             console.error('Failed to fetch user data:', error);
                         });
                 }
@@ -112,37 +121,13 @@ jQuery(document).ready(function($) {
                 if (unlocked == false && enabled == false) {
                     $('#account_management #delete_account').css('display', 'flex');
                 }
-
-                if (unexpired) {
-                    $.ajax({
-                            type: 'POST',
-                            url: 'admin-ajax.php',
-                            data: {
-                                action: 'getUserRoles',
-                                id: id
-                            }
-                        })
-                        .done(function(user) {
-                            $('#account #roles').css('display', 'flex');
-                            $('#account #roles_row').empty();
-                            $.each(user.data, function(index, role) {
-                                var roleTag = $('<h3>', {
-                                    text: role.display_name
-                                });
-                                $('#account #roles_row').append(roleTag);
-                            });
-                        })
-                        .fail(function(xhr, status, error) {
-                            console.error('Failed to fetch user data:', error);
-                        });
-                }
             })
-            .fail(function(xhr, status, error) {
+            .fail(function (xhr, status, error) {
                 console.error('Failed to fetch user data:', error);
             });
     }
 
-    $('form#find_account').submit(function(event) {
+    $('form#find_account').submit(function (event) {
         event.preventDefault();
 
         var email = $('#find_account input[name="email"]').val();
