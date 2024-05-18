@@ -4,17 +4,24 @@ namespace SEVEN_TECH\Gateway\Admin;
 
 use Exception;
 
-use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\User\User;
 
 class AdminUserManagement
 {
-    private $validator;
+    private $parent_slug;
+    private $page_title;
+    private $menu_title;
+    private $menu_slug;
+    public $page_url;
     private $user;
 
     public function __construct()
     {
-        $this->validator = new Validator;
+        $this->parent_slug = (new Admin)->get_parent_slug();
+        $this->page_title = 'User Management';
+        $this->menu_title = 'User';
+        $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
+        $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
         $this->user = new User;
 
         add_action('wp_ajax_getUser', [$this, 'getUser']);
@@ -26,8 +33,8 @@ class AdminUserManagement
 
     function register_custom_submenu_page()
     {
-        add_submenu_page('seven-tech', '', 'User', 'manage_options', 'seven_tech_user_management', [$this, 'create_section'], 4);
-        add_settings_section('seven-tech-admin-user-management', 'User Management', [$this, 'section_description'], 'seven_tech_user_management');
+        add_submenu_page($this->parent_slug, $this->page_title, $this->menu_title, 'manage_options', $this->menu_slug, [$this, 'create_section'], 4);
+        add_settings_section('seven-tech-admin-user-management',  $this->page_title, [$this, 'section_description'], $this->menu_slug);
     }
 
     function create_section()
@@ -71,7 +78,7 @@ class AdminUserManagement
             }
 
             $email = $_POST['email'];
-            $this->validator->validEmail($email);
+            // $this->validator->validEmail($email);
 
             return "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
         } catch (Exception $e) {

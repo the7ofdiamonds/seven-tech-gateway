@@ -2,7 +2,7 @@
 <script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagement.js"; ?> defer></script>
 
 <div class="account-management" id="account_management">
-    <h1>Account Management</h1>
+    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
     <div class="options" id="options">
         <button id="create_account">

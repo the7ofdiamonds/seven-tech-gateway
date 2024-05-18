@@ -2,6 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\Post_Types;
 
+use SEVEN_TECH\Gateway\Admin\Admin;
+
 class Post_Types
 {
     public $post_types_list;
@@ -36,6 +38,7 @@ class Post_Types
                     'menu_icon' => $post_type['menu_icon'],
                     'show_in_rest' => true,
                     'show_in_nav_menus' => true,
+                    'show_in_menu' => (new Admin)->get_parent_slug(),
                     'public' => true,
                     'has_archive' => true,
                     'publicly_queryable' => true,

@@ -8,42 +8,64 @@ use SEVEN_TECH\Gateway\Account\Account;
 
 class Admin
 {
-    private $account;
+    public $admin_url;
 
     public function __construct()
     {
-        $this->account = new Account;
+        $this->admin_url = $this->get_plugin_page_url('admin.php', $this->get_parent_slug());
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
+    }
 
-        add_action('admin_menu', [$this, 'register_custom_menu_page']);
-        add_action('admin_menu', [(new AdminAccountManagement), 'register_custom_submenu_page']);
-        add_action('admin_menu', [(new AdminUserManagement), 'register_custom_submenu_page']);
+    public function get_parent_slug()
+    {
+        return strtolower(str_replace(' ', '-', PLUGIN_NAME));
+    }
 
-        add_action('after_setup_theme', [$this, 'hide_admin_bar']);
+    function get_plugin_page_url($filename, $slug)
+    {
+        $plugin_page_url = admin_url("{$filename}?page={$slug}");
+
+        return $plugin_page_url;
+    }
+
+    public function settings_link($links)
+    {
+        $settings_link = "<a href='{$this->admin_url}'>Settings</a>";
+        array_push($links, $settings_link);
+
+        return $links;
+    }
+
+    function get_menu_slug($title)
+    {
+        $slug = strtolower(str_replace(' ', '-', $title));
+        $menu_slug = "{$this->get_parent_slug()}-{$slug}";
+
+        return $menu_slug;
     }
 
     public function register_custom_menu_page()
     {
         add_menu_page(
-            '',
+            PLUGIN_NAME,
             'GATEWAY',
             'manage_options',
-            'seven-tech',
+            $this->get_parent_slug(),
             '',
             'dashicons-info',
             101
         );
         add_submenu_page(
-            'seven-tech',
-            'SEVEN TECH GATEWAY',
+            $this->get_parent_slug(),
+            PLUGIN_NAME,
             'Dashboard',
             'manage_options',
-            'seven-tech',
+            $this->get_parent_slug(),
             [$this, 'create_section'],
             0
         );
-        add_settings_section('seven-tech-admin-group', 'SEVEN TECH DASHBOARD', '', 'seven-tech');
+        add_settings_section('seven_tech_admin_group', PLUGIN_NAME, '', $this->get_parent_slug());
     }
 
     function create_section()
@@ -73,7 +95,7 @@ class Admin
             $phone = $_POST['phone'];
             $roles = $_POST['roles'];
 
-            $account = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
+            $account = (new Account)->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
             if ($account == '') {
                 throw new Exception("User could not be found.");
@@ -82,13 +104,6 @@ class Admin
             wp_send_json_success($account);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
-        }
-    }
-
-    function hide_admin_bar()
-    {
-        if (!current_user_can('administrator') && !is_admin()) {
-            show_admin_bar(false);
         }
     }
 }

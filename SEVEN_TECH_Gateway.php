@@ -6,7 +6,7 @@ namespace SEVEN_TECH\Gateway;
  * @package SEVEN_TECH
  */
 /*
-Plugin Name: SEVEN TECH
+Plugin Name: SEVEN TECH GATEWAY
 Plugin URI: 
 Description: Gateway.
 Version: 1.0.0
@@ -14,6 +14,7 @@ Author: THE7OFDIAMONDS.TECH
 Author URI: http://THE7OFDIAMONDS.TECH
 License: 
 Text Domain: seven-tech
+Plugin Slug: 
 */
 
 /*
@@ -21,12 +22,14 @@ Licensing Info is needed
 */
 
 defined('ABSPATH') or die('Hey, what are you doing here? You silly human!');
-define('SEVEN_TECH', WP_PLUGIN_DIR . '/seven-tech-gateway/');
-define('SEVEN_TECH_URL', WP_PLUGIN_URL . '/seven-tech-gateway/');
+define('SEVEN_TECH', plugin_dir_path(__FILE__));
+define('SEVEN_TECH_URL', plugin_dir_url(__FILE__));
 
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
 use SEVEN_TECH\Gateway\Admin\Admin;
+use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
+use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
 
 use SEVEN_TECH\Gateway\API\API;
 use SEVEN_TECH\Gateway\CSS\CSS;
@@ -45,6 +48,7 @@ use SEVEN_TECH\Gateway\Templates\Templates;
 
 class SEVEN_TECH
 {
+    private $plugin_file;
     public $pages;
     public $css;
     public $js;
@@ -55,14 +59,25 @@ class SEVEN_TECH
 
     public function __construct()
     {
-        $plugin = plugin_basename(__FILE__);
-        add_filter("plugin_action_links_{$plugin}", [$this, 'settings_link']);
+        $this->plugin_file = plugin_basename(__FILE__);
 
-        $admin = new Admin;
+        if (!function_exists('get_plugin_data')) {
+            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        }
+
+        $plugin_data = get_plugin_data(__FILE__);
+        define('PLUGIN_NAME', $plugin_data['Name']);
+
+        $admin = new Admin();
 
         add_action('admin_init', function () use ($admin) {
             $admin;
+            add_filter("plugin_action_links_{$this->plugin_file}", [$admin, 'settings_link']);
         });
+
+        add_action('admin_menu', [$admin, 'register_custom_menu_page']);
+        add_action('admin_menu', [(new AdminAccountManagement), 'register_custom_submenu_page']);
+        add_action('admin_menu', [(new AdminUserManagement), 'register_custom_submenu_page']);
 
         add_action('rest_api_init', function () {
             new API();
@@ -106,6 +121,8 @@ class SEVEN_TECH
             $templates
         );
         $this->pages = new Pages;
+
+        add_action('after_setup_theme', [$this, 'hide_admin_bar']);
     }
 
     function activate()
@@ -116,17 +133,16 @@ class SEVEN_TECH
         $this->router->react_rewrite_rules();
     }
 
+    function hide_admin_bar()
+    {
+        if (!current_user_can('administrator') && !is_admin()) {
+            show_admin_bar(false);
+        }
+    }
+
     function deactivate()
     {
         flush_rewrite_rules();
-    }
-
-    public function settings_link($links)
-    {
-        $settings_link = '<a href="' . admin_url('admin.php?page=seven-tech') . '">Settings</a>';
-        array_push($links, $settings_link);
-
-        return $links;
     }
 }
 

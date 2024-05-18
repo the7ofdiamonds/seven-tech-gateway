@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
     $("#options button#create_account").on('click', () => {
-        $("#account_management form#create_account").toggle();
+        $("#account_management form#create_account").css('display', 'flex');
         $("form#find_account").css('display', 'none');
         $("div#account").css('display', 'none');
         $("form#subscription_email").css('display', 'none');
@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
     $("#options button#find_account").on('click', () => {
         $("#account_management form#create_account").css('display', 'none');
         $("form#find_account").css('display', 'flex');
-        $("div#account").toggle();
+        $("div#account").css('display', 'flex');
         $("form#subscription_email").css('display', 'none');
         $("form#recover_email").css('display', 'none');
         $("form#lock_account").css('display', 'none');

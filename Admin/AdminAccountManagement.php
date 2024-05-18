@@ -8,10 +8,20 @@ use SEVEN_TECH\Gateway\Account\Account;
 
 class AdminAccountManagement
 {
+    private $parent_slug;
+    private $page_title;
+    private $menu_title;
+    private $menu_slug;
+    public $page_url;
     private $account;
 
     public function __construct()
     {
+        $this->parent_slug = (new Admin)->get_parent_slug();
+        $this->page_title = 'Account Management';
+        $this->menu_title = 'Account';
+        $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
+        $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
         $this->account = new Account;
 
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
@@ -25,8 +35,8 @@ class AdminAccountManagement
 
     function register_custom_submenu_page()
     {
-        add_submenu_page('seven-tech', '', 'Account', 'manage_options', 'seven_tech_account_management', [$this, 'create_section'], 4);
-        add_settings_section('seven-tech-admin-account-management', 'Account Management', [$this, 'section_description'], 'seven_tech_account_management');
+        add_submenu_page($this->parent_slug, $this->page_title, $this->menu_title, 'manage_options', $this->menu_slug, [$this, 'create_section'], 4);
+        add_settings_section('seven-tech_admin_account_management', $this->page_title, [$this, 'section_description'], $this->menu_slug);
     }
 
     function create_section()

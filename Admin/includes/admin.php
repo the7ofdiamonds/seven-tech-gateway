@@ -21,7 +21,7 @@
 </style>
 
 <div class="dashboard">
-    <h1>SEVEN TECH GATEWAY</h1>
+    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
     <div class="options" id="options">
         <button id="accounts">
@@ -32,22 +32,25 @@
             <h3>Manage Users</h3>
         </button>
     </div>
-
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-account-management.php'; ?>
-
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-user-management.php'; ?>
 </div>
+
+<?php
+
+use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
+use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
+
+$accounts_page_url = (new AdminAccountManagement)->page_url;
+$users_page_url = (new AdminUserManagement)->page_url;
+?>
 
 <script>
     jQuery(document).ready(function($) {
         $("#options button#accounts").on('click', () => {
-            $("#account_management").css('display', 'flex');
-            $("#user_management").css('display', 'none');
+            window.location.href = "<?php echo esc_url($accounts_page_url); ?>";
         });
 
         $("#options button#users").on('click', () => {
-            $("#account_management").css('display', 'none');
-            $("#user_management").css('display', 'flex');
+            window.location.href = "<?php echo esc_url($users_page_url); ?>";
         });
     });
 </script>
