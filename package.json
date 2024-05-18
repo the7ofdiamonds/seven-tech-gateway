@@ -13,7 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "update-dev": "git push seven-tech-gateway development",
     "update-prod": "git push seven-tech-gateway production",
-    "watch:sass": "sass --watch ./Assets/CSS/scss/main.scss ./Assets/CSS/seven-tech.css",
+    "watch:sass": "sass --watch ./Admin/includes/scss/_main.scss ./Admin/includes/css/seven-tech-gateway-admin.css",
     "gulp": "gulp"
   },
   "dependencies": {

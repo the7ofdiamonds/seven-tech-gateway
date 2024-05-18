@@ -9,16 +9,10 @@ use SEVEN_TECH\Gateway\Account\Account;
 class AdminAccountManagement
 {
     private $account;
-    private $css_file;
-    private $js_file;
 
     public function __construct()
     {
         $this->account = new Account;
-        $this->css_file = 'AccountManagement.css';
-        $this->js_file = 'AccountManagement.js';
-
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_custom_admin_scripts']);
 
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
         add_action('wp_ajax_getAccountStatus', [$this, 'getAccountStatus']);
@@ -43,14 +37,6 @@ class AdminAccountManagement
     function section_description()
     {
         echo 'Manage User Accounts';
-    }
-
-    function enqueue_custom_admin_scripts($hook_suffix)
-    {
-        if ($hook_suffix === 'gateway_page_seven_tech_account_management') {
-            wp_enqueue_style('custom-admin-style', SEVEN_TECH_URL . "Admin/includes/css/{$this->css_file}", array(), '1.0.0');
-            wp_enqueue_script('custom-admin-script',  SEVEN_TECH_URL . "Admin/includes/js/{$this->js_file}", array('jquery'), '1.0.0', true);
-        }
     }
 
     public function findAccount()

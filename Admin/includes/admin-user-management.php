@@ -1,8 +1,21 @@
-<div class="user-management">
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_URL . "Admin/includes/css/UserManagement.css"; ?>>
+<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/UserManagement.js"; ?> defer></script>
+
+<div class="user-management" id="user_management">
     <h1>User Management</h1>
 
+    <div class="options" id="options">
+        <button id="find_user">
+            <h3>Find User</h3>
+        </button>
+
+        <button id="update_user">
+            <h3>Update User</h3>
+        </button>
+    </div>
+
     <form method="post" class="find-user" id="find_user">
-        <h3>Find User</h3>
+        <h2>Find User</h2>
         <div class="find-user-submit">
             <input type="email" name="email" placeholder="Email" required>
             <button type="submit">Find</button>
@@ -43,10 +56,9 @@
         </div>
     </div>
 
-    <form method="post" class="change-nicename" id="change_nicename">
-        <h3>Change User Nicename</h3>
-        <input type="text" name="nicename" id="nicename" placeholder="Nicename" required>
-        <button type="submit">Change</button>
+    <form method="post" class="recover-email" id="recover_email">
+        <h3>Send Password Recovery Email</h3>
+        <button type="submit">Send</button>
     </form>
 
     <form method="post" class="add-user-role" id="add_user_role">
@@ -80,9 +92,10 @@
         <button type="submit">Remove</button>
     </form>
 
-    <form method="post" class="recover-email" id="recover_email">
-        <h3>Send Password Recovery Email</h3>
-        <button type="submit">Send</button>
+    <form method="post" class="change-nicename" id="change_nicename">
+        <h3>Change User Nicename</h3>
+        <input type="text" name="nicename" id="nicename" placeholder="Nicename" required>
+        <button type="submit">Change</button>
     </form>
 </div>
 

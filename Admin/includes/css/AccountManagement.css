@@ -4,15 +4,33 @@
   gap: 1.5rem;
 }
 
+.account-management h2,
 .account-management h3,
 .account-management h4 {
   margin: 0;
   padding: 0.25rem 0;
 }
 
-.find-account {
+.account-management .options {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.account-management .create-account {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+  max-width: 500px;
+}
+
+.account-management .find-account {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .find-account .find-account-submit {
@@ -21,8 +39,19 @@
   flex-wrap: wrap;
 }
 
+.account-management .account,
+.account-management .subscription-email,
+.account-management .recover-email,
+.account-management .lock-account,
+.account-management .enable-account,
+.account-management .delete-account {
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
 .account {
-  display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
@@ -84,7 +113,6 @@
   flex-wrap: wrap;
 }
 
-
 .account .roles .roles-row {
   display: flex;
   gap: 1.5rem;
@@ -94,27 +122,11 @@
   width: fit-content;
 }
 
-.account-management .subscription-email,
-.account-management .recover-email,
-.account-management .lock-account,
-.account-management .enable-account {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.account-management .delete-account {
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
 .account .roles,
 .account-management .enable-account button.enable-btn,
 .account-management .enable-account button.disable-btn,
 .account-management .lock-account button.lock-btn,
 .account-management .lock-account button.unlock-btn,
-.account-management .delete-account {
+.account-management .lock-account button.delete-btn {
   display: none;
 }

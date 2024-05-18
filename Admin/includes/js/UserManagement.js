@@ -1,4 +1,20 @@
 jQuery(document).ready(function($) {
+    $("#options button#find_user").on('click', () => {
+        $("#user_management div#user").css('display', 'flex');
+        $("form#change_nicename").css('display', 'none');
+        $("form#add_user_role").css('display', 'none');
+        $("form#remove_user_role").css('display', 'none');
+        $("form#recover_email").css('display', 'none');
+    });
+
+    $("#options button#update_user").on('click', () => {
+        $("#user_management div#user").css('display', 'none');
+        $("form#change_nicename").css('display', 'flex');
+        $("form#add_user_role").css('display', 'flex');
+        $("form#remove_user_role").css('display', 'flex');
+        $("form#recover_email").css('display', 'flex');
+    });
+
     function getUser(email) {
         return $.ajax({
                 type: 'POST',
