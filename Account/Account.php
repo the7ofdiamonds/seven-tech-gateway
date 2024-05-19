@@ -18,6 +18,14 @@ class Account
         $this->roles = new Roles;
     }
 
+    // Search for email
+
+    // Search for username
+
+    // Search for nicename
+
+    // Search for phone
+
     function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
     {
         try {
@@ -218,7 +226,7 @@ class Account
     }
 
     // Send account removed email
-    function removeAccount($email)
+    function disableAccount($email)
     {
         try {
             $user = $this->findAccount($email);
@@ -259,39 +267,47 @@ class Account
         }
     }
 
-    // Send Account deleted email
-    function deleteAccount($email)
-    {
-        try {
-            $user = $this->findAccount($email);
-
-            if ($user == '') {
-                throw new Exception("Account could not be found.", 404);
-            }
-
-            $is_enabled = $user->is_enabled;
-
-            if (!is_numeric($is_enabled) || $is_enabled == 1) {
-                throw new Exception('Account must first be removed.', 400);
-            }
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL deleteAccount('%s')", $email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->result) || !$results[0]->result) {
-                throw new Exception('Account could not be deleted at this time.', 500);
-            }
-
-            return 'Account deleted succesfully.';
-        } catch (Exception $e) {
-            throw new Exception($e);
-        }
-    }
+     // Send account enabled email
+     function enableAccount($email)
+     {
+         try { 
+             $user = $this->findAccount($email);
+ 
+             if ($user == '') {
+                 throw new Exception("Account could not be found.", 404);
+             }
+ 
+             $user_id = $user->id;
+ 
+             $accountDisabled = add_user_meta($user_id, 'is_enabled', 0, true);
+ 
+             if (!is_int($accountDisabled)) {
+                 throw new Exception('Account removed succesfully.');
+             }
+ 
+             $password = $user->password;
+ 
+             global $wpdb;
+ 
+             $results = $wpdb->get_results(
+                 $wpdb->prepare("CALL enableAccount('%s', '%s')", $email, $password)
+             );
+ 
+             $accountDisabled = $results[0]->resultSet;
+ 
+             if ($wpdb->last_error) {
+                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+             }
+ 
+             if (!$accountDisabled) {
+                 throw new Exception('Account could not be removed at this time.', 500);
+             }
+ 
+             $message = 'Account removed succesfully.';
+ 
+             wp_send_json_success($message);
+         } catch (Exception $e) {
+             wp_send_json_error($e->getMessage(), $e->getCode());
+         }
+     }
 }

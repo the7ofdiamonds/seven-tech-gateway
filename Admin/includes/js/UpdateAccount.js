@@ -9,7 +9,7 @@ jQuery(document).ready(function ($) {
             type: 'POST',
             url: 'admin-ajax.php',
             data: {
-                action: 'forgotPassword',
+                action: 'subscriptionEmail',
                 email: email
             },
             success: function (response) {
@@ -79,6 +79,52 @@ jQuery(document).ready(function ($) {
             url: 'admin-ajax.php',
             data: {
                 action: 'unlockAccount',
+                email: email
+            },
+            success: function (response) {
+                displayMessage('success', response.data);
+            },
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                displayMessage(status, errorMessage);
+            }
+        });
+    });
+
+    $('#enable_account #enable_btn').on('click', function (event) {
+        event.preventDefault();
+
+        const email = $('#find_account input[name="email"]#email').val();
+
+        $.ajax({
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'enableAccount',
+                email: email
+            },
+            success: function (response) {
+                displayMessage('success', response.data);
+            },
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                displayMessage(status, errorMessage);
+            }
+        });
+    });
+
+    $('#enable_account #disable_btn').on('click', function (event) {
+        event.preventDefault();
+
+        const email = $('#find_account input[name="email"]#email').val();
+
+        $.ajax({
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'disableAccount',
                 email: email
             },
             success: function (response) {

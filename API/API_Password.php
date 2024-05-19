@@ -12,7 +12,7 @@ use SEVEN_TECH\Gateway\User\User;
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
-class Password
+class API_Password
 {
     private $adminusermngmnt;
     private $token;

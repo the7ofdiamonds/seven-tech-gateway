@@ -7,77 +7,28 @@ use Exception;
 use WP_REST_Request;
 
 use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
+use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
-class Account
+class API_Account
 {
     private $adminaccountmngmnt;
     private $validator;
     private $token;
 
-    public function __construct(Auth $auth)
+    public function __construct(Token $token)
     {
-        $this->token = new Token($auth);
+        $this->token = $token;
         $this->adminaccountmngmnt = new AdminAccountManagement;
         $this->validator = new Validator;
     }
 
-    function verifyAccount(WP_REST_Request $request)
-    {
-        try {
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $email = $userData->email;
-            $password = $userData->password;
-            $confirmationCode = $request['confirmationCode'];
+    function createAccount(){}
 
-            if (empty($confirmationCode)) {
-                $statusCode = 400;
-                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', $statusCode);
-            }
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                "CALL enableAccount('$email', '$password', '$confirmationCode')"
-            );
-
-            if ($wpdb->last_error) {
-                $statusCode = 500;
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
-            }
-
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
-                $statusCode = 400;
-                throw new Exception("There was an error verifying your account please try again at another time.", $statusCode);
-            }
-
-            $statusCode = 200;
-            $verifyEmailResponse = [
-                'successMessage' => 'Email has been verified.',
-                'statusCode' => $statusCode
-            ];
-
-            return rest_ensure_response($verifyEmailResponse);
-        } catch (Exception $e) {
-            error_log('There has been an error at verify email.');
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
-        }
-    }
+    // lock account
 
     function unlockAccount(WP_REST_Request $request)
     {
@@ -85,7 +36,7 @@ class Account
             $email = $request['email'];
             $password = $request['password'];
             $confirmationCode = $request['confirmationCode'];
-
+// Verify Credentials
             $validEmail = $this->validator->validEmail($email);
 
             if (!$validEmail) {
@@ -121,6 +72,8 @@ class Account
         }
     }
 
+    // Enable account
+    
     function removeAccount(WP_REST_Request $request)
     {
         try {
@@ -128,6 +81,7 @@ class Account
             $password = $request['password'];
             $confirmationCode = $request['confirmationCode'];
 
+// Verify Credentials
             $validEmail = $this->validator->validEmail($email);
 
             if (!$validEmail) {
@@ -149,7 +103,7 @@ class Account
                 throw new Exception('Confirmation code is not valid.', $statusCode);
             }
 
-            return $this->adminaccountmngmnt->removeAccount($email);
+            return $this->adminaccountmngmnt->disableAccount($email);
         } catch (FailedToVerifyToken $e) {
             $statusCode = 403;
             $tokenResponse = [

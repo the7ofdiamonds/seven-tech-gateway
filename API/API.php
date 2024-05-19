@@ -2,9 +2,11 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Factory;
+use SEVEN_TECH\Gateway\Authentication\Authentication;
 
 class API
 {
@@ -17,7 +19,6 @@ class API
 
     if (file_exists($credentialsPath)) {
       $jsonFileContents = file_get_contents($credentialsPath);
-
 
       if ($jsonFileContents !== false) {
         $decodedData = json_decode($jsonFileContents, true);
@@ -52,13 +53,16 @@ class API
       $factory = (new Factory)->withServiceAccount($credentialsPath);
       $auth = $factory->createAuth();
 
-      $account = new Account($auth);
-      $change = new Change($auth);
-      $login = new Login($auth);
-      $logout = new Logout();
-      $password = new Password($auth);
-      $signup = new Signup($auth, $user);
       $token = new Token($auth);
+      $authentication = new Authentication($auth);
+      $authorization = new Authorization();
+
+      $account = new API_Account($token);
+      $authAPI = new API_Authentication($authentication);
+      $password = new API_Password($auth);
+      $signup = new API_Signup($auth, $user);
+      $tokenAPI = new API_Token($token);
+      $userAPI = new API_User($token, $user);
     } else {
       error_log('A path to the Google Service Account file is required.');
     }

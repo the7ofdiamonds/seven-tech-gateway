@@ -2,6 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Token\Token;
+
 use Exception;
 
 use WP_REST_Request;
@@ -11,13 +13,58 @@ use Kreait\Firebase\Exception\AppCheck\FailedToVerifyAppCheckToken;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 
-class Token
+class API_Token
 {
-    private $auth;
+    private $token;
 
-    public function __construct(Auth $auth)
+    public function __construct(Token $token)
     {
-        $this->auth = $auth;
+        $this->token = $token;
+    }
+    
+    function getToken(WP_REST_Request $request)
+    {
+        try {
+            $headers = $request->get_headers();
+            $authentication = $headers['authorization'][0];
+            $idToken = substr($authentication, 7);
+
+            return $this->token->verifyIdToken($idToken);
+        } catch (FailedToVerifyToken $e) {
+            throw new FailedToVerifyToken($e);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
+
+    function findUserWithToken($token)
+    {
+        try {
+            $verifiedIdToken = $this->token->verifyIdToken($token);
+
+            $email = $verifiedIdToken->claims()->get('email');
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL findUserByEmail(%s)", $email)
+            );
+
+            if ($wpdb->last_error) {
+                $statusCode = 500;
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
+            }
+
+            if ($results == null) {
+                return '';
+            }
+            // catch revoked id tokens
+            return $results[0];
+        } catch (FailedToVerifyToken $e) {
+            throw new FailedToVerifyToken($e);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
     }
 
     function token(WP_REST_Request $request)
@@ -29,7 +76,7 @@ class Token
 
             $verifiedIdToken = $this->getToken($request);
 
-            if($verifiedIdToken == ''){
+            if ($verifiedIdToken == '') {
                 $statusCode = 403;
                 throw new Exception('Valid token is required.', $statusCode);
             }
@@ -82,51 +129,6 @@ class Token
             $response->set_status($statusCode);
 
             return $response;
-        }
-    }
-
-    function getToken(WP_REST_Request $request)
-    {
-        try {
-            $headers = $request->get_headers();
-            $authentication = $headers['authorization'][0];
-            $idToken = substr($authentication, 7);
-
-            return $this->auth->verifyIdToken($idToken);
-        } catch (FailedToVerifyToken $e) {
-            throw new FailedToVerifyToken($e);
-        } catch (Exception $e) {
-            throw new Exception($e);
-        }
-    }
-
-    function findUserWithToken($token)
-    {
-        try {
-            $verifiedIdToken = $this->auth->verifyIdToken($token);
-
-            $email = $verifiedIdToken->claims()->get('email');
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL findUserByEmail(%s)", $email)
-            );
-
-            if ($wpdb->last_error) {
-                $statusCode = 500;
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
-            }
-
-            if ($results == null) {
-                return '';
-            }
-// catch revoked id tokens
-            return $results[0];
-        } catch (FailedToVerifyToken $e) {
-            throw new FailedToVerifyToken($e);
-        } catch (Exception $e) {
-            throw new Exception($e);
         }
     }
 }

@@ -10,7 +10,7 @@ use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Auth;
 
-class Signup
+class API_Signup
 {
     private $auth;
     private $user;

@@ -27,10 +27,11 @@ class AdminAccountManagement
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
         add_action('wp_ajax_getAccountStatus', [$this, 'getAccountStatus']);
-        add_action('wp_ajax_getUserRoles', [$this, 'getUserRoles']);
+        add_action('wp_ajax_sendSubscriptionEmail', [$this, 'sendSubscriptionEmail']);
         add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
         add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
-        add_action('wp_ajax_removeAccount', [$this, 'removeAccount']);
+        add_action('wp_ajax_enableAccount', [$this, 'enableAccount']);
+        add_action('wp_ajax_disableAccount', [$this, 'disableAccount']);
         add_action('wp_ajax_deleteAccount', [$this, 'deleteAccount']);
     }
 
@@ -53,10 +54,6 @@ class AdminAccountManagement
     public function createAccount()
     {
         try {
-            if (!isset($_POST['email'])) {
-                throw new Exception("Email is required.", 400);
-            }
-
             $email = $_POST['email'];
             $username = $_POST['username'];
             $password = $_POST['password'];
@@ -67,13 +64,9 @@ class AdminAccountManagement
             $phone = $_POST['phone'];
             $roles = $_POST['roles'];
 
-            $account = (new Account)->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
+            $createdAccount = (new Account)->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
-            if ($account == '') {
-                throw new Exception("Account could not be found.", 404);
-            }
-
-            wp_send_json_success($account);
+            wp_send_json_success($createdAccount);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
         }
@@ -82,17 +75,9 @@ class AdminAccountManagement
     public function findAccount()
     {
         try {
-            if (!isset($_POST['email'])) {
-                throw new Exception("Email is required.", 400);
-            }
-
             $email = $_POST['email'];
 
             $account = $this->account->findAccount($email);
-
-            if ($account == '') {
-                throw new Exception("Account could not be found.", 404);
-            }
 
             wp_send_json_success($account);
         } catch (Exception $e) {
@@ -103,19 +88,25 @@ class AdminAccountManagement
     public function getAccountStatus()
     {
         try {
-            if (!isset($_POST['id'])) {
-                throw new Exception("ID is required.", 400);
-            }
-
             $id = $_POST['id'];
 
             $accountStatus = $this->account->getAccountStatus($id);
 
-            if ($accountStatus == '') {
-                throw new Exception("Account status could not be found for this user.", 404);
-            }
-
             wp_send_json_success($accountStatus);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    // This should be added to communications
+    public function sendSubscriptionEmail()
+    {
+        try {
+            $email = $_POST['email'];
+
+            $message = "An email has been sent to {$email} check your inbox for directions on how and where to renew subscriptions.";
+
+            wp_send_json_success($message);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
@@ -127,39 +118,9 @@ class AdminAccountManagement
         try {
             $email = $_POST['email'];
 
-            $user = $this->account->findAccount($email);
+            $lockedAccount = $this->account->lockAccount($email);
 
-            if ($user == '') {
-                throw new Exception("Account could not be found.", 404);
-            }
-
-            $user_id = $user->id;
-
-            $accountLocked = add_user_meta($user_id, 'is_account_non_locked', 0, true);
-
-            if (is_int($accountLocked)) {
-                return 'Account removed succesfully.';
-            }
-
-            $password = $user->password;
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL lockAccount('%s', '%s')", $email, $password)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
-                throw new Exception('Account could not be locked at this time.', 500);
-            }
-
-            $message = 'Account has been locked successfully.';
-
-            wp_send_json_success($message);
+            wp_send_json_success($lockedAccount);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
@@ -170,78 +131,38 @@ class AdminAccountManagement
         try {
             $email = $_POST['email'];
 
-            $user = $this->account->findAccount($email);
+            $unlockedAccount = $this->account->unlockAccount($email);
 
-            if ($user == '') {
-                throw new Exception("Account could not be found.", 404);
-            }
-
-            global $wpdb;
-
-            $password = $user->password;
-            $confirmationCode = $user->confirmation_code;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL unlockAccount('%s', '%s', '%s')", $email, $password, $confirmationCode)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
-                throw new Exception('Account could not be removed at this time.', 500);
-            }
-
-            $message = 'Account has been unlocked succesfully.';
-
-            wp_send_json_success($message);
+            wp_send_json_success($unlockedAccount);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
     // Send account removed email
-    function removeAccount()
+    // Account should be locked before being disabled
+    function disableAccount()
     {
         try {
             $email = $_POST['email'];
 
-            $user = $this->account->findAccount($email);
+            $disabledAccount = $this->account->disableAccount($email);
 
-            if ($user == '') {
-                throw new Exception("Account could not be found.", 404);
-            }
+            wp_send_json_success($disabledAccount);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage(), $e->getCode());
+        }
+    }
 
-            $user_id = $user->id;
+    // Send account enabled email
+    function enableAccount()
+    {
+        try {
+            $email = $_POST['email'];
 
-            $accountDisabled = add_user_meta($user_id, 'is_enabled', 0, true);
+            $enabledAccount = $this->account->enableAccount($email);
 
-            if (!is_int($accountDisabled)) {
-                throw new Exception('Account removed succesfully.');
-            }
-
-            $password = $user->password;
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL disableAccount('%s', '%s')", $email, $password)
-            );
-
-            $accountDisabled = $results[0]->resultSet;
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (!$accountDisabled) {
-                throw new Exception('Account could not be removed at this time.', 500);
-            }
-
-            $message = 'Account removed succesfully.';
-
-            wp_send_json_success($message);
+            wp_send_json_success($enabledAccount);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
@@ -251,15 +172,15 @@ class AdminAccountManagement
     function deleteAccount()
     {
         try {
-            $email = $_POST['email'];
-
-            $user = $this->account->findAccount($email);
-
-            if ($user == '') {
-                throw new Exception("Account could not be found.", 404);
+            if (!isset($_POST['email'])) {
+                throw new Exception('Email is required.', 400);
             }
 
-            $is_enabled = $user->is_enabled;
+            $email = $_POST['email'];
+
+            $account = $this->account->findAccount($email);
+
+            $is_enabled = $account->is_enabled;
 
             if (!is_numeric($is_enabled) || $is_enabled == 1) {
                 throw new Exception('Account must first be removed.', 400);

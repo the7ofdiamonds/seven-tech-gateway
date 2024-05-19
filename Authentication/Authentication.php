@@ -6,16 +6,12 @@ use Exception;
 
 use SEVEN_TECH\Gateway\Account\Account;
 
-use Kreait\Firebase\Auth;
-
 class Authentication
 {
-    private $auth;
     private $account;
 
     public function __construct(Auth $auth)
     {
-        $this->auth = $auth;
         $this->account = new Account;
     }
 

@@ -6,20 +6,21 @@ use Exception;
 
 use WP_REST_Request;
 
+use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
-class Change
+class API_User
 {
     private $token;
     private $user;
 
-    public function __construct(Auth $auth)
+    public function __construct(Token $token, User $user)
     {
-        $this->token = new Token($auth);
-        $this->user = new User;
+        $this->token = $token;
+        $this->user = $user;
     }
 
     // Send name changed email
