@@ -1,4 +1,5 @@
 <link rel="stylesheet" href=<?php echo SEVEN_TECH_URL . "Admin/includes/css/AccountManagement.css"; ?>>
+<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>
 <script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagement.js"; ?> defer></script>
 
 <div class="account-management" id="account_management">
@@ -22,12 +23,14 @@
         </button>
     </div>
 
+    <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
+    
     <?php include_once SEVEN_TECH . 'Admin/includes/admin-create-account.php'; ?>
 
     <form method="post" class="find-account" id="find_account">
         <h2>Find Account</h2>
         <div class="find-account-submit">
-            <input type="email" name="email" placeholder="Email" required>
+            <input type="email" name="email" placeholder="Email" id="email" required>
             <button type="submit">Find</button>
         </div>
     </form>

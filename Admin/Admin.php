@@ -13,8 +13,6 @@ class Admin
     public function __construct()
     {
         $this->admin_url = $this->get_plugin_page_url('admin.php', $this->get_parent_slug());
-
-        add_action('wp_ajax_createAccount', [$this, 'createAccount']);
     }
 
     public function get_parent_slug()
@@ -76,34 +74,5 @@ class Admin
     function section_description()
     {
         echo 'Manage User Accounts';
-    }
-
-    public function createAccount()
-    {
-        try {
-            if (!isset($_POST['email'])) {
-                throw new Exception("Email is required.", 400);
-            }
-
-            $email = $_POST['email'];
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $nicename = $_POST['nicename'];
-            $nickname = $_POST['nickname'];
-            $firstname = $_POST['firstname'];
-            $lastname = $_POST['lastname'];
-            $phone = $_POST['phone'];
-            $roles = $_POST['roles'];
-
-            $account = (new Account)->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
-
-            if ($account == '') {
-                throw new Exception("User could not be found.");
-            }
-
-            wp_send_json_success($account);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
-        }
     }
 }

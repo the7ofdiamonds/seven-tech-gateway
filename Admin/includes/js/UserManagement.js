@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     $("#options button#find_user").on('click', () => {
         $("#user_management div#user").css('display', 'flex');
         $("form#change_nicename").css('display', 'none');
@@ -17,14 +17,14 @@ jQuery(document).ready(function($) {
 
     function getUser(email) {
         return $.ajax({
-                type: 'POST',
-                url: 'admin-ajax.php',
-                data: {
-                    action: 'getUser',
-                    email: email
-                }
-            })
-            .done(function(response) {
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'getUser',
+                email: email
+            }
+        })
+            .done(function (response) {
                 var fullname = `${response.data['firstname']} ${response.data['lastname']}`;
 
                 $('#user #user_id').text(response.data['id']);
@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
                 $('#user #nicename').text(response.data['nicename']);
 
                 $('#user #roles_row').empty();
-                $.each(response.data['roles'], function(index, role) {
+                $.each(response.data['roles'], function (index, role) {
                     var roleTag = $('<h3>', {
                         text: role.display_name
                     });
@@ -42,23 +42,25 @@ jQuery(document).ready(function($) {
 
                 $('#user #email').text(response.data['email']);
 
-                $('#role_select_remove').empty();
+                $('#remove_user_role #role_select_remove').empty();
 
-                $.each(response.data['roles'], function(index, role) {
+                $.each(response.data['roles'], function (index, role) {
                     var option = $('<option>', {
                         value: role.name,
                         'data-display-name': role.display_name,
                         text: role.display_name + ' (' + role.name + ')'
                     });
-                    $('#role_select_remove').append(option);
+                    $('#remove_user_role #role_select_remove').append(option);
                 });
             })
-            .fail(function(xhr, status, error) {
-                console.error('Failed to fetch user data:', error);
+            .fail(function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                displayMessage(status, errorMessage);
             });
     }
 
-    $('form#find_user').submit(function(event) {
+    $('form#find_user').submit(function (event) {
         event.preventDefault();
 
         var email = $('#find_user input[name="email"]').val();
@@ -66,8 +68,10 @@ jQuery(document).ready(function($) {
         getUser(email);
     });
 
-    $('form#recover_email').submit(function(event) {
+    $('form#recover_email').submit(function (event) {
         event.preventDefault();
+
+        const email = $('#find_user input[name="email"]').val();
 
         $.ajax({
             type: 'POST',
@@ -76,16 +80,18 @@ jQuery(document).ready(function($) {
                 action: 'forgotPassword',
                 email: email
             },
-            success: function(response) {
-                console.log(response);
+            success: function (response) {
+                displayMessage('success', response.data);
             },
-            error: function(xhr, status, error) {
-                console.error('AJAX request failed:', error);
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                displayMessage(status, errorMessage);
             }
         });
     });
 
-    $('#change_nicename').submit(function(event) {
+    $('#change_nicename').submit(function (event) {
         event.preventDefault();
 
         const id = $('#user #user_id').text();
@@ -101,12 +107,16 @@ jQuery(document).ready(function($) {
                     id: id,
                     nicename: nicename
                 },
-                success: function(response) {
+                success: function (response) {
                     console.log(response.data);
                     getUser(email);
+
+                    displayMessage('success', response.data);
                 },
-                error: function(xhr, status, error) {
-                    console.error('AJAX request failed:', error);
+                error: function (xhr, status, error) {
+                    const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                    displayMessage(status, errorMessage);
                 }
             });
         } else {
@@ -114,13 +124,13 @@ jQuery(document).ready(function($) {
         }
     });
 
-    $('form#add_user_role').submit(function(event) {
+    $('form#add_user_role').submit(function (event) {
         event.preventDefault();
 
-        const id = $('#user input[name="user_id"]#user_id').val();
+        const id = $('#user #user_id').text();
         const role = $('#add_user_role #role_select_add').val();
         const displayName = $('#add_user_role #display_name_add').val();
-        const email = $('#user input[name="email"]#email').val();
+        const email = $('#user #email').text();
 
         jQuery.ajax({
             type: 'POST',
@@ -131,24 +141,26 @@ jQuery(document).ready(function($) {
                 added_role: role,
                 display_name_added: displayName
             },
-            success: function(response) {
-                console.log(response);
+            success: function (response) {
                 getUser(email);
 
+                displayMessage('success', response.data);
             },
-            error: function(xhr, status, error) {
-                console.error('AJAX request failed:', error);
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                displayMessage(status, errorMessage);
             }
         });
     });
 
-    $('form#remove_user_role').submit(function(event) {
+    $('form#remove_user_role').submit(function (event) {
         event.preventDefault();
 
-        const id = $('#user input[name="user_id"]#user_id').val();
-        const role = $('#role_select_remove').val();
-        const displayName = $('#display_name_remove').val();
-        const email = $('#user input[name="email"]#email').val();
+        const id = $('#user #user_id').text();
+        const role = $('#remove_user_role #role_select_remove').val();
+        const displayName = $('#remove_user_role #display_name_remove').val();
+        const email = $('#user #email').text();
 
         jQuery.ajax({
             type: 'POST',
@@ -159,13 +171,15 @@ jQuery(document).ready(function($) {
                 remove_role: role,
                 display_name_remove: displayName
             },
-            success: function(response) {
-                console.log(response);
+            success: function (response) {
                 getUser(email);
 
+                displayMessage('success', response.data);
             },
-            error: function(xhr, status, error) {
-                console.error('AJAX request failed:', error);
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                displayMessage(status, errorMessage);
             }
         });
     });

@@ -24,6 +24,7 @@ class AdminAccountManagement
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
         $this->account = new Account;
 
+        add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
         add_action('wp_ajax_getAccountStatus', [$this, 'getAccountStatus']);
         add_action('wp_ajax_getUserRoles', [$this, 'getUserRoles']);
@@ -49,6 +50,35 @@ class AdminAccountManagement
         echo 'Manage User Accounts';
     }
 
+    public function createAccount()
+    {
+        try {
+            if (!isset($_POST['email'])) {
+                throw new Exception("Email is required.", 400);
+            }
+
+            $email = $_POST['email'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $nicename = $_POST['nicename'];
+            $nickname = $_POST['nickname'];
+            $firstname = $_POST['firstname'];
+            $lastname = $_POST['lastname'];
+            $phone = $_POST['phone'];
+            $roles = $_POST['roles'];
+
+            $account = (new Account)->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
+
+            if ($account == '') {
+                throw new Exception("Account could not be found.", 404);
+            }
+
+            wp_send_json_success($account);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
     public function findAccount()
     {
         try {
@@ -61,12 +91,12 @@ class AdminAccountManagement
             $account = $this->account->findAccount($email);
 
             if ($account == '') {
-                throw new Exception("User could not be found.");
+                throw new Exception("Account could not be found.", 404);
             }
 
             wp_send_json_success($account);
         } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
@@ -82,12 +112,12 @@ class AdminAccountManagement
             $accountStatus = $this->account->getAccountStatus($id);
 
             if ($accountStatus == '') {
-                throw new Exception("Account status could not be found for this user.");
+                throw new Exception("Account status could not be found for this user.", 404);
             }
 
             wp_send_json_success($accountStatus);
         } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
@@ -100,8 +130,7 @@ class AdminAccountManagement
             $user = $this->account->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("Account could not be found.", 404);
             }
 
             $user_id = $user->id;
@@ -121,17 +150,18 @@ class AdminAccountManagement
             );
 
             if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
-                throw new Exception('Account could not be locked at this time.');
+                throw new Exception('Account could not be locked at this time.', 500);
             }
 
-            return 'Account has been locked successfully.';
+            $message = 'Account has been locked successfully.';
+
+            wp_send_json_success($message);
         } catch (Exception $e) {
-            error_log($e->getMessage());
-            return 'Error: ' . $e->getMessage();
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
@@ -143,8 +173,7 @@ class AdminAccountManagement
             $user = $this->account->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("Account could not be found.", 404);
             }
 
             global $wpdb;
@@ -157,17 +186,18 @@ class AdminAccountManagement
             );
 
             if ($wpdb->last_error) {
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
-                throw new Exception('Account could not be removed at this time.');
+                throw new Exception('Account could not be removed at this time.', 500);
             }
 
-            return 'Account has been unlocked succesfully.';
+            $message = 'Account has been unlocked succesfully.';
+
+            wp_send_json_success($message);
         } catch (Exception $e) {
-            throw new Exception($e);
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
@@ -180,16 +210,15 @@ class AdminAccountManagement
             $user = $this->account->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("Account could not be found.", 404);
             }
 
             $user_id = $user->id;
 
             $accountDisabled = add_user_meta($user_id, 'is_enabled', 0, true);
 
-            if (is_int($accountDisabled)) {
-                return 'Account removed succesfully.';
+            if (!is_int($accountDisabled)) {
+                throw new Exception('Account removed succesfully.');
             }
 
             $password = $user->password;
@@ -203,17 +232,18 @@ class AdminAccountManagement
             $accountDisabled = $results[0]->resultSet;
 
             if ($wpdb->last_error) {
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (!$accountDisabled) {
-                throw new Exception('Account could not be removed at this time.');
+                throw new Exception('Account could not be removed at this time.', 500);
             }
 
-            return 'Account removed succesfully.';
+            $message = 'Account removed succesfully.';
+
+            wp_send_json_success($message);
         } catch (Exception $e) {
-            throw new Exception($e);
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
@@ -226,15 +256,13 @@ class AdminAccountManagement
             $user = $this->account->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("Account could not be found.", 404);
             }
 
             $is_enabled = $user->is_enabled;
 
             if (!is_numeric($is_enabled) || $is_enabled == 1) {
-                error_log('User must first be removed.');
-                return 'User must first be removed.';
+                throw new Exception('Account must first be removed.', 400);
             }
 
             global $wpdb;
@@ -244,17 +272,18 @@ class AdminAccountManagement
             );
 
             if ($wpdb->last_error) {
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (empty($results[0]->result) || !$results[0]->result) {
-                throw new Exception('Account could not be deleted at this time.');
+                throw new Exception('Account could not be deleted at this time.', 500);
             }
 
-            return 'Account deleted succesfully.';
+            $message = 'Account deleted succesfully.';
+
+            wp_send_json_success($message);
         } catch (Exception $e) {
-            throw new Exception($e);
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 }

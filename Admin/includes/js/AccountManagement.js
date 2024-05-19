@@ -140,7 +140,9 @@ jQuery(document).ready(function ($) {
 
                         })
                         .fail(function (xhr, status, error) {
-                            console.error('Failed to fetch user data:', error);
+                            const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                            displayMessage(status, errorMessage);
                         });
                 }
 
@@ -167,7 +169,9 @@ jQuery(document).ready(function ($) {
                 }
             })
             .fail(function (xhr, status, error) {
-                console.error('Failed to fetch user data:', error);
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                displayMessage(status, errorMessage);
             });
     }
 

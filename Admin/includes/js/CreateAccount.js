@@ -17,36 +17,17 @@ jQuery(document).ready(function ($) {
             }
         })
             .done(function (response) {
-                const fullname = `${response.data['firstname']} ${response.data['lastname']}`;
-                console.log(response);
-                $('#user #user_id').text(response.data['id']);
-                $('#user #full_name').text(fullname);
-                $('#user #username').text(response.data['username']);
-                $('#user #nicename').text(response.data['nicename']);
+                const id = response.data.id;
+                const email = response.data.email;
+                const joined = response.data.joined;
 
-                $('#user #roles_row').empty();
-                $.each(response.data['roles'], function (index, role) {
-                    var roleTag = $('<h3>', {
-                        text: role.display_name
-                    });
-                    $('#user #roles_row').append(roleTag);
-                });
+                const message = `Account has been created with the email ${email} successfully. At this time ${joined} the account was given the ID#${id}.`;
 
-                $('#user #email').text(response.data['email']);
-
-                $('#role_select_remove').empty();
-
-                $.each(response.data['roles'], function (index, role) {
-                    var option = $('<option>', {
-                        value: role.name,
-                        'data-display-name': role.display_name,
-                        text: role.display_name + ' (' + role.name + ')'
-                    });
-                    $('#role_select_remove').append(option);
-                });
+                displayMessage('success', message);
             })
             .fail(function (xhr, status, error) {
                 console.error('Failed to fetch user data:', error);
+                displayMessage('error', response);
             });
     }
 

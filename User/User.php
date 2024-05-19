@@ -43,7 +43,7 @@ class User
         try {
             $user_data = new WP_User($query_param);
 
-            if(empty($user_data->ID)){
+            if (empty($user_data->ID)) {
                 return '';
             }
 
@@ -73,16 +73,27 @@ class User
 
     public function addUserRole($id, $roleName, $roleDisplayName)
     {
+        if (empty($id)) {
+            throw new Exception('ID is required.');
+        }
+
         $roleExists = $this->roles->roleExists($roleName, $roleDisplayName);
 
-        if (!$roleExists) {
+        if ($roleExists == false) {
             return "Role {$roleDisplayName} does not exits.";
         }
 
         $user = new WP_User($id);
         $user->add_role($roleName);
 
-        return $user;
+        $email = $user->user_email;
+        $updated = wp_update_user($user);
+
+        if (!is_int($updated)) {
+            return "There has been an error adding user role.";
+        }
+
+        return "A Role of {$roleDisplayName} has been added to the user with the email {$email}.";
     }
 
     public function getUserRoles($id, $roles = '')
@@ -127,20 +138,26 @@ class User
             $user->remove_role($role);
         }
 
-        return $user;
+        $updated = wp_update_user($user);
+
+        if (!is_int($updated)) {
+            return "There has been an error removing user role.";
+        }
+
+        return "User role {$role} has been removed successfully";
     }
 
     public function changeUserNicename($id, $nicename)
     {
-        $user_data = get_userdata($id);
-        $user_data->user_nicename = $nicename;
+        $user = new WP_User($id);
+        $user->user_nicename = $nicename;
 
-        $updated = wp_update_user($user_data);
+        $updated = wp_update_user($user);
 
         if (!is_int($updated)) {
             return "There has been an error updating User nice name.";
         }
 
-        return "User nice name has been updated successfully";
+        return "User nicename has been changed to {$nicename} successfully";
     }
 }

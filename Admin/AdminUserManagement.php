@@ -34,7 +34,7 @@ class AdminUserManagement
     function register_custom_submenu_page()
     {
         add_submenu_page($this->parent_slug, $this->page_title, $this->menu_title, 'manage_options', $this->menu_slug, [$this, 'create_section'], 4);
-        add_settings_section('seven-tech-admin-user-management',  $this->page_title, [$this, 'section_description'], $this->menu_slug);
+        add_settings_section('seven_tech_gateway_admin_user_management',  $this->page_title, [$this, 'section_description'], $this->menu_slug);
     }
 
     function create_section()
@@ -50,7 +50,6 @@ class AdminUserManagement
     public function getUser()
     {
         try {
-
             if (!isset($_POST['email'])) {
                 throw new Exception("Email is required.", 400);
             }
@@ -65,7 +64,7 @@ class AdminUserManagement
 
             wp_send_json_success($user);
         } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
@@ -74,21 +73,26 @@ class AdminUserManagement
     {
         try {
             if (!isset($_POST['email'])) {
-                throw new Exception("Email is required.", 400);
+                throw new Exception('Email is required.', 400);
             }
 
             $email = $_POST['email'];
-            // $this->validator->validEmail($email);
 
-            return "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
+            $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
+
+            wp_send_json_success($message);
         } catch (Exception $e) {
-            throw new Exception($e);
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
     function changeUserNicename()
     {
         try {
+            if (!isset($_POST['id'])) {
+                throw new Exception('ID is required.', 400);
+            }
+
             $id = $_POST['id'];
             $nicename = $_POST['nicename'];
 
@@ -96,13 +100,17 @@ class AdminUserManagement
 
             wp_send_json_success($change_nicename);
         } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
     public function addUserRole()
     {
         try {
+            if (!isset($_POST['id'])) {
+                throw new Exception('ID is required.', 400);
+            }
+            
             $id = $_POST['id'];
             $roleName = $_POST['added_role'];
             $roleDisplayName = $_POST['display_name_added'];
@@ -111,13 +119,17 @@ class AdminUserManagement
 
             wp_send_json_success($add_role);
         } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 
     public function removeUserRole()
     {
         try {
+            if (!isset($_POST['id'])) {
+                throw new Exception('ID is required.', 400);
+            }
+            
             $id = $_POST['id'];
             $roleName = $_POST['remove_role'];
             $roleDisplayName = $_POST['display_name_remove'];
@@ -126,7 +138,7 @@ class AdminUserManagement
 
             wp_send_json_success($remove_role);
         } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 }

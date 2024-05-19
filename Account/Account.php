@@ -10,7 +10,7 @@ use SEVEN_TECH\Gateway\Roles\Roles;
 class Account
 {
     private $validator;
-private $roles;
+    private $roles;
 
     public function __construct()
     {
@@ -20,107 +20,129 @@ private $roles;
 
     function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
     {
-        global $wpdb;
+        try {
+            global $wpdb;
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        $user_roles = [];
+            $user_roles = [];
 
-        foreach ($roles as $role) {
-            $user_roles[$role] = 1;
+            foreach ($roles as $role) {
+                $user_roles[$role] = 1;
+            }
+
+            $added_roles = serialize($user_roles);
+            $user_activation_key = wp_generate_password(20, false);
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $added_roles, $user_activation_key)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            $account = $results[0];
+
+            if (empty($account)) {
+                throw new Exception("User could not be added.", 404);
+            }
+
+            $account->roles = $this->roles->unserializeRoles($account->roles);
+
+            return $account;
+        } catch (Exception $e) {
+            throw new Exception($e);
         }
-
-        $added_roles = serialize($user_roles);
-        $user_activation_key = wp_generate_password(20, false);
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $added_roles, $user_activation_key)
-        );
-
-        if ($wpdb->last_error) {
-            error_log("Error executing stored procedure: " . $wpdb->last_error);
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
-        }
-
-        $account = $results[0];
-
-        if (empty($account)) {
-            error_log("User could not be added.");
-            return '';
-        }
-
-        $account->roles = $this->roles->unserializeRoles($account->roles);
-
-        return $account;
     }
 
     function findAccount($email)
     {
-        global $wpdb;
+        try {
+            if (empty($email)) {
+                throw new Exception('Email is required.', 400);
+            }
 
-        $results = $wpdb->get_results(
-            $wpdb->prepare("CALL findUserByEmail('%s')", $email)
-        );
+            global $wpdb;
 
-        if ($wpdb->last_error) {
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL findUserByEmail('%s')", $email)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            $account = $results[0];
+
+            if (empty($account)) {
+                throw new Exception('Account could not be found.', 404);
+            }
+
+            $account->roles = $this->roles->unserializeRoles($account->roles);
+
+            return $account;
+        } catch (Exception $e) {
+            throw new Exception($e);
         }
-
-        $account = $results[0];
-
-        if (empty($account)) {
-            return '';
-        }
-
-        $account->roles = $this->roles->unserializeRoles($account->roles);
-
-        return $account;
     }
 
     function getAccountStatus($id)
     {
-        $account_status = get_user_meta($id, 'session_tokens');
+        try {
+            if (empty($id)) {
+                throw new Exception('ID is required.', 400);
+            }
 
-        if ($account_status == false) {
-            throw new Exception('User ID is not valid.', 400);
+            $account_status = get_user_meta($id, 'session_tokens');
+
+            if ($account_status == false) {
+                throw new Exception('User ID is not valid.', 400);
+            }
+
+            return $account_status;
+        } catch (Exception $e) {
+            throw new Exception($e);
         }
-
-        return $account_status;
     }
 
     function verifyAccount($email, $password, $confirmationCode)
     {
-        $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
+        try {
+            $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
 
-        if (!$validConfirmationCode) {
-            return false;
+            if (!$validConfirmationCode) {
+                return false;
+            }
+
+            $password = $this->validator->validPassword($password);
+
+            if (!$password) {
+                return false;
+            }
+
+            $validEmail = $this->validator->validEmail($email);
+
+            if (!$validEmail) {
+                throw new Exception('Email is not valid', 400);
+            }
+
+            $account = $this->findAccount($email);
+
+            $password_check = wp_check_password($password, $account->password, $account->id);
+
+            if (!$password_check) {
+                return false;
+            }
+
+            if ($confirmationCode != $account->confirmationCode) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e);
         }
-
-        $password = $this->validator->validPassword($password);
-
-        if (!$password) {
-            return false;
-        }
-
-        $validEmail = $this->validator->validEmail($email);
-
-        if (!$validEmail) {
-            throw new Exception('Email is not valid', 400);
-        }
-
-        $account = $this->findAccount($email);
-
-        $password_check = wp_check_password($password, $account->password, $account->id);
-
-        if (!$password_check) {
-            return false;
-        }
-
-        if ($confirmationCode != $account->confirmationCode) {
-            return false;
-        }
-
-        return true;
     }
 
     // Send account locked email
@@ -130,8 +152,7 @@ private $roles;
             $user = $this->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("User could not be found.", 404);
             }
 
             $user_id = $user->id;
@@ -151,17 +172,16 @@ private $roles;
             );
 
             if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
-                throw new Exception('Account could not be locked at this time.');
+                throw new Exception('Account could not be locked at this time.', 500);
             }
 
             return 'Account has been locked successfully.';
         } catch (Exception $e) {
-            error_log($e->getMessage());
-            return 'Error: ' . $e->getMessage();
+            throw new Exception($e);
         }
     }
 
@@ -171,8 +191,7 @@ private $roles;
             $user = $this->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("Account could not be found.", 404);
             }
 
             global $wpdb;
@@ -185,12 +204,11 @@ private $roles;
             );
 
             if ($wpdb->last_error) {
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
-                throw new Exception('Account could not be removed at this time.');
+                throw new Exception('Account could not be removed at this time.', 500);
             }
 
             return 'Account has been unlocked succesfully.';
@@ -206,8 +224,7 @@ private $roles;
             $user = $this->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("Account could not be found.", 404);
             }
 
             $user_id = $user->id;
@@ -229,12 +246,11 @@ private $roles;
             $accountDisabled = $results[0]->resultSet;
 
             if ($wpdb->last_error) {
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (!$accountDisabled) {
-                throw new Exception('Account could not be removed at this time.');
+                throw new Exception('Account could not be removed at this time.', 500);
             }
 
             return 'Account removed succesfully.';
@@ -250,15 +266,13 @@ private $roles;
             $user = $this->findAccount($email);
 
             if ($user == '') {
-                error_log("User could not be found.");
-                return "User could not be found.";
+                throw new Exception("Account could not be found.", 404);
             }
 
             $is_enabled = $user->is_enabled;
 
             if (!is_numeric($is_enabled) || $is_enabled == 1) {
-                error_log('User must first be removed.');
-                return 'User must first be removed.';
+                throw new Exception('Account must first be removed.', 400);
             }
 
             global $wpdb;
@@ -268,12 +282,11 @@ private $roles;
             );
 
             if ($wpdb->last_error) {
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             if (empty($results[0]->result) || !$results[0]->result) {
-                throw new Exception('Account could not be deleted at this time.');
+                throw new Exception('Account could not be deleted at this time.', 500);
             }
 
             return 'Account deleted succesfully.';
