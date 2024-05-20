@@ -29,6 +29,22 @@ class Account
     function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
     {
         try {
+            $newUser = [
+                'email' => $email,
+                'emailVerified' => false,
+                'phoneNumber' => '+' . $phone,
+                'password' => $password,
+                'displayName' => $username,
+                'disabled' => false,
+            ];
+
+            $newFirebaseUser = $this->auth->createUser($newUser);
+            $providergivenID = $newFirebaseUser->uid;
+
+            if (empty($providergivenID)) {
+                error_log("Unable to add user with email {$email} to firebase.");
+            }
+
             global $wpdb;
 
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -57,7 +73,8 @@ class Account
             }
 
             $account->roles = $this->roles->unserializeRoles($account->roles);
-
+            
+// send signup email with activation code
             return $account;
         } catch (Exception $e) {
             throw new Exception($e);

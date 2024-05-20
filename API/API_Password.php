@@ -11,15 +11,18 @@ use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use SEVEN_TECH\Gateway\Authorization\Authorization;
 
 class API_Password
 {
+    private $authorization;
     private $adminusermngmnt;
     private $token;
     private $user;
 
-    public function __construct(Auth $auth)
+    public function __construct(Authorization $authorization)
     {
+        $this->authorization = $authorization;
         $this->adminusermngmnt = new AdminUserManagement;
         $this->token = new Token($auth);
         $this->user = new User;
@@ -56,6 +59,8 @@ class API_Password
     function changePassword(WP_REST_Request $request)
     {
         try {
+            $authorized = $this->authorization->verifyCredentials($request);
+            
             $accessToken = $this->token->getToken($request);
             $userData = $this->token->findUserWithToken($accessToken);
             $email = $userData->email;

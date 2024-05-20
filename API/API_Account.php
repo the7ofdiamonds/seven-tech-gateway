@@ -2,63 +2,52 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Authorization\Authorization;
+use SEVEN_TECH\Gateway\Token\Token;
+
 use Exception;
 
 use WP_REST_Request;
 
-use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
-use SEVEN_TECH\Gateway\Token\Token;
-use SEVEN_TECH\Gateway\Validator\Validator;
-
 use Kreait\Firebase\Auth;
-use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
 class API_Account
 {
-    private $adminaccountmngmnt;
-    private $validator;
-    private $token;
+    private $account;
+    private $authentication;
+    private $authorization;
 
-    public function __construct(Token $token)
+    public function __construct(Auth $auth, Token $token)
     {
-        $this->token = $token;
-        $this->adminaccountmngmnt = new AdminAccountManagement;
-        $this->validator = new Validator;
+        $this->account = new Account;
+        $this->authentication = new Authentication($auth);
+        $this->authorization = new Authorization($token);
     }
 
-    function createAccount(){}
-
-    // lock account
-
-    function unlockAccount(WP_REST_Request $request)
+    function createAccount(WP_REST_Request $request)
     {
         try {
             $email = $request['email'];
+            $username = $request['username'];
             $password = $request['password'];
-            $confirmationCode = $request['confirmationCode'];
-// Verify Credentials
-            $validEmail = $this->validator->validEmail($email);
+            $nicename = $request['nicename'];
+            $nickname = $request['nickname'];
+            $firstname = $request['firstname'];
+            $lastname = $request['lastname'];
+            $phone = $request['phone'];
+$roles = '';
 
-            if (!$validEmail) {
-                $statusCode = 400;
-                throw new Exception('Email is not valid.', $statusCode);
-            }
+            $createdAccount = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
-            $validPassword = $this->validator->validPassword($password);
+            
+            $signupResponse = [
+                'successMessage' => $this->authentication->login($request),
+                'statusCode' => 200
+            ];
 
-            if (!$validPassword) {
-                $statusCode = 400;
-                throw new Exception('Password is not valid.', $statusCode);
-            }
-
-            $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
-
-            if (!$validConfirmationCode) {
-                $statusCode = 400;
-                throw new Exception('Confirmation code is not valid.', $statusCode);
-            }
-
-            return $this->adminaccountmngmnt->unlockAccount($email);
+            return rest_ensure_response($signupResponse);
         } catch (Exception $e) {
             $statusCode = $e->getCode();
             $response_data = [
@@ -72,52 +61,69 @@ class API_Account
         }
     }
 
-    // Enable account
-    
-    function removeAccount(WP_REST_Request $request)
+    function lockAccount(WP_REST_Request $request)
     {
         try {
-            $email = $request['email'];
-            $password = $request['password'];
-            $confirmationCode = $request['confirmationCode'];
+            $verifiedCredentials = $this->authorization->verifyCredentials($request);
 
-// Verify Credentials
-            $validEmail = $this->validator->validEmail($email);
-
-            if (!$validEmail) {
-                $statusCode = 400;
-                throw new Exception('Email is not valid.', $statusCode);
+            if (!$verifiedCredentials) {
+                throw new Exception('Unauthorized credentials could not be verified.', 403);
             }
 
-            $validPassword = $this->validator->validPassword($password);
+            $lockedAccount = $this->account->lockAccount($request['email']);
 
-            if (!$validPassword) {
-                $statusCode = 400;
-                throw new Exception('Password is not valid.', $statusCode);
-            }
-
-            $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
-
-            if (!$validConfirmationCode) {
-                $statusCode = 400;
-                throw new Exception('Confirmation code is not valid.', $statusCode);
-            }
-
-            return $this->adminaccountmngmnt->disableAccount($email);
-        } catch (FailedToVerifyToken $e) {
-            $statusCode = 403;
-            $tokenResponse = [
-                'message' => $e->getMessage(),
-                'errorMessage' => "Please login to gain access and permission.",
+            return rest_ensure_response($lockedAccount);
+        } catch (Exception $e) {
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
                 'statusCode' => $statusCode
             ];
-
-            $response = rest_ensure_response($tokenResponse);
+            $response = rest_ensure_response($response_data);
             $response->set_status($statusCode);
 
             return $response;
+        }
+    }
+
+    function unlockAccount(WP_REST_Request $request)
+    {
+        try {
+            $verifiedCredentials = $this->authorization->verifyCredentials($request);
+
+            if (!$verifiedCredentials) {
+                throw new Exception('Unauthorized credentials could not be verified.', 403);
+            }
+
+            $unlockedAccount = $this->account->unlockAccount($request['email']);
+
+            return rest_ensure_response($unlockedAccount);
         } catch (Exception $e) {
-            error_log('There has been an error at remove account');
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
+            ];
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
+            return $response;
+        }
+    }
+// disable account happens after a certain time 
+    function enableAccount(WP_REST_Request $request)
+    {
+        try {
+            $verifiedCredentials = $this->authorization->verifyCredentials($request);
+
+            if (!$verifiedCredentials) {
+                throw new Exception('Unauthorized credentials could not be verified.', 403);
+            }
+
+            $enabledAccount = $this->account->enableAccount($request['email']);
+
+            return rest_ensure_response($enabledAccount);
+        } catch (Exception $e) {
             $statusCode = $e->getCode();
             $response_data = [
                 'errorMessage' => $e->getMessage(),

@@ -11,17 +11,120 @@ use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Authorization\Authorization;
 
 class API_User
 {
+    private $authorization;
     private $token;
     private $user;
+    private $authentication;
 
-    public function __construct(Token $token, User $user)
+    public function __construct(Auth $auth)
     {
-        $this->token = $token;
-        $this->user = $user;
+        $token = new Token($auth);
+        $this->authorization = new Authorization($token);
+        $this->user = new User;
+        $this->authentication = new Authentication($auth);
     }
+
+    function addUser(WP_REST_Request $request)
+    {
+        try {
+            $username = $request['username'];
+            $email = $request['email'];
+            $password = $request['password'];
+            // $nicename = $request['nicename'];
+            $firstname = $request['firstname'];
+            $lastname = $request['lastname'];
+            $nickname = $request['nickname'];
+            $phone = $request['phone'];
+
+            $signupResponse = [
+                'successMessage' => $this->authentication->login($request),
+                'statusCode' => 200
+            ];
+
+            return rest_ensure_response($signupResponse);
+        } catch (Exception $e) {
+            $statusCode = $e->getCode();
+            $response_data = [
+                'errorMessage' => $e->getMessage(),
+                'statusCode' => $statusCode
+            ];
+            $response = rest_ensure_response($response_data);
+            $response->set_status($statusCode);
+
+            return $response;
+        }
+    }
+
+        // Send username changed email
+        function changeUsername(WP_REST_Request $request)
+        {
+            try {
+                $username = $request['username'];
+                $accessToken = $this->token->getToken($request);
+                $userData = $this->token->findUserWithToken($accessToken);
+                $email = $userData->email;
+                $password = $userData->password;
+    
+                global $wpdb;
+    
+                $results = $wpdb->get_results(
+                    "CALL changeUsername('$email', '$password', '$username')"
+                );
+    
+                if ($wpdb->last_error) {
+                    $statusCode = 500;
+                    error_log("Error executing stored procedure: " . $wpdb->last_error);
+                    throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
+                }
+    
+                $results = $results[0]->resultSet;
+    
+                if (!$results) {
+                    $statusCode = 500;
+                    throw new Exception('Username could not be updated at this time.', $statusCode);
+                }
+    
+                $statusCode = 200;
+                $updateUsernameResponse = [
+                    'successMessage' => "Username has been changed to {$username} succesfully.",
+                    'statusCode' => $statusCode
+                ];
+    
+                $response = rest_ensure_response($updateUsernameResponse);
+                $response->set_status($statusCode);
+    
+                return $response;
+            } catch (FailedToVerifyToken $e) {
+                $statusCode = 403;
+                $tokenResponse = [
+                    'message' => $e->getMessage(),
+                    'errorMessage' => "Please login to gain access and permission.",
+                    'statusCode' => $statusCode
+                ];
+    
+                $response = rest_ensure_response($tokenResponse);
+                $response->set_status($statusCode);
+    
+                return $response;
+            } catch (Exception $e) {
+                error_log('There has been an error at change username');
+                $statusCode = $e->getCode();
+                $response_data = [
+                    'errorMessage' => $e->getMessage(),
+                    'statusCode' => $statusCode
+                ];
+                $response = rest_ensure_response($response_data);
+                $response->set_status($statusCode);
+    
+                return $response;
+            }
+        }
+    
 
     // Send name changed email
     function changeName(WP_REST_Request $request)
@@ -121,6 +224,8 @@ class API_User
         }
     }
 
+    // Change nickname
+    
     // Send phone number changed email
     function changePhone(WP_REST_Request $request)
     {
@@ -186,114 +291,6 @@ class API_User
         }
     }
 
-    // Send username changed email
-    function changeUsername(WP_REST_Request $request)
-    {
-        try {
-            $username = $request['username'];
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $email = $userData->email;
-            $password = $userData->password;
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                "CALL changeUsername('$email', '$password', '$username')"
-            );
-
-            if ($wpdb->last_error) {
-                $statusCode = 500;
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
-            }
-
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
-                $statusCode = 500;
-                throw new Exception('Username could not be updated at this time.', $statusCode);
-            }
-
-            $statusCode = 200;
-            $updateUsernameResponse = [
-                'successMessage' => "Username has been changed to {$username} succesfully.",
-                'statusCode' => $statusCode
-            ];
-
-            $response = rest_ensure_response($updateUsernameResponse);
-            $response->set_status($statusCode);
-
-            return $response;
-        } catch (FailedToVerifyToken $e) {
-            $statusCode = 403;
-            $tokenResponse = [
-                'message' => $e->getMessage(),
-                'errorMessage' => "Please login to gain access and permission.",
-                'statusCode' => $statusCode
-            ];
-
-            $response = rest_ensure_response($tokenResponse);
-            $response->set_status($statusCode);
-
-            return $response;
-        } catch (Exception $e) {
-            error_log('There has been an error at change username');
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
-        }
-    }
-
-    public function changeUserNicename(WP_REST_Request $request)
-    {
-        try {
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $id = $userData->id;
-            $nicename = $request['nicename'];
-
-            $statusCode = 200;
-            $changeUserNicenameResponse = [
-                'successMessage' => $this->user->changeUserNicename($id, $nicename),
-                'statusCode' => $statusCode
-            ];
-
-            $response = rest_ensure_response($changeUserNicenameResponse);
-            $response->set_status($statusCode);
-
-            return $response;
-        } catch (FailedToVerifyToken $e) {
-            $statusCode = 403;
-            $tokenResponse = [
-                'message' => $e->getMessage(),
-                'errorMessage' => "Please login to gain access and permission.",
-                'statusCode' => $statusCode
-            ];
-
-            $response = rest_ensure_response($tokenResponse);
-            $response->set_status($statusCode);
-
-            return $response;
-        } catch (Exception $e) {
-            error_log('There has been an error at change username');
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
-        }
-    }
 
     public function addUserRole(WP_REST_Request $request)
     {

@@ -9,7 +9,7 @@ use SEVEN_TECH\Gateway\Account\Account;
 class Admin
 {
     public $admin_url;
-
+// Add google credentials and display success or error messages
     public function __construct()
     {
         $this->admin_url = $this->get_plugin_page_url('admin.php', $this->get_parent_slug());

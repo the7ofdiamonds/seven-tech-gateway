@@ -2,147 +2,178 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Token\Token;
-use SEVEN_TECH\Gateway\User\User;
 
 use Kreait\Firebase\Factory;
-use SEVEN_TECH\Gateway\Authentication\Authentication;
 
 class API
 {
 
   public function __construct()
   {
-    $credentialsPath = SEVEN_TECH . 'serviceAccount.json';
+    $googleServiceAccountPath = SEVEN_TECH . 'serviceAccount.json';
 
-    $user = new User;
+    $serviceAccountValid = $this->areGoogleCredentialsPresent($googleServiceAccountPath);
 
-    if (file_exists($credentialsPath)) {
-      $jsonFileContents = file_get_contents($credentialsPath);
-
-      if ($jsonFileContents !== false) {
-        $decodedData = json_decode($jsonFileContents, true);
-
-        if (json_last_error() === JSON_ERROR_NONE && is_array($decodedData)) {
-          if (
-            isset($decodedData['type']) && $decodedData['type'] === 'service_account' &&
-            isset($decodedData['project_id']) &&
-            isset($decodedData['private_key_id']) &&
-            isset($decodedData['private_key']) &&
-            isset($decodedData['client_email'])
-          ) {
-            $credentialsPath = SEVEN_TECH . 'serviceAccount.json';
-          } else {
-            error_log('This is not a valid service account JSON');
-            $credentialsPath = null;
-          }
-        } else {
-          error_log('Failed to decode JSON');
-          $credentialsPath = null;
-        }
-      } else {
-        error_log('Failed to read file contents');
-        $credentialsPath = null;
-      }
-    } else {
-      error_log('File does not exist');
-      $credentialsPath = null;
-    }
-
-    if ($credentialsPath !== null) {
-      $factory = (new Factory)->withServiceAccount($credentialsPath);
+    if ($serviceAccountValid) {
+      $factory = (new Factory)->withServiceAccount($googleServiceAccountPath);
       $auth = $factory->createAuth();
 
       $token = new Token($auth);
       $authentication = new Authentication($auth);
-      $authorization = new Authorization();
+      $authorization = new Authorization($token);
 
-      $account = new API_Account($token);
+      $account = new API_Account($auth, $token);
       $authAPI = new API_Authentication($authentication);
-      $password = new API_Password($auth);
-      $signup = new API_Signup($auth, $user);
-      $tokenAPI = new API_Token($token);
-      $userAPI = new API_User($token, $user);
+      $password = new API_Password($authorization, $authentication);
+      $user = new API_User($auth, $token);
     } else {
       error_log('A path to the Google Service Account file is required.');
     }
 
-    register_rest_route('seven-tech/v1', '/users/verify-email', array(
+    register_rest_route('seven-tech/v1', '/account/create', array(
       'methods' => 'POST',
-      'callback' => array($account, 'verifyAccount'),
+      'callback' => array($account, 'createAccount'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/unlock-account', array(
+    register_rest_route('seven-tech/v1', '/account/lock', array(
+      'methods' => 'POST',
+      'callback' => array($account, 'lockAccount'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/account/unlock', array(
       'methods' => 'POST',
       'callback' => array($account, 'unlockAccount'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/remove-account', array(
+    register_rest_route('seven-tech/v1', '/account/enable', array(
       'methods' => 'POST',
-      'callback' => array($account, 'removeAccount'),
+      'callback' => array($account, 'enableAccount'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/change-username', array(
+    register_rest_route('seven-tech/v1', '/authentication/login', array(
       'methods' => 'POST',
-      'callback' => array($change, 'changeUsername'),
+      'callback' => array($authAPI, 'login'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/change-name', array(
+    register_rest_route('seven-tech/v1', '/authentication/logout', array(
       'methods' => 'POST',
-      'callback' => array($change, 'changeName'),
+      'callback' => array($authAPI, 'logout'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/change-phone', array(
+    register_rest_route('seven-tech/v1', '/authentication/logoutAll', array(
       'methods' => 'POST',
-      'callback' => array($change, 'changePhone'),
+      'callback' => array($authAPI, 'logoutAll'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/login', array(
-      'methods' => 'POST',
-      'callback' => [$login, 'login'],
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/logout', array(
-      'methods' => 'POST',
-      'callback' => [$logout, 'logout'],
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/change-password', array(
-      'methods' => 'POST',
-      'callback' => array($password, 'changePassword'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/update-password', array(
-      'methods' => 'POST',
-      'callback' => array($password, 'updatePassword'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/users/forgot-password', array(
+    register_rest_route('seven-tech/v1', '/password/forgot', array(
       'methods' => 'POST',
       'callback' => array($password, 'forgotPassword'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/signup', array(
+    register_rest_route('seven-tech/v1', '/password/change', array(
       'methods' => 'POST',
-      'callback' => array($signup, 'signup'),
+      'callback' => array($password, 'changePassword'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/users/token', array(
+    register_rest_route('seven-tech/v1', '/password/update', array(
       'methods' => 'POST',
-      'callback' => [$token, 'token'],
+      'callback' => array($password, 'updatePassword'),
       'permission_callback' => '__return_true',
     ));
+
+    register_rest_route('seven-tech/v1', '/user/add', array(
+      'methods' => 'POST',
+      'callback' => array($user, 'addUser'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/change-username', array(
+      'methods' => 'POST',
+      'callback' => array($user, 'changeUsername'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/change-name', array(
+      'methods' => 'POST',
+      'callback' => array($user, 'changeName'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/change-nickname', array(
+      'methods' => 'POST',
+      'callback' => array($user, 'changeNickname'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/change-phone', array(
+      'methods' => 'POST',
+      'callback' => array($user, 'changePhone'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/add-role', array(
+      'methods' => 'POST',
+      'callback' => array($user, 'addUserRole'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/remove-role', array(
+      'methods' => 'POST',
+      'callback' => array($user, 'removeUserRole'),
+      'permission_callback' => '__return_true',
+    ));
+  }
+// Show result in the admin area
+  private function areGoogleCredentialsPresent($credentialsPath)
+  {
+    if (!file_exists($credentialsPath)) {
+      return false;
+    }
+
+    $jsonFileContents = file_get_contents($credentialsPath);
+
+    if ($jsonFileContents === false) {
+      return false;
+    }
+
+    $decodedData = json_decode($jsonFileContents, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE && !is_array($decodedData)) {
+      return false;
+    }
+
+    if (!isset($decodedData['type']) && $decodedData['type'] !== 'service_account') {
+      return false;
+    }
+
+    if (!isset($decodedData['project_id'])) {
+      return false;
+    }
+
+    if (!isset($decodedData['private_key_id'])) {
+      return false;
+    }
+
+    if (!isset($decodedData['private_key'])) {
+      return false;
+    }
+
+    if (!isset($decodedData['client_email'])) {
+      return false;
+    }
+
+    return true;
   }
 }

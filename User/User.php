@@ -19,6 +19,22 @@ class User
 
     public function addNewUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
     {
+        $newUser = [
+            'email' => $user_email,
+            'emailVerified' => false,
+            'phoneNumber' => '+' . $phone,
+            'password' => $user_password,
+            'displayName' => $displayName,
+            'disabled' => false,
+        ];
+
+        $newFirebaseUser = $this->auth->createUser($newUser);
+        $providergivenID = $newFirebaseUser->uid;
+
+        if (empty($providergivenID)) {
+            error_log("Unable to add user with email {$user_email} to firebase.");
+        }
+
         global $wpdb;
 
         $results = $wpdb->get_results(
