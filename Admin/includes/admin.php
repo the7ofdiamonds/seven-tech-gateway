@@ -17,8 +17,14 @@
         margin: 0;
     }
 
-    .account-management#account_management,
-    .user-management#user_management {
+    .dashboard .google-creds {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .dashboard .google-creds-upload,
+    .dashboard .google-creds .change {
         display: none;
     }
 </style>
@@ -38,19 +44,16 @@
 
     <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
 
-    <form class="google-creds" id="google_creds">
-        <h2>Google Service Account</h2>
+    <h2>Google Service Account</h2>
 
-        <div class="google-creds-upload" id="google_creds_upload">
-            <input type="email" name="email" placeholder="Email" id="email" required>
-            <button type="submit">Find</button>
-        </div>
+    <div class="google-creds" id="google_creds">
+        <h4 id="google_creds_message"></h4>
 
-        <div class="google-creds-uploaded" id="google_creds_uploaded">
-            <h4 id="google_creds_message"></h4>
-            <button>Change</button>
-        </div>
-    </form>
+        <form class="google-creds-upload" id="google_creds_upload">
+            <input type="file" name="file" id="file" required>
+            <button type="submit" id="submit">Upload</button>
+        </form>
+    </div>
 </div>
 
 <?php
@@ -72,45 +75,5 @@ $users_page_url = (new AdminUserManagement)->page_url;
         $("#options button#users").on('click', () => {
             window.location.href = "<?php echo esc_url($users_page_url); ?>";
         });
-
-        function areGoogleCredentialsPresent() {
-            return $.ajax({
-                type: 'POST',
-                url: 'admin-ajax.php',
-                data: {
-                    action: 'areGoogleCredentialsPresentAdmin',
-                },
-                done: function(response) {
-                    var message = '';
-
-                    if (response.data == true) {
-                        var message = 'Google Service Account is valid';
-                    }
-console.log(response);
-                    displayMessage('success', message);
-                },
-                fail: function(xhr, status, error) {
-                    console.log('error');
-                    console.log(xhr.responseJSON);
-                    const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
-                    displayMessage(status, errorMessage);
-                }
-            });
-        }
-
-        areGoogleCredentialsPresent();
-
-        $('form#subscription_email').submit(function(event) {
-            event.preventDefault();
-
-            const email = $('#find_account input[name="email"]#email').val();
-
-            areGoogleCredentialsPresent();
-        });
-
-        $("#google_creds #google_creds_upload").css('display', 'flex');
-
-        $("#google_creds #google_creds_upload").css('display', 'flex');
     });
 </script>

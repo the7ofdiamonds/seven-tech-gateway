@@ -40,7 +40,6 @@ class Media
 
             wp_update_attachment_metadata($attachment_id, $attachment_data);
 
-
             return $file_url;
         }
     }

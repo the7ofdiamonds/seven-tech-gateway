@@ -7,21 +7,21 @@ jQuery(document).ready(function ($) {
                 action: 'areGoogleCredentialsPresentAdmin',
             },
             success: function (response) {
-                console.log(response.data);
-    
                 var message = '';
-    
+
                 if (response.data == true) {
                     message = 'Google Service Account is valid';
-                    $("#google_creds #google_creds_upload").css('display', 'flex');
+
+                    $("#google_creds_message").text(message);
                 }
+
                 displayMessage('success', message);
             },
             error: function (xhr, status, error) {
-                console.log('error');
-                console.log(xhr.responseJSON);
                 const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-    
+
+                $("#google_creds_message").text(errorMessage);
+
                 displayMessage(status, errorMessage);
             }
         });
@@ -29,14 +29,43 @@ jQuery(document).ready(function ($) {
 
     areGoogleCredentialsPresent();
 
-    $('form#subscription_email').submit(function (event) {
+    function uploadFile() {
+        return $.ajax({
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'uploadFile',
+
+            },
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                var message = '';
+
+                if (response.data == true) {
+                    message = 'Google Service Account is valid';
+
+                    $("#google_creds_message").text(message);
+                }
+
+                displayMessage('success', message);
+            },
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                $("#google_creds_message").text(errorMessage);
+
+                displayMessage(status, errorMessage);
+            }
+        });
+    }
+
+    $('form#google_creds_upload').submit(function (event) {
         event.preventDefault();
+        var fileInput = $('#fileInput')[0].files[0];
+        // var formData = new FormData();
+        // formData.append('file', fileInput);
 
-        const email = $('#find_account input[name="email"]#email').val();
-
-        areGoogleCredentialsPresent();
+        uploadFile();
     });
-
-    $("#google_creds #google_creds_upload").css('display', 'flex');
-
 });
