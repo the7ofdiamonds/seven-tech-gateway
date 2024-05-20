@@ -3,15 +3,20 @@
 namespace SEVEN_TECH\Gateway\Authorization;
 
 use SEVEN_TECH\Gateway\Token\Token;
+use SEVEN_TECH\Gateway\Validator\Validator;
+
+use Exception;
 
 use WP_REST_Request;
 
 class Authorization
 {
+    private $validator;
     private $token;
 
     public function __construct(Token $token)
     {
+        $this->validator = new Validator;
         $this->token = $token;
     }
 
@@ -21,7 +26,7 @@ class Authorization
             $email = $request['email'];
             $password = $request['password'];
             $confirmationCode = $request['confirmationCode'];
-            
+
             $validEmail = $this->validator->validEmail($email);
 
             if (!$validEmail) {
@@ -42,18 +47,13 @@ class Authorization
                 $statusCode = 400;
                 throw new Exception('Confirmation code is not valid.', $statusCode);
             }
-        } catch (FailedToVerifyToken $e) {
-            $statusCode = 403;
-            $tokenResponse = [
-                'message' => $e->getMessage(),
-                'errorMessage' => "Please login to gain access and permission.",
-                'statusCode' => $statusCode
-            ];
 
-            $response = rest_ensure_response($tokenResponse);
-            $response->set_status($statusCode);
+            $accessToken = $this->token->getToken($request);
+            $userData = $this->token->findUserWithToken($accessToken);
 
-            return $response;
+            return $userData;
+        } catch (Exception $e) {
+            throw new Exception($e);
         }
     }
 }

@@ -10,28 +10,19 @@ use Kreait\Firebase\Factory;
 
 class API
 {
-
   public function __construct()
   {
-    $googleServiceAccountPath = SEVEN_TECH . 'serviceAccount.json';
+    $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
+    $auth = $factory->createAuth();
 
-    $serviceAccountValid = $this->areGoogleCredentialsPresent($googleServiceAccountPath);
+    $token = new Token($auth);
+    $authentication = new Authentication($auth);
+    $authorization = new Authorization($token);
 
-    if ($serviceAccountValid) {
-      $factory = (new Factory)->withServiceAccount($googleServiceAccountPath);
-      $auth = $factory->createAuth();
-
-      $token = new Token($auth);
-      $authentication = new Authentication($auth);
-      $authorization = new Authorization($token);
-
-      $account = new API_Account($auth, $token);
-      $authAPI = new API_Authentication($authentication);
-      $password = new API_Password($authorization, $authentication);
-      $user = new API_User($auth, $token);
-    } else {
-      error_log('A path to the Google Service Account file is required.');
-    }
+    $account = new API_Account($auth, $token);
+    $authAPI = new API_Authentication($authentication);
+    $password = new API_Password($authorization, $authentication);
+    $user = new API_User($auth, $token);
 
     register_rest_route('seven-tech/v1', '/account/create', array(
       'methods' => 'POST',
@@ -134,46 +125,5 @@ class API
       'callback' => array($user, 'removeUserRole'),
       'permission_callback' => '__return_true',
     ));
-  }
-// Show result in the admin area
-  private function areGoogleCredentialsPresent($credentialsPath)
-  {
-    if (!file_exists($credentialsPath)) {
-      return false;
-    }
-
-    $jsonFileContents = file_get_contents($credentialsPath);
-
-    if ($jsonFileContents === false) {
-      return false;
-    }
-
-    $decodedData = json_decode($jsonFileContents, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE && !is_array($decodedData)) {
-      return false;
-    }
-
-    if (!isset($decodedData['type']) && $decodedData['type'] !== 'service_account') {
-      return false;
-    }
-
-    if (!isset($decodedData['project_id'])) {
-      return false;
-    }
-
-    if (!isset($decodedData['private_key_id'])) {
-      return false;
-    }
-
-    if (!isset($decodedData['private_key'])) {
-      return false;
-    }
-
-    if (!isset($decodedData['client_email'])) {
-      return false;
-    }
-
-    return true;
   }
 }

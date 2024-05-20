@@ -15,7 +15,7 @@ function Dashboard() {
     ? displayName
     : localStorage.getItem('display_name');
 
-  const { changeStatusCode } = useSelector((state) => state.change);
+  const { changeStatusCode } = useSelector((state) => state.user);
   const { emailStatusCode } = useSelector((state) => state.email);
   const { passwordStatusCode } = useSelector((state) => state.password);
   const { loginStatusCode } = useSelector((state) => state.login);

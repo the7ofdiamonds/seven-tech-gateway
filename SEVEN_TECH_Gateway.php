@@ -24,9 +24,11 @@ Licensing Info is needed
 defined('ABSPATH') or die('Hey, what are you doing here? You silly human!');
 define('SEVEN_TECH', plugin_dir_path(__FILE__));
 define('SEVEN_TECH_URL', plugin_dir_url(__FILE__));
+define('GOOGLE_SERVICE_ACCOUNT', plugin_dir_path(__FILE__) . 'Configuration/serviceAccount.json');
 
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
+use Exception;
 use SEVEN_TECH\Gateway\Admin\Admin;
 use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
 use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
@@ -79,9 +81,17 @@ class SEVEN_TECH
         add_action('admin_menu', [(new AdminAccountManagement), 'register_custom_submenu_page']);
         add_action('admin_menu', [(new AdminUserManagement), 'register_custom_submenu_page']);
 
-        add_action('rest_api_init', function () {
-            new API();
-        });
+        try {
+            $serviceAccountValid = $admin->areGoogleCredentialsPresent();
+
+            if ($serviceAccountValid == 1) {
+                add_action('rest_api_init', function () {
+                    new API();
+                });
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
 
         $pages = new Pages;
         $posttypes = new Post_Types;

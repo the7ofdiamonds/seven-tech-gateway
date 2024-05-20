@@ -14,7 +14,7 @@ use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 class Token
 {
     private $auth;
-    
+
     public function __construct(Auth $auth)
     {
         $this->auth = $auth;
@@ -24,6 +24,11 @@ class Token
     {
         try {
             $headers = $request->get_headers();
+
+            if (!isset($headers['authorization'][0])) {
+                throw new Exception('Authorization header could not be found in the headers of this request.', 400);
+            }
+
             $authentication = $headers['authorization'][0];
             $idToken = substr($authentication, 7);
 
@@ -35,10 +40,10 @@ class Token
         }
     }
 
-    function findUserWithToken($token)
+    function findUserWithToken(WP_REST_Request $request)
     {
         try {
-            $verifiedIdToken = $this->auth->verifyIdToken($token);
+            $verifiedIdToken = $this->getToken($request);
 
             $email = $verifiedIdToken->claims()->get('email');
 
@@ -53,11 +58,17 @@ class Token
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
             }
 
-            if ($results == null) {
+            $account = $results[0];
+
+            if ($account == null) {
                 return '';
             }
+
             // catch revoked id tokens
-            return $results[0];
+            return array(
+                'account' => $account,
+                'token' => $verifiedIdToken
+            );
         } catch (FailedToVerifyToken $e) {
             throw new FailedToVerifyToken($e);
         } catch (Exception $e) {

@@ -4,15 +4,16 @@ namespace SEVEN_TECH\Gateway\Admin;
 
 use Exception;
 
-use SEVEN_TECH\Gateway\Account\Account;
-
 class Admin
 {
     public $admin_url;
-// Add google credentials and display success or error messages
+
+    // Add google credentials and display success or error messages
     public function __construct()
     {
         $this->admin_url = $this->get_plugin_page_url('admin.php', $this->get_parent_slug());
+
+        add_action('wp_ajax_areGoogleCredentialsPresentAdmin', [$this, 'areGoogleCredentialsPresentAdmin']);
     }
 
     public function get_parent_slug()
@@ -74,5 +75,51 @@ class Admin
     function section_description()
     {
         echo 'Manage User Accounts';
+    }
+
+    public function areGoogleCredentialsPresent()
+    {
+        if (!file_exists(GOOGLE_SERVICE_ACCOUNT)) {
+            throw new Exception('Google service account file does not exist.', 400);
+        }
+
+        $jsonFileContents = file_get_contents(GOOGLE_SERVICE_ACCOUNT);
+
+        if ($jsonFileContents === false) {
+            throw new Exception('Unable to read Google service account file.', 400);
+        }
+
+        $decodedData = json_decode($jsonFileContents, true);
+
+        $missingFields = [];
+        $requiredFields = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email', 'client_id', 'auth_uri', 'token_uri', 'auth_provider_x509_cert_url', 'client_x509_cert_url', 'universe_domain'];
+
+        foreach ($requiredFields as $field) {
+            if (!isset($decodedData[$field])) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+            $errorMessage = 'Required fields are missing: ' . implode(', ', $missingFields);
+            throw new Exception($errorMessage, 400);
+        }
+
+        if ($decodedData['type'] !== 'service_account') {
+            throw new Exception('Type is not set to service_account.', 400);
+        }
+
+        return true;
+    }
+
+    public function areGoogleCredentialsPresentAdmin()
+    {
+        try {
+            $credentialsPresent = $this->areGoogleCredentialsPresent();
+
+            wp_send_json_success($credentialsPresent);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage(), $e->getCode());
+        }
     }
 }

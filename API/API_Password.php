@@ -24,7 +24,6 @@ class API_Password
     {
         $this->authorization = $authorization;
         $this->adminusermngmnt = new AdminUserManagement;
-        $this->token = new Token($auth);
         $this->user = new User;
     }
 
@@ -61,10 +60,9 @@ class API_Password
         try {
             $authorized = $this->authorization->verifyCredentials($request);
             
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $email = $userData->email;
-            $password = $userData->password;
+            $email = $authorized->email;
+            $password = $authorized->password;
+
             $newPassword = $request['password'];
             $confirmPassword = $request['confirmPassword'];
 
@@ -154,15 +152,13 @@ class API_Password
             }
 
             if (empty($password)) {
-                $statusCode = 400;
-                throw new Exception("A Password is required to update password.", $statusCode);
+                throw new Exception("A Password is required to update password.", 400);
             }
 
-            $verifiedAccount = $this->user->verifyAccount($email, $password, $confirmationCode);
+            $authorized = $this->authorization->verifyCredentials($request);
 
-            if (!$verifiedAccount) {
-                $statusCode = 403;
-                throw new Exception('Credentials are not valid password could not be updated at this time.', $statusCode);
+            if (!$authorized) {
+                throw new Exception('Credentials are not valid password could not be updated at this time.', 403);
             }
 
             global $wpdb;
@@ -172,9 +168,7 @@ class API_Password
             );
 
             if ($wpdb->last_error) {
-                $statusCode = 500;
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             $results = $results[0]->resultSet;

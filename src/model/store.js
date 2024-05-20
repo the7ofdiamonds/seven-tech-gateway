@@ -4,7 +4,7 @@ import { emailSlice } from '../controllers/emailSlice.js';
 import { loginSlice } from '../controllers/loginSlice.js';
 import { logoutSlice } from '../controllers/logoutSlice.js';
 import { tokenSlice } from '../controllers/tokenSlice.js';
-import { changeSlice } from '../controllers/changeSlice.js';
+import { userSlice } from '../controllers/userSlice.js';
 import { passwordSlice } from '../controllers/passwordSlice.js';
 import { accountSlice } from '../controllers/accountSlice.js';
 import { signupSlice } from '../controllers/signupSlice.js';
@@ -16,7 +16,7 @@ const store = configureStore({
         account: accountSlice.reducer,
         email: emailSlice.reducer,
         token: tokenSlice.reducer,
-        change: changeSlice.reducer,
+        user: userSlice.reducer,
         password: passwordSlice.reducer,
         signup: signupSlice.reducer
     }

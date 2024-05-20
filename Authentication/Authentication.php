@@ -17,106 +17,110 @@ class Authentication
     private $validator;
     private $account;
     private $token;
+    private $auth;
 
     public function __construct(Auth $auth)
     {
         $this->validator = new Validator;
         $this->account = new Account;
+        $this->auth = $auth;
         $this->token = new Token($auth);
     }
 
     function login(WP_REST_Request $request)
     {
-        $email = $request['email'];
-        $password = $request['password'];
-        $location = $request['location'];
-        error_log(print_r($location, true));
+        try {
+            $account = '';
+            $signedInUser = '';
 
-        if (empty($email)) {
-            $statusCode = 400;
-            throw new Exception('An Email is required for login.', $statusCode);
-        }
+            if (isset($request['email']) && isset($request['password'])) {
+                $email = $request['email'];
+                $password = $request['password'];
 
-        if (empty($password)) {
-            $statusCode = 400;
-            throw new Exception('A Password is required for login', $statusCode);
-        }
+                if (empty($email)) {
+                    $statusCode = 400;
+                    throw new Exception('An Email is required for login.', $statusCode);
+                }
 
-        $account = $this->account->findAccount($email);
+                if (empty($password)) {
+                    $statusCode = 400;
+                    throw new Exception('A Password is required for login', $statusCode);
+                }
 
-        if ($account == null) {
-            $statusCode = 404;
-            throw new Exception('This email could not be found', $statusCode);
-        }
-
-        $verifiedIdToken = $this->token->getToken($request);
-
-            if ($verifiedIdToken == '') {
-                $statusCode = 403;
-                throw new Exception('Valid token is required.', $statusCode);
+                $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
             }
 
-            $user = $this->token->findUserWithToken($verifiedIdToken);
+            $headers = $request->get_headers();
 
-            if ($user == null) {
-                $statusCode = 404;
-                throw new Exception('User could not be found please signup to gain permission and access.', $statusCode);
+            if (isset($headers['authorization'][0])) {
+                $account = $this->token->findUserWithToken($request);
+
+                if ($account == null) {
+                    throw new Exception('User could not be found please signup to gain permission and access.', 404);
+                }
+
+                $signedInUser = $this->auth->signInWithRefreshToken($account['token']);
             }
 
-            $location = $request['location'];
+            if (empty($account) && empty($signedInUser)) {
+                throw new Exception('Access Denied: Either a token or username and password are required to login.', 403);
+            }
 
-            error_log(print_r($location, true));
-        // $password_check = password_verify($password, $user->password);
-        // $password_check = wp_check_password($password, $user->password, $user->id);
-        // error_log(print_r($password_check, true));
-        // if (!$password_check) {
-        //     $statusCode = 400;
-        //     throw new Exception('The password you entered for this username is not correct.', $statusCode);
-        // }
+            $account = $this->account->findAccount($email);
 
-        // $credentials = array(
-        //     'user_login'    => $user->email,
-        //     'user_password' => $password,
-        //     'remember'      => true,
-        // );
+            if (isset($request['location'])) {
+                $location = $request['location'];
 
-        // $account = wp_signon($credentials, false);
+                error_log(print_r($location, true));
+            }
 
-        // if (is_wp_error($user)) {
-        //     throw new Exception($user->get_error_message(), $user->get_error_code());
-        // }
+            $password_check = password_verify($password, $account->password);
 
-        wp_set_current_user($account->id);
-        wp_set_auth_cookie($account->id, true);
+            error_log(print_r($password_check, true));
+            if (!$password_check) {
+                throw new Exception('The password you entered for this username is not correct.', 400);
+            }
 
-        if (!is_user_logged_in()) {
-            $statusCode = 400;
-            throw new Exception('You could not be logged in successfully', $statusCode);
+            $credentials = array(
+                'user_login'    => $account->email,
+                'user_password' => $password,
+                'remember'      => true,
+            );
+
+            $signedInWPUser = wp_signon($credentials, false);
+            error_log(print_r($signedInWPUser, true));
+            if (is_wp_error($signedInWPUser)) {
+                throw new Exception($signedInWPUser->get_error_message(), $signedInWPUser->get_error_code());
+            }
+
+            wp_set_current_user($signedInWPUser->id);
+            wp_set_auth_cookie($signedInWPUser->id, true);
+
+            if (!is_user_logged_in()) {
+                throw new Exception('You could not be logged in successfully', 403);
+            }
+
+            $statusCode = 200;
+            $loginResponse = [
+                'successMessage' => 'You have been logged in successfully',
+                'accessToken' => $signedInUser->idToken(),
+                'refreshToken' => $signedInUser->refreshToken(),
+                'email' => $account->email,
+                'statusCode' => $statusCode
+            ];
+
+            return $loginResponse;
+        } catch (Exception $e) {
+            throw new Exception($e);
         }
-
-        // $signedInUser = $this->auth->signInWithEmailAndPassword($user->email, $password);
-        // $accessToken = $signedInUser->idToken();
-        // $refreshToken = $signedInUser->refreshToken();
-
-        $statusCode = 200;
-        $loginResponse = [
-            'successMessage' => 'You have been logged in successfully',
-            // 'accessToken' => $accessToken,
-            // 'refreshToken' => $refreshToken,
-            'email' => $account->email,
-            'statusCode' => $statusCode
-        ];
-
-        return $loginResponse;
     }
 
     function verifyCredentials(WP_REST_Request $request)
     {
         try {
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $email = $userData->email;
-            $password = $userData->password;
+            $userData = $this->token->findUserWithToken($request);
+            $email = $userData['account']->email;
+            $password = $userData['account']->password;
             $confirmationCode = $request['confirmationCode'];
 
             if (empty($confirmationCode)) {
