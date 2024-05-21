@@ -22,11 +22,6 @@
         align-items: center;
         gap: 1rem;
     }
-
-    .dashboard .google-creds-upload,
-    .dashboard .google-creds .change {
-        display: none;
-    }
 </style>
 
 <div class="dashboard">
@@ -49,7 +44,7 @@
     <div class="google-creds" id="google_creds">
         <h4 id="google_creds_message"></h4>
 
-        <form class="google-creds-upload" id="google_creds_upload">
+        <form class="google-creds-upload" id="google_creds_upload" enctype="multipart/form-data">
             <input type="file" name="file" id="file" required>
             <button type="submit" id="submit">Upload</button>
         </form>
@@ -57,13 +52,11 @@
 </div>
 
 <?php
-
 use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
 use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
 
 $accounts_page_url = (new AdminAccountManagement)->page_url;
 $users_page_url = (new AdminUserManagement)->page_url;
-
 ?>
 
 <script>

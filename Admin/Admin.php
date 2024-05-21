@@ -2,18 +2,20 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
+use SEVEN_TECH\Gateway\Configuration\Configuration;
+
 use Exception;
 
 class Admin
 {
     public $admin_url;
 
-    // Add google credentials and display success or error messages
     public function __construct()
     {
         $this->admin_url = $this->get_plugin_page_url('admin.php', $this->get_parent_slug());
 
         add_action('wp_ajax_areGoogleCredentialsPresentAdmin', [$this, 'areGoogleCredentialsPresentAdmin']);
+        add_action('wp_ajax_uploadFile', [$this, 'uploadFile']);
     }
 
     public function get_parent_slug()
@@ -118,6 +120,19 @@ class Admin
             $credentialsPresent = $this->areGoogleCredentialsPresent();
 
             wp_send_json_success($credentialsPresent);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function uploadFile()
+    {
+        try {
+            foreach ($_FILES as $file) {
+                $uploadedFile = (new Configuration)->uploadConfigFile($file);
+            }
+
+            wp_send_json_success($uploadedFile);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }

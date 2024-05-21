@@ -29,43 +29,38 @@ jQuery(document).ready(function ($) {
 
     areGoogleCredentialsPresent();
 
-    function uploadFile() {
+    function uploadFile(file) {
+        var formData = new FormData();
+        formData.append('action', 'uploadFile');
+        formData.append('file', file);
+
         return $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
-            data: {
-                action: 'uploadFile',
-
-            },
-            contentType: false,
+            data: formData,
             processData: false,
+            contentType: false,
             success: function (response) {
-                var message = '';
-
-                if (response.data == true) {
-                    message = 'Google Service Account is valid';
-
-                    $("#google_creds_message").text(message);
-                }
-
-                displayMessage('success', message);
+                console.log(response);
+                // displayMessage('success', message);
             },
             error: function (xhr, status, error) {
-                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                console.log(error);
+                console.log(status);
+                console.log(xhr);
+                // const errorMessage = `${error}: ${xhr.responseJSON.data}`;
 
-                $("#google_creds_message").text(errorMessage);
+                // $("#google_creds_message").text(errorMessage);
 
-                displayMessage(status, errorMessage);
+                // displayMessage(status, errorMessage);
             }
         });
     }
 
-    $('form#google_creds_upload').submit(function (event) {
+    $('#google_creds_upload').submit(function (event) {
         event.preventDefault();
-        var fileInput = $('#fileInput')[0].files[0];
-        // var formData = new FormData();
-        // formData.append('file', fileInput);
-
-        uploadFile();
+        var fileInput = $('#file')[0].files[0];
+        console.log($('#file')[0].files[0]);
+        uploadFile(fileInput);
     });
 });

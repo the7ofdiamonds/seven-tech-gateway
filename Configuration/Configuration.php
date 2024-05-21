@@ -1,29 +1,25 @@
 <?php
 
-namespace SEVEN_TECH\Gateway\Media;
+namespace SEVEN_TECH\Gateway\Configuration;
 
 use Exception;
 
-class Media
+class Configuration
 {
     public function __construct()
     {
     }
 
-    function upload($subdir, $file, $filename)
+    function uploadConfigFile($file)
     {
         try {
             $file_path = $file['tmp_name'];
             $mime_type = $file['type'];
+            $filename = $file['name'];
 
             if (file_exists($file_path)) {
-                $upload_dir = wp_upload_dir();
-                $upload_path = $upload_dir['basedir'] . $subdir;
-                $file_url = $upload_dir['baseurl'] . $subdir . $filename;
-
-                if (!file_exists($upload_path)) {
-                    wp_mkdir_p($upload_path);
-                }
+                $upload_path = SEVEN_TECH . "Configuration/files/";
+                $file_url = SEVEN_TECH_URL . "Configuration/files/{$filename}";
 
                 $new_file_path = $upload_path . $filename;
 
