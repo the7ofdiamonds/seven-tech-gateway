@@ -28,25 +28,54 @@ define('GOOGLE_SERVICE_ACCOUNT', plugin_dir_path(__FILE__) . 'Configuration/serv
 
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
-use Exception;
+use SEVEN_TECH\Gateway\Account\Account;
+
 use SEVEN_TECH\Gateway\Admin\Admin;
 use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
+use SEVEN_TECH\Gateway\Admin\AdminRecoverPassword;
 use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
 
 use SEVEN_TECH\Gateway\API\API;
+use SEVEN_TECH\Gateway\API\API_Account;
+use SEVEN_TECH\Gateway\API\API_Authentication;
+use SEVEN_TECH\Gateway\API\API_Password;
+use SEVEN_TECH\Gateway\API\API_User;
+
+use SEVEN_TECH\Gateway\Authentication\Authentication;
+
+use SEVEN_TECH\Gateway\Authorization\Authorization;
+
 use SEVEN_TECH\Gateway\CSS\CSS;
 use SEVEN_TECH\Gateway\CSS\Customizer\Customizer;
 use SEVEN_TECH\Gateway\CSS\Customizer\BorderRadius;
 use SEVEN_TECH\Gateway\CSS\Customizer\Color;
 use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
+
 use SEVEN_TECH\Gateway\Database\Database;
+
 use SEVEN_TECH\Gateway\JS\JS;
+
 use SEVEN_TECH\Gateway\Pages\Pages;
+
+use SEVEN_TECH\Gateway\Password\Password;
+
 use SEVEN_TECH\Gateway\Post_Types\Post_Types;
+
 use SEVEN_TECH\Gateway\Router\Router;
+
 use SEVEN_TECH\Gateway\Shortcodes\Shortcodes;
+
 use SEVEN_TECH\Gateway\Taxonomies\Taxonomies;
+
 use SEVEN_TECH\Gateway\Templates\Templates;
+
+use SEVEN_TECH\Gateway\Token\Token;
+
+use SEVEN_TECH\Gateway\User\User;
+
+use Exception;
+
+use Kreait\Firebase\Factory;
 
 class SEVEN_TECH
 {
@@ -77,21 +106,41 @@ class SEVEN_TECH
             add_filter("plugin_action_links_{$this->plugin_file}", [$admin, 'settings_link']);
         });
 
-        add_action('admin_menu', [$admin, 'register_custom_menu_page']);
-        add_action('admin_menu', [(new AdminAccountManagement), 'register_custom_submenu_page']);
-        add_action('admin_menu', [(new AdminUserManagement), 'register_custom_submenu_page']);
-
         try {
             $serviceAccountValid = $admin->areGoogleCredentialsPresent();
 
             if ($serviceAccountValid == 1) {
-                add_action('rest_api_init', function () {
-                    new API();
+                $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
+                $auth = $factory->createAuth();
+
+                $token = new Token($auth);
+                $account = new Account($auth);
+                $authentication = new Authentication($auth);
+                $authorization = new Authorization($token);
+                $password = new Password($authentication);
+                $user = new User($auth);
+
+                $accountAPI = new API_Account($account, $authentication, $authorization);
+                $authAPI = new API_Authentication($authentication);
+                $passwordAPI = new API_Password($password, $authentication, $authorization);
+                $userAPI = new API_User($user, $authentication, $authorization);
+
+                add_action('rest_api_init', function () use ($accountAPI, $authAPI, $passwordAPI, $userAPI) {
+                    new API($accountAPI, $authAPI, $passwordAPI, $userAPI);
                 });
+
+                $adminAccountManagement = new AdminAccountManagement($account);
+                $adminRecoverPassword = new AdminRecoverPassword($password);
+                $adminUserManagement = new AdminUserManagement($user);
             }
         } catch (Exception $e) {
             error_log($e->getMessage());
         }
+
+        add_action('admin_menu', [$admin, 'register_custom_menu_page']);
+        add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
+        add_action('admin_menu', [$adminRecoverPassword, 'register_custom_submenu_page']);
+        add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
 
         $pages = new Pages;
         $posttypes = new Post_Types;

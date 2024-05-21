@@ -22,7 +22,7 @@ class Authentication
     public function __construct(Auth $auth)
     {
         $this->validator = new Validator;
-        $this->account = new Account;
+        // $this->account = new Account;
         $this->auth = $auth;
         $this->token = new Token($auth);
     }
@@ -100,13 +100,12 @@ class Authentication
                 throw new Exception('You could not be logged in successfully', 403);
             }
 
-            $statusCode = 200;
             $loginResponse = [
                 'successMessage' => 'You have been logged in successfully',
                 'accessToken' => $signedInUser->idToken(),
                 'refreshToken' => $signedInUser->refreshToken(),
                 'email' => $account->email,
-                'statusCode' => $statusCode
+                'statusCode' => 200
             ];
 
             return $loginResponse;
@@ -118,53 +117,47 @@ class Authentication
     function verifyCredentials(WP_REST_Request $request)
     {
         try {
-            $userData = $this->token->findUserWithToken($request);
-            $email = $userData['account']->email;
-            $password = $userData['account']->password;
+            if (empty($username)) {
+                throw new Exception('A Username or email is required to update password.', 400);
+            }
+
+            if (empty($confirmationCode)) {
+                throw new Exception('A Confirmation Code is required to update password.', 400);
+            }
+
+            
+
+            $email = $request['email'];
             $confirmationCode = $request['confirmationCode'];
 
             if (empty($confirmationCode)) {
-                $statusCode = 400;
-                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', $statusCode);
+                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
             }
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL enableAccount('$email', '$password', '$confirmationCode')"
+                "CALL verifyCredentials('$email', '$confirmationCode')"
             );
 
             if ($wpdb->last_error) {
-                $statusCode = 500;
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
             $results = $results[0]->resultSet;
 
             if (!$results) {
-                $statusCode = 400;
-                throw new Exception("There was an error verifying your account please try again at another time.", $statusCode);
+                throw new Exception("There was an error verifying your account please try again at another time.", 500);
             }
 
-            $statusCode = 200;
             $verifyEmailResponse = [
-                'successMessage' => 'Email has been verified.',
-                'statusCode' => $statusCode
+                'successMessage' => 'Your credentials have been verified.',
+                'statusCode' => 200
             ];
 
             return rest_ensure_response($verifyEmailResponse);
         } catch (Exception $e) {
-            error_log('There has been an error at verify email.');
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            throw new Exception($e);
         }
     }
 
@@ -214,15 +207,7 @@ class Authentication
 
             return $response;
         } catch (Exception $e) {
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            throw new Exception($e);
         }
     }
 

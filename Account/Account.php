@@ -7,13 +7,17 @@ use Exception;
 use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
+use Kreait\Firebase\Auth;
+
 class Account
 {
+    private $auth;
     private $validator;
     private $roles;
 
-    public function __construct()
+    public function __construct(Auth $auth)
     {
+        $this->auth = $auth;
         $this->validator = new Validator;
         $this->roles = new Roles;
     }

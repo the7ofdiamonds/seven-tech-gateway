@@ -15,17 +15,16 @@ class AdminUserManagement
     public $page_url;
     private $user;
 
-    public function __construct()
+    public function __construct(User $user)
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'User Management';
         $this->menu_title = 'User';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->user = new User;
+        $this->user = $user;
 
         add_action('wp_ajax_getUser', [$this, 'getUser']);
-        add_action('wp_ajax_forgotPassword', [$this, 'forgotPassword']);
         add_action('wp_ajax_changeUserNicename', [$this, 'changeUserNicename'], 10, 2);
         add_action('wp_ajax_addUserRole', [$this, 'addUserRole']);
         add_action('wp_ajax_removeUserRole', [$this, 'removeUserRole']);
@@ -68,24 +67,6 @@ class AdminUserManagement
         }
     }
 
-    // Send password recovery email
-    function forgotPassword()
-    {
-        try {
-            if (!isset($_POST['email'])) {
-                throw new Exception('Email is required.', 400);
-            }
-
-            $email = $_POST['email'];
-
-            $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
-
-            wp_send_json_success($message);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
-        }
-    }
-
     function changeUserNicename()
     {
         try {
@@ -110,7 +91,7 @@ class AdminUserManagement
             if (!isset($_POST['id'])) {
                 throw new Exception('ID is required.', 400);
             }
-            
+
             $id = $_POST['id'];
             $roleName = $_POST['added_role'];
             $roleDisplayName = $_POST['display_name_added'];
@@ -129,7 +110,7 @@ class AdminUserManagement
             if (!isset($_POST['id'])) {
                 throw new Exception('ID is required.', 400);
             }
-            
+
             $id = $_POST['id'];
             $roleName = $_POST['remove_role'];
             $roleDisplayName = $_POST['display_name_remove'];

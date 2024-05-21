@@ -2,49 +2,31 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
-use SEVEN_TECH\Gateway\Authentication\Authentication;
-use SEVEN_TECH\Gateway\Authorization\Authorization;
-use SEVEN_TECH\Gateway\Token\Token;
-
-use Kreait\Firebase\Factory;
-
 class API
 {
-  public function __construct()
+  public function __construct(API_Account $accountAPI, API_Authentication $authAPI, API_Password $passwordAPI, API_User $userAPI)
   {
-    $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
-    $auth = $factory->createAuth();
-
-    $token = new Token($auth);
-    $authentication = new Authentication($auth);
-    $authorization = new Authorization($token);
-
-    $account = new API_Account($auth, $token);
-    $authAPI = new API_Authentication($authentication);
-    $password = new API_Password($authorization, $authentication);
-    $user = new API_User($auth, $token);
-
     register_rest_route('seven-tech/v1', '/account/create', array(
       'methods' => 'POST',
-      'callback' => array($account, 'createAccount'),
+      'callback' => array($accountAPI, 'createAccount'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/account/lock', array(
       'methods' => 'POST',
-      'callback' => array($account, 'lockAccount'),
+      'callback' => array($accountAPI, 'lockAccount'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/account/unlock', array(
       'methods' => 'POST',
-      'callback' => array($account, 'unlockAccount'),
+      'callback' => array($accountAPI, 'unlockAccount'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/account/enable', array(
       'methods' => 'POST',
-      'callback' => array($account, 'enableAccount'),
+      'callback' => array($accountAPI, 'enableAccount'),
       'permission_callback' => '__return_true',
     ));
 
@@ -68,61 +50,61 @@ class API
 
     register_rest_route('seven-tech/v1', '/password/forgot', array(
       'methods' => 'POST',
-      'callback' => array($password, 'forgotPassword'),
+      'callback' => array($passwordAPI, 'recoverPassword'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/password/change', array(
       'methods' => 'POST',
-      'callback' => array($password, 'changePassword'),
+      'callback' => array($passwordAPI, 'changePassword'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/password/update', array(
       'methods' => 'POST',
-      'callback' => array($password, 'updatePassword'),
+      'callback' => array($passwordAPI, 'updatePassword'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/user/add', array(
       'methods' => 'POST',
-      'callback' => array($user, 'addUser'),
+      'callback' => array($userAPI, 'addUser'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/user/change-username', array(
       'methods' => 'POST',
-      'callback' => array($user, 'changeUsername'),
+      'callback' => array($userAPI, 'changeUsername'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/user/change-name', array(
       'methods' => 'POST',
-      'callback' => array($user, 'changeName'),
+      'callback' => array($userAPI, 'changeName'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/user/change-nickname', array(
       'methods' => 'POST',
-      'callback' => array($user, 'changeNickname'),
+      'callback' => array($userAPI, 'changeNickname'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/user/change-phone', array(
       'methods' => 'POST',
-      'callback' => array($user, 'changePhone'),
+      'callback' => array($userAPI, 'changePhone'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/user/add-role', array(
       'methods' => 'POST',
-      'callback' => array($user, 'addUserRole'),
+      'callback' => array($userAPI, 'addUserRole'),
       'permission_callback' => '__return_true',
     ));
 
     register_rest_route('seven-tech/v1', '/user/remove-role', array(
       'methods' => 'POST',
-      'callback' => array($user, 'removeUserRole'),
+      'callback' => array($userAPI, 'removeUserRole'),
       'permission_callback' => '__return_true',
     ));
   }

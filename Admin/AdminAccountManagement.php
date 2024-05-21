@@ -15,14 +15,14 @@ class AdminAccountManagement
     public $page_url;
     private $account;
 
-    public function __construct()
+    public function __construct(Account $account)
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'Account Management';
         $this->menu_title = 'Account';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->account = new Account;
+        $this->account = $account;
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
@@ -64,7 +64,7 @@ class AdminAccountManagement
             $phone = $_POST['phone'];
             $roles = $_POST['roles'];
 
-            $createdAccount = (new Account)->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
+            $createdAccount = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
             wp_send_json_success($createdAccount);
         } catch (Exception $e) {

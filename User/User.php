@@ -8,23 +8,27 @@ use WP_User;
 
 use SEVEN_TECH\Gateway\Roles\Roles;
 
+use Kreait\Firebase\Auth;
+
 class User
 {
+    private $auth;
     private $roles;
 
-    public function __construct()
+    public function __construct(Auth $auth)
     {
+        $this->auth = $auth;
         $this->roles = new Roles;
     }
 
-    public function addNewUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
+    public function addUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
     {
         $newUser = [
-            'email' => $user_email,
+            'email' => $email,
             'emailVerified' => false,
             'phoneNumber' => '+' . $phone,
-            'password' => $user_password,
-            'displayName' => $displayName,
+            'password' => $password,
+            'displayName' => $username,
             'disabled' => false,
         ];
 
@@ -32,7 +36,7 @@ class User
         $providergivenID = $newFirebaseUser->uid;
 
         if (empty($providergivenID)) {
-            error_log("Unable to add user with email {$user_email} to firebase.");
+            error_log("Unable to add user with email {$email} to firebase.");
         }
 
         global $wpdb;
@@ -42,7 +46,6 @@ class User
         );
 
         if ($wpdb->last_error) {
-            error_log("Error executing stored procedure: " . $wpdb->last_error);
             throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
         }
 

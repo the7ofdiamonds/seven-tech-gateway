@@ -50,23 +50,3 @@
         </form>
     </div>
 </div>
-
-<?php
-use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
-use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
-
-$accounts_page_url = (new AdminAccountManagement)->page_url;
-$users_page_url = (new AdminUserManagement)->page_url;
-?>
-
-<script>
-    jQuery(document).ready(function($) {
-        $("#options button#accounts").on('click', () => {
-            window.location.href = "<?php echo esc_url($accounts_page_url); ?>";
-        });
-
-        $("#options button#users").on('click', () => {
-            window.location.href = "<?php echo esc_url($users_page_url); ?>";
-        });
-    });
-</script>

@@ -48,8 +48,7 @@ class Authorization
                 throw new Exception('Confirmation code is not valid.', $statusCode);
             }
 
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
+            $userData = $this->token->findUserWithToken($request);
 
             return $userData;
         } catch (Exception $e) {
