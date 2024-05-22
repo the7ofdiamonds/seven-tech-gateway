@@ -5,6 +5,7 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
 
@@ -45,15 +46,7 @@ class API_Account
 
             return rest_ensure_response($signupResponse);
         } catch (Exception $e) {
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
@@ -66,15 +59,7 @@ class API_Account
 
             return rest_ensure_response($lockedAccount);
         } catch (Exception $e) {
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
@@ -87,15 +72,7 @@ class API_Account
 
             return rest_ensure_response($unlockedAccount);
         } catch (Exception $e) {
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
@@ -108,15 +85,7 @@ class API_Account
 
             return rest_ensure_response($enabledAccount);
         } catch (Exception $e) {
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 }

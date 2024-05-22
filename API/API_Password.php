@@ -2,11 +2,13 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Password\Password;
+
 use Exception;
 
 use WP_REST_Request;
 
-use SEVEN_TECH\Gateway\Password\Password;
 
 class API_Password
 {
@@ -30,22 +32,13 @@ class API_Password
 
             return rest_ensure_response($response);
         } catch (Exception $e) {
-            error_log('There has been an error at recover password.');
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
     function changePassword(WP_REST_Request $request)
     {
-        try {            
+        try {
             $removeEmailResponse = [
                 'successMessage' => $this->password->changePassword($request),
                 'statusCode' => 200
@@ -53,16 +46,7 @@ class API_Password
 
             return rest_ensure_response($removeEmailResponse);
         } catch (Exception $e) {
-            error_log('There has been an error at change password.');
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
@@ -76,16 +60,7 @@ class API_Password
 
             return rest_ensure_response($updatePasswordResponse);
         } catch (Exception $e) {
-            error_log('There has been an error at update password.');
-            $statusCode = $e->getCode();
-            $response_data = [
-                'errorMessage' => $e->getMessage(),
-                'statusCode' => $statusCode
-            ];
-            $response = rest_ensure_response($response_data);
-            $response->set_status($statusCode);
-
-            return $response;
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 }

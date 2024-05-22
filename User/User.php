@@ -2,11 +2,12 @@
 
 namespace SEVEN_TECH\Gateway\User;
 
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Roles\Roles;
+
 use Exception;
 
 use WP_User;
-
-use SEVEN_TECH\Gateway\Roles\Roles;
 
 use Kreait\Firebase\Auth;
 
@@ -23,38 +24,42 @@ class User
 
     public function addUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
     {
-        $newUser = [
-            'email' => $email,
-            'emailVerified' => false,
-            'phoneNumber' => '+' . $phone,
-            'password' => $password,
-            'displayName' => $username,
-            'disabled' => false,
-        ];
+        try {
+            $newUser = [
+                'email' => $email,
+                'emailVerified' => false,
+                'phoneNumber' => '+' . $phone,
+                'password' => $password,
+                'displayName' => $username,
+                'disabled' => false,
+            ];
 
-        $newFirebaseUser = $this->auth->createUser($newUser);
-        $providergivenID = $newFirebaseUser->uid;
+            $newFirebaseUser = $this->auth->createUser($newUser);
+            $providergivenID = $newFirebaseUser->uid;
 
-        if (empty($providergivenID)) {
-            error_log("Unable to add user with email {$email} to firebase.");
+            if (empty($providergivenID)) {
+                error_log("Unable to add user with email {$email} to firebase.");
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
+            }
+
+            if (empty($results[0])) {
+                error_log("User could not be added.");
+                return '';
+            }
+
+            return $results[0];
+        } catch (Exception | DestructuredException $e) {
+            throw new DestructuredException($e);
         }
-
-        global $wpdb;
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
-        );
-
-        if ($wpdb->last_error) {
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error);
-        }
-
-        if (empty($results[0])) {
-            error_log("User could not be added.");
-            return '';
-        }
-
-        return $results[0];
     }
 
     public function getUser($query_param)
@@ -85,98 +90,114 @@ class User
             ];
 
             return $user;
-        } catch (Exception $e) {
-            throw new Exception($e);
+        } catch (Exception | DestructuredException $e) {
+            throw new DestructuredException($e);
         }
     }
 
     public function addUserRole($id, $roleName, $roleDisplayName)
     {
-        if (empty($id)) {
-            throw new Exception('ID is required.');
+        try {
+            if (empty($id)) {
+                throw new Exception('ID is required.');
+            }
+
+            $roleExists = $this->roles->roleExists($roleName, $roleDisplayName);
+
+            if ($roleExists == false) {
+                return "Role {$roleDisplayName} does not exits.";
+            }
+
+            $user = new WP_User($id);
+            $user->add_role($roleName);
+
+            $email = $user->user_email;
+            $updated = wp_update_user($user);
+
+            if (!is_int($updated)) {
+                return "There has been an error adding user role.";
+            }
+
+            return "A Role of {$roleDisplayName} has been added to the user with the email {$email}.";
+        } catch (Exception | DestructuredException $e) {
+            throw new DestructuredException($e);
         }
-
-        $roleExists = $this->roles->roleExists($roleName, $roleDisplayName);
-
-        if ($roleExists == false) {
-            return "Role {$roleDisplayName} does not exits.";
-        }
-
-        $user = new WP_User($id);
-        $user->add_role($roleName);
-
-        $email = $user->user_email;
-        $updated = wp_update_user($user);
-
-        if (!is_int($updated)) {
-            return "There has been an error adding user role.";
-        }
-
-        return "A Role of {$roleDisplayName} has been added to the user with the email {$email}.";
     }
 
     public function getUserRoles($id, $roles = '')
     {
-        if (empty($roles)) {
-            $user = new WP_User($id);
-            $roles = $user->roles;
-        }
+        try {
+            if (empty($roles)) {
+                $user = new WP_User($id);
+                $roles = $user->roles;
+            }
 
-        $wp_roles = wp_roles()->get_names();
+            $wp_roles = wp_roles()->get_names();
 
-        $user_roles = [];
+            $user_roles = [];
 
-        foreach ($wp_roles as $roleKey => $roleValue) {
-            foreach ($roles as $role) {
-                if ($roleKey == $role) {
-                    $user_roles[] = [
-                        'name' => $roleKey,
-                        'display_name' => $roleValue
-                    ];
+            foreach ($wp_roles as $roleKey => $roleValue) {
+                foreach ($roles as $role) {
+                    if ($roleKey == $role) {
+                        $user_roles[] = [
+                            'name' => $roleKey,
+                            'display_name' => $roleValue
+                        ];
+                    }
                 }
             }
-        }
 
-        return $user_roles;
+            return $user_roles;
+        } catch (Exception | DestructuredException $e) {
+            throw new DestructuredException($e);
+        }
     }
 
     public function removeUserRole($id, $role)
     {
-        $user = new WP_User($id);
-        $user_roles = $user->roles;
+        try {
+            $user = new WP_User($id);
+            $user_roles = $user->roles;
 
-        $hasRole = false;
+            $hasRole = false;
 
-        foreach ($user_roles as $user_role) {
-            if ($role == $user_role) {
-                $hasRole = true;
+            foreach ($user_roles as $user_role) {
+                if ($role == $user_role) {
+                    $hasRole = true;
+                }
             }
+
+            if ($hasRole) {
+                $user->remove_role($role);
+            }
+
+            $updated = wp_update_user($user);
+
+            if (!is_int($updated)) {
+                return "There has been an error removing user role.";
+            }
+
+            return "User role {$role} has been removed successfully";
+        } catch (Exception | DestructuredException $e) {
+            throw new DestructuredException($e);
         }
-
-        if ($hasRole) {
-            $user->remove_role($role);
-        }
-
-        $updated = wp_update_user($user);
-
-        if (!is_int($updated)) {
-            return "There has been an error removing user role.";
-        }
-
-        return "User role {$role} has been removed successfully";
     }
 
     public function changeUserNicename($id, $nicename)
     {
-        $user = new WP_User($id);
-        $user->user_nicename = $nicename;
+        try {
+            $user = new WP_User($id);
+            $user->user_nicename = $nicename;
 
-        $updated = wp_update_user($user);
+            $updated = wp_update_user($user);
 
-        if (!is_int($updated)) {
-            return "There has been an error updating User nice name.";
+            if (!is_int($updated)) {
+                return "There has been an error updating User nice name.";
+            }
+
+            return "User nicename has been changed to {$nicename} successfully";
+        } catch (Exception | DestructuredException $e) {
+            throw new DestructuredException($e);
         }
-
-        return "User nicename has been changed to {$nicename} successfully";
     }
 }

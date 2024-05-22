@@ -3,8 +3,8 @@
 namespace SEVEN_TECH\Gateway\Authentication;
 
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
-use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
@@ -14,84 +14,67 @@ use Kreait\Firebase\Auth;
 
 class Authentication
 {
-    private $validator;
     private $account;
     private $token;
     private $auth;
 
-    public function __construct(Auth $auth, Account $account)
+    public function __construct(Account $account, Token $token, Auth $auth)
     {
-        $this->validator = new Validator;
         $this->account = $account;
+        $this->token = $token;
         $this->auth = $auth;
-        $this->token = new Token($auth);
+    }
+
+    function signInWithEmailAndPassword(WP_REST_Request $request)
+    {
+        try {
+            $email = $request['email'];
+            $password = $request['password'];
+
+            if (empty($email)) {
+                throw new Exception('An Email is required for login.', 400);
+            }
+
+            if (empty($password)) {
+                throw new Exception('A Password is required for login', 400);
+            }
+
+            $account = $this->account->findAccount($email);
+
+            $first_two_chars = substr($account->password, 0, 2);
+
+            if ($first_two_chars === '$P') {
+                $password_check = wp_check_password($password, $account->password);
+            } else {
+                $password_check = password_verify($password, $account->password);
+            }
+
+            if (!$password_check) {
+                throw new Exception('The password you entered for this username is not correct.', 400);
+            }
+
+            $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
+
+            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken());
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
     }
 
     function login(WP_REST_Request $request)
     {
         try {
-            $account = '';
+            $authenticatedAccount = '';
 
             if (isset($request['email']) && isset($request['password'])) {
-                $email = $request['email'];
-                $password = $request['password'];
-
-                if (empty($email)) {
-                    throw new Exception('An Email is required for login.', 400);
-                }
-
-                if (empty($password)) {
-                    throw new Exception('A Password is required for login', 400);
-                }
-
-                $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
-                $email = $signedInUser->data()['email'];
-
-                $account = $this->account->findAccount($email);
-
-                $first_two_chars = substr($account->password, 0, 2);
-
-                if ($first_two_chars === '$P') {
-                    $password_check = wp_check_password($password, $account->password);
-                } else {
-                    $password_check = password_verify($password, $account->password);
-                }
-
-                if (!$password_check) {
-                    throw new Exception('The password you entered for this username is not correct.', 400);
-                }
-
-                $credentials = array(
-                    'user_login'    => $account->email,
-                    'user_password' => $password,
-                    'remember'      => true,
-                );
-
-                $signedInWPUser = wp_signon($credentials, false);
-
-                if (is_wp_error($signedInWPUser)) {
-                    throw new Exception($signedInWPUser->get_error_message(), $signedInWPUser->get_error_code());
-                }
+                $authenticatedAccount = $this->signInWithEmailAndPassword($request);
+            } else {
+                $authenticatedAccount = $this->token->signInWithRefreshToken($request);
             }
 
-            $headers = $request->get_headers();
-
-            if (isset($headers['authorization'][0]) && isset($headers['refresh_token'][0])) {
-                $account = $this->token->findUserWithToken($request);
-
-                if ($account == null) {
-                    throw new Exception('User could not be found please signup to gain permission and access.', 404);
-                }
-
-                $signedInUser = $this->auth->signInWithRefreshToken($headers['refresh_token'][0]);
-                $uid = $signedInUser->data()['user_id'];
-
-                $user = $this->auth->getUser($uid);
-
-                $account = $this->account->findAccount($user->email);
-            }
-
-            if (empty($account) && empty($signedInUser)) {
+            if ($authenticatedAccount == '') {
                 throw new Exception('Access Denied: Either a token or username and password are required to login.', 403);
             }
 
@@ -101,8 +84,8 @@ class Authentication
                 error_log(print_r($location, true));
             }
 
-            wp_set_current_user($account->id);
-            wp_set_auth_cookie($account->id, true);
+            wp_set_current_user($authenticatedAccount->id);
+            wp_set_auth_cookie($authenticatedAccount->id, true);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in successfully', 403);
@@ -110,15 +93,17 @@ class Authentication
 
             $loginResponse = [
                 'successMessage' => 'You have been logged in successfully',
-                'accessToken' => $signedInUser->idToken(),
-                'refreshToken' => $signedInUser->refreshToken(),
-                'email' => $account->email,
+                'accessToken' => $authenticatedAccount->accessToken,
+                'refreshToken' => $authenticatedAccount->refreshToken,
+                'email' => $authenticatedAccount->email,
                 'statusCode' => 200
             ];
 
             return $loginResponse;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -162,8 +147,10 @@ class Authentication
             ];
 
             return rest_ensure_response($verifyEmailResponse);
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -212,8 +199,10 @@ class Authentication
             $response->set_status($statusCode);
 
             return $response;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 

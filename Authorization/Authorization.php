@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Authorization;
 
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
@@ -53,8 +54,8 @@ class Authorization
             $userData = $this->token->findUserWithToken($request);
 
             return $userData;
-        } catch (Exception $e) {
-            throw new Exception($e);
+        } catch (Exception | DestructuredException $e) {
+            throw new DestructuredException($e);
         }
     }
 }

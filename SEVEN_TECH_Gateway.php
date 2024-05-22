@@ -113,9 +113,9 @@ class SEVEN_TECH
                 $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
                 $auth = $factory->createAuth();
 
-                $token = new Token($auth);
                 $account = new Account($auth);
-                $authentication = new Authentication($auth, $account);
+                $token = new Token($auth, $account);
+                $authentication = new Authentication($account, $token, $auth);
                 $authorization = new Authorization($token);
                 $password = new Password($authentication);
                 $user = new User($auth);
