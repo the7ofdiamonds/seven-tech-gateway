@@ -60,18 +60,14 @@ export const updateRefreshToken = (refresh_token) => {
 
 export const login = createAsyncThunk('login/login', async ({ email, password, location }) => {
     try {
-
-        if (isValidEmail(email) == false) {
-            throw new Error('Email is not valid.');
-        }
-
-        if (isValidPassword(password) == false) {
-            throw new Error('Password is not valid.');
-        }
+        const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         const response = await fetch(`${loginUrl}`, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({

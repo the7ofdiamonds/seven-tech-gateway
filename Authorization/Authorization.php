@@ -30,23 +30,25 @@ class Authorization
             $validEmail = $this->validator->validEmail($email);
 
             if (!$validEmail) {
-                $statusCode = 400;
-                throw new Exception('Email is not valid.', $statusCode);
+                throw new Exception('Email is not valid.', 400);
             }
 
             $validPassword = $this->validator->validPassword($password);
 
             if (!$validPassword) {
-                $statusCode = 400;
-                throw new Exception('Password is not valid.', $statusCode);
+                throw new Exception('Password is not valid.', 400);
             }
 
             $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
 
             if (!$validConfirmationCode) {
-                $statusCode = 400;
-                throw new Exception('Confirmation code is not valid.', $statusCode);
+                throw new Exception('Confirmation code is not valid.', 400);
             }
+
+            // Verify Credentials stored procedure
+            // if (!$verifiedCredentials) {
+            //     throw new Exception('Unauthorized credentials could not be verified.', 403);
+            // }
 
             $userData = $this->token->findUserWithToken($request);
 

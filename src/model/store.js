@@ -3,7 +3,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import { emailSlice } from '../controllers/emailSlice.js';
 import { loginSlice } from '../controllers/loginSlice.js';
 import { logoutSlice } from '../controllers/logoutSlice.js';
-import { tokenSlice } from '../controllers/tokenSlice.js';
 import { userSlice } from '../controllers/userSlice.js';
 import { passwordSlice } from '../controllers/passwordSlice.js';
 import { accountSlice } from '../controllers/accountSlice.js';
@@ -15,7 +14,6 @@ const store = configureStore({
         logout: logoutSlice.reducer,
         account: accountSlice.reducer,
         email: emailSlice.reducer,
-        token: tokenSlice.reducer,
         user: userSlice.reducer,
         password: passwordSlice.reducer,
         signup: signupSlice.reducer

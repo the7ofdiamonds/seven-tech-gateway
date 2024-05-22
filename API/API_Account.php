@@ -34,9 +34,9 @@ class API_Account
             $firstname = $request['firstname'];
             $lastname = $request['lastname'];
             $phone = $request['phone'];
-            $roles = '';
+            $roles = $request['roles'];
 
-            $createdAccount = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
+            $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
             $signupResponse = [
                 'successMessage' => $this->authentication->login($request),
@@ -60,11 +60,7 @@ class API_Account
     function lockAccount(WP_REST_Request $request)
     {
         try {
-            $verifiedCredentials = $this->authorization->verifyCredentials($request);
-
-            if (!$verifiedCredentials) {
-                throw new Exception('Unauthorized credentials could not be verified.', 403);
-            }
+            $this->authorization->verifyCredentials($request);
 
             $lockedAccount = $this->account->lockAccount($request['email']);
 
@@ -85,11 +81,7 @@ class API_Account
     function unlockAccount(WP_REST_Request $request)
     {
         try {
-            $verifiedCredentials = $this->authorization->verifyCredentials($request);
-
-            if (!$verifiedCredentials) {
-                throw new Exception('Unauthorized credentials could not be verified.', 403);
-            }
+            $this->authorization->verifyCredentials($request);
 
             $unlockedAccount = $this->account->unlockAccount($request['email']);
 
@@ -106,15 +98,11 @@ class API_Account
             return $response;
         }
     }
-    // disable account happens after a certain time 
+
     function enableAccount(WP_REST_Request $request)
     {
         try {
-            $verifiedCredentials = $this->authorization->verifyCredentials($request);
-
-            if (!$verifiedCredentials) {
-                throw new Exception('Unauthorized credentials could not be verified.', 403);
-            }
+            $this->authorization->verifyCredentials($request);
 
             $enabledAccount = $this->account->enableAccount($request['email']);
 

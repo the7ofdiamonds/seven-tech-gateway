@@ -8,10 +8,9 @@ function Login() {
   let page = 'login';
 
   const { loginStatusCode } = useSelector((state) => state.login);
-  const { tokenStatusCode } = useSelector((state) => state.token);
 
   useEffect(() => {
-    if (loginStatusCode == 200 || tokenStatusCode == 200) {
+    if (loginStatusCode == 200) {
       const urlParams = new URLSearchParams(window.location.search);
       const redirectTo = urlParams.get('redirectTo');
 
@@ -23,15 +22,15 @@ function Login() {
         }
       }, 5000);
     }
-  }, [loginStatusCode, tokenStatusCode]);
+  }, [loginStatusCode]);
 
   useEffect(() => {
-    if (loginStatusCode == 404 || tokenStatusCode == 404) {
+    if (loginStatusCode == 404) {
       setTimeout(() => {
         window.location.href = '/signup';
       }, 5000);
     }
-  }, [loginStatusCode, tokenStatusCode]);
+  }, [loginStatusCode]);
 
   return (
     <>

@@ -19,10 +19,10 @@ class Authentication
     private $token;
     private $auth;
 
-    public function __construct(Auth $auth)
+    public function __construct(Auth $auth, Account $account)
     {
         $this->validator = new Validator;
-        // $this->account = new Account;
+        $this->account = $account;
         $this->auth = $auth;
         $this->token = new Token($auth);
     }
@@ -31,42 +31,69 @@ class Authentication
     {
         try {
             $account = '';
-            $signedInUser = '';
 
             if (isset($request['email']) && isset($request['password'])) {
                 $email = $request['email'];
                 $password = $request['password'];
 
                 if (empty($email)) {
-                    $statusCode = 400;
-                    throw new Exception('An Email is required for login.', $statusCode);
+                    throw new Exception('An Email is required for login.', 400);
                 }
 
                 if (empty($password)) {
-                    $statusCode = 400;
-                    throw new Exception('A Password is required for login', $statusCode);
+                    throw new Exception('A Password is required for login', 400);
                 }
 
                 $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
+                $email = $signedInUser->data()['email'];
+
+                $account = $this->account->findAccount($email);
+
+                $first_two_chars = substr($account->password, 0, 2);
+
+                if ($first_two_chars === '$P') {
+                    $password_check = wp_check_password($password, $account->password);
+                } else {
+                    $password_check = password_verify($password, $account->password);
+                }
+
+                if (!$password_check) {
+                    throw new Exception('The password you entered for this username is not correct.', 400);
+                }
+
+                $credentials = array(
+                    'user_login'    => $account->email,
+                    'user_password' => $password,
+                    'remember'      => true,
+                );
+
+                $signedInWPUser = wp_signon($credentials, false);
+
+                if (is_wp_error($signedInWPUser)) {
+                    throw new Exception($signedInWPUser->get_error_message(), $signedInWPUser->get_error_code());
+                }
             }
 
             $headers = $request->get_headers();
 
-            if (isset($headers['authorization'][0])) {
+            if (isset($headers['authorization'][0]) && isset($headers['refresh_token'][0])) {
                 $account = $this->token->findUserWithToken($request);
 
                 if ($account == null) {
                     throw new Exception('User could not be found please signup to gain permission and access.', 404);
                 }
 
-                $signedInUser = $this->auth->signInWithRefreshToken($account['token']);
+                $signedInUser = $this->auth->signInWithRefreshToken($headers['refresh_token'][0]);
+                $uid = $signedInUser->data()['user_id'];
+
+                $user = $this->auth->getUser($uid);
+
+                $account = $this->account->findAccount($user->email);
             }
 
             if (empty($account) && empty($signedInUser)) {
                 throw new Exception('Access Denied: Either a token or username and password are required to login.', 403);
             }
-
-            $account = $this->account->findAccount($email);
 
             if (isset($request['location'])) {
                 $location = $request['location'];
@@ -74,27 +101,8 @@ class Authentication
                 error_log(print_r($location, true));
             }
 
-            $password_check = password_verify($password, $account->password);
-
-            error_log(print_r($password_check, true));
-            if (!$password_check) {
-                throw new Exception('The password you entered for this username is not correct.', 400);
-            }
-
-            $credentials = array(
-                'user_login'    => $account->email,
-                'user_password' => $password,
-                'remember'      => true,
-            );
-
-            $signedInWPUser = wp_signon($credentials, false);
-            error_log(print_r($signedInWPUser, true));
-            if (is_wp_error($signedInWPUser)) {
-                throw new Exception($signedInWPUser->get_error_message(), $signedInWPUser->get_error_code());
-            }
-
-            wp_set_current_user($signedInWPUser->id);
-            wp_set_auth_cookie($signedInWPUser->id, true);
+            wp_set_current_user($account->id);
+            wp_set_auth_cookie($account->id, true);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in successfully', 403);
@@ -124,8 +132,6 @@ class Authentication
             if (empty($confirmationCode)) {
                 throw new Exception('A Confirmation Code is required to update password.', 400);
             }
-
-            
 
             $email = $request['email'];
             $confirmationCode = $request['confirmationCode'];

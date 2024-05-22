@@ -115,7 +115,7 @@ class SEVEN_TECH
 
                 $token = new Token($auth);
                 $account = new Account($auth);
-                $authentication = new Authentication($auth);
+                $authentication = new Authentication($auth, $account);
                 $authorization = new Authorization($token);
                 $password = new Password($authentication);
                 $user = new User($auth);

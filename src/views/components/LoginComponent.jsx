@@ -10,8 +10,6 @@ import {
   updateRefreshToken,
 } from '../../controllers/loginSlice';
 
-import { token } from '../../controllers/tokenSlice';
-
 import {
   getAuth,
   GoogleAuthProvider,
@@ -34,10 +32,7 @@ function LoginComponent() {
   const { loginSuccessMessage, loginErrorMessage } = useSelector(
     (state) => state.login
   );
-  const { tokenSuccessMessage, tokenErrorMessage } = useSelector(
-    (state) => state.token
-  );
-
+  
   const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
   const [location, setLocation] = useState('');
@@ -57,24 +52,18 @@ function LoginComponent() {
   }, []);
 
   useEffect(() => {
-    if (loginSuccessMessage || tokenSuccessMessage) {
-      const msg = loginSuccessMessage
-        ? loginSuccessMessage
-        : tokenSuccessMessage;
-
-      setMessage(msg);
+    if (loginSuccessMessage) {
+      setMessage(loginSuccessMessage);
       setMessageType('success');
     }
-  }, [loginSuccessMessage, tokenSuccessMessage]);
+  }, [loginSuccessMessage]);
 
   useEffect(() => {
-    if (loginErrorMessage || tokenErrorMessage) {
-      const msg = loginErrorMessage ? loginErrorMessage : tokenErrorMessage;
-
-      setMessage(msg);
+    if (loginErrorMessage) {
+      setMessage(loginErrorMessage);
       setMessageType('error');
     }
-  }, [loginErrorMessage, tokenErrorMessage]);
+  }, [loginErrorMessage]);
 
   useEffect(() => {
     if (message != '') {
@@ -114,7 +103,7 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(token(accessToken, refreshToken, location));
+      dispatch(login('', '', location));
     });
   };
 
@@ -128,7 +117,7 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(token(accessToken, refreshToken, location));
+      dispatch(login('', '', location));
     });
   };
 
@@ -142,7 +131,7 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(token(accessToken, refreshToken, location));
+      dispatch(login('', '', location));
     });
   };
 
