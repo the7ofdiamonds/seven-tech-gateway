@@ -5,6 +5,10 @@ import NavigationLoginComponent from './components/NavigationLoginComponent';
 import StatusBarComponent from './components/StatusBarComponent';
 
 import { signup } from '../controllers/signupSlice';
+import {
+  updateAccessToken,
+  updateRefreshToken,
+} from '../controllers/loginSlice';
 
 function SignUpComponent() {
   let page = 'signup';
@@ -27,8 +31,15 @@ function SignUpComponent() {
 
   const dispatch = useDispatch();
 
-  const { signupStatusCode, signupSuccessMessage, signupErrorMessage } =
-    useSelector((state) => state.signup);
+  const {
+    signupStatusCode,
+    signupSuccessMessage,
+    signupErrorMessage,
+    loginSuccessMessage,
+    loginStatusCode,
+    accessToken,
+    refreshToken,
+  } = useSelector((state) => state.signup);
 
   useEffect(() => {
     if (
@@ -47,19 +58,25 @@ function SignUpComponent() {
   }, [password, confirmPassword]);
 
   useEffect(() => {
-    if (signupStatusCode == 201) {
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 5000);
-    }
-  }, [signupStatusCode]);
-
-  useEffect(() => {
-    if (signupSuccessMessage) {
+    if (signupStatusCode == 201 && signupSuccessMessage) {
       setMessageType('success');
       setMessage(signupSuccessMessage);
     }
   }, [signupSuccessMessage]);
+
+  useEffect(() => {
+    if (
+      loginStatusCode == 201 &&
+      loginSuccessMessage &&
+      accessToken &&
+      refreshToken
+    ) {
+      setTimeout(() => {
+        setMessageType('success');
+        setMessage(loginSuccessMessage);
+      }, 3000);
+    }
+  }, [loginStatusCode, loginSuccessMessage, accessToken, refreshToken]);
 
   useEffect(() => {
     if (signupErrorMessage) {
@@ -69,13 +86,35 @@ function SignUpComponent() {
   }, [signupErrorMessage]);
 
   useEffect(() => {
-    if (message != '') {
+    if (
+      signupSuccessMessage != '' ||
+      loginSuccessMessage != ''
+    ) {
       setShowStatusBar('modal-overlay');
-      setTimeout(() => {
-        setShowStatusBar('');
-      }, 5000);
     }
-  }, [message]);
+  }, [signupSuccessMessage, loginSuccessMessage]);
+
+  useEffect(() => {
+    if (accessToken && refreshToken) {
+      dispatch(updateAccessToken(accessToken));
+      dispatch(updateRefreshToken(refreshToken));
+    }
+  }, [dispatch, accessToken, refreshToken]);
+
+  useEffect(() => {
+    if (accessToken && refreshToken && loginStatusCode == 200) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirectTo');
+
+      setTimeout(() => {
+        if (redirectTo == null) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = redirectTo;
+        }
+      }, 7000);
+    }
+  }, [dispatch, accessToken, refreshToken, loginStatusCode]);
 
   const credentials = {
     username: username,

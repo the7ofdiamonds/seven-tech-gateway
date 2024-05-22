@@ -1,14 +1,18 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import { isValidUsername, isValidPassword, isValidName, isValidPhone, isValidEmail } from '../utils/Validation';
 
-const signupUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/signup' : '/wp-json/seven-tech/v1/users/signup';
+const signupUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/signup' : '/wp-json/seven-tech/v1/account/create';
 
 const initialState = {
     signupLoading: false,
     signupError: '',
     signupSuccessMessage: '',
     signupErrorMessage: '',
-    signupStatusCode: ''
+    signupStatusCode: '',
+    loginSuccessMessage: '',
+    accessToken: '',
+    refreshToken: '',
+    loginStatusCode: ''
 };
 
 export const signup = createAsyncThunk('signup/signup', async (credentials) => {
@@ -63,7 +67,7 @@ export const signup = createAsyncThunk('signup/signup', async (credentials) => {
         });
 
         const responseData = await response.json();
-        
+
         return responseData;
     } catch (error) {
         console.error(error);
@@ -83,6 +87,11 @@ export const signupSlice = createSlice({
                 state.signupSuccessMessage = action.payload.successMessage;
                 state.signupErrorMessage = action.payload.errorMessage;
                 state.signupStatusCode = action.payload.statusCode;
+                state.loginSuccessMessage = action.payload.login.successMessage;
+                state.refreshToken = action.payload.login.refreshToken;
+                state.accessToken = action.payload.login.accessToken;
+                state.email = action.payload.login.email;
+                state.loginStatusCode = action.payload.login.statusCode;
             })
             .addMatcher(isAnyOf(
                 signup.pending,

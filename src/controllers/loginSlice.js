@@ -109,10 +109,12 @@ export const loginSlice = createSlice({
         updateAccessToken: (state, action) => {
             state.accessToken = action.payload;
             localStorage.setItem('access_token', action.payload);
+            console.log(action.payload);
         },
         updateRefreshToken: (state, action) => {
             state.refreshToken = action.payload;
             localStorage.setItem('refresh_token', action.payload);
+            console.log(action.payload);
         }
     },
     extraReducers: (builder) => {

@@ -25,7 +25,7 @@ function SettingsComponent() {
     changeSuccessMessage,
     changeErrorMessage,
     changeStatusCode,
-  } = useSelector((state) => state.change);
+  } = useSelector((state) => state.user);
   const {
     emailLoading,
     emailError,

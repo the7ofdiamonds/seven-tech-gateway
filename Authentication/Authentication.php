@@ -5,6 +5,7 @@ namespace SEVEN_TECH\Gateway\Authentication;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
+use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
@@ -14,12 +15,14 @@ use Kreait\Firebase\Auth;
 
 class Authentication
 {
+    private $validator;
     private $account;
     private $token;
     private $auth;
 
     public function __construct(Account $account, Token $token, Auth $auth)
     {
+        $this->validator = new Validator;
         $this->account = $account;
         $this->token = $token;
         $this->auth = $auth;
@@ -31,13 +34,9 @@ class Authentication
             $email = $request['email'];
             $password = $request['password'];
 
-            if (empty($email)) {
-                throw new Exception('An Email is required for login.', 400);
-            }
+            $this->validator->validEmail($email);
 
-            if (empty($password)) {
-                throw new Exception('A Password is required for login', 400);
-            }
+            $this->validator->validPassword($password);
 
             $account = $this->account->findAccount($email);
 
@@ -110,20 +109,20 @@ class Authentication
     function verifyCredentials(WP_REST_Request $request)
     {
         try {
-            if (empty($username)) {
-                throw new Exception('A Username or email is required to update password.', 400);
+            if (isset($request['email'])) {
+                throw new Exception('An email is required.', 400);
             }
 
-            if (empty($confirmationCode)) {
-                throw new Exception('A Confirmation Code is required to update password.', 400);
+            if (isset($request['confirmationCode'])) {
+                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
             }
 
             $email = $request['email'];
             $confirmationCode = $request['confirmationCode'];
 
-            if (empty($confirmationCode)) {
-                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
-            }
+            $this->validator->validEmail($email);
+
+            $this->validator->validConfirmationCode($confirmationCode);
 
             global $wpdb;
 
@@ -146,7 +145,7 @@ class Authentication
                 'statusCode' => 200
             ];
 
-            return rest_ensure_response($verifyEmailResponse);
+            return $verifyEmailResponse;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

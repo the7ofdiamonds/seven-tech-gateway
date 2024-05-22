@@ -4,6 +4,7 @@ namespace SEVEN_TECH\Gateway\Account;
 
 use Exception;
 
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
@@ -80,8 +81,10 @@ class Account
             
 // send signup email with activation code
             return $account;
-        } catch (Exception $e) {
-            throw new Exception($e);
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        }catch (Exception $e) {
+            throw new DestructuredException($e);
         }
     }
 
@@ -91,7 +94,7 @@ class Account
             if (empty($email)) {
                 throw new Exception('Email is required.', 400);
             }
-
+error_log($email);
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -101,7 +104,7 @@ class Account
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
-
+error_log(print_r($results, true));
             $account = $results[0];
 
             if (empty($account)) {
@@ -111,9 +114,12 @@ class Account
             $account->roles = $this->roles->unserializeRoles($account->roles);
 
             return $account;
-        } catch (Exception $e) {
-            throw new Exception($e);
+               } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        }catch (Exception $e) {
+            throw new DestructuredException($e);
         }
+
     }
 
     function getAccountStatus($id)
@@ -131,7 +137,7 @@ class Account
 
             return $account_status;
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -170,7 +176,7 @@ class Account
 
             return true;
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -179,10 +185,6 @@ class Account
     {
         try {
             $user = $this->findAccount($email);
-
-            if ($user == '') {
-                throw new Exception("User could not be found.", 404);
-            }
 
             $user_id = $user->id;
 
@@ -210,7 +212,7 @@ class Account
 
             return 'Account has been locked successfully.';
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -218,10 +220,6 @@ class Account
     {
         try {
             $user = $this->findAccount($email);
-
-            if ($user == '') {
-                throw new Exception("Account could not be found.", 404);
-            }
 
             global $wpdb;
 
@@ -242,7 +240,7 @@ class Account
 
             return 'Account has been unlocked succesfully.';
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -284,7 +282,7 @@ class Account
 
             return 'Account removed succesfully.';
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -328,7 +326,7 @@ class Account
  
              wp_send_json_success($message);
          } catch (Exception $e) {
-             wp_send_json_error($e->getMessage(), $e->getCode());
+            throw new DestructuredException($e);
          }
      }
 }

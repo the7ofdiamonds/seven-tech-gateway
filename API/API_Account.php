@@ -35,14 +35,15 @@ class API_Account
             $firstname = $request['firstname'];
             $lastname = $request['lastname'];
             $phone = $request['phone'];
-            $roles = $request['roles'];
+            $roles = 'subscriber';
 
             $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
-            $signupResponse = [
-                'successMessage' => $this->authentication->login($request),
-                'statusCode' => 200
-            ];
+            $signupResponse = array(
+                'successMessage' => 'You have been signed up successfully.',
+                'statusCode' => 201,
+                'login' => $this->authentication->login($request)
+            );
 
             return rest_ensure_response($signupResponse);
         } catch (Exception $e) {
