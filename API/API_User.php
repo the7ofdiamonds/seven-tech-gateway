@@ -14,7 +14,6 @@ use WP_REST_Request;
 class API_User
 {
     private $authorization;
-    private $token;
     private $user;
     private $authentication;
 
@@ -52,35 +51,29 @@ class API_User
         }
     }
 
-    // Send username changed email
     function changeUsername(WP_REST_Request $request)
     {
         try {
-            // Authorization
+            $authorized = $this->authorization->isAuthorized($request);
+
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
+
+            if (!isset($request['email'])) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (!isset($request['username'])) {
+                throw new Exception('Username is required.', 400);
+            }
+
+            $email = $request['email'];
             $username = $request['username'];
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $email = $userData->email;
-            $password = $userData->password;
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                "CALL changeUsername('$email', '$password', '$username')"
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
-                throw new Exception('Username could not be updated at this time.', 500);
-            }
 
             $updateUsernameResponse = [
-                'successMessage' => "Username has been changed to {$username} succesfully.",
+                'successMessage' => $this->user->changeUsername($email, $username),
+                'username' => $username,
                 'statusCode' => 200
             ];
 
@@ -90,109 +83,124 @@ class API_User
         }
     }
 
-
-    // Send name changed email
     function changeName(WP_REST_Request $request)
     {
         try {
-            // Authorization
+            $authorized = $this->authorization->isAuthorized($request);
 
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-
-            $email = $userData->email;
-            $password = $userData->password;
-
-            $firstname = $request['firstName'];
-
-            if (empty($firstname)) {
-                throw new Exception('First name is required.', 400);
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
             }
 
-            $lastname = $request['lastName'];
+            if (!isset($request['email'])) {
+                throw new Exception('Email is required.', 400);
+            }
+            $email = $request['email'];
+            $firstname = '';
+            $lastname = '';
 
-            if (empty($lastname)) {
-                throw new Exception('Last name is required.', 400);
+            if (isset($request['first_name'])) {
+                $firstname = $request['first_name'];
             }
 
-            global $wpdb;
+            if (isset($request['last_name'])) {
+                $lastname = $request['last_name'];
+            }
+            error_log(print_r($firstname, true));
+            if ($firstname != '' && $lastname != '') {
+                $this->user->changeFirstName($email, $firstname);
 
-            $results = $wpdb->get_results(
-                "CALL changeFirstName('$email', '$password', '$firstname')"
-            );
+                $this->user->changeLastName($email, $lastname);
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+                $changeNameResponse = [
+                    'successMessage' => "Your name has been changed to {$firstname} {$lastname} succesfully.",
+                    'firstname' => $firstname,
+                    'lastname' => $lastname,
+                    'statusCode' => 200
+                ];
+                error_log(print_r($changeNameResponse, true));
+                return rest_ensure_response($changeNameResponse);
             }
 
-            $results = $results[0]->resultSet;
+            if ($firstname != '') {
+                $changeNameResponse = [
+                    'successMessage' => $this->user->changeFirstName($email, $firstname),
+                    'firstname' => $firstname,
+                    'statusCode' => 200
+                ];
 
-            if (!$results) {
-                throw new Exception('First name could not be changed at this time.', 400);
+                return rest_ensure_response($changeNameResponse);
             }
 
-            $results = $wpdb->get_results(
-                "CALL changeLastName('$email', '$password', '$lastname')"
-            );
+            if ($lastname != '') {
+                $changeNameResponse = [
+                    'successMessage' => $this->user->changeLastName($email, $lastname),
+                    'lastname' => $lastname,
+                    'statusCode' => 200
+                ];
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+                return rest_ensure_response($changeNameResponse);
             }
-
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
-                throw new Exception('Last name could not be changed at this time.', 400);
-            }
-
-            $changeNameResponse = [
-                'successMessage' => "Your name has been changed to {$firstname} {$lastname} succesfully.",
-                'firstname' => $firstname,
-                'lastname' => $lastname,
-                'statusCode' => 200
-            ];
-
-            return rest_ensure_response($changeNameResponse);
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
-    // Change nickname
+    function changeNickname(WP_REST_Request $request)
+    {
+        try {
+            $authorized = $this->authorization->isAuthorized($request);
 
-    // Send phone number changed email
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
+
+            if (!isset($request['email'])) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (!isset($request['nickname'])) {
+                throw new Exception('Nick name is required.', 400);
+            }
+
+            $email = $request['email'];
+            $nickname = $request['nickName'];
+
+            $changeNickNameResponse = [
+                'successMessage' => $this->user->changeNickname($email, $nickname),
+                'nickname' => $nickname,
+                'statusCode' => 200
+            ];
+
+            return rest_ensure_response($changeNickNameResponse);
+        } catch (Exception $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
+        }
+    }
+
     function changePhone(WP_REST_Request $request)
     {
         try {
-            // Authorization
+            $authorized = $this->authorization->isAuthorized($request);
 
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
+
+            if (!isset($request['email'])) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (!isset($request['phone'])) {
+                throw new Exception('Phone is required.', 400);
+            }
+
+            $email = $request['email'];
             $phone = '+' . $request['phone'];
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $email = $userData->email;
-            $password = $userData->password;
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                "CALL changePhoneNumber('$email', '$password', '$phone')"
-            );
-
-            if ($wpdb->last_error) {
-                $statusCode = 500;
-                error_log("Error executing stored procedure: " . $wpdb->last_error);
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, $statusCode);
-            }
-
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
-                $statusCode = 500;
-                throw new Exception('Phone number could not be changed at this time.', $statusCode);
-            }
 
             $changePhoneResponse = [
-                'successMessage' => "You phone number has been changed to {$phone} succesfully.",
+                'successMessage' => $this->user->changePhone($email, $phone),
+                'phone' => $phone,
                 'statusCode' => 200
             ];
 
@@ -202,22 +210,18 @@ class API_User
         }
     }
 
-
     public function addUserRole(WP_REST_Request $request)
     {
         try {
-            // Authorization
+            $authorized = $this->authorization->isAuthorized($request);
 
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $id = $userData->id;
-            $roleName = $request['role_name'];
-            $roleDisplayName = $request['role_display_name'];
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
 
-            $statusCode = 200;
             $addUserRoleResponse = [
-                'successMessage' => $this->user->addUserRole($id, $roleName, $roleDisplayName),
-                'statusCode' => $statusCode
+                'successMessage' => $this->user->addUserRole($authorized->id, $request['role_name'], $request['role_display_name']),
+                'statusCode' => 200
             ];
 
             return rest_ensure_response($addUserRoleResponse);
@@ -229,16 +233,14 @@ class API_User
     public function removeUserRole(WP_REST_Request $request)
     {
         try {
-            // Authorization
+            $authorized = $this->authorization->isAuthorized($request);
 
-            $accessToken = $this->token->getToken($request);
-            $userData = $this->token->findUserWithToken($accessToken);
-            $id = $userData->id;
-            $roleName = $request['role_name'];
-            $roleDisplayName = $request['role_display_name'];
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
 
             $removeUserRoleResponse = [
-                'successMessage' => $this->user->removeUserRole($id, $roleName, $roleDisplayName),
+                'successMessage' => $this->user->removeUserRole($authorized->id, $request['role_name'], $request['role_display_name']),
                 'statusCode' => 200
             ];
 

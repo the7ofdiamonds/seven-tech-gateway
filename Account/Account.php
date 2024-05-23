@@ -94,7 +94,7 @@ class Account
             if (empty($email)) {
                 throw new Exception('Email is required.', 400);
             }
-error_log($email);
+
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -104,7 +104,7 @@ error_log($email);
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
-error_log(print_r($results, true));
+
             $account = $results[0];
 
             if (empty($account)) {

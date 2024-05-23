@@ -54,7 +54,11 @@ class API_Account
     function lockAccount(WP_REST_Request $request)
     {
         try {
-            $this->authorization->verifyCredentials($request);
+            $authorized = $this->authorization->isAuthorized($request);
+
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
 
             $lockedAccount = $this->account->lockAccount($request['email']);
 
@@ -67,7 +71,11 @@ class API_Account
     function unlockAccount(WP_REST_Request $request)
     {
         try {
-            $this->authorization->verifyCredentials($request);
+            $verified = $this->authentication->verifyCredentials($request);
+
+            if (!$verified) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
 
             $unlockedAccount = $this->account->unlockAccount($request['email']);
 
@@ -80,7 +88,11 @@ class API_Account
     function enableAccount(WP_REST_Request $request)
     {
         try {
-            $this->authorization->verifyCredentials($request);
+            $verified = $this->authentication->verifyCredentials($request);
+
+            if (!$verified) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
 
             $enabledAccount = $this->account->enableAccount($request['email']);
 

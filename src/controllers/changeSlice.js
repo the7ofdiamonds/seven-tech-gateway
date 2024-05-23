@@ -39,6 +39,7 @@ export const updateChangeErrorMessage = () => {
 export const changeName = createAsyncThunk('change/changeName', async ({ firstName, lastName }) => {
     try {
         const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         if (!accessToken) {
             throw new Error("An access token is required to change your name.");
@@ -64,11 +65,13 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName
+                email: 'jamel.c.lyons@me.com',
+                first_name: firstName,
+                last_name: lastName
             })
         });
 

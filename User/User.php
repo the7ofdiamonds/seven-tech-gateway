@@ -57,7 +57,9 @@ class User
             }
 
             return $results[0];
-        } catch (Exception | DestructuredException $e) {
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
@@ -90,36 +92,187 @@ class User
             ];
 
             return $user;
-        } catch (Exception | DestructuredException $e) {
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    public function addUserRole($id, $roleName, $roleDisplayName)
+    // Send username changed email
+    function changeUsername($email, $username)
     {
         try {
-            if (empty($id)) {
-                throw new Exception('ID is required.');
+            if (empty($email)) {
+                throw new Exception('Email is required.', 400);
             }
 
-            $roleExists = $this->roles->roleExists($roleName, $roleDisplayName);
-
-            if ($roleExists == false) {
-                return "Role {$roleDisplayName} does not exits.";
+            if (empty($username)) {
+                throw new Exception('Username is required.', 400);
             }
 
-            $user = new WP_User($id);
-            $user->add_role($roleName);
+            global $wpdb;
 
-            $email = $user->user_email;
-            $updated = wp_update_user($user);
+            $results = $wpdb->get_results(
+                "CALL changeUsername('$email', '$username')"
+            );
 
-            if (!is_int($updated)) {
-                return "There has been an error adding user role.";
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            return "A Role of {$roleDisplayName} has been added to the user with the email {$email}.";
-        } catch (Exception | DestructuredException $e) {
+            $results = $results[0]->resultSet;
+
+            if (!$results) {
+                throw new Exception('Username could not be updated at this time.', 500);
+            }
+
+            return "Username has been changed to {$username} succesfully.";
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    // Send name changed email
+    function changeFirstName($email, $firstname)
+    {
+        try {
+            if (empty($email)) {
+                throw new Exception('Email is required to change first name.', 400);
+            }
+
+            if (empty($firstname)) {
+                throw new Exception('First name is required to change first name.', 400);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                "CALL changeFirstName('$email', '$firstname')"
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            // $results = $results[0]->resultSet;
+            error_log(print_r($results, true));
+            // if (!$results) {
+            //     throw new Exception('First name could not be changed at this time.', 400);
+            // }
+
+            return "Your first name has been changed to {$firstname} succesfully.";
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function changeLastName($email, $lastname)
+    {
+        try {
+            if (empty($email)) {
+                throw new Exception('Email is required to change last name.', 400);
+            }
+
+            if (empty($lastname)) {
+                throw new Exception('Last name is required to change last name.', 400);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                "CALL changeLastName('$email', '$lastname')"
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            $results = $results[0]->resultSet;
+
+            if (!$results) {
+                throw new Exception('Last name could not be changed at this time.', 400);
+            }
+
+            return "Your last name has been changed to {$lastname} succesfully.";
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function changeNickname($email, $nickname)
+    {
+        try {
+            if (empty($email)) {
+                throw new Exception('Email is required to change nick name.', 400);
+            }
+
+            if (empty($nickname)) {
+                throw new Exception('Nick name is required to change nick name.', 400);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                "CALL changeNickName('$email', '$nickname')"
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            $results = $results[0]->resultSet;
+
+            if (!$results) {
+                throw new Exception('Nick name could not be changed at this time.', 400);
+            }
+
+            return "Your nickname has been changed to {$nickname} succesfully.";
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    // Send phone number changed email
+    function changePhone($email, $phone)
+    {
+        try {
+            if (empty($email)) {
+                throw new Exception('Email is required to change phone number.', 400);
+            }
+
+            if (empty($phone)) {
+                throw new Exception('Phone number is required to change phone number.', 400);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                "CALL changePhoneNumber('$email', '$phone')"
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            $results = $results[0]->resultSet;
+
+            if (!$results) {
+                throw new Exception('Phone number could not be changed at this time.', 500);
+            }
+
+            return "You phone number has been changed to {$phone} succesfully.";
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
@@ -127,6 +280,10 @@ class User
     public function getUserRoles($id, $roles = '')
     {
         try {
+            if (empty($id)) {
+                throw new Exception('ID is required to get roles.');
+            }
+
             if (empty($roles)) {
                 $user = new WP_User($id);
                 $roles = $user->roles;
@@ -148,27 +305,76 @@ class User
             }
 
             return $user_roles;
-        } catch (Exception | DestructuredException $e) {
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    public function removeUserRole($id, $role)
+    public function addUserRole($id, $roleName, $roleDisplayName)
     {
         try {
+            if (empty($id)) {
+                throw new Exception('ID is required to add role.');
+            }
+
+            if (empty($roleName)) {
+                throw new Exception('Role name is required to add role.');
+            }
+
+            if (empty($roleDisplayName)) {
+                throw new Exception('Role display name is required to add role.');
+            }
+
+            $roleExists = $this->roles->roleExists($roleName, $roleDisplayName);
+
+            if ($roleExists == false) {
+                throw new Exception("Role {$roleDisplayName} does not exits.", 404);
+            }
+
+            $user = new WP_User($id);
+            $user->add_role($roleName);
+
+            $email = $user->user_email;
+            $updated = wp_update_user($user);
+
+            if (!is_int($updated)) {
+                throw new Exception("There has been an error adding user role.", 500);
+            }
+
+            return "A Role of {$roleDisplayName} has been added to the user with the email {$email}.";
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    public function removeUserRole($id, $roleName)
+    {
+        try {
+            if (empty($id)) {
+                throw new Exception('ID is required to add role.');
+            }
+
+            if (empty($roleName)) {
+                throw new Exception('Role name is required to add role.');
+            }
+
             $user = new WP_User($id);
             $user_roles = $user->roles;
 
             $hasRole = false;
 
             foreach ($user_roles as $user_role) {
-                if ($role == $user_role) {
+                if ($roleName == $user_role) {
                     $hasRole = true;
                 }
             }
 
             if ($hasRole) {
-                $user->remove_role($role);
+                $user->remove_role($roleName);
             }
 
             $updated = wp_update_user($user);
@@ -177,8 +383,10 @@ class User
                 return "There has been an error removing user role.";
             }
 
-            return "User role {$role} has been removed successfully";
-        } catch (Exception | DestructuredException $e) {
+            return "User role {$roleName} has been removed successfully";
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
@@ -186,17 +394,27 @@ class User
     public function changeUserNicename($id, $nicename)
     {
         try {
+            if (empty($id)) {
+                throw new Exception('ID is required to change nicename.', 400);
+            }
+
+            if (empty($nicename)) {
+                throw new Exception('Nicename is required to change nicename.', 400);
+            }
+
             $user = new WP_User($id);
             $user->user_nicename = $nicename;
 
             $updated = wp_update_user($user);
 
             if (!is_int($updated)) {
-                return "There has been an error updating User nice name.";
+                throw new Exception("There has been an error updating User nice name.", 500);
             }
 
             return "User nicename has been changed to {$nicename} successfully";
-        } catch (Exception | DestructuredException $e) {
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }

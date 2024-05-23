@@ -12,6 +12,7 @@ use WP_REST_Request;
 
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 
 class Token
 {
@@ -22,6 +23,11 @@ class Token
     {
         $this->auth = $auth;
         $this->account = $account;
+    }
+
+    function getVerifiedToken($token)
+    {
+        return $this->auth->verifyIdToken($token, true);
     }
 
     function getAccessToken(WP_REST_Request $request)
@@ -40,8 +46,12 @@ class Token
                 throw new Exception('Access Token could not be found.', 403);
             }
 
-            return $this->auth->verifyIdToken($accessToken);
+            return $this->auth->verifyIdToken($accessToken, true);
         } catch (FailedToVerifyToken $e) {
+            throw new DestructuredException($e);
+        } catch (RevokedIdToken $e) {
+            throw new DestructuredException($e);
+        } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
@@ -53,12 +63,35 @@ class Token
         try {
             $headers = $request->get_headers();
 
-            if (!isset($headers['refresh_token'][0])) {
+            if (!isset($headers['refresh_token'])) {
                 throw new Exception('A Refresh Token is required to gain permission and access.', 403);
             }
 
-            return $this->auth->verifyIdToken($headers['refresh_token'][0]);
+            return (string) $headers['refresh_token'][0];
         } catch (FailedToVerifyToken $e) {
+            throw new DestructuredException($e);
+        } catch (RevokedIdToken $e) {
+            throw new DestructuredException($e);
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function findUserWithToken($accessToken)
+    {
+        try {
+            $verifiedAccessToken = $this->getVerifiedToken($accessToken);
+
+            $email = $verifiedAccessToken->claims()->get('email');
+
+            $account = $this->account->findAccount($email);
+
+            return $account;
+        } catch (FailedToVerifyToken $e) {
+            throw new DestructuredException($e);
+        } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
@@ -68,38 +101,13 @@ class Token
     function signInWithRefreshToken(WP_REST_Request $request)
     {
         try {
-            $headers = $request->get_headers();
+            $refreshToken = $this->getRefreshToken($request);
 
-            if (!isset($headers['authorization'][0])) {
-                throw new Exception('User could not be found please signup to gain permission and access.', 404);
-            }
+            $signedInUser = $this->auth->signInWithRefreshToken($refreshToken);
 
-            if (!isset($headers['refresh_token'][0])) {
-                throw new Exception('A Refresh Token is required to gain permission and access.', 404);
-            }
+            $account = $this->findUserWithToken($signedInUser->idToken());
 
-            $account = $this->findUserWithToken($request);
-
-            $signedInUser = $this->auth->signInWithRefreshToken($headers['refresh_token'][0]);
-
-            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken());
-        } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function findUserWithToken(WP_REST_Request $request)
-    {
-        try {
-            $accessToken = $this->getAccessToken($request);
-
-            $email = $accessToken->claims()->get('email');
-
-            $account = $this->account->findAccount($email);
-
-            return $account;
+            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles);
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {

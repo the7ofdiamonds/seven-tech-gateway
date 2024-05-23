@@ -54,7 +54,7 @@ class Authentication
 
             $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
 
-            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken());
+            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -140,12 +140,7 @@ class Authentication
                 throw new Exception("There was an error verifying your account please try again at another time.", 500);
             }
 
-            $verifyEmailResponse = [
-                'successMessage' => 'Your credentials have been verified.',
-                'statusCode' => 200
-            ];
-
-            return $verifyEmailResponse;
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
