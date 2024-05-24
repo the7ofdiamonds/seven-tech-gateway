@@ -3,6 +3,7 @@ import { isValidEmail, isValidPassword, isValidConfirmationCode } from '../utils
 
 const sendUnlockAccountEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/unlock-account" : "/wp-json/seven-tech/v1/email/unlock-account";
 const sendRemoveAccountEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/remove-account" : "/wp-json/seven-tech/v1/email/remove-account";
+const lockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/lock-account" : "/wp-json/seven-tech/v1/account/lock";
 const unlockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/unlock-account" : "/wp-json/seven-tech/v1/account/unlock";
 const removeAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/remove-account" : "/wp-json/seven-tech/v1/account/disable";
 
@@ -102,6 +103,31 @@ export const sendRemoveAccountEmail = createAsyncThunk('account/sendRemoveAccoun
         }
 
         const response = await fetch(`${sendRemoveAccountEmailUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+});
+
+export const lockAccount = createAsyncThunk('account/lockAccount', async (email) => {
+    try {
+        if (isValidEmail(email) == false) {
+            throw new Error("Email is not valid.");
+        }
+
+        const response = await fetch(`${lockAccountUrl}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

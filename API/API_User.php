@@ -51,6 +51,32 @@ class API_User
         }
     }
 
+    function getUser(WP_REST_Request $request)
+    {
+        try {
+            $authorized = $this->authorization->isAuthorized($request);
+
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
+
+            if (!isset($request['email'])) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            $email = $request['email'];
+
+            $getUserResponse = [
+                'user' => $this->user->getUser($email),
+                'statusCode' => 200
+            ];
+
+            return rest_ensure_response($getUserResponse);
+        } catch (Exception $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
+        }
+    }
+
     function changeUsername(WP_REST_Request $request)
     {
         try {
@@ -178,7 +204,7 @@ class API_User
         }
     }
 
-    function changePhone(WP_REST_Request $request)
+    function changeNicename(WP_REST_Request $request)
     {
         try {
             $authorized = $this->authorization->isAuthorized($request);
@@ -191,20 +217,20 @@ class API_User
                 throw new Exception('Email is required.', 400);
             }
 
-            if (!isset($request['phone'])) {
-                throw new Exception('Phone is required.', 400);
+            if (!isset($request['nicename'])) {
+                throw new Exception('Nice name is required.', 400);
             }
 
             $email = $request['email'];
-            $phone = '+' . $request['phone'];
+            $nicename = $request['nicename'];
 
-            $changePhoneResponse = [
-                'successMessage' => $this->user->changePhone($email, $phone),
-                'phone' => $phone,
+            $changeNickNameResponse = [
+                'successMessage' => $this->user->changeNicename($email, $nicename),
+                'nicename' => $nicename,
                 'statusCode' => 200
             ];
 
-            return rest_ensure_response($changePhoneResponse);
+            return rest_ensure_response($changeNickNameResponse);
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -245,6 +271,38 @@ class API_User
             ];
 
             return rest_ensure_response($removeUserRoleResponse);
+        } catch (Exception $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
+        }
+    }
+
+    function changePhone(WP_REST_Request $request)
+    {
+        try {
+            $authorized = $this->authorization->isAuthorized($request);
+
+            if (!$authorized) {
+                throw new Exception('You do not have permission to perform this action', 403);
+            }
+
+            if (!isset($request['email'])) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (!isset($request['phone'])) {
+                throw new Exception('Phone is required.', 400);
+            }
+
+            $email = $request['email'];
+            $phone = '+' . $request['phone'];
+
+            $changePhoneResponse = [
+                'successMessage' => $this->user->changePhone($email, $phone),
+                'phone' => $phone,
+                'statusCode' => 200
+            ];
+
+            return rest_ensure_response($changePhoneResponse);
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }

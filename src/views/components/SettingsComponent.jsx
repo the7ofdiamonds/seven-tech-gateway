@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { changePassword } from '../../controllers/passwordSlice';
 import {
-  changePassword,
-  sendForgotPasswordEmail,
-} from '../../controllers/passwordSlice';
-import {
-  changeName,
-  changePhone,
   changeUsername,
+  changeName,
+  changeNickname,
+  changeNicename,
+  changePhone,
 } from '../../controllers/changeSlice';
-// import { removeEmail } from '../../controllers/emailSlice';
 import { logout, logoutAll, logoutAllUrl } from '../../controllers/logoutSlice';
-import { sendRemoveAccountEmail } from '../../controllers/accountSlice';
+import { lockAccount } from '../../controllers/accountSlice';
 
 import StatusBarComponent from './StatusBarComponent';
 
@@ -59,13 +57,14 @@ function SettingsComponent() {
     phone,
   } = useSelector((state) => state.account);
 
-  const [firstName, setFirstNameChange] = useState(firstname);
-  const [lastName, setLastNameChange] = useState(lastname);
-  const [usernameChange, setUsernameChange] = useState(username);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [usernameChange, setUsernameChange] = useState(username);
+  const [firstName, setFirstNameChange] = useState(firstname);
+  const [lastName, setLastNameChange] = useState(lastname);
+  const [nicknameChange, setNicknameChange] = useState(nickname);
+  const [nicenameChange, setNicenameChange] = useState(nicename);
   const [phoneChange, setPhoneChange] = useState(phone);
-  const [emailRemove, setEmailRemove] = useState('');
 
   const [showStatusBar, setShowStatusBar] = useState('');
   const [messageType, setMessageType] = useState('');
@@ -176,56 +175,7 @@ function SettingsComponent() {
     message,
   ]);
 
-  const handleChangeNameChangeFirst = (e) => {
-    e.preventDefault();
-
-    if (e.target.name == 'firstname') {
-      setFirstNameChange(e.target.value);
-    }
-  };
-
-  const handleChangeNameChangeLast = (e) => {
-    e.preventDefault();
-
-    if (e.target.name == 'lastname') {
-      setLastNameChange(e.target.value);
-    }
-  };
-
-  const handleChangeName = (e) => {
-    e.preventDefault();
-
-    if (firstName !== '' || lastName !== '') {
-      dispatch(changeName({ firstName, lastName })).then((response) => {
-        if (response.payload.statusCode == 201) {
-          dispatch(updateAccountFirstName(response.payload.firstname));
-          dispatch(updateAccountLastName(response.payload.lastname));
-        }
-      });
-    }
-  };
-
-  {
-    /* Create Change Title (roles) */
-  }
-
-  const handleChangeUsernameChange = (e) => {
-    e.preventDefault();
-
-    if (e.target.name == 'username') {
-      setUsernameChange(e.target.value);
-    }
-  };
-
-  const handleChangeUsername = (e) => {
-    e.preventDefault();
-
-    if (usernameChange != '') {
-      dispatch(changeUsername(usernameChange));
-    }
-  };
-
-  const handleChangePasswordChange = (e) => {
+  const updatePassword = (e) => {
     e.preventDefault();
 
     if (e.target.name == 'password') {
@@ -249,7 +199,88 @@ function SettingsComponent() {
     }
   };
 
-  const handleChangePhoneChange = (e) => {
+  const updateUsername = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'username') {
+      setUsernameChange(e.target.value);
+    }
+  };
+
+  const handleChangeUsername = (e) => {
+    e.preventDefault();
+
+    if (usernameChange != '') {
+      dispatch(changeUsername(usernameChange));
+    }
+  };
+
+  const updateFirstName = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'firstname') {
+      setFirstNameChange(e.target.value);
+    }
+  };
+
+  const updateLastName = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'lastname') {
+      setLastNameChange(e.target.value);
+    }
+  };
+
+  const handleChangeName = (e) => {
+    e.preventDefault();
+
+    if (firstName !== '' || lastName !== '') {
+      dispatch(changeName({ firstName, lastName })).then((response) => {
+        if (response.payload.statusCode == 201) {
+          dispatch(updateAccountFirstName(response.payload.firstname));
+          dispatch(updateAccountLastName(response.payload.lastname));
+        }
+      });
+    }
+  };
+
+  const updateNickname = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'nickname') {
+      setNicknameChange(e.target.value);
+    }
+  };
+
+  const handleChangeNickname = (e) => {
+    e.preventDefault();
+
+    if (nicknameChange != '') {
+      dispatch(changeNickname(nicknameChange));
+    }
+  };
+
+  const updateNicename = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'nicename') {
+      setNicenameChange(e.target.value);
+    }
+  };
+
+  const handleChangeNicename = (e) => {
+    e.preventDefault();
+
+    if (nicenameChange != '') {
+      dispatch(changeNicename(nicenameChange));
+    }
+  };
+
+  {
+    /* Create Change Title (roles) */
+  }
+
+  const updatePhone = (e) => {
     e.preventDefault();
 
     if (e.target.name == 'phone') {
@@ -283,14 +314,12 @@ function SettingsComponent() {
     }
   };
 
-  const handleRemoveAccount = () => {
+  const handleLockAccount = () => {
     if (email != '' || localStorage.getItem('email') != '') {
-      dispatch(
-        sendRemoveAccountEmail(email ? email : localStorage.getItem('email'))
-      );
+      dispatch(lockAccount(email ? email : localStorage.getItem('email')));
     } else {
       setMessageType('error');
-      setMessage('An email is required to remove your account.');
+      setMessage('An email is required to lock your account.');
     }
   };
 
@@ -299,6 +328,49 @@ function SettingsComponent() {
       <main className="settings">
         <h2>Settings</h2>
 
+        <span className="change-password">
+          <input
+            className="input-password"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onChange={updatePassword}
+          />
+
+          <input
+            className="input-password"
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={updatePassword}
+          />
+
+          <div className="action">
+            <button onClick={handleChangePassword}>
+              <h3>Change Password</h3>
+            </button>
+          </div>
+        </span>
+
+        <span className="change-username">
+          <input
+            className="input-username"
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={usernameChange}
+            onChange={updateUsername}
+          />
+
+          <div className="action">
+            <button onClick={handleChangeUsername}>
+              <h3>Change Username</h3>
+            </button>
+          </div>
+        </span>
+
         <span className="change-name">
           <input
             className="input-name"
@@ -306,7 +378,7 @@ function SettingsComponent() {
             name="firstname"
             placeholder="First Name"
             value={firstName}
-            onChange={handleChangeNameChangeFirst}
+            onChange={updateFirstName}
           />
 
           <input
@@ -315,7 +387,7 @@ function SettingsComponent() {
             name="lastname"
             placeholder="Last Name"
             value={lastName}
-            onChange={handleChangeNameChangeLast}
+            onChange={updateLastName}
           />
 
           <div className="action">
@@ -325,24 +397,41 @@ function SettingsComponent() {
           </div>
         </span>
 
-        {/* Create Change Title (roles) */}
-
-        <span className="change-username">
+        <span className="change-nickname">
           <input
-            className="input-username"
+            className="input-name"
             type="text"
-            name="username"
-            placeholder="Username"
-            value={usernameChange}
-            onChange={handleChangeUsernameChange}
+            name="nickname"
+            placeholder="Nickname"
+            value={nickname}
+            onChange={updateNickname}
           />
-          
+
           <div className="action">
-            <button onClick={handleChangeUsername}>
-              <h3>Change Username</h3>
+            <button onClick={handleChangeNickname}>
+              <h3>Change Nickname</h3>
             </button>
           </div>
         </span>
+
+        <span className="change-nicename">
+          <input
+            className="input-name"
+            type="text"
+            name="nicename"
+            placeholder="Nicename"
+            value={nicename}
+            onChange={updateNicename}
+          />
+
+          <div className="action">
+            <button onClick={handleChangeNicename}>
+              <h3>Change Nicename</h3>
+            </button>
+          </div>
+        </span>
+
+        {/* Create Change Title (roles) */}
 
         <span className="change-phone">
           <input
@@ -351,40 +440,12 @@ function SettingsComponent() {
             name="phone"
             placeholder="Phone Number"
             value={phoneChange}
-            onChange={handleChangePhoneChange}
+            onChange={updatePhone}
           />
 
           <div className="action">
             <button onClick={handleChangePhone}>
               <h3>Change Phone</h3>
-            </button>
-          </div>
-        </span>
-
-        {/* Needs send email */}
-
-        <span className="change-password">
-          <input
-            className="input-password"
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={handleChangePasswordChange}
-          />
-
-          <input
-            className="input-password"
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={handleChangePasswordChange}
-          />
-
-          <div className="action">
-            <button onClick={handleChangePassword}>
-              <h3>Change Password</h3>
             </button>
           </div>
         </span>
@@ -401,9 +462,9 @@ function SettingsComponent() {
           )}
         </span>
 
-        <span className="remove-account">
-          <button onClick={handleRemoveAccount}>
-            <h3>REMOVE ACCOUNT</h3>
+        <span className="lock-account">
+          <button onClick={handleLockAccount}>
+            <h3>LOCK ACCOUNT</h3>
           </button>
         </span>
 

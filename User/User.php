@@ -64,6 +64,41 @@ class User
         }
     }
 
+    public function getUserRoles($id, $roles = '')
+    {
+        try {
+            if (empty($id)) {
+                throw new Exception('ID is required to get roles.');
+            }
+
+            if (empty($roles)) {
+                $user = new WP_User($id);
+                $roles = $user->roles;
+            }
+
+            $wp_roles = wp_roles()->get_names();
+
+            $user_roles = [];
+
+            foreach ($wp_roles as $roleKey => $roleValue) {
+                foreach ($roles as $role) {
+                    if ($roleKey == $role) {
+                        $user_roles[] = [
+                            'name' => $roleKey,
+                            'display_name' => $roleValue
+                        ];
+                    }
+                }
+            }
+
+            return $user_roles;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     public function getUser($query_param)
     {
         try {
@@ -249,72 +284,27 @@ class User
         }
     }
 
-    // Send phone number changed email
-    function changePhone($email, $phone)
+    public function changeNicename($email, $nicename)
     {
         try {
             if (empty($email)) {
-                throw new Exception('Email is required to change phone number.', 400);
+                throw new Exception('Email is required to change nicename.', 400);
             }
 
-            if (empty($phone)) {
-                throw new Exception('Phone number is required to change phone number.', 400);
+            if (empty($nicename)) {
+                throw new Exception('Nicename is required to change nicename.', 400);
             }
 
-            global $wpdb;
+            $user = new WP_User($email);
+            $user->user_nicename = $nicename;
 
-            $results = $wpdb->get_results(
-                "CALL changePhoneNumber('$email', '$phone')"
-            );
+            $updated = wp_update_user($user);
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if (!is_int($updated)) {
+                throw new Exception("There has been an error updating User nice name.", 500);
             }
 
-            if (!isset($results[0])) {
-                throw new Exception('Phone number could not be changed at this time.', 500);
-            }
-
-            if (!$results[0]->resultSet) {
-                throw new Exception('Account with this email could not be found.', 404);
-            }
-
-            return "You phone number has been changed to {$phone} succesfully.";
-        } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    public function getUserRoles($id, $roles = '')
-    {
-        try {
-            if (empty($id)) {
-                throw new Exception('ID is required to get roles.');
-            }
-
-            if (empty($roles)) {
-                $user = new WP_User($id);
-                $roles = $user->roles;
-            }
-
-            $wp_roles = wp_roles()->get_names();
-
-            $user_roles = [];
-
-            foreach ($wp_roles as $roleKey => $roleValue) {
-                foreach ($roles as $role) {
-                    if ($roleKey == $role) {
-                        $user_roles[] = [
-                            'name' => $roleKey,
-                            'display_name' => $roleValue
-                        ];
-                    }
-                }
-            }
-
-            return $user_roles;
+            return "User nicename has been changed to {$nicename} successfully";
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -401,27 +391,37 @@ class User
         }
     }
 
-    public function changeUserNicename($id, $nicename)
+    // Send phone number changed email
+    function changePhone($email, $phone)
     {
         try {
-            if (empty($id)) {
-                throw new Exception('ID is required to change nicename.', 400);
+            if (empty($email)) {
+                throw new Exception('Email is required to change phone number.', 400);
             }
 
-            if (empty($nicename)) {
-                throw new Exception('Nicename is required to change nicename.', 400);
+            if (empty($phone)) {
+                throw new Exception('Phone number is required to change phone number.', 400);
             }
 
-            $user = new WP_User($id);
-            $user->user_nicename = $nicename;
+            global $wpdb;
 
-            $updated = wp_update_user($user);
+            $results = $wpdb->get_results(
+                "CALL changePhoneNumber('$email', '$phone')"
+            );
 
-            if (!is_int($updated)) {
-                throw new Exception("There has been an error updating User nice name.", 500);
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            return "User nicename has been changed to {$nicename} successfully";
+            if (!isset($results[0])) {
+                throw new Exception('Phone number could not be changed at this time.', 500);
+            }
+
+            if (!$results[0]->resultSet) {
+                throw new Exception('Account with this email could not be found.', 404);
+            }
+
+            return "You phone number has been changed to {$phone} succesfully.";
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

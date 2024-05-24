@@ -4,7 +4,8 @@ import { isValidUsername, isValidPhone, isValidName, isValidEmail} from '../util
 const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-name' : "/wp-json/seven-tech/v1/user/change-name";
 const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-phone' : "/wp-json/seven-tech/v1/user/change-phone";
 const changeUsernameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-username' : "/wp-json/seven-tech/v1/user/change-username";
-const changeUserNicenameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nicename' : "/wp-json/seven-tech/v1/user/change-nicename";
+const changeNicknameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nickname' : "/wp-json/seven-tech/v1/user/change-nickname";
+const changeNicenameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nicename' : "/wp-json/seven-tech/v1/user/change-nicename";
 const addUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/add-role' : "/wp-json/seven-tech/v1/user/roles/add-role";
 const removeUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/remove-role' : "/wp-json/seven-tech/v1/user/roles/remove-role";
 
@@ -35,6 +36,50 @@ export const updateChangeErrorMessage = () => {
         payload: ''
     };
 };
+
+export const changeUsername = createAsyncThunk('change/changeUsername', async (username) => {
+    try {
+        const email = localStorage.getItem('email');
+        const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
+
+        if (accessToken == '') {
+            throw Error("An access token is required to change your username.")
+        }
+
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
+        }
+
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
+        }
+
+        if (!isValidUsername(username)) {
+            throw Error("Username is not valid.")
+        }
+
+        const response = await fetch(`${changeUsernameUrl}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                username: username
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+});
 
 export const changeName = createAsyncThunk('change/changeName', async ({ firstName, lastName }) => {
     try {
@@ -81,51 +126,7 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
     }
 });
 
-export const changePhone = createAsyncThunk('change/changePhone', async (phone) => {
-    try {
-        const email = localStorage.getItem('email');
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (accessToken == '') {
-            throw Error("An access token is required to change your phone number.")
-        }
-
-        if (refreshToken == '') {
-            throw Error("An refresh token is required to change your username.")
-        }
-
-        if (!isValidEmail(email)) {
-            throw new Error("The email provided is not valid.");
-        }
-
-        if (isValidPhone(phone) != true) {
-            throw Error("There was an error changing your phone number.")
-        }
-
-        const response = await fetch(`${changePhoneUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                phone: phone
-            })
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const changeUsername = createAsyncThunk('change/changeUsername', async (username) => {
+export const changeNickname = createAsyncThunk('change/changeNickname', async (nickname) => {
     try {
         const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
@@ -143,11 +144,11 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
             throw new Error("The email provided is not valid.");
         }
 
-        if (!isValidUsername(username)) {
-            throw Error("Username is not valid.")
+        if (!isValidName(nickname)) {
+            throw Error("Nick name is not valid.")
         }
 
-        const response = await fetch(`${changeUsernameUrl}`, {
+        const response = await fetch(`${changeNicknameUrl}`, {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
@@ -156,7 +157,7 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
             },
             body: JSON.stringify({
                 email: email,
-                username: username
+                nicename: nickname
             })
         });
 
@@ -169,7 +170,7 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
     }
 });
 
-export const changeUserNicename = createAsyncThunk('change/changeUserNicename', async (nicename) => {
+export const changeNicename = createAsyncThunk('change/changeNicename', async (nicename) => {
     try {
         const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
@@ -191,7 +192,7 @@ export const changeUserNicename = createAsyncThunk('change/changeUserNicename', 
             throw Error("Nice name is not valid.")
         }
 
-        const response = await fetch(`${changeUserNicenameUrl}`, {
+        const response = await fetch(`${changeNicenameUrl}`, {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
@@ -283,6 +284,50 @@ export const removeUserRole = createAsyncThunk('change/removeUserRole', async ({
                 email: email,
                 role_name: roleName,
                 role_display_name: roleDisplayName
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+});
+
+export const changePhone = createAsyncThunk('change/changePhone', async (phone) => {
+    try {
+        const email = localStorage.getItem('email');
+        const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
+
+        if (accessToken == '') {
+            throw Error("An access token is required to change your phone number.")
+        }
+
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
+        }
+
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
+        }
+
+        if (isValidPhone(phone) != true) {
+            throw Error("There was an error changing your phone number.")
+        }
+
+        const response = await fetch(`${changePhoneUrl}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                phone: phone
             })
         });
 
