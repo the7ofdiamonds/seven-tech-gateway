@@ -54,7 +54,7 @@ class Authentication
 
             $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
 
-            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles);
+            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles, $account->level);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

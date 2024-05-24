@@ -18,13 +18,17 @@ class Authorization
         $this->token = $token;
     }
 
-    public function isAuthorized(WP_REST_Request $request, $resourceRoles = '')
+    public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = '')
     {
         try {
             $authenticatedAccount = $this->token->signInWithRefreshToken($request);
             $accountRoles = $authenticatedAccount->roles;
 
             if ($authenticatedAccount->email == $request['email']) {
+                return $authenticatedAccount;
+            }
+
+            if ($authenticatedAccount->level == $resourceLevel) {
                 return $authenticatedAccount;
             }
 

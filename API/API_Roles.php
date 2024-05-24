@@ -25,6 +25,7 @@ class API_Roles
     {
         try {
             $roles = $this->roles->getRoles();
+
             return rest_ensure_response($roles);
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
@@ -34,7 +35,10 @@ class API_Roles
     public function getAvailableRoles(WP_REST_Request $request)
     {
         try {
-            $availableRoles = $this->roles->getAvailableRoles();
+            $authorized = $this->authorization->isAuthorized($request);
+
+            $availableRoles = $this->roles->getAvailableRoles($authorized->level);
+
             return rest_ensure_response($availableRoles);
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();

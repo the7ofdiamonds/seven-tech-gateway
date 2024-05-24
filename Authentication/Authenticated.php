@@ -9,14 +9,16 @@ class Authenticated
     public $accessToken;
     public $refreshToken;
     public $roles;
+    public $level;
 
-    public function __construct($id, $email, $accessToken, $refreshToken, $roles)
+    public function __construct($id, $email, $accessToken, $refreshToken, $roles, $level)
     {
         $this->id = $id;
         $this->email = $email;
         $this->accessToken = $accessToken;
         $this->refreshToken = $refreshToken;
         $this->roles = $roles;
+        $this->level = $level;
     }
 
     public function getID()
@@ -42,5 +44,10 @@ class Authenticated
     public function getRoles()
     {
         return $this->roles;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
     }
 }
