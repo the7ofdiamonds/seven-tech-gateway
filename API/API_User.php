@@ -66,12 +66,9 @@ class API_User
 
             $email = $request['email'];
 
-            $getUserResponse = [
-                'user' => $this->user->getUser($email),
-                'statusCode' => 200
-            ];
+            $user = $this->user->getUser($email);
 
-            return rest_ensure_response($getUserResponse);
+            return rest_ensure_response($user);
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }

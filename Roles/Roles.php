@@ -9,22 +9,16 @@ class Roles
     {
     }
 
-    public function unserializeRoles($serializedRoles)
+    public function getRoles()
     {
-        $uroles = unserialize($serializedRoles);
         $wp_roles = wp_roles()->get_names();
-
         $roles = [];
 
         foreach ($wp_roles as $roleKey => $roleValue) {
-            foreach ($uroles as $key => $value) {
-                if ($roleKey == $key && $value == 1) {
-                    $roles[] = [
-                        'name' => $roleKey,
-                        'display_name' => $roleValue
-                    ];
-                }
-            }
+            $roles[] = [
+                'name' => $roleKey,
+                'display_name' => $roleValue
+            ];
         }
 
         return $roles;
@@ -32,7 +26,7 @@ class Roles
 
     public function roleExists($roleName, $roleDisplayName)
     {
-        $wp_roles = wp_roles()->get_names();
+        $wp_roles = $this->getRoles();
 
         $roleExists = false;
 
@@ -44,5 +38,33 @@ class Roles
         }
 
         return $roleExists;
+    }
+
+    public function unserializeRoles($serializedRoles)
+    {
+        $uroles = unserialize($serializedRoles);
+        $wp_roles = $this->getRoles();
+
+        $roles = [];
+
+        foreach ($wp_roles as $roleName => $roleDisplayName) {
+            if ($this->roleExists($roleName, $roleDisplayName)) {
+                foreach ($uroles as $key => $value) {
+                    if ($roleName == $key && $value == 1) {
+                        $roles[] = [
+                            'name' => $roleName,
+                            'display_name' => $roleDisplayName
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $roles;
+    }
+
+    public function getAvailableRoles()
+    {
+        return $this->getRoles();
     }
 }

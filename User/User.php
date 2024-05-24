@@ -112,18 +112,22 @@ class User
 
             $firstname = get_user_meta($id, 'first_name');
             $lastname = get_user_meta($id, 'last_name');
+            $nickname = get_user_meta($id, 'nickname');
+            $phone_number = get_user_meta($id, 'phone_number');
 
             $user = [
                 'id' => $id,
-                'firstname' => $firstname,
-                'lastname' => $lastname,
-                'nicename' => $user_data->data->user_nicename,
                 'email' => $user_data->data->user_email,
-                'url' => $user_data->data->user_url,
                 'join_date' => $user_data->data->user_registered,
                 'status' => $user_data->data->user_status,
                 'username' => $user_data->data->display_name,
-                'roles' => $this->getUserRoles($id, $user_data->roles)
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'nickname' => $nickname,
+                'nicename' => $user_data->data->user_nicename,
+                'roles' => $this->getUserRoles($id, $user_data->roles),
+                'phone' => $phone_number,
+                'url' => $user_data->data->user_url
             ];
 
             return $user;

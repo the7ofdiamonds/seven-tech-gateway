@@ -39,6 +39,7 @@ use SEVEN_TECH\Gateway\API\API;
 use SEVEN_TECH\Gateway\API\API_Account;
 use SEVEN_TECH\Gateway\API\API_Authentication;
 use SEVEN_TECH\Gateway\API\API_Password;
+use SEVEN_TECH\Gateway\API\API_Roles;
 use SEVEN_TECH\Gateway\API\API_User;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
@@ -60,6 +61,8 @@ use SEVEN_TECH\Gateway\Pages\Pages;
 use SEVEN_TECH\Gateway\Password\Password;
 
 use SEVEN_TECH\Gateway\Post_Types\Post_Types;
+
+use SEVEN_TECH\Gateway\Roles\Roles;
 
 use SEVEN_TECH\Gateway\Router\Router;
 
@@ -118,15 +121,17 @@ class SEVEN_TECH
                 $authentication = new Authentication($account, $token, $auth);
                 $authorization = new Authorization($token);
                 $password = new Password($authentication);
+                $roles = new Roles();
                 $user = new User($auth);
 
                 $accountAPI = new API_Account($account, $authentication, $authorization);
                 $authAPI = new API_Authentication($authentication);
                 $passwordAPI = new API_Password($password, $authentication, $authorization);
+                $rolesAPI = new API_Roles($roles, $authorization);
                 $userAPI = new API_User($user, $authentication, $authorization);
 
-                add_action('rest_api_init', function () use ($accountAPI, $authAPI, $passwordAPI, $userAPI) {
-                    new API($accountAPI, $authAPI, $passwordAPI, $userAPI);
+                add_action('rest_api_init', function () use ($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI) {
+                    new API($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI);
                 });
 
                 $adminAccountManagement = new AdminAccountManagement($account);

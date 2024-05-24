@@ -4,7 +4,7 @@ namespace SEVEN_TECH\Gateway\API;
 
 class API
 {
-  public function __construct(API_Account $accountAPI, API_Authentication $authAPI, API_Password $passwordAPI, API_User $userAPI)
+  public function __construct(API_Account $accountAPI, API_Authentication $authAPI, API_Password $passwordAPI, API_Roles $rolesAPI, API_User $userAPI)
   {
     register_rest_route('seven-tech/v1', '/account/create', array(
       'methods' => 'POST',
@@ -66,9 +66,27 @@ class API
       'permission_callback' => '__return_true',
     ));
 
+    register_rest_route('seven-tech/v1', '/roles/get', array(
+      'methods' => 'POST',
+      'callback' => array($rolesAPI, 'getRoles'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/roles/available', array(
+      'methods' => 'POST',
+      'callback' => array($rolesAPI, 'getAvailableRoles'),
+      'permission_callback' => '__return_true',
+    ));
+
     register_rest_route('seven-tech/v1', '/user/add', array(
       'methods' => 'POST',
       'callback' => array($userAPI, 'addUser'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/get', array(
+      'methods' => 'POST',
+      'callback' => array($userAPI, 'getUser'),
       'permission_callback' => '__return_true',
     ));
 
@@ -90,9 +108,9 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/user/change-phone', array(
+    register_rest_route('seven-tech/v1', '/user/change-nicename', array(
       'methods' => 'POST',
-      'callback' => array($userAPI, 'changePhone'),
+      'callback' => array($userAPI, 'changeNicename'),
       'permission_callback' => '__return_true',
     ));
 
@@ -105,6 +123,12 @@ class API
     register_rest_route('seven-tech/v1', '/user/remove-role', array(
       'methods' => 'POST',
       'callback' => array($userAPI, 'removeUserRole'),
+      'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('seven-tech/v1', '/user/change-phone', array(
+      'methods' => 'POST',
+      'callback' => array($userAPI, 'changePhone'),
       'permission_callback' => '__return_true',
     ));
   }

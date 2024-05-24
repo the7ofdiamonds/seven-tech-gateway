@@ -77,7 +77,7 @@ class AdminUserManagement
             $id = $_POST['id'];
             $nicename = $_POST['nicename'];
 
-            $change_nicename = $this->user->changeUserNicename($id, $nicename);
+            $change_nicename = $this->user->changeNicename($id, $nicename);
 
             wp_send_json_success($change_nicename);
         } catch (Exception $e) {

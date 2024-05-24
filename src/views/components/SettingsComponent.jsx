@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { changePassword } from '../../controllers/passwordSlice';
 import {
+  getUser,
   changeUsername,
   changeName,
   changeNickname,
   changeNicename,
   changePhone,
-} from '../../controllers/changeSlice';
+} from '../../controllers/userSlice';
+import { getAvailableRoles } from '../../controllers/roleSlice';
 import { logout, logoutAll, logoutAllUrl } from '../../controllers/logoutSlice';
 import { lockAccount } from '../../controllers/accountSlice';
 
@@ -18,11 +20,25 @@ function SettingsComponent() {
   const dispatch = useDispatch();
 
   const {
-    changeLoading,
-    changeError,
-    changeSuccessMessage,
-    changeErrorMessage,
-    changeStatusCode,
+    passwordLoading,
+    passwordError,
+    passwordSuccessMessage,
+    passwordErrorMessage,
+    passwordStatusCode,
+  } = useSelector((state) => state.password);
+  const {
+    userLoading,
+    userError,
+    userSuccessMessage,
+    userErrorMessage,
+    userStatusCode,
+    username,
+    firstname,
+    lastname,
+    nickname,
+    nicename,
+    roles,
+    phone,
   } = useSelector((state) => state.user);
   const {
     emailLoading,
@@ -32,12 +48,13 @@ function SettingsComponent() {
     emailStatusCode,
   } = useSelector((state) => state.email);
   const {
-    passwordLoading,
-    passwordError,
-    passwordSuccessMessage,
-    passwordErrorMessage,
-    passwordStatusCode,
-  } = useSelector((state) => state.password);
+    roleLoading,
+    roleError,
+    roleSuccessMessage,
+    roleErrorMessage,
+    roleStatusCode,
+    availableRoles,
+  } = useSelector((state) => state.role);
   const {
     logoutLoading,
     logoutError,
@@ -51,30 +68,47 @@ function SettingsComponent() {
     accountErrorMessage,
     accountStatusCode,
     email,
-    username,
-    firstname,
-    lastname,
-    phone,
   } = useSelector((state) => state.account);
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [usernameChange, setUsernameChange] = useState(username);
-  const [firstName, setFirstNameChange] = useState(firstname);
-  const [lastName, setLastNameChange] = useState(lastname);
-  const [nicknameChange, setNicknameChange] = useState(nickname);
-  const [nicenameChange, setNicenameChange] = useState(nicename);
-  const [phoneChange, setPhoneChange] = useState(phone);
-
-  const [showStatusBar, setShowStatusBar] = useState('');
-  const [messageType, setMessageType] = useState('');
-  const [message, setMessage] = useState('');
+  useEffect(() => {
+    dispatch(getUser(email));
+  }, []);
 
   useEffect(() => {
-    if (accountLoading || changeLoading || emailLoading || passwordLoading) {
+    if (username) {
+      setUsernameChange(username);
+    }
+
+    if (firstname) {
+      setFirstNameChange(firstname);
+    }
+
+    if (lastname) {
+      setLastNameChange(lastname);
+    }
+
+    if (nickname) {
+      setNicknameChange(nickname);
+    }
+
+    if (nicename) {
+      setNicenameChange(nicename);
+    }
+
+    if (phone) {
+      setPhoneChange(phone);
+    }
+  }, [username, firstName, lastname, nickname, nicename, phone]);
+
+  useEffect(() => {
+    dispatch(getAvailableRoles());
+  }, []);
+
+  useEffect(() => {
+    if (accountLoading || userLoading || emailLoading || passwordLoading) {
       setMessage('');
     }
-  }, [dispatch, accountLoading, changeLoading, emailLoading, passwordLoading]);
+  }, [dispatch, accountLoading, userLoading, emailLoading, passwordLoading]);
 
   useEffect(() => {
     if (logoutSuccessMessage) {
@@ -84,11 +118,11 @@ function SettingsComponent() {
   }, [dispatch, logoutSuccessMessage]);
 
   useEffect(() => {
-    if (changeSuccessMessage) {
+    if (userSuccessMessage) {
       setMessageType('success');
-      setMessage(changeSuccessMessage);
+      setMessage(userSuccessMessage);
     }
-  }, [dispatch, changeSuccessMessage]);
+  }, [dispatch, userSuccessMessage]);
 
   useEffect(() => {
     if (emailSuccessMessage) {
@@ -126,11 +160,11 @@ function SettingsComponent() {
   }, [dispatch, logoutErrorMessage]);
 
   useEffect(() => {
-    if (changeErrorMessage && changeStatusCode != 403) {
+    if (userErrorMessage && userStatusCode != 403) {
       setMessageType('error');
-      setMessage(changeErrorMessage);
+      setMessage(userErrorMessage);
     }
-  }, [dispatch, changeErrorMessage]);
+  }, [dispatch, userErrorMessage]);
 
   useEffect(() => {
     if (emailErrorMessage && emailStatusCode != 403) {
@@ -155,7 +189,7 @@ function SettingsComponent() {
 
   useEffect(() => {
     if (
-      (changeStatusCode != 403 ||
+      (userStatusCode != 403 ||
         emailStatusCode != 403 ||
         passwordStatusCode != 403 ||
         accountStatusCode != 403) &&
@@ -168,12 +202,25 @@ function SettingsComponent() {
     }
   }, [
     dispatch,
-    changeStatusCode,
+    userStatusCode,
     emailStatusCode,
     passwordStatusCode,
     accountStatusCode,
     message,
   ]);
+
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [usernameChange, setUsernameChange] = useState(username);
+  const [firstName, setFirstNameChange] = useState(firstname);
+  const [lastName, setLastNameChange] = useState(lastname);
+  const [nicknameChange, setNicknameChange] = useState(nickname);
+  const [nicenameChange, setNicenameChange] = useState(nicename);
+  const [phoneChange, setPhoneChange] = useState(phone);
+
+  const [showStatusBar, setShowStatusBar] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [message, setMessage] = useState('');
 
   const updatePassword = (e) => {
     e.preventDefault();
@@ -431,7 +478,27 @@ function SettingsComponent() {
           </div>
         </span>
 
-        {/* Create Change Title (roles) */}
+        {Array.isArray(availableRoles) && (
+          <span className="add-role">
+            <select name="add_role" id="add_role">
+              {availableRoles.map((availableRole) => (
+                <option value={availableRole.name}>
+                  {availableRole.display_name}
+                </option>
+              ))}
+            </select>
+          </span>
+        )}
+
+        {Array.isArray(roles) && (
+          <span className="remove-role">
+            <select name="remove_role" id="remove_role">
+              {roles.map((role) => (
+                <option value={role.name}>{role.display_name}</option>
+              ))}
+            </select>
+          </span>
+        )}
 
         <span className="change-phone">
           <input
