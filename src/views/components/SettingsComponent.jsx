@@ -9,6 +9,8 @@ import {
   changeNickname,
   changeNicename,
   changePhone,
+  addUserRole,
+  removeUserRole,
 } from '../../controllers/userSlice';
 import { getAvailableRoles } from '../../controllers/roleSlice';
 import { logout, logoutAll, logoutAllUrl } from '../../controllers/logoutSlice';
@@ -216,6 +218,10 @@ function SettingsComponent() {
   const [lastName, setLastNameChange] = useState(lastname);
   const [nicknameChange, setNicknameChange] = useState(nickname);
   const [nicenameChange, setNicenameChange] = useState(nicename);
+  const [addRoleName, setAddRoleName] = useState('');
+  const [addRoleDisplayName, setAddRoleDisplayName] = useState('');
+  const [removeRoleName, setRemoveRoleName] = useState('');
+  const [removeRoleDisplayName, setRemoveRoleDisplayName] = useState('');
   const [phoneChange, setPhoneChange] = useState(phone);
 
   const [showStatusBar, setShowStatusBar] = useState('');
@@ -323,9 +329,38 @@ function SettingsComponent() {
     }
   };
 
-  {
-    /* Create Change Title (roles) */
-  }
+  const updateAddRole = (event) => {
+    setAddRoleName(event.target.value);
+    setAddRoleDisplayName(event.target.selectedOptions[0].text);
+  };
+
+  const handleAddRole = (e) => {
+    e.preventDefault();
+
+    if (addRoleName != '' && addRoleDisplayName != '') {
+      dispatch(
+        addUserRole({ name: addRoleName, display_name: addRoleDisplayName })
+      );
+    }
+  };
+
+  const updateRemoveRole = (event) => {
+    setRemoveRoleName(event.target.value);
+    setRemoveRoleDisplayName(event.target.selectedOptions[0].text);
+  };
+
+  const handleRemoveRole = (e) => {
+    e.preventDefault();
+
+    if (removeRoleName != '' && removeRoleDisplayName != '') {
+      dispatch(
+        removeUserRole({
+          name: removeRoleName,
+          display_name: removeRoleDisplayName,
+        })
+      );
+    }
+  };
 
   const updatePhone = (e) => {
     e.preventDefault();
@@ -369,7 +404,7 @@ function SettingsComponent() {
       setMessage('An email is required to lock your account.');
     }
   };
-
+console.log(roles);
   return (
     <>
       <main className="settings">
@@ -480,23 +515,45 @@ function SettingsComponent() {
 
         {Array.isArray(availableRoles) && (
           <span className="add-role">
-            <select name="add_role" id="add_role">
+            <select
+              name="add_role"
+              id="add_role"
+              value={addRoleName}
+              onChange={updateAddRole}>
               {availableRoles.map((availableRole) => (
-                <option value={availableRole.name}>
+                <option key={availableRole.name} value={availableRole.name}>
                   {availableRole.display_name}
                 </option>
               ))}
             </select>
+
+            <div className="action">
+              <button onClick={handleAddRole}>
+                <h3>Add Role</h3>
+              </button>
+            </div>
           </span>
         )}
 
         {Array.isArray(roles) && (
           <span className="remove-role">
-            <select name="remove_role" id="remove_role">
+            <select
+              name="remove_role"
+              id="remove_role"
+              value={removeRoleName}
+              onChange={updateRemoveRole}>
               {roles.map((role) => (
-                <option value={role.name}>{role.display_name}</option>
+                <option key={role.name} value={role.name}>
+                  {role.display_name}
+                </option>
               ))}
             </select>
+
+            <div className="action">
+              <button onClick={handleRemoveRole}>
+                <h3>Remove Role</h3>
+              </button>
+            </div>
           </span>
         )}
 

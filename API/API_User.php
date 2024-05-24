@@ -243,7 +243,8 @@ class API_User
             }
 
             $addUserRoleResponse = [
-                'successMessage' => $this->user->addUserRole($authorized->id, $request['role_name'], $request['role_display_name']),
+                'successMessage' => $this->user->addUserRole($authorized->id, $request['name'], $request['display_name']),
+                'roles' => $this->user->getUserRoles($authorized->id),
                 'statusCode' => 200
             ];
 
@@ -263,7 +264,8 @@ class API_User
             }
 
             $removeUserRoleResponse = [
-                'successMessage' => $this->user->removeUserRole($authorized->id, $request['role_name'], $request['role_display_name']),
+                'successMessage' => $this->user->removeUserRole($authorized->id, $request['name'], $request['display_name']),
+                'roles' => $this->user->getUserRoles($authorized->id),
                 'statusCode' => 200
             ];
 

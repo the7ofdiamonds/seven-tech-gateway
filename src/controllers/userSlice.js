@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidUsername, isValidPhone, isValidName, isValidEmail} from '../utils/Validation';
+import { isValidUsername, isValidPhone, isValidName, isValidEmail } from '../utils/Validation';
 
 const getUserUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/get' : "/wp-json/seven-tech/v1/user/get";
 const changeUsernameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-username' : "/wp-json/seven-tech/v1/user/change-username";
 const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-name' : "/wp-json/seven-tech/v1/user/change-name";
 const changeNicknameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nickname' : "/wp-json/seven-tech/v1/user/change-nickname";
 const changeNicenameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nicename' : "/wp-json/seven-tech/v1/user/change-nicename";
-const addUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/add-role' : "/wp-json/seven-tech/v1/user/roles/add-role";
-const removeUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/remove-role' : "/wp-json/seven-tech/v1/user/roles/remove-role";
+const addUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/add-role' : "/wp-json/seven-tech/v1/user/roles/add";
+const removeUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/remove-role' : "/wp-json/seven-tech/v1/user/roles/remove";
 const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-phone' : "/wp-json/seven-tech/v1/user/change-phone";
 
 const initialState = {
@@ -255,7 +255,7 @@ export const changeNicename = createAsyncThunk('user/changeNicename', async (nic
     }
 });
 
-export const addUserRole = createAsyncThunk('user/addUserRole', async ({ roleName, roleDisplayName }) => {
+export const addUserRole = createAsyncThunk('user/addUserRole', async ({ name, display_name }) => {
     try {
         const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
@@ -272,7 +272,8 @@ export const addUserRole = createAsyncThunk('user/addUserRole', async ({ roleNam
         if (!isValidEmail(email)) {
             throw new Error("The email provided is not valid.");
         }
-
+        console.log(name);
+        console.log(display_name);
         const response = await fetch(`${addUserRoleUrl}`, {
             method: 'POST',
             headers: {
@@ -282,8 +283,8 @@ export const addUserRole = createAsyncThunk('user/addUserRole', async ({ roleNam
             },
             body: JSON.stringify({
                 email: email,
-                role_name: roleName,
-                role_display_name: roleDisplayName
+                name: name,
+                display_name: display_name
             })
         });
 
@@ -296,7 +297,7 @@ export const addUserRole = createAsyncThunk('user/addUserRole', async ({ roleNam
     }
 });
 
-export const removeUserRole = createAsyncThunk('user/removeUserRole', async ({ roleName, roleDisplayName }) => {
+export const removeUserRole = createAsyncThunk('user/removeUserRole', async ({ name, display_name }) => {
     try {
         const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
@@ -323,8 +324,8 @@ export const removeUserRole = createAsyncThunk('user/removeUserRole', async ({ r
             },
             body: JSON.stringify({
                 email: email,
-                role_name: roleName,
-                role_display_name: roleDisplayName
+                name: name,
+                display_name: display_name
             })
         });
 
@@ -395,29 +396,85 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addMatcher(isAnyOf(
-                getUser.fulfilled,
-                changeUsername.fulfilled,
-                changeName.fulfilled,
-                changeNickname.fulfilled,
-                changeNicename.fulfilled,
-                addUserRole.fulfilled,
-                removeUserRole.fulfilled,
-                changePhone.fulfilled,
-            ), (state, action) => {
-                state.userLoading = false;
-                state.userError = '';
-                state.userSuccessMessage = action.payload.successMessage;
-                state.userErrorMessage = action.payload.errorMessage;
-                state.userStatusCode = action.payload.statusCode;
-                state.username = action.payload.username;
-                state.firstname = action.payload.firstname;
-                state.lastname = action.payload.lastname;
-                state.nickname = action.payload.nickname;
-                state.nicename = action.payload.nicename;
-                state.roles = action.payload.roles;
-                state.phone = action.payload.phone;
-            })
+            .addCase(
+                getUser.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.username = action.payload.username;
+                    state.firstname = action.payload.firstname;
+                    state.lastname = action.payload.lastname;
+                    state.nickname = action.payload.nickname;
+                    state.nicename = action.payload.nicename;
+                    state.roles = action.payload.roles;
+                    state.phone = action.payload.phone;
+                })
+            .addCase(
+                changeUsername.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.username = action.payload.username;
+                })
+            .addCase(
+                changeName.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.firstname = action.payload.firstname;
+                    state.lastname = action.payload.lastname;
+                })
+            .addCase(
+                changeNickname.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.nickname = action.payload.nickname;
+                })
+            .addCase(
+                changeNicename.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.nicename = action.payload.nicename;
+                })
+            .addCase(
+                addUserRole.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.roles = action.payload.roles;
+                })
+            .addCase(
+                removeUserRole.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.roles = action.payload.roles;
+                })
+            .addCase(
+                changePhone.fulfilled, (state, action) => {
+                    state.userLoading = false;
+                    state.userError = '';
+                    state.userSuccessMessage = action.payload.successMessage;
+                    state.userErrorMessage = action.payload.errorMessage;
+                    state.userStatusCode = action.payload.statusCode;
+                    state.phone = action.payload.phone;
+                })
             .addMatcher(isAnyOf(
                 getUser.pending,
                 changeUsername.pending,

@@ -114,13 +114,13 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/user/add-role', array(
+    register_rest_route('seven-tech/v1', '/user/roles/add', array(
       'methods' => 'POST',
       'callback' => array($userAPI, 'addUserRole'),
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/user/remove-role', array(
+    register_rest_route('seven-tech/v1', '/user/roles/remove', array(
       'methods' => 'POST',
       'callback' => array($userAPI, 'removeUserRole'),
       'permission_callback' => '__return_true',
