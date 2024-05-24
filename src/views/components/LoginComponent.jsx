@@ -32,7 +32,7 @@ function LoginComponent() {
   const { loginSuccessMessage, loginErrorMessage } = useSelector(
     (state) => state.login
   );
-  
+
   const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
   const [location, setLocation] = useState('');
@@ -90,7 +90,11 @@ function LoginComponent() {
         password: password,
         location: location,
       })
-    );
+    ).then((response) => {
+      dispatch(updateEmail(response.payload.email));
+      dispatch(updateAccessToken(response.payload.accessToken));
+      dispatch(updateRefreshToken(response.payload.refreshToken));
+    });
   };
 
   const handleGoogleSignIn = async () => {
@@ -103,7 +107,9 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(login('', '', location));
+      dispatch(
+        login({location: location })
+      );
     });
   };
 
@@ -117,7 +123,9 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(login('', '', location));
+      dispatch(
+        login({ location: location })
+      );
     });
   };
 
@@ -131,7 +139,9 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(login('', '', location));
+      dispatch(
+        login({ location: location })
+      );
     });
   };
 

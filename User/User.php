@@ -121,10 +121,12 @@ class User
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
+            if (!isset($results[0])) {
                 throw new Exception('Username could not be updated at this time.', 500);
+            }
+
+            if (!$results[0]->resultSet) {
+                throw new Exception('Account with this email could not be found.', 404);
             }
 
             return "Username has been changed to {$username} succesfully.";
@@ -157,11 +159,13 @@ class User
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            // $results = $results[0]->resultSet;
-            error_log(print_r($results, true));
-            // if (!$results) {
-            //     throw new Exception('First name could not be changed at this time.', 400);
-            // }
+            if (!isset($results[0])) {
+                throw new Exception('First name could not be changed at this time.', 500);
+            }
+
+            if (!$results[0]->resultSet) {
+                throw new Exception('Account with this email could not be found.', 404);
+            }
 
             return "Your first name has been changed to {$firstname} succesfully.";
         } catch (DestructuredException $e) {
@@ -192,10 +196,12 @@ class User
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $results = $results[0]->resultSet;
+            if (!isset($results[0])) {
+                throw new Exception('Last name could not be changed at this time.', 500);
+            }
 
-            if (!$results) {
-                throw new Exception('Last name could not be changed at this time.', 400);
+            if (!$results[0]->resultSet) {
+                throw new Exception('Account with this email could not be found.', 404);
             }
 
             return "Your last name has been changed to {$lastname} succesfully.";
@@ -227,10 +233,12 @@ class User
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $results = $results[0]->resultSet;
+            if (!isset($results[0])) {
+                throw new Exception('Nick name could not be changed at this time.', 500);
+            }
 
-            if (!$results) {
-                throw new Exception('Nick name could not be changed at this time.', 400);
+            if (!$results[0]->resultSet) {
+                throw new Exception('Account with this email could not be found.', 404);
             }
 
             return "Your nickname has been changed to {$nickname} succesfully.";
@@ -263,10 +271,12 @@ class User
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
+            if (!isset($results[0])) {
                 throw new Exception('Phone number could not be changed at this time.', 500);
+            }
+
+            if (!$results[0]->resultSet) {
+                throw new Exception('Account with this email could not be found.', 404);
             }
 
             return "You phone number has been changed to {$phone} succesfully.";

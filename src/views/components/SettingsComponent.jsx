@@ -249,19 +249,6 @@ function SettingsComponent() {
     }
   };
 
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-
-    if (email != '' || localStorage.getItem('email') != '') {
-      dispatch(
-        sendForgotPasswordEmail(email ? email : localStorage.getItem('email'))
-      );
-    } else {
-      setMessageType('error');
-      setMessage('An email is required to reset password.');
-    }
-  };
-
   const handleChangePhoneChange = (e) => {
     e.preventDefault();
 
@@ -277,22 +264,6 @@ function SettingsComponent() {
       dispatch(changePhone(phoneChange));
     }
   };
-
-  // const handleRemoveEmailChange = (e) => {
-  //   e.preventDefault();
-
-  //   if (e.target.name == 'email') {
-  //     setEmailRemove(e.target.value);
-  //   }
-  // };
-
-  // const handleRemoveEmail = (e) => {
-  //   e.preventDefault();
-
-  //   if (emailRemove != '') {
-  //     dispatch(removeEmail(emailRemove));
-  //   }
-  // };
 
   const handleLogout = () => {
     dispatch(logout()).then(() => {
@@ -416,26 +387,6 @@ function SettingsComponent() {
               <h3>Change Password</h3>
             </button>
           </div>
-        </span>
-
-        {/* <tr className="remove-email">
-                      <input
-                        type="text"
-                        name="email"
-                        placeholder="Email"
-                        value={emailRemove}
-                        onChange={handleRemoveEmailChange}
-                      />
-
-                      <button onClick={handleRemoveEmail}>
-                        <h3>Remove Email</h3>
-                      </button>
-                    </tr> */}
-
-        <span className="forgot-password">
-          <button onClick={handleForgotPassword}>
-            <h3>FORGOT PASSWORD</h3>
-          </button>
         </span>
 
         <span className="logout">

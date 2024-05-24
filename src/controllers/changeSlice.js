@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidUsername, isValidPhone, isValidName } from '../utils/Validation';
+import { isValidUsername, isValidPhone, isValidName, isValidEmail} from '../utils/Validation';
 
 const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-name' : "/wp-json/seven-tech/v1/user/change-name";
 const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-phone' : "/wp-json/seven-tech/v1/user/change-phone";
@@ -38,27 +38,24 @@ export const updateChangeErrorMessage = () => {
 
 export const changeName = createAsyncThunk('change/changeName', async ({ firstName, lastName }) => {
     try {
+        const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
 
-        if (!accessToken) {
+        if (accessToken == '') {
             throw new Error("An access token is required to change your name.");
         }
 
-        if (!firstName) {
-            throw new Error("The first name is blank.");
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
         }
 
-        if (!lastName) {
-            throw new Error("The last name is blank.");
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
         }
 
-        if (!isValidName(firstName)) {
-            throw new Error("The first name provided is not valid.");
-        }
-
-        if (!isValidName(lastName)) {
-            throw new Error("The last name provided is not valid.");
+        if (firstName == '' && lastName == '') {
+            throw new Error("A first or last name is required to be changed.");
         }
 
         const response = await fetch(changeNameUrl, {
@@ -69,7 +66,7 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: 'jamel.c.lyons@me.com',
+                email: email,
                 first_name: firstName,
                 last_name: lastName
             })
@@ -86,10 +83,20 @@ export const changeName = createAsyncThunk('change/changeName', async ({ firstNa
 
 export const changePhone = createAsyncThunk('change/changePhone', async (phone) => {
     try {
+        const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         if (accessToken == '') {
             throw Error("An access token is required to change your phone number.")
+        }
+
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
+        }
+
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
         }
 
         if (isValidPhone(phone) != true) {
@@ -100,9 +107,11 @@ export const changePhone = createAsyncThunk('change/changePhone', async (phone) 
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                email: email,
                 phone: phone
             })
         });
@@ -118,23 +127,35 @@ export const changePhone = createAsyncThunk('change/changePhone', async (phone) 
 
 export const changeUsername = createAsyncThunk('change/changeUsername', async (username) => {
     try {
+        const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         if (accessToken == '') {
             throw Error("An access token is required to change your username.")
         }
 
-        if (isValidUsername(username) != true) {
-            throw Error("There was an error changing your username.")
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
+        }
+
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
+        }
+
+        if (!isValidUsername(username)) {
+            throw Error("Username is not valid.")
         }
 
         const response = await fetch(`${changeUsernameUrl}`, {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                email: email,
                 username: username
             })
         });
@@ -150,23 +171,35 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
 
 export const changeUserNicename = createAsyncThunk('change/changeUserNicename', async (nicename) => {
     try {
+        const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         if (accessToken == '') {
             throw Error("An access token is required to change your username.")
         }
 
-        // if (isValidUsername(username) != true) {
-        //     throw Error("There was an error changing your username.")
-        // }
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
+        }
+
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
+        }
+
+        if (!isValidName(nicename)) {
+            throw Error("Nice name is not valid.")
+        }
 
         const response = await fetch(`${changeUserNicenameUrl}`, {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                email: email,
                 nicename: nicename
             })
         });
@@ -182,23 +215,31 @@ export const changeUserNicename = createAsyncThunk('change/changeUserNicename', 
 
 export const addUserRole = createAsyncThunk('change/addUserRole', async ({ roleName, roleDisplayName }) => {
     try {
+        const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         if (accessToken == '') {
             throw Error("An access token is required to change your role.")
         }
 
-        // if (isValidUsername(username) != true) {
-        //     throw Error("There was an error changing your username.")
-        // }
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
+        }
+
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
+        }
 
         const response = await fetch(`${addUserRoleUrl}`, {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                email: email,
                 role_name: roleName,
                 role_display_name: roleDisplayName
             })
@@ -215,23 +256,31 @@ export const addUserRole = createAsyncThunk('change/addUserRole', async ({ roleN
 
 export const removeUserRole = createAsyncThunk('change/removeUserRole', async ({ roleName, roleDisplayName }) => {
     try {
+        const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         if (accessToken == '') {
             throw Error("An access token is required to change your role.")
         }
 
-        // if (isValidUsername(username) != true) {
-        //     throw Error("There was an error changing your username.")
-        // }
+        if (refreshToken == '') {
+            throw Error("An refresh token is required to change your username.")
+        }
+
+        if (!isValidEmail(email)) {
+            throw new Error("The email provided is not valid.");
+        }
 
         const response = await fetch(`${removeUserRoleUrl}`, {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                email: email,
                 role_name: roleName,
                 role_display_name: roleDisplayName
             })

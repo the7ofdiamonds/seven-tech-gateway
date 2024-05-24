@@ -106,7 +106,7 @@ class API_User
             if (isset($request['last_name'])) {
                 $lastname = $request['last_name'];
             }
-            error_log(print_r($firstname, true));
+
             if ($firstname != '' && $lastname != '') {
                 $this->user->changeFirstName($email, $firstname);
 
@@ -118,7 +118,7 @@ class API_User
                     'lastname' => $lastname,
                     'statusCode' => 200
                 ];
-                error_log(print_r($changeNameResponse, true));
+
                 return rest_ensure_response($changeNameResponse);
             }
 

@@ -105,11 +105,11 @@ class Account
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $account = $results[0];
-
-            if (empty($account)) {
+            if (!isset($results[0])) {
                 throw new Exception('Account could not be found.', 404);
             }
+
+            $account = $results[0];            
 
             $account->roles = $this->roles->unserializeRoles($account->roles);
 
