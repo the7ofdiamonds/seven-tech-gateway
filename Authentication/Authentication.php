@@ -52,9 +52,11 @@ class Authentication
                 throw new Exception('The password you entered for this username is not correct.', 400);
             }
 
+            $profile_image_url = get_avatar_url($account->id);
+
             $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
 
-            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles, $account->level);
+            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles, $account->level, $profile_image_url);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -95,6 +97,7 @@ class Authentication
                 'accessToken' => $authenticatedAccount->accessToken,
                 'refreshToken' => $authenticatedAccount->refreshToken,
                 'email' => $authenticatedAccount->email,
+                'photoURL' => $authenticatedAccount->profileImage,
                 'statusCode' => 200
             ];
 

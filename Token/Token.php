@@ -106,8 +106,9 @@ class Token
             $signedInUser = $this->auth->signInWithRefreshToken($refreshToken);
 
             $account = $this->findUserWithToken($signedInUser->idToken());
+            $profile_image_url = get_avatar_url($account->id);
 
-            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles, $account->level);
+            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles, $account->level, $profile_image_url);
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {

@@ -94,6 +94,7 @@ function LoginComponent() {
       dispatch(updateEmail(response.payload.email));
       dispatch(updateAccessToken(response.payload.accessToken));
       dispatch(updateRefreshToken(response.payload.refreshToken));
+      dispatch(updateProfileImage(response.payload.photoURL));
     });
   };
 

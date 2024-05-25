@@ -126,6 +126,7 @@ export const loginSlice = createSlice({
                 state.username = action.payload.username;
                 state.refreshToken = action.payload.refreshToken;
                 state.accessToken = action.payload.accessToken;
+                state.profileImage = action.payload.photoURL;
             })
             .addMatcher(isAnyOf(
                 login.pending

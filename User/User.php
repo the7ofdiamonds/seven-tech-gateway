@@ -359,11 +359,11 @@ class User
     {
         try {
             if (empty($id)) {
-                throw new Exception('ID is required to add role.');
+                throw new Exception('ID is required to remove role.');
             }
 
             if (empty($roleName)) {
-                throw new Exception('Role name is required to add role.');
+                throw new Exception('Role name is required to remove role.');
             }
 
             $user = new WP_User($id);

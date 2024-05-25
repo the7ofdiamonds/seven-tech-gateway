@@ -404,7 +404,7 @@ function SettingsComponent() {
       setMessage('An email is required to lock your account.');
     }
   };
-console.log(roles);
+
   return (
     <>
       <main className="settings">
@@ -513,7 +513,7 @@ console.log(roles);
           </div>
         </span>
 
-        {Array.isArray(availableRoles) && (
+        {Array.isArray(availableRoles) && availableRoles.length > 1 && (
           <span className="add-role">
             <select
               name="add_role"
@@ -535,7 +535,7 @@ console.log(roles);
           </span>
         )}
 
-        {Array.isArray(roles) && (
+        {Array.isArray(roles) && roles.length > 1 && (
           <span className="remove-role">
             <select
               name="remove_role"
