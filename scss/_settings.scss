@@ -7,14 +7,16 @@
   justify-content: center;
   padding: 0.25rem;
 
+  .change-password,
   .change-name,
   .change-username,
-  .change-password,
-  .forgot-password,
+  .change-nickname,
+  .change-nicename,
+  .add-role,
+  .remove-role,
   .change-phone,
-  .remove-email,
   .logout,
-  .remove-account {
+  .lock-account {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -24,11 +26,14 @@
     padding: 0.25rem;
   }
 
+  .change-password,
   .change-name,
   .change-username,
-  .change-password,
-  .change-phone,
-  .remove-email {
+  .change-nickname,
+  .change-nicename,
+  .add-role,
+  .remove-role,
+  .change-phone {
     justify-content: center;
 
     .action {

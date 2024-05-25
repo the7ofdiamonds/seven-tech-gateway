@@ -27,16 +27,6 @@
 <div class="dashboard">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
-    <div class="options" id="options">
-        <button id="accounts">
-            <h3>Manage Accounts</h3>
-        </button>
-
-        <button id="users">
-            <h3>Manage Users</h3>
-        </button>
-    </div>
-
     <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
 
     <h2>Google Service Account</h2>
