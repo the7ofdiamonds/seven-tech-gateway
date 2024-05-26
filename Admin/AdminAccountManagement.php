@@ -3,8 +3,8 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use Exception;
-
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Account\CreateAccount;
 
 class AdminAccountManagement
 {
@@ -13,16 +13,16 @@ class AdminAccountManagement
     private $menu_title;
     private $menu_slug;
     public $page_url;
-    private $account;
+    private $createAccount;
 
-    public function __construct(Account $account)
+    public function __construct(CreateAccount $createAccount)
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'Account Management';
         $this->menu_title = 'Account';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->account = $account;
+        $this->createAccount = $createAccount;
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
@@ -64,7 +64,7 @@ class AdminAccountManagement
             $phone = $_POST['phone'];
             $roles = $_POST['roles'];
 
-            $createdAccount = $this->account->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
+            $createdAccount = $this->createAccount->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
             wp_send_json_success($createdAccount);
         } catch (Exception $e) {
@@ -77,7 +77,7 @@ class AdminAccountManagement
         try {
             $email = $_POST['email'];
 
-            $account = $this->account->findAccount($email);
+            $account = new Account($email);
 
             wp_send_json_success($account);
         } catch (Exception $e) {
@@ -88,10 +88,10 @@ class AdminAccountManagement
     public function getAccountStatus()
     {
         try {
-            $id = $_POST['id'];
+            $email = $_POST['email'];
 
-            $accountStatus = $this->account->getAccountStatus($id);
-
+            $accountStatus = new Account($email);
+            error_log(print_r($accountStatus->getAccountStatus(), true));
             wp_send_json_success($accountStatus);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
@@ -117,8 +117,9 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
+            $confirmationCode = $_POST['confirmationCode'];
 
-            $lockedAccount = $this->account->lockAccount($email);
+            $lockedAccount = (new Account($email))->lockAccount($confirmationCode);
 
             wp_send_json_success($lockedAccount);
         } catch (Exception $e) {
@@ -130,8 +131,9 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
+            $confirmationCode = $_POST['confirmationCode'];
 
-            $unlockedAccount = $this->account->unlockAccount($email);
+            $unlockedAccount = (new Account($email))->unlockAccount($confirmationCode);
 
             wp_send_json_success($unlockedAccount);
         } catch (Exception $e) {
@@ -145,8 +147,9 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
+            $confirmationCode = $_POST['confirmationCode'];
 
-            $disabledAccount = $this->account->disableAccount($email);
+            $disabledAccount = (new Account($email))->disableAccount($confirmationCode);
 
             wp_send_json_success($disabledAccount);
         } catch (Exception $e) {
@@ -159,8 +162,9 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
+            $confirmationCode = $_POST['confirmationCode'];
 
-            $enabledAccount = $this->account->enableAccount($email);
+            $enabledAccount = (new Account($email))->enableAccount($confirmationCode);
 
             wp_send_json_success($enabledAccount);
         } catch (Exception $e) {
@@ -178,7 +182,7 @@ class AdminAccountManagement
 
             $email = $_POST['email'];
 
-            $account = $this->account->findAccount($email);
+            $account = (new Account($email))->findAccount();
 
             $is_enabled = $account->is_enabled;
 

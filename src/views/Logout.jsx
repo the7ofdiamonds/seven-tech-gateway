@@ -37,13 +37,13 @@ function LogOutComponent() {
     }
   }, [logoutError]);
 
-  useEffect(() => {
-    if (logoutStatusCode == 200) {
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 5000);
-    }
-  }, [logoutStatusCode]);
+  // useEffect(() => {
+  //   if (logoutStatusCode == 200) {
+  //     setTimeout(() => {
+  //       window.location.href = '/';
+  //     }, 5000);
+  //   }
+  // }, [logoutStatusCode]);
 
   useEffect(() => {
     if (message != '') {

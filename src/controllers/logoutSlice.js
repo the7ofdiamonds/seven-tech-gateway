@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidEmail } from '../utils/Validation';
 
-const logoutUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout" : "/wp-json/seven-tech/v1/users/logout";
-export const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/logout-all" : null;
+const logoutUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/authentication/logout" : "/wp-json/seven-tech/v1/authentication/logout";
+export const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/authentication/logout-all" : "/wp-json/seven-tech/v1/authentication/logout-all";
 
 const initialState = {
     logoutLoading: false,
@@ -14,28 +13,31 @@ const initialState = {
 
 export const logout = createAsyncThunk('logout/logout', async () => {
     try {
-        const email = localStorage.getItem('email');
-
-        if (isValidEmail(email) == false) {
-            throw new Error('Email is not valid.');
-        }
+        const id = localStorage.getItem('id');
+        const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         const response = await fetch(logoutUrl, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: email
+                id: id
             })
         });
 
         const responseData = await response.json();
-
-        localStorage.removeItem('display_name');
-        localStorage.removeItem('email');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+        
+        if (responseData.statusCode == 200) {
+            localStorage.removeItem('id');
+            localStorage.removeItem('email');
+            localStorage.removeItem('profile_image');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+        }
 
         return responseData;
     } catch (error) {
@@ -46,28 +48,31 @@ export const logout = createAsyncThunk('logout/logout', async () => {
 
 export const logoutAll = createAsyncThunk('logout/logoutAll', async () => {
     try {
-        const email = localStorage.getItem('email');
-
-        if (isValidEmail(email) == false) {
-            throw new Error('Email is not valid.');
-        }
+        const id = localStorage.getItem('id');
+        const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
         const response = await fetch(logoutAllUrl, {
             method: 'POST',
             headers: {
+                'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: email,
+                id: id
             })
         });
 
         const responseData = await response.json();
 
-        localStorage.removeItem('display_name');
-        localStorage.removeItem('email');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+        if (responseData.statusCode == 200) {
+            localStorage.removeItem('id');
+            localStorage.removeItem('email');
+            localStorage.removeItem('profile_image');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+        }
 
         return responseData;
     } catch (error) {

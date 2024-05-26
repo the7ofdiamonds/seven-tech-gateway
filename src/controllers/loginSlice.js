@@ -16,6 +16,13 @@ const initialState = {
     refreshToken: ''
 };
 
+export const updateAccountID = (accountID) => {
+    return {
+        type: 'login/updateAccountID',
+        payload: accountID
+    };
+};
+
 export const updateUsername = (username) => {
     return {
         type: 'login/updateUsername',
@@ -90,6 +97,10 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
+        updateAccountID: (state, action) => {
+            state.id = action.payload;
+            localStorage.setItem('id', action.payload);
+        },
         updateDisplayName: (state, action) => {
             state.displayName = action.payload;
             localStorage.setItem('display_name', action.payload);
@@ -123,10 +134,12 @@ export const loginSlice = createSlice({
                 state.loginSuccessMessage = action.payload.successMessage;
                 state.loginErrorMessage = action.payload.errorMessage;
                 state.loginStatusCode = action.payload.statusCode;
-                state.username = action.payload.username;
-                state.refreshToken = action.payload.refreshToken;
-                state.accessToken = action.payload.accessToken;
-                state.profileImage = action.payload.photoURL;
+                // state.id = action.payload.authenticatedAccount.id;
+                // state.email = action.payload.authenticatedAccount.email;
+                // state.username = action.payload.authenticatedAccount.username;
+                // state.refreshToken = action.payload.authenticatedAccount.refreshToken;
+                // state.accessToken = action.payload.authenticatedAccount.accessToken;
+                // state.profileImage = action.payload.authenticatedAccount.photoURL;
             })
             .addMatcher(isAnyOf(
                 login.pending

@@ -2,6 +2,10 @@
 
 namespace SEVEN_TECH\Gateway\Authentication;
 
+use SEVEN_TECH\Gateway\Account\Account;
+
+use Kreait\Firebase\Auth\SignInResult;
+
 class Authenticated
 {
     public $id;
@@ -12,15 +16,15 @@ class Authenticated
     public $level;
     public $profileImage;
 
-    public function __construct($id, $email, $accessToken, $refreshToken, $roles, $level, $profileImage)
+    public function __construct(Account $account, SignInResult $signedInUser)
     {
-        $this->id = $id;
-        $this->email = $email;
-        $this->accessToken = $accessToken;
-        $this->refreshToken = $refreshToken;
-        $this->roles = $roles;
-        $this->level = $level;
-        $this->profileImage = $profileImage;
+        $this->id = $account->id;
+        $this->email = $account->email;
+        $this->accessToken = $signedInUser->idToken();
+        $this->refreshToken = $signedInUser->refreshToken();
+        $this->roles = $account->roles;
+        $this->level = $account->level;
+        $this->profileImage = $account->profileImage;
     }
 
     public function getID()
@@ -53,7 +57,8 @@ class Authenticated
         return $this->level;
     }
 
-    public function getProfileImage(){
+    public function getProfileImage()
+    {
         return $this->profileImage;
     }
 }

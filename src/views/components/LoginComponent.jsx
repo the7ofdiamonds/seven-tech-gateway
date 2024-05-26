@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   login,
+  updateAccountID,
   updateDisplayName,
   updateEmail,
   updateProfileImage,
@@ -91,10 +92,12 @@ function LoginComponent() {
         location: location,
       })
     ).then((response) => {
-      dispatch(updateEmail(response.payload.email));
-      dispatch(updateAccessToken(response.payload.accessToken));
-      dispatch(updateRefreshToken(response.payload.refreshToken));
-      dispatch(updateProfileImage(response.payload.photoURL));
+      console.log(response);
+      dispatch(updateAccountID(response.payload.authenticatedAccount.id))
+      dispatch(updateEmail(response.payload.authenticatedAccount.email));
+      dispatch(updateAccessToken(response.payload.authenticatedAccount.accessToken));
+      dispatch(updateRefreshToken(response.payload.authenticatedAccount.refreshToken));
+      dispatch(updateProfileImage(response.payload.authenticatedAccount.profileImage));
     });
   };
 

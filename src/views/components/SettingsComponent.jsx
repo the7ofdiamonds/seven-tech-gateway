@@ -579,11 +579,11 @@ function SettingsComponent() {
             <h3>LOG OUT</h3>
           </button>
 
-          {logoutAllUrl != null && (
+          {/* {logoutAllUrl != null && ( */}
             <button onClick={handleLogoutAll}>
               <h3>LOG OUT ALL</h3>
             </button>
-          )}
+          {/* )} */}
         </span>
 
         <span className="lock-account">

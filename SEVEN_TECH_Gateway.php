@@ -29,6 +29,7 @@ define('GOOGLE_SERVICE_ACCOUNT', plugin_dir_path(__FILE__) . 'Configuration/serv
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Account\CreateAccount;
 
 use SEVEN_TECH\Gateway\Admin\Admin;
 use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
@@ -116,15 +117,15 @@ class SEVEN_TECH
                 $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
                 $auth = $factory->createAuth();
 
-                $account = new Account($auth);
-                $token = new Token($auth, $account);
-                $authentication = new Authentication($account, $token, $auth);
+                $createAccount = new CreateAccount($auth);
+                $token = new Token($auth);
+                $authentication = new Authentication($auth);
                 $authorization = new Authorization($token);
                 $password = new Password($authentication);
                 $roles = new Roles();
                 $user = new User($auth);
 
-                $accountAPI = new API_Account($account, $authentication, $authorization);
+                $accountAPI = new API_Account($createAccount, $authentication, $authorization);
                 $authAPI = new API_Authentication($authentication);
                 $passwordAPI = new API_Password($password, $authentication, $authorization);
                 $rolesAPI = new API_Roles($roles, $authorization);
@@ -134,7 +135,7 @@ class SEVEN_TECH
                     new API($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI);
                 });
 
-                $adminAccountManagement = new AdminAccountManagement($account);
+                $adminAccountManagement = new AdminAccountManagement($createAccount);
                 $adminRecoverPassword = new AdminRecoverPassword($password);
                 $adminUserManagement = new AdminUserManagement($user);
             }

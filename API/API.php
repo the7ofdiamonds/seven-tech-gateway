@@ -42,7 +42,7 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/authentication/logoutAll', array(
+    register_rest_route('seven-tech/v1', '/authentication/logout-all', array(
       'methods' => 'POST',
       'callback' => array($authAPI, 'logoutAll'),
       'permission_callback' => '__return_true',

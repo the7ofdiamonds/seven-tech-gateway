@@ -17,12 +17,10 @@ use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 class Token
 {
     private $auth;
-    private $account;
 
-    public function __construct(Auth $auth, Account $account)
+    public function __construct(Auth $auth)
     {
         $this->auth = $auth;
-        $this->account = $account;
     }
 
     function getVerifiedToken($token)
@@ -86,7 +84,7 @@ class Token
 
             $email = $verifiedAccessToken->claims()->get('email');
 
-            $account = $this->account->findAccount($email);
+            $account = new Account($email);
 
             return $account;
         } catch (FailedToVerifyToken $e) {
@@ -106,9 +104,8 @@ class Token
             $signedInUser = $this->auth->signInWithRefreshToken($refreshToken);
 
             $account = $this->findUserWithToken($signedInUser->idToken());
-            $profile_image_url = get_avatar_url($account->id);
 
-            return new Authenticated($account->id, $account->email, $signedInUser->idToken(), $signedInUser->refreshToken(), $account->roles, $account->level, $profile_image_url);
+            return new Authenticated($account, $signedInUser);
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {

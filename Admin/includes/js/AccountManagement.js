@@ -55,6 +55,7 @@ jQuery(document).ready(function ($) {
             .done(function (response) {
                 var id = response.data.id;
                 var fullname = `${response.data.firstname} ${response.data.lastname}`;
+                var email = response.data.email;
 
                 $('#account #account_id').text(id);
                 $('#account #email').text(response.data.email);
@@ -87,11 +88,15 @@ jQuery(document).ready(function ($) {
                         url: 'admin-ajax.php',
                         data: {
                             action: 'getAccountStatus',
-                            id: id
+                            email: email
                         }
                     })
                         .done(function (status) {
                             $('#sessions').empty();
+
+                            if (!Array.isArray(status.data)) {
+                                return '';
+                            }
 
                             var sessions = status.data[0];
                             var sessionKeys = Object.keys(sessions);
@@ -106,8 +111,8 @@ jQuery(document).ready(function ($) {
                                 var sessionContainer = $(`<div class='session' id='session_${token}'></div>`);
 
                                 var ip = session['ip'];
-                                var loginTime = session['login'];
-                                var expiration = session['expiration'];
+                                var loginTime = new Date(session['login'] * 1000);
+                                var expiration = new Date(session['expiration'] * 1000);
                                 var userAgent = session['ua'];
 
                                 var sessionToken = $("<div class='session-token'></div>");
