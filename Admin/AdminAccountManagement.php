@@ -7,6 +7,7 @@ use SEVEN_TECH\Gateway\Account\CreateAccount;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
+use SEVEN_TECH\Gateway\Session\Session;
 
 class AdminAccountManagement
 {
@@ -17,6 +18,7 @@ class AdminAccountManagement
     public $page_url;
     private $createAccount;
     private $account;
+    private $session;
 
     public function __construct(CreateAccount $createAccount)
     {
@@ -27,9 +29,11 @@ class AdminAccountManagement
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
         $this->createAccount = $createAccount;
         $this->account = new Account();
+        $this->session = new Session;
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
+        add_action('wp_ajax_removeSession', [$this, 'removeSession']);
         add_action('wp_ajax_sendSubscriptionEmail', [$this, 'sendSubscriptionEmail']);
         add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
         add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
@@ -78,17 +82,26 @@ class AdminAccountManagement
     public function findAccount()
     {
         try {
-            if (!isset($_POST['email']) || empty($_POST['email'])) {
-                throw new Exception('Email is required.', 400);
-            }
-
             $email = $_POST['email'];
 
             $account = $this->account->findAccount($email);
 
             wp_send_json_success($account);
         } catch (DestructuredException $e) {
-            error_log(print_r($e, true));
+            wp_send_json_error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function removeSession()
+    {
+        try {
+            $verifier = $_POST['verifier'];
+            $id = $_POST['id'];
+
+            $removedSession = $this->session->destroy_session($id, $verifier);
+
+            wp_send_json_success($removedSession);
+        } catch (DestructuredException $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }

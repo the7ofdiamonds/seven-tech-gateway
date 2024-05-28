@@ -149,8 +149,9 @@ class Authentication
     {
         try {
             $refreshToken = $this->token->getRefreshToken($request);
+            $verifier = $this->session->hash_token($refreshToken);
 
-            $session_destroyed = $this->session->destroy_session($refreshToken, $request['id']);
+            $session_destroyed = $this->session->destroy_session($request['id'], $verifier);
 
             if(!$session_destroyed){
                 throw new Exception('Unable to remove session.');
