@@ -13,6 +13,7 @@ const initialState = {
 
 export const logout = createAsyncThunk('logout/logout', async () => {
     try {
+        const id = localStorage.getItem('id');
         const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
@@ -25,6 +26,7 @@ export const logout = createAsyncThunk('logout/logout', async () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                id: id,
                 email: email
             })
         });
@@ -38,7 +40,7 @@ export const logout = createAsyncThunk('logout/logout', async () => {
         //     localStorage.removeItem('access_token');
         //     localStorage.removeItem('refresh_token');
         // }
-
+console.log(responseData);
         return responseData;
     } catch (error) {
         console.error(error);

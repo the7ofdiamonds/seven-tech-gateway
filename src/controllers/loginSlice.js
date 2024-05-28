@@ -8,6 +8,7 @@ const initialState = {
     loginError: '',
     loginSuccessMessage: '',
     loginErrorMessage: '',
+    id: '',
     username: '',
     displayName: '',
     email: '',
@@ -85,7 +86,7 @@ export const login = createAsyncThunk('login/login', async ({ email, password, l
         });
 
         const responseData = await response.json();
-console.log(response);
+
         return responseData;
     } catch (error) {
         console.error(error);

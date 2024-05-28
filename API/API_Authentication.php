@@ -32,10 +32,7 @@ class API_Authentication
     public function logout(WP_REST_Request $request)
     {
         try {
-            $logoutResponse = [
-                'successMessage' => $this->authentication->logout($request),
-                'statusCode' => 200
-            ];
+            $logoutResponse = $this->authentication->logout($request);
 
             return rest_ensure_response($logoutResponse);
         } catch (Exception $e) {
@@ -46,10 +43,7 @@ class API_Authentication
     public function logoutAll(WP_REST_Request $request)
     {
         try {
-            $logoutAllResponse = [
-                'successMessage' => $this->authentication->logoutAll($request),
-                'statusCode' => 200
-            ];
+            $logoutAllResponse = $this->authentication->logoutAll($request);
 
             return rest_ensure_response($logoutAllResponse);
         } catch (Exception $e) {

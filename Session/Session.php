@@ -6,20 +6,8 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
 
-use WP_Session_Tokens;
-
-class Session extends WP_Session_Tokens
+class Session
 {
-    // protected $user_id;
-
-    public function __construct($user_id)
-    {
-        // $this->user_id = $user_id;
-        parent::get_instance($user_id);
-    }
-    public function get_sessions()
-    {
-    }
 
     public function getSessions($id)
     {
@@ -128,45 +116,25 @@ class Session extends WP_Session_Tokens
         $this->store_session($user_id, $token);
     }
 
-    // function getSessions()
-    // {
-    //     return $this->get_sessions();
-    // }
-
-    // protected function get_sessions()
-    // {
-    //     $sessions = get_user_meta(160, 'session_tokens', true);
-
-    //     if (!is_array($sessions)) {
-    //         return array();
-    //     }
-
-    //     $sessions = array_map(array($this, 'prepare_session'), $sessions);
-    //     return array_filter($sessions, array($this, 'is_still_valid'));
-    // }
-
-    function get_session($verifier)
+    function destroy_session($refreshToken, $id)
     {
-        return $this->get_session($verifier);
-    }
+        $session_tokens = $this->getSessions($id);
 
-    function update_session($verifier, $session = null)
-    {
-        $this->update_session($verifier, $session = null);
-    }
+        if (!is_array($session_tokens)) {
+            return;
+        }
 
-    function destroy_session($token)
-    {
-        $this->destroy($token);
-    }
+        $verifier = $this->hash_token($refreshToken);
 
-    function destroy_other_sessions($user_id, $excluded_token = '')
-    {
-        $this->destroy_other_sessions($user_id, $excluded_token = '');
-    }
+        foreach ($session_tokens as $key => $value) {
+            if ($key == $verifier) {
+                unset($session_tokens[$key]);
+                break;
+            }
+        }
 
-    function destroy_all_sessions()
-    {
-        $this->destroy_all_sessions();
+        $session_destroyed = update_user_meta($id, 'session_tokens', $session_tokens);
+
+        return $session_destroyed;
     }
 }

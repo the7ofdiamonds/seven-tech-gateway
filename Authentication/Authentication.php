@@ -19,12 +19,14 @@ class Authentication
     private $validator;
     private $token;
     private $auth;
+    private $session;
 
     public function __construct(Auth $auth)
     {
         $this->validator = new Validator;
         $this->auth = $auth;
         $this->token = new Token($auth);
+        $this->session = new Session;
     }
 
     function signInWithEmailAndPassword($email, $password)
@@ -79,7 +81,7 @@ class Authentication
             // }
 
             wp_set_current_user($authenticatedAccount->id);
-            (new Session($authenticatedAccount->id))->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
+            $this->session->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in successfully', 403);
@@ -145,23 +147,25 @@ class Authentication
     {
         try {
             $refreshToken = $this->token->getRefreshToken($request);
-            $session = (new Session(1))->hash_token($refreshToken);
 
-            $activeSession = (new Session(1))->get_session($session);
-// Find and remove session
-            error_log(print_r($activeSession, true));
-            // wp_logout();
+            $session_destroyed = $this->session->destroy_session($refreshToken, $request['id']);
 
-            // if (is_user_logged_in()) {
-            //     throw new Exception('User could not be logged out.', 400);
-            // }
+            if(!$session_destroyed){
+                throw new Exception('Unable to remove session.');
+            }
 
-            // $logoutResponse = [
-            //     'successMessage' => 'You have been logged out',
-            //     'statusCode' => 200
-            // ];
+            wp_logout();
 
-            // return rest_ensure_response($logoutResponse);
+            if (is_user_logged_in()) {
+                throw new Exception('User could not be logged out.', 400);
+            }
+
+            $logoutResponse = [
+                'successMessage' => 'You have been logged out',
+                'statusCode' => 200
+            ];
+
+            return $logoutResponse;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -192,7 +196,7 @@ class Authentication
                 'statusCode' => 200
             ];
 
-            return rest_ensure_response($logoutResponse);
+            return $logoutResponse;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

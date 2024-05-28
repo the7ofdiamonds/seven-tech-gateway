@@ -30,7 +30,7 @@ const apple = new OAuthProvider('apple');
 function LoginComponent() {
   const dispatch = useDispatch();
 
-  const { loginSuccessMessage, loginErrorMessage } = useSelector(
+  const { loginSuccessMessage, loginErrorMessage, id } = useSelector(
     (state) => state.login
   );
 
@@ -53,11 +53,12 @@ function LoginComponent() {
   }, []);
 
   useEffect(() => {
-    if (loginSuccessMessage) {
+    if (loginSuccessMessage && id) {
       setMessage(loginSuccessMessage);
       setMessageType('success');
+      dispatch(updateAccountID(id));
     }
-  }, [loginSuccessMessage]);
+  }, [loginSuccessMessage, id]);
 
   useEffect(() => {
     if (loginErrorMessage) {
