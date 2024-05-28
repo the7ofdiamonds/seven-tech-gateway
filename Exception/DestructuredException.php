@@ -3,12 +3,13 @@
 namespace SEVEN_TECH\Gateway\Exception;
 
 use Exception;
+use WP_Error;
 
 class DestructuredException extends Exception
 {
     private $exception;
 
-    public function __construct(Exception $e)
+    public function __construct(Exception | WP_Error $e)
     {
         $this->exception = $e;
     }

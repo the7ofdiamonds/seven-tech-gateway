@@ -54,11 +54,11 @@ jQuery(document).ready(function ($) {
         })
             .done(function (response) {
                 var id = response.data.id;
-                var fullname = `${response.data.firstname} ${response.data.lastname}`;
+                var fullname = `${response.data.first_name} ${response.data.last_name}`;
                 var email = response.data.email;
-
+console.log(response);
                 $('#account #account_id').text(id);
-                $('#account #email').text(response.data.email);
+                $('#account #email').text(email);
                 $('#account #username').text(response.data.username);
                 $('#account #full_name').text(fullname);
                 $('#account #nicename').text(response.data.nicename);
@@ -74,81 +74,59 @@ jQuery(document).ready(function ($) {
                     $('#account #roles_row').append(roleTag);
                 });
 
-                var authenticated = response.data.is_authenticated == 1 ? 'logged in' : 'logged out';
-
-                var unexpired = response.data.is_account_non_expired == 1 ? true : false;
-                var unlocked = response.data.is_account_non_locked == 1 ? true : false;
-                var credentials = response.data.is_credentials_non_expired == 1 ? true : false;
-                var enabled = response.data.is_enabled == 1 ? true : false;
+                var authenticated = response.data.is_authenticated;
+                var unexpired = response.data.is_account_non_expired;
+                var unlocked = response.data.is_account_non_locked;
+                var credentials = response.data.is_credentials_non_expired;
+                var enabled = response.data.is_enabled;
 
                 $('#account #authenticated').text(authenticated);
-                if (authenticated) {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'admin-ajax.php',
-                        data: {
-                            action: 'getAccountStatus',
-                            email: email
-                        }
-                    })
-                        .done(function (status) {
-                            $('#sessions').empty();
 
-                            if (!Array.isArray(status.data)) {
-                                return '';
-                            }
+                var sessions = response.data.sessions;
+                console.log(sessions);
+                var sessionKeys = Object.keys(sessions);
 
-                            var sessions = status.data[0];
-                            var sessionKeys = Object.keys(sessions);
-                            var numberOfSessions = sessionKeys.length;
+                if (sessionKeys.length > 0) {
+                    $('#sessions').css('display', 'flex');
 
-                            if (numberOfSessions > 0) {
-                                $('#sessions').css('display', 'flex');
-                            }
+                    $('#sessions').empty();
 
-                            sessionKeys.forEach(function (token) {
-                                var session = sessions[token];
-                                var sessionContainer = $(`<div class='session' id='session_${token}'></div>`);
+                    sessionKeys.forEach(function (token) {
+                        var session = sessions[token];
+                        var sessionContainer = $(`<div class='session' id='session_${token}'></div>`);
 
-                                var ip = session['ip'];
-                                var loginTime = new Date(session['login'] * 1000);
-                                var expiration = new Date(session['expiration'] * 1000);
-                                var userAgent = session['ua'];
+                        var ip = session['ip'];
+                        var loginTime = new Date(session['login'] * 1000);
+                        var expiration = new Date(session['expiration'] * 1000);
+                        var userAgent = session['ua'];
 
-                                var sessionToken = $("<div class='session-token'></div>");
-                                $("<h3>token</h3>").appendTo(sessionToken);
-                                $("<h4 class='token'></h4>").text(token).appendTo(sessionToken);
-                                sessionToken.appendTo(sessionContainer);
+                        var sessionToken = $("<div class='session-token'></div>");
+                        $("<h3>token</h3>").appendTo(sessionToken);
+                        $("<h4 class='token'></h4>").text(token).appendTo(sessionToken);
+                        sessionToken.appendTo(sessionContainer);
 
-                                var sessionIP = $("<div class='session-ip'></div>");
-                                $("<h3>ip</h3>").appendTo(sessionIP);
-                                $("<h4 class='ip'></h4>").text(ip).appendTo(sessionIP);
-                                sessionIP.appendTo(sessionContainer);
+                        var sessionIP = $("<div class='session-ip'></div>");
+                        $("<h3>ip</h3>").appendTo(sessionIP);
+                        $("<h4 class='ip'></h4>").text(ip).appendTo(sessionIP);
+                        sessionIP.appendTo(sessionContainer);
 
-                                var sessionLoginTime = $("<div class='session-login-time'></div>");
-                                $("<h3>login time</h3>").appendTo(sessionLoginTime);
-                                $("<h4 class='login-time'></h4>").text(loginTime).appendTo(sessionLoginTime);
-                                sessionLoginTime.appendTo(sessionContainer);
+                        var sessionLoginTime = $("<div class='session-login-time'></div>");
+                        $("<h3>login time</h3>").appendTo(sessionLoginTime);
+                        $("<h4 class='login-time'></h4>").text(loginTime).appendTo(sessionLoginTime);
+                        sessionLoginTime.appendTo(sessionContainer);
 
-                                var sessionExpiration = $("<div class='session-expiration'></div>");
-                                $("<h3>expiration</h3>").appendTo(sessionExpiration);
-                                $("<h4 class='expiration'></h4>").text(expiration).appendTo(sessionExpiration);
-                                sessionExpiration.appendTo(sessionContainer);
+                        var sessionExpiration = $("<div class='session-expiration'></div>");
+                        $("<h3>expiration</h3>").appendTo(sessionExpiration);
+                        $("<h4 class='expiration'></h4>").text(expiration).appendTo(sessionExpiration);
+                        sessionExpiration.appendTo(sessionContainer);
 
-                                var sessionUserAgent = $("<div class='session-user-agent'></div>");
-                                $("<h3>user agent</h3>").appendTo(sessionUserAgent);
-                                $("<h4 class='user-agent'></h4>").text(userAgent).appendTo(sessionUserAgent);
-                                sessionUserAgent.appendTo(sessionContainer);
+                        var sessionUserAgent = $("<div class='session-user-agent'></div>");
+                        $("<h3>user agent</h3>").appendTo(sessionUserAgent);
+                        $("<h4 class='user-agent'></h4>").text(userAgent).appendTo(sessionUserAgent);
+                        sessionUserAgent.appendTo(sessionContainer);
 
-                                $('#sessions').append(sessionContainer);
-                            });
-
-                        })
-                        .fail(function (xhr, status, error) {
-                            const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
-                            displayMessage(status, errorMessage);
-                        });
+                        $('#sessions').append(sessionContainer);
+                    });
                 }
 
                 $('#account_management #expired').text(unexpired);
@@ -174,9 +152,11 @@ jQuery(document).ready(function ($) {
                 }
             })
             .fail(function (xhr, status, error) {
-                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
-                displayMessage(status, errorMessage);
+                // const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+console.log(xhr);
+console.log(status);
+console.log(error);
+                // displayMessage(status, errorMessage);
             });
     }
 

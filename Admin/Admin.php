@@ -3,8 +3,12 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Configuration\Configuration;
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
+
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Contract\Auth;
 
 class Admin
 {
@@ -81,37 +85,43 @@ class Admin
 
     public function areGoogleCredentialsPresent()
     {
-        if (!file_exists(GOOGLE_SERVICE_ACCOUNT)) {
-            throw new Exception('Google service account file does not exist.', 400);
-        }
-
-        $jsonFileContents = file_get_contents(GOOGLE_SERVICE_ACCOUNT);
-
-        if ($jsonFileContents === false) {
-            throw new Exception('Unable to read Google service account file.', 400);
-        }
-
-        $decodedData = json_decode($jsonFileContents, true);
-
-        $missingFields = [];
-        $requiredFields = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email', 'client_id', 'auth_uri', 'token_uri', 'auth_provider_x509_cert_url', 'client_x509_cert_url', 'universe_domain'];
-
-        foreach ($requiredFields as $field) {
-            if (!isset($decodedData[$field])) {
-                $missingFields[] = $field;
+        try {
+            if (!file_exists(GOOGLE_SERVICE_ACCOUNT)) {
+                throw new Exception('Google service account file does not exist.', 400);
             }
-        }
 
-        if (!empty($missingFields)) {
-            $errorMessage = 'Required fields are missing: ' . implode(', ', $missingFields);
-            throw new Exception($errorMessage, 400);
-        }
+            $jsonFileContents = file_get_contents(GOOGLE_SERVICE_ACCOUNT);
 
-        if ($decodedData['type'] !== 'service_account') {
-            throw new Exception('Type is not set to service_account.', 400);
-        }
+            if ($jsonFileContents === false) {
+                throw new Exception('Unable to read Google service account file.', 400);
+            }
 
-        return true;
+            $decodedData = json_decode($jsonFileContents, true);
+
+            $missingFields = [];
+            $requiredFields = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email', 'client_id', 'auth_uri', 'token_uri', 'auth_provider_x509_cert_url', 'client_x509_cert_url', 'universe_domain'];
+
+            foreach ($requiredFields as $field) {
+                if (!isset($decodedData[$field])) {
+                    $missingFields[] = $field;
+                }
+            }
+
+            if (!empty($missingFields)) {
+                $errorMessage = 'Required fields are missing: ' . implode(', ', $missingFields);
+                throw new Exception($errorMessage, 400);
+            }
+
+            if ($decodedData['type'] !== 'service_account') {
+                throw new Exception('Type is not set to service_account.', 400);
+            }
+
+            $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
+
+            return $factory->createAuth();
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
     }
 
     public function areGoogleCredentialsPresentAdmin()
@@ -119,10 +129,14 @@ class Admin
         try {
             $credentialsPresent = $this->areGoogleCredentialsPresent();
 
+            if ($credentialsPresent instanceof Auth) {
+                $credentialsPresent = true;
+            }
+
             wp_send_json_success($credentialsPresent);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
-        }
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        } 
     }
 
     public function uploadFile()

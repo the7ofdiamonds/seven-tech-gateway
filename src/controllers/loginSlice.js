@@ -85,7 +85,7 @@ export const login = createAsyncThunk('login/login', async ({ email, password, l
         });
 
         const responseData = await response.json();
-        
+console.log(response);
         return responseData;
     } catch (error) {
         console.error(error);
@@ -134,30 +134,26 @@ export const loginSlice = createSlice({
                 state.loginSuccessMessage = action.payload.successMessage;
                 state.loginErrorMessage = action.payload.errorMessage;
                 state.loginStatusCode = action.payload.statusCode;
-                // state.id = action.payload.authenticatedAccount.id;
-                // state.email = action.payload.authenticatedAccount.email;
-                // state.username = action.payload.authenticatedAccount.username;
-                // state.refreshToken = action.payload.authenticatedAccount.refreshToken;
-                // state.accessToken = action.payload.authenticatedAccount.accessToken;
-                // state.profileImage = action.payload.authenticatedAccount.photoURL;
+                state.id = action.payload.authenticatedAccount.id;
+                state.email = action.payload.authenticatedAccount.email;
+                state.username = action.payload.authenticatedAccount.username;
+                state.refreshToken = action.payload.authenticatedAccount.refreshToken;
+                state.accessToken = action.payload.authenticatedAccount.accessToken;
+                state.profileImage = action.payload.authenticatedAccount.photoURL;
             })
-            .addMatcher(isAnyOf(
-                login.pending
-            ), (state) => {
-                state.loginLoading = true;
-                state.loginError = '';
-                state.loginSuccessMessage = '';
-                state.loginErrorMessage = '';
-                state.loginStatusCode = '';
-            })
-            .addMatcher(isAnyOf(
-                login.rejected
-            ),
-                (state, action) => {
-                    state.loginLoading = false;
-                    state.loginError = action.error;
-                    state.loginErrorMessage = action.error.message;
-                });
+            .addCase(
+                login.pending, (state) => {
+                    state.loginLoading = true;
+                    state.loginError = '';
+                    state.loginSuccessMessage = '';
+                    state.loginErrorMessage = '';
+                    state.loginStatusCode = '';
+                })
+            .addCase(login.rejected, (state, action) => {
+                state.loginLoading = false;
+                state.loginError = action.error;
+                state.loginErrorMessage = action.error.message;
+            });
     }
 })
 

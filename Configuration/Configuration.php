@@ -2,7 +2,11 @@
 
 namespace SEVEN_TECH\Gateway\Configuration;
 
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
+
 use Exception;
+
+use WP_Error;
 
 class Configuration
 {
@@ -23,7 +27,11 @@ class Configuration
 
                 $new_file_path = $upload_path . $filename;
 
-                move_uploaded_file($file_path, $new_file_path);
+                $file_moved = move_uploaded_file($file_path, $new_file_path);
+
+                if (!$file_moved) {
+                    throw new Exception('Filename is not valid.', 400);
+                }
 
                 $attachment = array(
                     'guid'           => $new_file_path,
@@ -37,12 +45,18 @@ class Configuration
 
                 $attachment_data = wp_generate_attachment_metadata($attachment_id, $new_file_path);
 
-                wp_update_attachment_metadata($attachment_id, $attachment_data);
+                $updated_attachment = wp_update_attachment_metadata($attachment_id, $attachment_data);
+
+                if (!$updated_attachment) {
+                    throw new Exception('There was an error updating atachment metadata.', 400);
+                }
 
                 return $file_url;
             }
+        } catch (WP_Error $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 }

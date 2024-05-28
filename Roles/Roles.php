@@ -42,7 +42,7 @@ class Roles
     }
 
     public function unserializeRoles($serializedRoles)
-    {
+    {error_log(print_r($serializedRoles, true));
         $uroles = unserialize($serializedRoles);
         $wp_roles = wp_roles()->get_names();
 

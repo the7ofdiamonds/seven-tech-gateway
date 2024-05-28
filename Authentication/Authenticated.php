@@ -10,21 +10,21 @@ class Authenticated
 {
     public $id;
     public $email;
-    public $accessToken;
-    public $refreshToken;
+    public $access_token;
+    public $refresh_token;
     public $roles;
     public $level;
-    public $profileImage;
+    public $profile_image;
 
     public function __construct(Account $account, SignInResult $signedInUser)
     {
         $this->id = $account->id;
         $this->email = $account->email;
-        $this->accessToken = $signedInUser->idToken();
-        $this->refreshToken = $signedInUser->refreshToken();
+        $this->access_token = $signedInUser->idToken();
+        $this->refresh_token = $signedInUser->refreshToken();
         $this->roles = $account->roles;
         $this->level = $account->level;
-        $this->profileImage = $account->profileImage;
+        $this->profile_image = $account->profile_image;
     }
 
     public function getID()
@@ -39,12 +39,12 @@ class Authenticated
 
     public function getAccessToken()
     {
-        return $this->accessToken;
+        return $this->access_token;
     }
 
     public function getRefreshToken()
     {
-        return $this->refreshToken;
+        return $this->refresh_token;
     }
 
     public function getRoles()
@@ -59,6 +59,6 @@ class Authenticated
 
     public function getProfileImage()
     {
-        return $this->profileImage;
+        return $this->profile_image;
     }
 }

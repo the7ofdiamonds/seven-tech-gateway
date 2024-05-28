@@ -92,12 +92,22 @@ function LoginComponent() {
         location: location,
       })
     ).then((response) => {
-      console.log(response);
-      dispatch(updateAccountID(response.payload.authenticatedAccount.id))
+      if (response.error != undefined) {
+        console.error(response.error.message);
+        return '';
+      }
+
+      dispatch(updateAccountID(response.payload.authenticatedAccount.id));
       dispatch(updateEmail(response.payload.authenticatedAccount.email));
-      dispatch(updateAccessToken(response.payload.authenticatedAccount.accessToken));
-      dispatch(updateRefreshToken(response.payload.authenticatedAccount.refreshToken));
-      dispatch(updateProfileImage(response.payload.authenticatedAccount.profileImage));
+      dispatch(
+        updateAccessToken(response.payload.authenticatedAccount.access_token)
+      );
+      dispatch(
+        updateRefreshToken(response.payload.authenticatedAccount.refresh_token)
+      );
+      dispatch(
+        updateProfileImage(response.payload.authenticatedAccount.profile_image)
+      );
     });
   };
 
@@ -111,9 +121,7 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(
-        login({location: location })
-      );
+      dispatch(login({ location: location }));
     });
   };
 
@@ -127,9 +135,7 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(
-        login({ location: location })
-      );
+      dispatch(login({ location: location }));
     });
   };
 
@@ -143,9 +149,7 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
       dispatch(updateRefreshToken(refreshToken));
-      dispatch(
-        login({ location: location })
-      );
+      dispatch(login({ location: location }));
     });
   };
 

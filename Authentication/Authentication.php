@@ -4,6 +4,7 @@ namespace SEVEN_TECH\Gateway\Authentication;
 
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
@@ -71,14 +72,14 @@ class Authentication
                 throw new Exception('Access Denied: Either a token or username and password are required to login.', 403);
             }
 
-            if (isset($request['location'])) {
-                $location = $request['location'];
+            // if (isset($request['location'])) {
+            //     $location = $request['location'];
 
-                error_log(print_r($location, true));
-            }
+            //     error_log(print_r($location, true));
+            // }
 
             wp_set_current_user($authenticatedAccount->id);
-            wp_set_auth_cookie($authenticatedAccount->id, true);
+            (new Session($authenticatedAccount->id))->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in successfully', 403);
@@ -101,11 +102,11 @@ class Authentication
     function verifyCredentials(WP_REST_Request $request)
     {
         try {
-            if (isset($request['email'])) {
+            if (!isset($request['email'])) {
                 throw new Exception('An email is required.', 400);
             }
 
-            if (isset($request['confirmationCode'])) {
+            if (!isset($request['confirmationCode'])) {
                 throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
             }
 
@@ -143,19 +144,24 @@ class Authentication
     public function logout(WP_REST_Request $request)
     {
         try {
+            $refreshToken = $this->token->getRefreshToken($request);
+            $session = (new Session(1))->hash_token($refreshToken);
 
-            wp_logout();
+            $activeSession = (new Session(1))->get_session($session);
+// Find and remove session
+            error_log(print_r($activeSession, true));
+            // wp_logout();
 
-            if (is_user_logged_in()) {
-                throw new Exception('User could not be logged out.', 400);
-            }
+            // if (is_user_logged_in()) {
+            //     throw new Exception('User could not be logged out.', 400);
+            // }
 
-            $logoutResponse = [
-                'successMessage' => 'You have been logged out',
-                'statusCode' => 200
-            ];
+            // $logoutResponse = [
+            //     'successMessage' => 'You have been logged out',
+            //     'statusCode' => 200
+            // ];
 
-            return rest_ensure_response($logoutResponse);
+            // return rest_ensure_response($logoutResponse);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -168,7 +174,7 @@ class Authentication
         try {
             $accessToken = $this->token->getAccessToken($request);
             $uid = $accessToken->claims()->get('sub');
-           
+
             $this->auth->revokeRefreshTokens($uid);
 
             if (!isset($request['id'])) {

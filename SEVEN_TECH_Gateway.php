@@ -28,7 +28,6 @@ define('GOOGLE_SERVICE_ACCOUNT', plugin_dir_path(__FILE__) . 'Configuration/serv
 
 require_once SEVEN_TECH . 'vendor/autoload.php';
 
-use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\CreateAccount;
 
 use SEVEN_TECH\Gateway\Admin\Admin;
@@ -54,6 +53,7 @@ use SEVEN_TECH\Gateway\CSS\Customizer\Color;
 use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
 
 use SEVEN_TECH\Gateway\Database\Database;
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use SEVEN_TECH\Gateway\JS\JS;
 
@@ -79,7 +79,7 @@ use SEVEN_TECH\Gateway\User\User;
 
 use Exception;
 
-use Kreait\Firebase\Factory;
+use Kreait\Firebase\Contract\Auth;
 
 class SEVEN_TECH
 {
@@ -105,18 +105,12 @@ class SEVEN_TECH
 
         $admin = new Admin();
 
-        add_action('admin_init', function () use ($admin) {
-            $admin;
-            add_filter("plugin_action_links_{$this->plugin_file}", [$admin, 'settings_link']);
-        });
+        add_action('admin_menu', [$admin, 'register_custom_menu_page']);
 
         try {
-            $serviceAccountValid = $admin->areGoogleCredentialsPresent();
+            $auth = $admin->areGoogleCredentialsPresent();
 
-            if ($serviceAccountValid == 1) {
-                $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
-                $auth = $factory->createAuth();
-
+            if ($auth instanceof Auth) {
                 $createAccount = new CreateAccount($auth);
                 $token = new Token($auth);
                 $authentication = new Authentication($auth);
@@ -138,15 +132,21 @@ class SEVEN_TECH
                 $adminAccountManagement = new AdminAccountManagement($createAccount);
                 $adminRecoverPassword = new AdminRecoverPassword($password);
                 $adminUserManagement = new AdminUserManagement($user);
+
+                add_action('admin_init', function () use ($admin) {
+                    $admin;
+                    add_filter("plugin_action_links_{$this->plugin_file}", [$admin, 'settings_link']);
+                });
+
+                add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
+                add_action('admin_menu', [$adminRecoverPassword, 'register_custom_submenu_page']);
+                add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
             }
+        } catch (DestructuredException $e) {
+            error_log($e->getErrorMessage());
         } catch (Exception $e) {
             error_log($e->getMessage());
         }
-
-        add_action('admin_menu', [$admin, 'register_custom_menu_page']);
-        add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
-        add_action('admin_menu', [$adminRecoverPassword, 'register_custom_submenu_page']);
-        add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
 
         $pages = new Pages;
         $posttypes = new Post_Types;

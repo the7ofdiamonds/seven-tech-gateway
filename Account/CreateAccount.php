@@ -7,7 +7,7 @@ use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
-use Kreait\Firebase\Auth;
+use Kreait\Firebase\Contract\Auth;
 
 class CreateAccount
 {

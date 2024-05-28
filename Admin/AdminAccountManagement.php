@@ -2,9 +2,11 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
-use Exception;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\CreateAccount;
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
+
+use Exception;
 
 class AdminAccountManagement
 {
@@ -14,6 +16,7 @@ class AdminAccountManagement
     private $menu_slug;
     public $page_url;
     private $createAccount;
+    private $account;
 
     public function __construct(CreateAccount $createAccount)
     {
@@ -23,10 +26,10 @@ class AdminAccountManagement
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
         $this->createAccount = $createAccount;
+        $this->account = new Account();
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
-        add_action('wp_ajax_getAccountStatus', [$this, 'getAccountStatus']);
         add_action('wp_ajax_sendSubscriptionEmail', [$this, 'sendSubscriptionEmail']);
         add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
         add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
@@ -75,25 +78,17 @@ class AdminAccountManagement
     public function findAccount()
     {
         try {
+            if (!isset($_POST['email']) || empty($_POST['email'])) {
+                throw new Exception('Email is required.', 400);
+            }
+
             $email = $_POST['email'];
 
-            $account = new Account($email);
+            $account = $this->account->findAccount($email);
 
             wp_send_json_success($account);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
-        }
-    }
-
-    public function getAccountStatus()
-    {
-        try {
-            $email = $_POST['email'];
-
-            $accountStatus = new Account($email);
-            error_log(print_r($accountStatus->getAccountStatus(), true));
-            wp_send_json_success($accountStatus);
-        } catch (Exception $e) {
+        } catch (DestructuredException $e) {
+            error_log(print_r($e, true));
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
@@ -182,7 +177,7 @@ class AdminAccountManagement
 
             $email = $_POST['email'];
 
-            $account = (new Account($email))->findAccount();
+            $account = new Account($email);
 
             $is_enabled = $account->is_enabled;
 
