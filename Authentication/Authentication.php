@@ -51,7 +51,9 @@ class Authentication
 
             $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
 
-            return new Authenticated($account, $signedInUser);
+            $user = $this->auth->getUser($signedInUser->data()['localId']);
+
+            return new Authenticated($account, $signedInUser, $user);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

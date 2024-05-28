@@ -5,6 +5,7 @@ namespace SEVEN_TECH\Gateway\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
+use SEVEN_TECH\Gateway\Session\Session;
 
 use Exception;
 
@@ -66,29 +67,6 @@ class Account
         }
     }
 
-    public function getSessions($id)
-    {
-        try {
-            if (empty($id)) {
-                throw new Exception('ID is required.', 400);
-            }
-
-            $account_status = get_user_meta($id, 'session_tokens');
-
-            if (empty($account_status)) {
-                return '';
-            }
-
-            if (!$account_status) {
-                throw new Exception('User ID is not valid.', 400);
-            }
-
-            return $account_status[0];
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
     function findAccount($email)
     {
         try {
@@ -114,7 +92,7 @@ class Account
             $account->roles = $this->Roles->unserializeRoles($account->roles);
             $account->level = $this->Roles->getRolesHighestLevel($account->roles);
             $account->profile_image = get_avatar_url($account->id);
-            $account->sessions = $this->getSessions($account->id);
+            $account->sessions = (new Session)->getSessions($account->id);
             $account->is_authenticated = $account->is_authenticated == 1 ? 'logged in' : 'logged out';
             $account->is_account_non_expired = $account->is_account_non_expired == 1 ? true : false;
             $account->is_account_non_locked = $account->is_account_non_locked == 1 ? true : false;

@@ -10,31 +10,16 @@ const initialState = {
     loginErrorMessage: '',
     id: '',
     username: '',
-    displayName: '',
     email: '',
     profileImage: '',
     accessToken: '',
     refreshToken: ''
 };
 
-export const updateAccountID = (accountID) => {
+export const updateAccountID = (id) => {
     return {
         type: 'login/updateAccountID',
-        payload: accountID
-    };
-};
-
-export const updateUsername = (username) => {
-    return {
-        type: 'login/updateUsername',
-        payload: username
-    };
-};
-
-export const updateDisplayName = (displayName) => {
-    return {
-        type: 'login/updateDisplayName',
-        payload: displayName
+        payload: id
     };
 };
 
@@ -42,6 +27,13 @@ export const updateEmail = (email) => {
     return {
         type: 'login/updateEmail',
         payload: email
+    };
+};
+
+export const updateUsername = (username) => {
+    return {
+        type: 'login/updateUsername',
+        payload: username
     };
 };
 
@@ -102,17 +94,13 @@ export const loginSlice = createSlice({
             state.id = action.payload;
             localStorage.setItem('id', action.payload);
         },
-        updateDisplayName: (state, action) => {
-            state.displayName = action.payload;
-            localStorage.setItem('display_name', action.payload);
+        updateEmail: (state, action) => {
+            state.email = action.payload;
+            localStorage.setItem('email', action.payload);
         },
         updateUsername: (state, action) => {
             state.username = action.payload;
             localStorage.setItem('username', action.payload);
-        },
-        updateEmail: (state, action) => {
-            state.email = action.payload;
-            localStorage.setItem('email', action.payload);
         },
         updateProfileImage: (state, action) => {
             state.profileImage = action.payload;
@@ -138,9 +126,9 @@ export const loginSlice = createSlice({
                 state.id = action.payload.authenticatedAccount.id;
                 state.email = action.payload.authenticatedAccount.email;
                 state.username = action.payload.authenticatedAccount.username;
-                state.refreshToken = action.payload.authenticatedAccount.refreshToken;
-                state.accessToken = action.payload.authenticatedAccount.accessToken;
-                state.profileImage = action.payload.authenticatedAccount.photoURL;
+                state.profileImage = action.payload.authenticatedAccount.profile_image;
+                state.refreshToken = action.payload.authenticatedAccount.refresh_token;
+                state.accessToken = action.payload.authenticatedAccount.access_token;
             })
             .addCase(
                 login.pending, (state) => {

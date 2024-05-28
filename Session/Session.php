@@ -66,10 +66,7 @@ class Session
     function createSesssion($user_id, $remember = false, $secure = '', $token = '')
     {
         if ($remember) {
-
             $expiration = time() + apply_filters('auth_cookie_expiration', 14 * DAY_IN_SECONDS, $user_id, $remember);
-
-
             $expire = $expiration + (12 * HOUR_IN_SECONDS);
         } else {
             $expiration = time() + apply_filters('auth_cookie_expiration', 2 * DAY_IN_SECONDS, $user_id, $remember);
@@ -98,7 +95,6 @@ class Session
         $logged_in_cookie = wp_generate_auth_cookie($user_id, $expiration, 'logged_in', $token);
 
         do_action('set_auth_cookie', $auth_cookie, $expire, $expiration, $user_id, $scheme, $token);
-        error_log($logged_in_cookie);
 
         do_action('set_logged_in_cookie', $logged_in_cookie, $expire, $expiration, $user_id, 'logged_in', $token);
 

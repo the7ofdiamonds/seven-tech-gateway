@@ -14,7 +14,6 @@ const initialState = {
 export const logout = createAsyncThunk('logout/logout', async () => {
     try {
         const id = localStorage.getItem('id');
-        const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
 
@@ -26,21 +25,22 @@ export const logout = createAsyncThunk('logout/logout', async () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                id: id,
-                email: email
+                id: id
             })
         });
 
         const responseData = await response.json();
         
-        // if (responseData.statusCode == 200) {
-        //     localStorage.removeItem('id');
-        //     localStorage.removeItem('email');
-        //     localStorage.removeItem('profile_image');
-        //     localStorage.removeItem('access_token');
-        //     localStorage.removeItem('refresh_token');
-        // }
-console.log(responseData);
+        if (responseData.statusCode == 200) {
+            localStorage.removeItem('id');
+            localStorage.removeItem('email');
+            localStorage.removeItem('username');
+            localStorage.removeItem('profile_image');
+            localStorage.removeItem('display_name');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+        }
+
         return responseData;
     } catch (error) {
         console.error(error);
@@ -71,7 +71,9 @@ export const logoutAll = createAsyncThunk('logout/logoutAll', async () => {
         if (responseData.statusCode == 200) {
             localStorage.removeItem('id');
             localStorage.removeItem('email');
+            localStorage.removeItem('username');
             localStorage.removeItem('profile_image');
+            localStorage.removeItem('display_name');
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
         }

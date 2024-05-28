@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   login,
   updateAccountID,
-  updateDisplayName,
   updateEmail,
+  updateUsername,
   updateProfileImage,
   updateAccessToken,
   updateRefreshToken,
@@ -30,9 +30,16 @@ const apple = new OAuthProvider('apple');
 function LoginComponent() {
   const dispatch = useDispatch();
 
-  const { loginSuccessMessage, loginErrorMessage, id } = useSelector(
-    (state) => state.login
-  );
+  const {
+    loginSuccessMessage,
+    loginErrorMessage,
+    id,
+    email,
+    username,
+    profileImage,
+    accessToken,
+    refreshToken,
+  } = useSelector((state) => state.login);
 
   const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
@@ -53,12 +60,29 @@ function LoginComponent() {
   }, []);
 
   useEffect(() => {
-    if (loginSuccessMessage && id) {
+    if (loginSuccessMessage) {
       setMessage(loginSuccessMessage);
       setMessageType('success');
-      dispatch(updateAccountID(id));
     }
-  }, [loginSuccessMessage, id]);
+  }, [loginSuccessMessage]);
+
+  useEffect(() => {
+    if (
+      id != '' &&
+      email != '' &&
+      username != '' &&
+      profileImage != '' &&
+      accessToken != '' &&
+      refreshToken != ''
+    ) {
+      dispatch(updateAccountID(id));
+      dispatch(updateEmail(email));
+      dispatch(updateUsername(username));
+      dispatch(updateProfileImage(profileImage));
+      dispatch(updateAccessToken(accessToken));
+      dispatch(updateRefreshToken(refreshToken));
+    }
+  }, [id, email, username, profileImage, accessToken, refreshToken]);
 
   useEffect(() => {
     if (loginErrorMessage) {
@@ -92,32 +116,11 @@ function LoginComponent() {
         password: password,
         location: location,
       })
-    ).then((response) => {
-      if (response.error != undefined) {
-        console.error(response.error.message);
-        return '';
-      }
-
-      dispatch(updateAccountID(response.payload.authenticatedAccount.id));
-      dispatch(updateEmail(response.payload.authenticatedAccount.email));
-      dispatch(
-        updateAccessToken(response.payload.authenticatedAccount.access_token)
-      );
-      dispatch(
-        updateRefreshToken(response.payload.authenticatedAccount.refresh_token)
-      );
-      dispatch(
-        updateProfileImage(response.payload.authenticatedAccount.profile_image)
-      );
-    });
+    );
   };
 
   const handleGoogleSignIn = async () => {
     await signInWithPopup(firebaseAuth, google).then((response) => {
-      dispatch(updateDisplayName(response.user.displayName));
-      dispatch(updateEmail(response.user.email));
-      dispatch(updateProfileImage(response.user.photoURL));
-
       var accessToken = response._tokenResponse.idToken;
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
@@ -128,10 +131,6 @@ function LoginComponent() {
 
   const handleMicrosoftSignIn = async () => {
     await signInWithPopup(firebaseAuth, microsoft).then((response) => {
-      dispatch(updateDisplayName(response.user.displayName));
-      dispatch(updateEmail(response.user.email));
-      dispatch(updateProfileImage(response.user.photoURL));
-
       var accessToken = response._tokenResponse.idToken;
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
@@ -142,10 +141,6 @@ function LoginComponent() {
 
   const handleAppleSignIn = async () => {
     await signInWithPopup(firebaseAuth, apple).then((response) => {
-      dispatch(updateDisplayName(response.user.displayName));
-      dispatch(updateEmail(response.user.email));
-      dispatch(updateProfileImage(response.user.photoURL));
-
       var accessToken = response._tokenResponse.idToken;
       dispatch(updateAccessToken(accessToken));
       var refreshToken = response._tokenResponse.refreshToken;
