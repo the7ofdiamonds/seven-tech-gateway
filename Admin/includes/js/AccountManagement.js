@@ -74,6 +74,10 @@ jQuery(document).ready(function ($) {
                     $('#account #roles_row').append(roleTag);
                 });
 
+                $('#account #user_activation_code').text(response.data.user_activation_code);
+                $('#account #password').text(response.data.password);
+                $('#account #confirmation_code').text(response.data.confirmation_code);
+
                 var authenticated = response.data.is_authenticated;
                 var unexpired = response.data.is_account_non_expired;
                 var unlocked = response.data.is_account_non_locked;
@@ -132,33 +136,13 @@ jQuery(document).ready(function ($) {
                 }
 
                 $('#account_management #expired').text(unexpired);
-
                 $('#account_management #locked').text(unlocked);
-                if (unlocked) {
-                    $('#account_management #lock_account #lock_btn').css('display', 'block');
-                } else {
-                    $('#account_management #lock_account #unlock_btn').css('display', 'block');
-                }
-
                 $('#account_management #credentials').text(credentials);
-
                 $('#account_management #enabled').text(enabled);
-                if (enabled) {
-                    $('#account_management #enable_account #disable_btn').css('display', 'block');
-                } else {
-                    $('#account_management #enable_account #enable_btn').css('display', 'block');
-                }
-
-                if (unlocked == false && enabled == false) {
-                    $('#account_management #delete_account').css('display', 'flex');
-                }
             })
             .fail(function (xhr, status, error) {
-                // const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-console.log(xhr);
-console.log(status);
-console.log(error);
-                // displayMessage(status, errorMessage);
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                displayMessage(status, errorMessage);
             });
     }
 

@@ -16,6 +16,7 @@ class Account
 
     public $id;
     public $joined;
+    public $userActivationCode;
     public $email;
     public $username;
     public $password;
@@ -46,6 +47,7 @@ class Account
 
             $this->id = $account->id;
             $this->joined = $account->joined;
+            $this->userActivationCode = $account->user_activation_code;
             $this->email =  $account->email;
             $this->username = $account->username;
             $this->password = $account->password;
@@ -145,20 +147,29 @@ class Account
     }
 
     // Send account locked email
-    public function lockAccount($confirmationCode)
+    public function lockAccount($password)
     {
         try {
+
+            if (empty($this->email)) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (empty($password)) {
+                throw new Exception('Password is required.', 400);
+            }
+
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL lockAccount('%s', '%s')", $this->email, $confirmationCode)
+                $wpdb->prepare("CALL lockAccount('%s', '%s')", $this->email, $password)
             );
 
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
                 throw new Exception('Account could not be locked at this time.', 500);
             }
 
@@ -168,21 +179,30 @@ class Account
         }
     }
 
-    function unlockAccount($confirmationCode)
+    function unlockAccount($userActivationCode)
     {
         try {
+
+            if (empty($this->email)) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (empty($userActivationCode)) {
+                throw new Exception('User Activation Code is required.', 400);
+            }
+
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL unlockAccount('%s', '%s', '%s')", $this->email, $confirmationCode)
+                $wpdb->prepare("CALL unlockAccount('%s', '%s')", $this->email, $userActivationCode)
             );
 
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            if (empty($results[0]->resultSet) || !$results[0]->resultSet) {
-                throw new Exception('Account could not be removed at this time.', 500);
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be unlocked at this time.', 500);
             }
 
             return 'Account has been unlocked succesfully.';
@@ -192,52 +212,101 @@ class Account
     }
 
     // Send account removed email
-    function disableAccount($confirmationCode)
+    function disableAccount($password)
     {
         try {
+
+            if (empty($this->email)) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (empty($password)) {
+                throw new Exception('Password is required.', 400);
+            }
+
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL disableAccount('%s', '%s')", $this->email, $confirmationCode)
+                $wpdb->prepare("CALL disableAccount('%s', '%s')", $this->email, $password)
             );
-
-            $accountDisabled = $results[0]->resultSet;
 
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            if (!$accountDisabled) {
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
                 throw new Exception('Account could not be removed at this time.', 500);
             }
 
-            return 'Account removed succesfully.';
+            return 'Account disabled succesfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
     // Send account enabled email
-    function enableAccount($confirmationCode)
+    function enableAccount($userActivationCode)
     {
         try {
+
+            if (empty($this->email)) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            if (empty($userActivationCode)) {
+                throw new Exception('User Activation Code is required.', 400);
+            }
+
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL enableAccount('%s', '%s')", $this->email, $confirmationCode)
+                $wpdb->prepare("CALL enableAccount('%s', '%s')", $this->email, $userActivationCode)
             );
-
-            $accountDisabled = $results[0]->resultSet;
 
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            if (!$accountDisabled) {
-                throw new Exception('Account could not be removed at this time.', 500);
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be enabled at this time.', 500);
             }
 
-            return 'Account removed succesfully.';
+            return 'Account enabled succesfully.';
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function deleteAccount()
+    {
+        try {
+            if (empty($this->email)) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            $account = new Account($this->email);
+
+            $is_enabled = $account->is_enabled;
+error_log(print_r($account, true));
+            if (!is_numeric($is_enabled) || $is_enabled == 1) {
+                throw new Exception('Account must first be removed.', 400);
+            }
+
+            // global $wpdb;
+
+            // $results = $wpdb->get_results(
+            //     $wpdb->prepare("CALL deleteAccount('%s')", $this->email)
+            // );
+
+            // if ($wpdb->last_error) {
+            //     throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            // }
+
+            // if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+            //     throw new Exception('Account could not be deleted at this time.', 500);
+            // }
+
+            return 'Account deleted succesfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

@@ -40,6 +40,10 @@
         </div>
     </div>
 
+    <div class="user-activation-code" id="user_activation_code"></div>
+    <div class="password" id="password"></div>
+    <div class="confirmation-code" id="confirmation_code"></div>
+
     <div class="account-status">
         <div class="account-status-label">
             <h3>Account Status</h3>

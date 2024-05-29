@@ -39,13 +39,25 @@
   flex-wrap: wrap;
 }
 
-.account-management .account,
+/* .account-management .account,
 .account-management .subscription-email,
 .account-management .recover-email,
 .account-management .lock-account,
 .account-management .enable-account,
 .account-management .delete-account {
   display: none;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+} */
+
+.account-management .account,
+.account-management .subscription-email,
+.account-management .recover-email,
+.account-management .lock-account,
+.account-management .enable-account,
+.account-management .delete-account {
+  display: flex;
   align-items: center;
   gap: 1.5rem;
   flex-wrap: wrap;
@@ -127,6 +139,15 @@
 .account-management .enable-account button.disable-btn,
 .account-management .lock-account button.lock-btn,
 .account-management .lock-account button.unlock-btn,
-.account-management .lock-account button.delete-btn {
+.account-management .delete-account button.delete-btn {
   display: none;
+}
+
+.account .roles,
+.account-management .enable-account button.enable-btn,
+.account-management .enable-account button.disable-btn,
+.account-management .lock-account button.lock-btn,
+.account-management .lock-account button.unlock-btn,
+.account-management .delete-account button.delete-btn {
+  display: flex;
 }

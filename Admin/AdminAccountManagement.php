@@ -75,8 +75,8 @@ class AdminAccountManagement
             $createdAccount = $this->createAccount->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
             wp_send_json_success($createdAccount);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -89,7 +89,7 @@ class AdminAccountManagement
 
             wp_send_json_success($account);
         } catch (DestructuredException $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -102,7 +102,7 @@ class AdminAccountManagement
 
             wp_send_json_success($sessions);
         } catch (DestructuredException $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -116,7 +116,7 @@ class AdminAccountManagement
 
             wp_send_json_success($removedSession);
         } catch (DestructuredException $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -129,8 +129,8 @@ class AdminAccountManagement
             $message = "An email has been sent to {$email} check your inbox for directions on how and where to renew subscriptions.";
 
             wp_send_json_success($message);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -139,13 +139,13 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $confirmationCode = $_POST['confirmationCode'];
+            $password = $_POST['password'];
 
-            $lockedAccount = (new Account($email))->lockAccount($confirmationCode);
+            $lockedAccount = (new Account($email))->lockAccount($password);
 
             wp_send_json_success($lockedAccount);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -153,13 +153,13 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $confirmationCode = $_POST['confirmationCode'];
+            $userActivationCode = $_POST['userActivationCode'];
 
-            $unlockedAccount = (new Account($email))->unlockAccount($confirmationCode);
+            $unlockedAccount = (new Account($email))->unlockAccount($userActivationCode);
 
             wp_send_json_success($unlockedAccount);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -169,13 +169,13 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $confirmationCode = $_POST['confirmationCode'];
+            $password = $_POST['password'];
 
-            $disabledAccount = (new Account($email))->disableAccount($confirmationCode);
+            $disabledAccount = (new Account($email))->disableAccount($password);
 
             wp_send_json_success($disabledAccount);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -184,13 +184,13 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $confirmationCode = $_POST['confirmationCode'];
+            $userActivationCode = $_POST['userActivationCode'];
 
-            $enabledAccount = (new Account($email))->enableAccount($confirmationCode);
+            $enabledAccount = (new Account($email))->enableAccount($userActivationCode);
 
             wp_send_json_success($enabledAccount);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
@@ -204,31 +204,9 @@ class AdminAccountManagement
 
             $email = $_POST['email'];
 
-            $account = new Account($email);
+            $deletedAccount = (new Account($email))->deleteAccount($email);
 
-            $is_enabled = $account->is_enabled;
-
-            if (!is_numeric($is_enabled) || $is_enabled == 1) {
-                throw new Exception('Account must first be removed.', 400);
-            }
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL deleteAccount('%s')", $email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->result) || !$results[0]->result) {
-                throw new Exception('Account could not be deleted at this time.', 500);
-            }
-
-            $message = 'Account deleted succesfully.';
-
-            wp_send_json_success($message);
+            wp_send_json_success($deletedAccount);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
