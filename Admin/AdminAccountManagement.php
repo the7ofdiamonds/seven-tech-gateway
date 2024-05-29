@@ -33,6 +33,7 @@ class AdminAccountManagement
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
+        add_action('wp_ajax_getSessions', [$this, 'getSessions']);
         add_action('wp_ajax_removeSession', [$this, 'removeSession']);
         add_action('wp_ajax_sendSubscriptionEmail', [$this, 'sendSubscriptionEmail']);
         add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
@@ -87,6 +88,19 @@ class AdminAccountManagement
             $account = $this->account->findAccount($email);
 
             wp_send_json_success($account);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function getSessions()
+    {
+        try {
+            $id = $_POST['id'];
+
+            $sessions = $this->session->getSessions($id);
+
+            wp_send_json_success($sessions);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }

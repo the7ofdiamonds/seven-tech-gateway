@@ -9,20 +9,20 @@ function Login() {
 
   const { loginStatusCode } = useSelector((state) => state.login);
 
-  // useEffect(() => {
-  //   if (loginStatusCode == 200) {
-  //     const urlParams = new URLSearchParams(window.location.search);
-  //     const redirectTo = urlParams.get('redirectTo');
+  useEffect(() => {
+    if (loginStatusCode == 200) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirectTo');
 
-  //     setTimeout(() => {
-  //       if (redirectTo == null) {
-  //         window.location.href = '/dashboard';
-  //       } else {
-  //         window.location.href = redirectTo;
-  //       }
-  //     }, 5000);
-  //   }
-  // }, [loginStatusCode]);
+      setTimeout(() => {
+        if (redirectTo == null) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = redirectTo;
+        }
+      }, 5000);
+    }
+  }, [loginStatusCode]);
 
   useEffect(() => {
     if (loginStatusCode == 404) {

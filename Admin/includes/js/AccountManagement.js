@@ -56,7 +56,7 @@ jQuery(document).ready(function ($) {
                 var id = response.data.id;
                 var fullname = `${response.data.first_name} ${response.data.last_name}`;
                 var email = response.data.email;
-console.log(response);
+
                 $('#account #account_id').text(id);
                 $('#account #email').text(email);
                 $('#account #username').text(response.data.username);
@@ -83,7 +83,6 @@ console.log(response);
                 $('#account #authenticated').text(authenticated);
 
                 var sessions = response.data.sessions;
-                console.log(sessions);
                 var sessionKeys = Object.keys(sessions);
 
                 if (sessionKeys.length > 0) {
@@ -102,7 +101,7 @@ console.log(response);
 
                         var sessionToken = $("<div class='session-token'></div>");
                         $("<h3>token</h3>").appendTo(sessionToken);
-                        $("<h4 class='token'></h4>").text(token).appendTo(sessionToken);
+                        $("<h4 class='token' id='token'></h4>").text(token).appendTo(sessionToken);
                         sessionToken.appendTo(sessionContainer);
 
                         var sessionIP = $("<div class='session-ip'></div>");
@@ -124,6 +123,9 @@ console.log(response);
                         $("<h3>user agent</h3>").appendTo(sessionUserAgent);
                         $("<h4 class='user-agent'></h4>").text(userAgent).appendTo(sessionUserAgent);
                         sessionUserAgent.appendTo(sessionContainer);
+
+                        var sessionRemove = $(`<button class='session-remove' id='${token}'>Remove</button>`);
+                        sessionRemove.appendTo(sessionContainer);
 
                         $('#sessions').append(sessionContainer);
                     });
