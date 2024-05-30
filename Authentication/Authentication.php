@@ -29,6 +29,62 @@ class Authentication
         $this->session = new Session;
     }
 
+    function is_authenticated($email)
+    {
+        try {
+
+            if (empty($email)) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL isAuthenticated('%s')", $email)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be logged in.', 500);
+            }
+
+            return $results[0]->resultSet;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function is_not_authenticated($email)
+    {
+        try {
+
+            if (empty($email)) {
+                throw new Exception('Email is required.', 400);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL isNotAuthenticated('%s')", $email)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be logged out.', 500);
+            }
+
+            return $results[0]->resultSet;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function signInWithEmailAndPassword($email, $password)
     {
         try {
@@ -84,9 +140,10 @@ class Authentication
 
             wp_set_current_user($authenticatedAccount->id);
             $this->session->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
+            $is_authenticated = $this->is_authenticated($authenticatedAccount->email);
 
-            if (!is_user_logged_in()) {
-                throw new Exception('You could not be logged in successfully', 403);
+            if (!is_user_logged_in() || $is_authenticated == 'FALSE') {
+                throw new Exception('You could not be logged in.', 403);
             }
 
             $loginResponse = [
@@ -153,13 +210,15 @@ class Authentication
 
             $session_destroyed = $this->session->destroy_session($request['id'], $verifier);
 
-            if(!$session_destroyed){
+            if (!$session_destroyed) {
                 throw new Exception('Unable to remove session.');
             }
 
             wp_logout();
 
-            if (is_user_logged_in()) {
+            $is_authenticated = $this->is_not_authenticated($request['email']);
+
+            if (is_user_logged_in() || $is_authenticated == 'FALSE') {
                 throw new Exception('User could not be logged out.', 400);
             }
 
@@ -189,8 +248,9 @@ class Authentication
             }
 
             $session_tokens_deleted = delete_user_meta($request['id'], 'session_tokens');
+            $is_authenticated = $this->is_not_authenticated($request['email']);
 
-            if (!$session_tokens_deleted) {
+            if (!$session_tokens_deleted || $is_authenticated == 'FALSE') {
                 throw new Exception('There was an error deleting session tokens.', 500);
             }
 

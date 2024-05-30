@@ -78,7 +78,7 @@ jQuery(document).ready(function ($) {
                 $('#account #password').text(response.data.password);
                 $('#account #confirmation_code').text(response.data.confirmation_code);
 
-                var authenticated = response.data.is_authenticated;
+                var authenticated = response.data.is_authenticated == true ? 'logged in' : 'logged out';
                 var unexpired = response.data.is_account_non_expired;
                 var unlocked = response.data.is_account_non_locked;
                 var credentials = response.data.is_credentials_non_expired;

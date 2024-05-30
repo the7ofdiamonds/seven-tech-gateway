@@ -68,10 +68,10 @@ class Account
             $this->phone = $account->phone;
             $this->provider_given_id = $account->provider_given_id;
             $this->sessions = (new Session)->getSessions($account->id);
-            $this->is_authenticated = $account->is_authenticated == 1 ? 'logged in' : 'logged out';
-            $this->is_account_non_expired = $account->is_account_non_expired == 1 ? true : false;
-            $this->is_account_non_locked = $account->is_account_non_locked == 1 ? true : false;
-            $this->is_credentials_non_expired = $account->is_credentials_non_expired == 1 ? true : false;
+            $this->is_authenticated = (bool) $account->is_authenticated;
+            $this->is_account_non_expired = (bool) $account->is_account_non_expired;
+            $this->is_account_non_locked = (bool) $account->is_account_non_locked;
+            $this->is_credentials_non_expired = (bool) $account->is_credentials_non_expired;
             $this->is_enabled = (bool) $account->is_enabled;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -275,7 +275,7 @@ class Account
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+            if ($results[0]->result === 'FALSE') {
                 throw new Exception('Account could not be deleted at this time.', 500);
             }
 

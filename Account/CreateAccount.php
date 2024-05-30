@@ -65,6 +65,7 @@ class CreateAccount
 
             $role = array('subscriber');
             $roles = serialize($role);
+
             $user_activation_key = wp_generate_password(20, false);
 
             global $wpdb;
