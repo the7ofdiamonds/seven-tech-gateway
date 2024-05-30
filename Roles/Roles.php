@@ -42,8 +42,21 @@ class Roles
     }
 
     public function unserializeRoles($serializedRoles)
-    {error_log(print_r($serializedRoles, true));
-        $uroles = unserialize($serializedRoles);
+    {
+        if (empty($serializedRoles)) {
+            return;
+        }
+
+        $unserializedRoles = unserialize($serializedRoles);
+
+        $uroles = [];
+
+        if(!is_array($unserializedRoles)){
+            $uroles[] = $unserializedRoles;
+        } else {
+            $uroles = $unserializedRoles; 
+        }
+
         $wp_roles = wp_roles()->get_names();
 
         $roles = [];
@@ -66,6 +79,10 @@ class Roles
 
     public function getRolesHighestLevel($roles)
     {
+        if (!is_array($roles)) {
+            return;
+        }
+
         $highest_level = 0;
         $levels = [];
 

@@ -11,12 +11,9 @@ use Exception;
 
 class Account
 {
-    private $validator;
-    private $Roles;
-
     public $id;
     public $joined;
-    public $userActivationCode;
+    public $user_activation_code;
     public $email;
     public $username;
     public $password;
@@ -37,45 +34,9 @@ class Account
     public $is_credentials_non_expired;
     public $is_enabled;
 
-    public function __construct($email = '')
-    {
-        $this->validator = new Validator;
-        $this->Roles = new Roles;
-
-        if ($email != '') {
-            $account = $this->findAccount($email);
-
-            $this->id = $account->id;
-            $this->joined = $account->joined;
-            $this->userActivationCode = $account->user_activation_code;
-            $this->email =  $account->email;
-            $this->username = $account->username;
-            $this->password = $account->password;
-            $this->roles =  $account->roles;
-            $this->level =  $account->level;
-            $this->profile_image = $account->profile_image;
-            $this->confirmation_code = $account->confirmation_code;
-            $this->first_name = $account->first_name;
-            $this->last_name = $account->last_name;
-            $this->nicename = $account->nicename;
-            $this->phone = $account->phone;
-            $this->provider_given_id = $account->provider_given_id;
-            $this->sessions = $account->sessions;
-            $this->is_authenticated = $account->is_authenticated;
-            $this->is_account_non_expired = $account->is_account_non_expired;
-            $this->is_account_non_locked = $account->is_account_non_locked;
-            $this->is_credentials_non_expired = $account->is_credentials_non_expired;
-            $this->is_enabled = $account->is_enabled;
-        }
-    }
-
-    function findAccount($email)
+    public function __construct($email)
     {
         try {
-            if (empty($email)) {
-                throw new Exception('Email is required.', 400);
-            }
-
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -91,17 +52,27 @@ class Account
             }
 
             $account = $results[0];
-            $account->roles = $this->Roles->unserializeRoles($account->roles);
-            $account->level = $this->Roles->getRolesHighestLevel($account->roles);
-            $account->profile_image = get_avatar_url($account->id);
-            $account->sessions = (new Session)->getSessions($account->id);
-            $account->is_authenticated = $account->is_authenticated == 1 ? 'logged in' : 'logged out';
-            $account->is_account_non_expired = $account->is_account_non_expired == 1 ? true : false;
-            $account->is_account_non_locked = $account->is_account_non_locked == 1 ? true : false;
-            $account->is_credentials_non_expired = $account->is_credentials_non_expired == 1 ? true : false;
-            $account->is_enabled = $account->is_enabled == 1 ? true : false;
-
-            return $account;
+            $this->id = $account->id;
+            $this->joined = $account->joined;
+            $this->user_activation_code = $account->user_activation_code;
+            $this->email =  $account->email;
+            $this->username = $account->username;
+            $this->password = $account->password;
+            $this->roles =  (new Roles)->unserializeRoles($account->roles);
+            $this->level =  (new Roles)->getRolesHighestLevel($this->roles);
+            $this->profile_image = get_avatar_url($account->id);
+            $this->confirmation_code = $account->confirmation_code;
+            $this->first_name = $account->first_name;
+            $this->last_name = $account->last_name;
+            $this->nicename = $account->nicename;
+            $this->phone = $account->phone;
+            $this->provider_given_id = $account->provider_given_id;
+            $this->sessions = (new Session)->getSessions($account->id);
+            $this->is_authenticated = $account->is_authenticated == 1 ? 'logged in' : 'logged out';
+            $this->is_account_non_expired = $account->is_account_non_expired == 1 ? true : false;
+            $this->is_account_non_locked = $account->is_account_non_locked == 1 ? true : false;
+            $this->is_credentials_non_expired = $account->is_credentials_non_expired == 1 ? true : false;
+            $this->is_enabled = (bool) $account->is_enabled;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -112,19 +83,19 @@ class Account
     function verifyAccount($password, $confirmationCode)
     {
         try {
-            $validConfirmationCode = $this->validator->validConfirmationCode($confirmationCode);
+            $validConfirmationCode = (new Validator)->validConfirmationCode($confirmationCode);
 
             if (!$validConfirmationCode) {
                 return false;
             }
 
-            $password = $this->validator->validPassword($password);
+            $password = (new Validator)->validPassword($password);
 
             if (!$password) {
                 return false;
             }
 
-            $validEmail = $this->validator->validEmail($this->email);
+            $validEmail = (new Validator)->validEmail($this->email);
 
             if (!$validEmail) {
                 throw new Exception('Email is not valid', 400);
@@ -286,25 +257,27 @@ class Account
 
             $account = new Account($this->email);
 
-            $is_enabled = $account->is_enabled;
-error_log(print_r($account, true));
-            if (!is_numeric($is_enabled) || $is_enabled == 1) {
-                throw new Exception('Account must first be removed.', 400);
+            if ($account->is_account_non_locked) {
+                throw new Exception('Account must first be locked.', 400);
             }
 
-            // global $wpdb;
+            if ($account->is_enabled) {
+                throw new Exception('Account must first be disabled.', 400);
+            }
 
-            // $results = $wpdb->get_results(
-            //     $wpdb->prepare("CALL deleteAccount('%s')", $this->email)
-            // );
+            global $wpdb;
 
-            // if ($wpdb->last_error) {
-            //     throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            // }
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL deleteAccount('%s')", $this->email)
+            );
 
-            // if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-            //     throw new Exception('Account could not be deleted at this time.', 500);
-            // }
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be deleted at this time.', 500);
+            }
 
             return 'Account deleted succesfully.';
         } catch (Exception $e) {

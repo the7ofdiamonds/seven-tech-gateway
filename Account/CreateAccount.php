@@ -63,13 +63,14 @@ class CreateAccount
 
             $hashedPassword = $this->checkPassword($password);
 
-            $role = serialize('subscriber');
+            $role = array('subscriber');
+            $roles = serialize($role);
             $user_activation_key = wp_generate_password(20, false);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $role, $user_activation_key)
+                $wpdb->prepare("CALL addNewUser('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $roles, $user_activation_key)
             );
 
             if ($wpdb->last_error) {

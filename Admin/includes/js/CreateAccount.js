@@ -26,8 +26,8 @@ jQuery(document).ready(function ($) {
                 displayMessage('success', message);
             })
             .fail(function (xhr, status, error) {
-                console.error('Failed to fetch user data:', error);
-                displayMessage('error', response);
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                displayMessage(status, errorMessage);
             });
     }
 
@@ -38,7 +38,7 @@ jQuery(document).ready(function ($) {
 
     $('form#create_account').submit(function (event) {
         event.preventDefault();
-
+console.log('create account');
         const email = $('#create_account input[name="email"]').val();
         const username = $('#create_account input[name="username"]').val();
         const password = $('#create_account input[name="password"]').val();
