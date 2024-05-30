@@ -27,9 +27,7 @@ class Authenticated
         $this->access_token = $signedInUser->idToken();
         $this->refresh_token = $signedInUser->refreshToken();
         $this->roles = $account->roles;
-        $this->level = $account->level;
-
-        
+        $this->level = $account->level;  
     }
 
     public function getID()

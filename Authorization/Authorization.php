@@ -5,8 +5,6 @@ namespace SEVEN_TECH\Gateway\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
 
-use Exception;
-
 use WP_REST_Request;
 
 class Authorization
@@ -21,15 +19,20 @@ class Authorization
     public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = '')
     {
         try {
-            $authenticatedAccount = $this->token->signInWithRefreshToken($request);
-            $accountRoles = $authenticatedAccount->roles;
+            $accessToken = $this->token->getAccessToken($request);
+            $account = $this->token->findUserWithToken($accessToken);
+            $accountRoles = $account->roles;
 
-            if ($authenticatedAccount->email == $request['email']) {
-                return $authenticatedAccount;
+            if ($account->email == $request['email']) {
+                return $account;
             }
 
-            if ($authenticatedAccount->level == $resourceLevel) {
-                return $authenticatedAccount;
+            if ($account->is_account_non_expired == 0) {
+                $account->level = 0;
+            }
+
+            if ($account->level == $resourceLevel) {
+                return $account;
             }
 
             if (is_array($accountRoles) && is_array($resourceRoles)) {
@@ -43,7 +46,7 @@ class Authorization
             }
 
             return false;
-        } catch (Exception | DestructuredException $e) {
+        } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
     }

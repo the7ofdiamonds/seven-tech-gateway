@@ -44,7 +44,7 @@ class Token
                 throw new Exception('Access Token could not be found.', 403);
             }
 
-            return $this->auth->verifyIdToken($accessToken, true);
+            return $this->getVerifiedToken($accessToken);
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (RevokedIdToken $e) {
@@ -84,9 +84,7 @@ class Token
 
             $email = $verifiedAccessToken->claims()->get('email');
 
-            $account = new Account($email);
-
-            return $account;
+            return new Account($email);
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {

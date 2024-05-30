@@ -5,10 +5,6 @@ namespace SEVEN_TECH\Gateway\Roles;
 class Roles
 {
 
-    public function __construct()
-    {
-    }
-
     public function getRoles()
     {
         $roles = [];
