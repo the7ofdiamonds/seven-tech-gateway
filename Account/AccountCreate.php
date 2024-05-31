@@ -6,25 +6,24 @@ use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Roles\Roles;
-use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
-
+use Kreait\Firebase\Auth\UserRecord;
 use Kreait\Firebase\Contract\Auth;
 
 class AccountCreate
 {
+    private $databaseExists;
     private $password;
     private $auth;
     private $roles;
-    private $databaseExists;
 
     public function __construct(Auth $auth)
     {
+        $this->databaseExists = new DatabaseExists;
         $this->password = new Password;
         $this->auth = $auth;
         $this->roles = new Roles;
-        $this->databaseExists = new DatabaseExists;
     }
 
     function createFirebaseUser($email, $phone, $password, $username)
@@ -45,8 +44,7 @@ class AccountCreate
 
     function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
     {
-        try {error_log(print_r($roles, true));
-
+        try {
             $emailExists = $this->databaseExists->existsByEmail($email);
 
             if ($emailExists == 'TRUE') {
@@ -71,21 +69,22 @@ class AccountCreate
                 throw new Exception('This phone number is in use at this time.', 400);
             }
 
-            $newFirebaseUser = $this->createFirebaseUser($email, $phone, $password, $username);
-            $providergivenID = $newFirebaseUser->uid;
-
-            if (empty($providergivenID)) {
-                error_log("Unable to add user with email {$email} to firebase.");
-            }
-
             $hashedPassword = $this->password->hashPassword($password);
 
             $user_activation_key = wp_generate_password(20, false);
 
+            $newFirebaseUser = $this->createFirebaseUser($email, $phone, $password, $username);
+
+            if (!$newFirebaseUser instanceof UserRecord) {
+                error_log("Unable to add user with email {$email} to firebase.");
+            }
+
+            $providergivenID = $newFirebaseUser->uid;
+
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL createAccount('%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $user_activation_key)
+                $wpdb->prepare("CALL createAccount('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $user_activation_key, $providergivenID)
             );
 
             if ($wpdb->last_error) {
@@ -99,16 +98,15 @@ class AccountCreate
             }
 
             if (empty($roles)) {
-                $updatedAccountID = $this->roles->addRole($account->id, 'subscriber', 'Subscriber');
+                $this->roles->addRole($account->id, 'subscriber');
             }
 
-            if(is_array($roles)){
-                
+            if (is_array($roles)) {
+                foreach ($roles as $role) {
+                    $this->roles->addRole($account->id, $role);
+                }
             }
 
-            if ($account->id !== $updatedAccountID) {
-                throw new Exception('The wrong account may have been updated check records.');
-            }
             // send signup email with activation code
             return new Account($account->email);
         } catch (DestructuredException $e) {

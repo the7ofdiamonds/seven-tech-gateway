@@ -67,7 +67,12 @@ class AdminAccountManagement
             $firstname = $_POST['firstname'];
             $lastname = $_POST['lastname'];
             $phone = $_POST['phone'];
-            $roles = $_POST['roles'];
+
+            if (isset($_POST['roles'])) {
+                $roles = $_POST['roles'];
+            } else {
+                $roles = '';
+            }
 
             $createdAccount = $this->createAccount->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 

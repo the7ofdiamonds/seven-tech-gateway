@@ -11,14 +11,14 @@ use WP_User;
 
 class Roles
 {
-    public function roleExists($roleName, $roleDisplayName)
+    public function roleExists($roleName)
     {
         $wp_roles = wp_roles()->get_names();
 
         $roleExists = false;
 
         foreach ($wp_roles as $roleKey => $roleValue) {
-            if ($roleKey == $roleName && $roleValue == $roleDisplayName) {
+            if ($roleKey == $roleName) {
                 $roleExists = true;
                 break;
             }
@@ -27,7 +27,7 @@ class Roles
         return $roleExists;
     }
 
-    public function addRole($id, $roleName, $roleDisplayName)
+    public function addRole($id, $roleName)
     {
         try {
             if (empty($id)) {
@@ -38,14 +38,10 @@ class Roles
                 throw new Exception('Role name is required to add role.');
             }
 
-            if (empty($roleDisplayName)) {
-                throw new Exception('Role display name is required to add role.');
-            }
-
-            $roleExists = $this->roleExists($roleName, $roleDisplayName);
+            $roleExists = $this->roleExists($roleName);
 
             if ($roleExists == false) {
-                throw new Exception("Role {$roleDisplayName} does not exits.", 404);
+                throw new Exception("Role {$roleName} does not exits.", 404);
             }
 
             $user = new WP_User($id);

@@ -16,10 +16,9 @@ class Password
         $this->validator = new Validator;
     }
 
-    // Check password
     function hashPassword($password)
     {
-        $this->validator->isValidEmail($password);
+        $this->validator->isValidPassword($password);
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 

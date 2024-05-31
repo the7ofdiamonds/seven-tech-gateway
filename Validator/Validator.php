@@ -16,9 +16,10 @@ class Validator
                 throw new Exception('Email is required.');
             }
 
-            $pattern = '/^([a-zA-Z0-9._-]+)@([a-zA-Z0-9._-]+)\.([a-zA-Z]+)$/';
+            $pattern = '/([a-zA-Z0-9._-]+)@([a-zA-Z0-9._-]+)\.([a-zA-Z]+)$/';
+            $isValid = preg_match($pattern, $email);
 
-            if (!preg_match($pattern, $email)) {
+            if ($isValid == 0) {
                 throw new Exception('Email is not valid', 400);
             }
 
