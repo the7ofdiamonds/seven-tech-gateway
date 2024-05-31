@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
 
@@ -9,14 +10,15 @@ use Exception;
 
 use WP_REST_Request;
 
-
 class API_Password
 {
     private $password;
+    private $authentication;
 
-    public function __construct(Password $password)
+    public function __construct(Authentication $authentication)
     {
-        $this->password = $password;
+        $this->password = new Password;
+        $this->authentication = $authentication;
     }
 
     function recoverPassword(WP_REST_Request $request)
@@ -39,8 +41,13 @@ class API_Password
     function changePassword(WP_REST_Request $request)
     {
         try {
+            $email = $request['email'];
+            $password = $request['password'];
+            $newPassword = $request['newPassword'];
+            $confirmPassword = $request['confirmPassword'];
+
             $removeEmailResponse = [
-                'successMessage' => $this->password->changePassword($request),
+                'successMessage' => $this->password->changePassword($email, $password, $newPassword, $confirmPassword),
                 'statusCode' => 200
             ];
 
@@ -53,8 +60,28 @@ class API_Password
     function updatePassword(WP_REST_Request $request)
     {
         try {
+            if (!isset($request['email'])) {
+                throw new Exception('An email is required.', 400);
+            }
+
+            if (!isset($request['confirmationCode'])) {
+                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
+            }
+
+            $email = $request['email'];
+            $confirmationCode = $request['confirmationCode'];
+
+            $verified = $this->authentication->verifyCredentials($email, $confirmationCode);
+
+            if (!$verified) {
+                throw new Exception('Credentials are not valid password could not be updated at this time.', 403);
+            }
+
+            $password = $request['password']; 
+            $confirmPassword = $request['confirmPassword'];
+
             $updatePasswordResponse = [
-                'successMessage' => $this->password->updatePassword($request),
+                'successMessage' => $this->password->updatePassword($email, $confirmationCode, $password, $confirmPassword),
                 'statusCode' => 200
             ];
 

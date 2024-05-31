@@ -80,43 +80,6 @@ class Account
         }
     }
 
-    function verifyAccount($password, $confirmationCode)
-    {
-        try {
-            $validConfirmationCode = (new Validator)->validConfirmationCode($confirmationCode);
-
-            if (!$validConfirmationCode) {
-                return false;
-            }
-
-            $password = (new Validator)->validPassword($password);
-
-            if (!$password) {
-                return false;
-            }
-
-            $validEmail = (new Validator)->validEmail($this->email);
-
-            if (!$validEmail) {
-                throw new Exception('Email is not valid', 400);
-            }
-
-            $password_check = wp_check_password($password, $this->password, $this->id);
-
-            if (!$password_check) {
-                return false;
-            }
-
-            if ($confirmationCode != $this->confirmation_code) {
-                return false;
-            }
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
     // Send account locked email
     public function lockAccount($password)
     {

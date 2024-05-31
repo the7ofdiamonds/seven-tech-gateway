@@ -13,6 +13,7 @@ use Exception;
 use WP_REST_Request;
 
 use Kreait\Firebase\Auth;
+use SEVEN_TECH\Gateway\Password\Password;
 
 class Authentication
 {
@@ -20,6 +21,7 @@ class Authentication
     private $token;
     private $auth;
     private $session;
+    private $password;
 
     public function __construct(Auth $auth)
     {
@@ -27,20 +29,19 @@ class Authentication
         $this->auth = $auth;
         $this->token = new Token($auth);
         $this->session = new Session;
+        $this->password = new Password;
     }
 
-    function is_authenticated($email)
+    function is_authenticated($email, $password)
     {
         try {
-
-            if (empty($email)) {
-                throw new Exception('Email is required.', 400);
-            }
+            $this->validator->isValidEmail($email);
+            $this->validator->isValidPassword($password);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL isAuthenticated('%s')", $email)
+                $wpdb->prepare("CALL isAuthenticated('%s')", $email, $password)
             );
 
             if ($wpdb->last_error) {
@@ -88,18 +89,12 @@ class Authentication
     function signInWithEmailAndPassword($email, $password)
     {
         try {
-            $this->validator->validEmail($email);
-            $this->validator->validPassword($password);
+            $this->validator->isValidEmail($email);
+            $this->validator->isValidPassword($password);
 
             $account = new Account($email);
 
-            $first_two_chars = substr($account->password, 0, 2);
-
-            if ($first_two_chars === '$P') {
-                $password_check = wp_check_password($password, $account->password);
-            } else {
-                $password_check = password_verify($password, $account->password);
-            }
+            $password_check = $this->password->passwordMatchesHash($password, $account->password);
 
             if (!$password_check) {
                 throw new Exception('The password you entered for this username is not correct.', 400);
@@ -108,6 +103,8 @@ class Authentication
             $signedInUser = $this->auth->signInWithEmailAndPassword($email, $password);
 
             $user = $this->auth->getUser($signedInUser->data()['localId']);
+
+            $this->is_authenticated($account->email, $account->password);
 
             return new Authenticated($account, $signedInUser, $user);
         } catch (DestructuredException $e) {
@@ -140,9 +137,8 @@ class Authentication
 
             wp_set_current_user($authenticatedAccount->id);
             $this->session->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
-            $is_authenticated = $this->is_authenticated($authenticatedAccount->email);
 
-            if (!is_user_logged_in() || $is_authenticated == 'FALSE') {
+            if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);
             }
 
@@ -160,23 +156,11 @@ class Authentication
         }
     }
 
-    function verifyCredentials(WP_REST_Request $request)
+    function verifyCredentials($email, $confirmationCode)
     {
         try {
-            if (!isset($request['email'])) {
-                throw new Exception('An email is required.', 400);
-            }
-
-            if (!isset($request['confirmationCode'])) {
-                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
-            }
-
-            $email = $request['email'];
-            $confirmationCode = $request['confirmationCode'];
-
-            $this->validator->validEmail($email);
-
-            $this->validator->validConfirmationCode($confirmationCode);
+            $this->validator->isValidEmail($email);
+            $this->validator->isValidConfirmationCode($confirmationCode);
 
             global $wpdb;
 

@@ -9,7 +9,7 @@ use Exception;
 class Validator
 {
 
-    function validEmail($email)
+    function isValidEmail($email)
     {
         try {
             if (empty($email)) {
@@ -28,7 +28,7 @@ class Validator
         }
     }
 
-    function validPassword($password)
+    function isValidPassword($password)
     {
         try {
             if (empty($password)) {
@@ -47,7 +47,7 @@ class Validator
         }
     }
 
-    function validConfirmationCode($confirmationCode)
+    function isValidConfirmationCode($confirmationCode)
     {
         try {
             if (empty($confirmationCode)) {

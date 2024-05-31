@@ -105,6 +105,8 @@ class Token
 
             $user = $this->auth->getUser($signedInUser->data()['user_id']);
 
+            $$this->is_authenticated($account->email, $account->password);
+
             return new Authenticated($account, $signedInUser, $user);
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);

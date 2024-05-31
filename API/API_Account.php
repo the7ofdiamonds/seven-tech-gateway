@@ -72,7 +72,18 @@ class API_Account
     function unlockAccount(WP_REST_Request $request)
     {
         try {
-            $verified = $this->authentication->verifyCredentials($request);
+            if (!isset($request['email'])) {
+                throw new Exception('An email is required.', 400);
+            }
+
+            if (!isset($request['confirmationCode'])) {
+                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
+            }
+
+            $email = $request['email'];
+            $confirmationCode = $request['confirmationCode'];
+
+            $verified = $this->authentication->verifyCredentials($email, $confirmationCode);
 
             if (!$verified) {
                 throw new Exception('You do not have permission to perform this action', 403);
@@ -89,7 +100,18 @@ class API_Account
     function enableAccount(WP_REST_Request $request)
     {
         try {
-            $verified = $this->authentication->verifyCredentials($request);
+            if (!isset($request['email'])) {
+                throw new Exception('An email is required.', 400);
+            }
+
+            if (!isset($request['confirmationCode'])) {
+                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
+            }
+
+            $email = $request['email'];
+            $confirmationCode = $request['confirmationCode'];
+
+            $verified = $this->authentication->verifyCredentials($email, $confirmationCode);
 
             if (!$verified) {
                 throw new Exception('You do not have permission to perform this action', 403);

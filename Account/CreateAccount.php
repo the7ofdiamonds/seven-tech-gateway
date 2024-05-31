@@ -2,7 +2,9 @@
 
 namespace SEVEN_TECH\Gateway\Account;
 
+use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
@@ -12,99 +14,17 @@ use Kreait\Firebase\Contract\Auth;
 
 class CreateAccount
 {
+    private $password;
     private $auth;
     private $roles;
+    private $databaseExists;
 
     public function __construct(Auth $auth)
     {
+        $this->password = new Password;
         $this->auth = $auth;
         $this->roles = new Roles;
-    }
-
-    function existsByEmail($email)
-    {
-        global $wpdb;
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare("CALL existsByEmail('%s')", $email)
-        );
-
-        if ($wpdb->last_error) {
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-        }
-
-        if (!isset($results[0])) {
-            throw new Exception('There was an error searching for Account.', 404);
-        }
-
-        return $results[0]->resultSet;
-    }
-
-    function existsByUsername($username)
-    {
-        global $wpdb;
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare("CALL existsByUsername('%s')", $username)
-        );
-
-        if ($wpdb->last_error) {
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-        }
-
-        if (!isset($results[0])) {
-            throw new Exception('There was an error searching for Account.', 404);
-        }
-
-        return $results[0]->resultSet;
-    }
-
-    function existsByNicename($nicename)
-    {
-        global $wpdb;
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare("CALL existsByNicename('%s')", $nicename)
-        );
-
-        if ($wpdb->last_error) {
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-        }
-
-        if (!isset($results[0])) {
-            throw new Exception('There was an error searching for Account.', 404);
-        }
-
-        return $results[0]->resultSet;
-    }
-
-    // Search for phone
-    function existsByPhone($phone)
-    {
-        global $wpdb;
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare("CALL existsByPhone('%s')", $phone)
-        );
-
-        if ($wpdb->last_error) {
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-        }
-
-        if (!isset($results[0])) {
-            throw new Exception('There was an error searching for Account.', 404);
-        }
-
-        return $results[0]->resultSet;
-    }
-
-    // Check password
-    function checkPassword($password)
-    {
-        // validate password
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-        return $hashedPassword;
+        $this->databaseExists = new DatabaseExists;
     }
 
     function createFirebaseUser($email, $phone, $password, $username)
@@ -126,26 +46,25 @@ class CreateAccount
     function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
     {
         try {
-
-            $emailExists = $this->existsByEmail($email);
+            $emailExists = $this->databaseExists->existsByEmail($email);
 
             if ($emailExists == 'TRUE') {
                 throw new Exception('This email is currently in use check your inbox.', 400);
             }
 
-            $usernameExists = $this->existsByUsername($username);
+            $usernameExists = $this->databaseExists->existsByUsername($username);
 
             if ($usernameExists == 'TRUE') {
                 throw new Exception('This username is in use at this time.', 400);
             }
 
-            $nicenameExists = $this->existsByNicename($nicename);
+            $nicenameExists = $this->databaseExists->existsByNicename($nicename);
 
             if ($nicenameExists == 'TRUE') {
                 throw new Exception('This nicename is in use at this time.', 400);
             }
 
-            $phoneExists = $this->existsByPhone($phone);
+            $phoneExists = $this->databaseExists->existsByPhone($phone);
 
             if ($phoneExists == 'TRUE') {
                 throw new Exception('This phone number is in use at this time.', 400);
@@ -153,12 +72,12 @@ class CreateAccount
 
             $newFirebaseUser = $this->createFirebaseUser($email, $phone, $password, $username);
             $providergivenID = $newFirebaseUser->uid;
-            error_log($providergivenID);
+
             if (empty($providergivenID)) {
                 error_log("Unable to add user with email {$email} to firebase.");
             }
 
-            $hashedPassword = $this->checkPassword($password);
+            $hashedPassword = $this->password->hashPassword($password);
 
             $user_activation_key = wp_generate_password(20, false);
 

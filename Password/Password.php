@@ -2,27 +2,33 @@
 
 namespace SEVEN_TECH\Gateway\Password;
 
+use SEVEN_TECH\Gateway\Validator\Validator;
+
 use Exception;
-
-use WP_REST_Request;
-
-use SEVEN_TECH\Gateway\Authentication\Authentication;
 
 class Password
 {
-    private $authentication;
+    private $validator;
 
-    public function __construct(Authentication $authentication)
+    public function __construct()
     {
-        $this->authentication = $authentication;
+        $this->validator = new Validator;
+    }
+
+    // Check password
+    function hashPassword($password)
+    {
+        $this->validator->isValidEmail($password);
+
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        return $hashedPassword;
     }
 
     function recoverPassword($email)
     {
         try {
-            if (empty($email)) {
-                throw new Exception('An email is required to reset password.', 400);
-            }
+            $this->validator->isValidEmail($email);
 
             $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
 
@@ -31,31 +37,63 @@ class Password
             throw new Exception($e);
         }
     }
+    
+// Expire credentials send email with confirmation code
+
+    function unexpireCredentials($email, $password)
+    {
+        $this->validator->isValidEmail($email);
+
+        global $wpdb;
+
+        $results = $wpdb->get_results(
+            "CALL unexpireCredentials('$email', '$password')"
+        );
+
+        if ($wpdb->last_error) {
+            throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+        }
+
+        $credentialsExpired = $results[0]->resultSet;
+
+        if ($credentialsExpired == 'FALSE') {
+            throw new Exception('Password could not be updated at this time.', 400);
+        }
+
+        return $credentialsExpired;
+    }
+
+    function matches($string1, $string2)
+    {
+        if ($string1 !== $string2) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function passwordMatchesHash($password, $hash)
+    {
+        $this->validator->isValidPassword($password);
+
+        $first_two_chars = substr($hash, 0, 2);
+
+        if ($first_two_chars === '$P') {
+            $password_check = wp_check_password($password, $hash);
+        } else {
+            $password_check = password_verify($password, $hash);
+        }
+
+        return $password_check;
+    }
 
     // Send password changed email
-    function changePassword(WP_REST_Request $request)
+    function changePassword($email, $password, $newPassword, $confirmPassword)
     {
         try {
-            $email = $request['email'];
-            $password = $request['password'];
-            $newPassword = $request['newPassword'];
-            $confirmPassword = $request['confirmPassword'];
+            $this->validator->isValidEmail($email);
 
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                "CALL unexpireCredentials('$email', '$password')"
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            $results = $results[0]->resultSet;
-
-            if (!$results) {
-                throw new Exception('Password could not be updated at this time.', 400);
-            }
+            $this->validator->isValidPassword($password);
 
             if (empty($newPassword)) {
                 throw new Exception('Enter your new preferred password.', 400);
@@ -65,9 +103,13 @@ class Password
                 throw new Exception('Enter your new preferred password twice.', 400);
             }
 
-            if ($newPassword != $confirmPassword) {
+            $matches = $this->matches($newPassword, $confirmPassword);
+
+            if (!$matches) {
                 throw new Exception('Enter your new preferred password exactly the same twice.', 400);
             }
+
+            global $wpdb;
 
             $results = $wpdb->get_results(
                 "CALL changePassword('$email', '$password', '$newPassword')"
@@ -77,11 +119,13 @@ class Password
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $results = $results[0]->resultSet;
+            $passwordChanged = $results[0]->resultSet;
 
-            if (!$results) {
+            if ($passwordChanged == 'FALSE') {
                 throw new Exception('Password could not be updated at this time.', 400);
             }
+
+            $this->unexpireCredentials($email, $password);
 
             return "Your password has been changed successfully an email has been sent to {$email} check your inbox.";
         } catch (Exception $e) {
@@ -90,27 +134,24 @@ class Password
     }
 
     // Send password changed email
-    function updatePassword(WP_REST_Request $request)
+    function updatePassword($email, $confirmationCode, $password, $confirmPassword)
     {
         try {
-            $authorized = $this->authentication->verifyCredentials($request);
+            $this->validator->isValidPassword($password);
+            $this->validator->isValidPassword($confirmPassword);
 
-            if (!$authorized) {
-                throw new Exception('Credentials are not valid password could not be updated at this time.', 403);
+            $matches = $this->matches($password, $confirmPassword);
+
+            if (!$matches) {
+                throw new Exception('Enter your new preferred password exactly the same twice.', 400);
             }
 
-            if (empty($password)) {
-                throw new Exception("A Password is required to update password.", 400);
-            }
-
-            $email = $request['email'];
-            $confirmationCode = $request['confirmationCode'];
-            $password = password_hash($request['password'], PASSWORD_DEFAULT);;
+            $hashedPassword = $this->hashPassword($password);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL updatePassword('$email', '$confirmationCode', '$password')"
+                "CALL updatePassword('$email', '$confirmationCode', '$hashedPassword')"
             );
 
             if ($wpdb->last_error) {
@@ -122,6 +163,8 @@ class Password
             if (empty($results)) {
                 throw new Exception('Password could not be updated at this time.', 400);
             }
+
+            $this->unexpireCredentials($email, $password);
 
             return 'Password updated succesfully.';
         } catch (Exception $e) {

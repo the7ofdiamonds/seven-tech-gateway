@@ -115,13 +115,13 @@ class SEVEN_TECH
                 $token = new Token($auth);
                 $authentication = new Authentication($auth);
                 $authorization = new Authorization($token);
-                $password = new Password($authentication);
+                $password = new Password();
                 $roles = new Roles();
                 $user = new User($auth);
 
                 $accountAPI = new API_Account($createAccount, $authentication, $authorization);
                 $authAPI = new API_Authentication($authentication);
-                $passwordAPI = new API_Password($password, $authentication, $authorization);
+                $passwordAPI = new API_Password($authentication, $authorization);
                 $rolesAPI = new API_Roles($roles, $authorization);
                 $userAPI = new API_User($user, $authentication, $authorization);
 
