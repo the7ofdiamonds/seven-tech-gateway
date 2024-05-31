@@ -35,11 +35,10 @@ class Authentication
         $this->password = new Password;
     }
 
-    function is_authenticated($email, $password)
+    function isAuthenticated($email, $password)
     {
         try {
-            $this->validator->isValidEmail($email);
-            $this->validator->isValidPassword($password);
+            $this->exists->existsByEmail($email);
 
             global $wpdb;
 
@@ -61,10 +60,10 @@ class Authentication
         }
     }
 
-    function is_not_authenticated($email)
+    function isNotAuthenticated($email)
     {
         try {
-            $this->validator->isValidEmail($email);
+            $this->exists->existsByEmail($email);
 
             global $wpdb;
 
@@ -89,9 +88,8 @@ class Authentication
     function signInWithEmailAndPassword($email, $password)
     {
         try {
-            $this->validator->isValidEmail($email);
-            $this->validator->isValidPassword($password);
             $this->exists->existsByEmail($email);
+            $this->validator->isValidPassword($password);
 
             $account = new Account($email);
 
@@ -105,7 +103,7 @@ class Authentication
 
             $user = $this->auth->getUser($signedInUser->data()['localId']);
 
-            $this->is_authenticated($account->email, $account->password);
+            $this->isAuthenticated($account->email, $account->password);
 
             return new Authenticated($account, $signedInUser, $user);
         } catch (DestructuredException $e) {
@@ -160,14 +158,13 @@ class Authentication
     function verifyCredentials($email, $confirmationCode)
     {
         try {
-            $this->validator->isValidEmail($email);
-            $this->validator->isValidConfirmationCode($confirmationCode);
             $this->exists->existsByEmail($email);
+            $this->validator->isValidConfirmationCode($confirmationCode);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL verifyCredentials('$email', '$confirmationCode')"
+                $wpdb->prepare("CALL verifyCredentials('%s', '%s')", $email, $confirmationCode)
             );
 
             if ($wpdb->last_error) {
@@ -204,7 +201,7 @@ class Authentication
 
             wp_logout();
 
-            $is_authenticated = $this->is_not_authenticated($request['email']);
+            $is_authenticated = $this->isNotAuthenticated($request['email']);
 
             if (is_user_logged_in() || $is_authenticated == 'FALSE') {
                 throw new Exception('User could not be logged out.', 400);
@@ -226,7 +223,7 @@ class Authentication
     public function logoutAll(WP_REST_Request $request)
     {
         try {
-            $this->validator->isValidEmail($request['email']);
+            $this->exists->existsByEmail($request['email']);
 
             $accessToken = $this->token->getAccessToken($request);
             $uid = $accessToken->claims()->get('sub');
@@ -238,7 +235,7 @@ class Authentication
             }
 
             $session_tokens_deleted = delete_user_meta($request['id'], 'session_tokens');
-            $is_authenticated = $this->is_not_authenticated($request['email']);
+            $is_authenticated = $this->isNotAuthenticated($request['email']);
 
             if (!$session_tokens_deleted || $is_authenticated == 'FALSE') {
                 throw new Exception('There was an error deleting session tokens.', 500);

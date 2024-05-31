@@ -33,6 +33,7 @@ jQuery(document).ready(function ($) {
 
     $('#role_select_add').on('change', () => {
         var role = $('#role_select_add').val();
+        // create an array of selections
         console.log(role);
     });
 

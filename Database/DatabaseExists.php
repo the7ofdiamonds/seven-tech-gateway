@@ -3,14 +3,24 @@
 namespace SEVEN_TECH\Gateway\Database;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
 class DatabaseExists
 {
+    private $validator;
+
+    public function __construct()
+    {
+        $this->validator = new Validator;
+    }
+
     function existsByEmail($email)
     {
         try {
+            $this->validator->isValidEmail($email);
+
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -34,6 +44,8 @@ class DatabaseExists
     function existsByUsername($username)
     {
         try {
+            $this->validator->isValidUsername($username);
+
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -57,6 +69,8 @@ class DatabaseExists
     function existsByNicename($nicename)
     {
         try {
+            $this->validator->isValidNicename($nicename);
+
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -80,6 +94,8 @@ class DatabaseExists
     function existsByPhone($phone)
     {
         try {
+            $this->validator->isValidPhone($phone);
+
             global $wpdb;
 
             $results = $wpdb->get_results(

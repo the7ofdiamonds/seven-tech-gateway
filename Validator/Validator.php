@@ -54,10 +54,67 @@ class Validator
                 throw new Exception('Confirmation code is required.');
             }
 
-            $pattern = '/^\[a-zA-Z0-9-]+$/';
+            $pattern = '/[a-zA-Z0-9-]+$/';
 
             if (!preg_match($pattern, $confirmationCode)) {
                 throw new Exception('Confirmation code is not valid.');
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function isValidUsername($username)
+    {
+        try {
+            if (empty($username)) {
+                throw new Exception('Username is required.');
+            }
+
+            $pattern = '/[a-zA-Z0-9]{3,20}$/';
+
+            if (!preg_match($pattern, $username)) {
+                throw new Exception('Username is not valid', 400);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function isValidNicename($nicename)
+    {
+        try {
+            if (empty($nicename)) {
+                throw new Exception('Nicename is required.');
+            }
+
+            $pattern = '/[a-zA-Z0-9]{3,20}$/';
+
+            if (!preg_match($pattern, $nicename)) {
+                throw new Exception('Nicename is not valid', 400);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function isValidPhone($phone)
+    {
+        try {
+            if (empty($phone)) {
+                throw new Exception('Phone is required.');
+            }
+
+            $pattern = '/[0-9]{11,}$/';
+
+            if (!preg_match($pattern, $phone)) {
+                throw new Exception('Phone is not valid', 400);
             }
 
             return true;

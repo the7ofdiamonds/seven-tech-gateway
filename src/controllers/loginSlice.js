@@ -63,6 +63,18 @@ export const login = createAsyncThunk('login/login', async ({ email, password, l
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
 
+        const emailIsValid = isValidEmail(email);
+
+        if (!emailIsValid) {
+            throw Error('Email entered is not valid.')
+        }
+
+        const passwordIsValid = isValidPassword(password);
+
+        if (!passwordIsValid) {
+            throw Error('Password entered is not valid.')
+        }
+
         const response = await fetch(`${loginUrl}`, {
             method: 'POST',
             headers: {
@@ -78,7 +90,7 @@ export const login = createAsyncThunk('login/login', async ({ email, password, l
         });
 
         const responseData = await response.json();
-console.log(responseData);
+
         return responseData;
     } catch (error) {
         console.error(error);
@@ -123,12 +135,12 @@ export const loginSlice = createSlice({
                 state.loginSuccessMessage = action.payload.successMessage;
                 state.loginErrorMessage = action.payload.errorMessage;
                 state.loginStatusCode = action.payload.statusCode;
-                state.id = action.payload.authenticatedAccount.id;
-                state.email = action.payload.authenticatedAccount.email;
-                state.username = action.payload.authenticatedAccount.username;
-                state.profileImage = action.payload.authenticatedAccount.profile_image;
-                state.refreshToken = action.payload.authenticatedAccount.refresh_token;
-                state.accessToken = action.payload.authenticatedAccount.access_token;
+                state.id = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.id : '';
+                state.email = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.email : '';
+                state.username = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.username : '';
+                state.profileImage = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.profile_image : '';
+                state.refreshToken = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.refresh_token : '';
+                state.accessToken = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.access_token : '';
             })
             .addCase(
                 login.pending, (state) => {
