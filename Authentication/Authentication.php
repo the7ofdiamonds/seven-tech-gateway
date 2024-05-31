@@ -44,7 +44,7 @@ class Authentication
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL isAuthenticated('%s')", $email, $password)
+                $wpdb->prepare("CALL isAuthenticated('%s', '%s')", $email, $password)
             );
 
             if ($wpdb->last_error) {

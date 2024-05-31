@@ -35,7 +35,7 @@ class Validator
                 throw new Exception('Password is required.');
             }
 
-            $pattern = '/^[a-zA-Z0-9!@#\$%\^&\*]+$/';
+            $pattern = '/[0-9a-zA-Z$@#%^&*_-]{8,20}$/';
 
             if (!preg_match($pattern, $password)) {
                 throw new Exception('Password is not valid', 400);
