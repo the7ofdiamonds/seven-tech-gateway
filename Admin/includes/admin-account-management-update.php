@@ -1,4 +1,4 @@
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/UpdateAccount.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagementUpdate.js"; ?> defer></script>
 
 <form method="post" class="subscription-email" id="subscription_email">
     <h3>Subscription Current</h3>

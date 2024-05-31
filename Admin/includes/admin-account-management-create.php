@@ -1,4 +1,4 @@
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/CreateAccount.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagementCreate.js"; ?> defer></script>
 
 <form method="post" class="create-account" id="create_account">
     <h2>Create Account</h2>

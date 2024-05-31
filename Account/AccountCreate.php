@@ -12,7 +12,7 @@ use Exception;
 
 use Kreait\Firebase\Contract\Auth;
 
-class CreateAccount
+class AccountCreate
 {
     private $password;
     private $auth;
@@ -45,7 +45,8 @@ class CreateAccount
 
     function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
     {
-        try {
+        try {error_log(print_r($roles, true));
+
             $emailExists = $this->databaseExists->existsByEmail($email);
 
             if ($emailExists == 'TRUE') {
@@ -99,6 +100,10 @@ class CreateAccount
 
             if (empty($roles)) {
                 $updatedAccountID = $this->roles->addRole($account->id, 'subscriber', 'Subscriber');
+            }
+
+            if(is_array($roles)){
+                
             }
 
             if ($account->id !== $updatedAccountID) {

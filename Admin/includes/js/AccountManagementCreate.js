@@ -38,7 +38,7 @@ jQuery(document).ready(function ($) {
 
     $('form#create_account').submit(function (event) {
         event.preventDefault();
-console.log('create account');
+
         const email = $('#create_account input[name="email"]').val();
         const username = $('#create_account input[name="username"]').val();
         const password = $('#create_account input[name="password"]').val();

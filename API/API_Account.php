@@ -3,7 +3,7 @@
 namespace SEVEN_TECH\Gateway\API;
 
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Account\CreateAccount;
+use SEVEN_TECH\Gateway\Account\AccountCreate;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
@@ -18,7 +18,7 @@ class API_Account
     private $authentication;
     private $authorization;
 
-    public function __construct(CreateAccount $createAccount, Authentication $authentication, Authorization $authorization)
+    public function __construct(AccountCreate $createAccount, Authentication $authentication, Authorization $authorization)
     {
         $this->createAccount = $createAccount;
         $this->authentication = $authentication;

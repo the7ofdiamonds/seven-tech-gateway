@@ -84,14 +84,8 @@ class Account
     public function lockAccount($password)
     {
         try {
-
-            if (empty($this->email)) {
-                throw new Exception('Email is required.', 400);
-            }
-
-            if (empty($password)) {
-                throw new Exception('Password is required.', 400);
-            }
+            (new Validator)->isValidEmail($this->email);
+            (new Validator)->isValidPassword($password);
 
             global $wpdb;
 
@@ -116,10 +110,7 @@ class Account
     function unlockAccount($userActivationCode)
     {
         try {
-
-            if (empty($this->email)) {
-                throw new Exception('Email is required.', 400);
-            }
+            (new Validator)->isValidEmail($this->email);
 
             if (empty($userActivationCode)) {
                 throw new Exception('User Activation Code is required.', 400);
@@ -149,14 +140,8 @@ class Account
     function disableAccount($password)
     {
         try {
-
-            if (empty($this->email)) {
-                throw new Exception('Email is required.', 400);
-            }
-
-            if (empty($password)) {
-                throw new Exception('Password is required.', 400);
-            }
+            (new Validator)->isValidEmail($this->email);
+            (new Validator)->isValidPassword($password);
 
             global $wpdb;
 
@@ -182,10 +167,7 @@ class Account
     function enableAccount($userActivationCode)
     {
         try {
-
-            if (empty($this->email)) {
-                throw new Exception('Email is required.', 400);
-            }
+            (new Validator)->isValidEmail($this->email);
 
             if (empty($userActivationCode)) {
                 throw new Exception('User Activation Code is required.', 400);
@@ -214,9 +196,7 @@ class Account
     function deleteAccount()
     {
         try {
-            if (empty($this->email)) {
-                throw new Exception('Email is required.', 400);
-            }
+            (new Validator)->isValidEmail($this->email);
 
             $account = new Account($this->email);
 

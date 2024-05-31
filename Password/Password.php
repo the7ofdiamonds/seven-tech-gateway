@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Password;
 
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
@@ -34,33 +35,37 @@ class Password
 
             return $message;
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
-    
-// Expire credentials send email with confirmation code
+
+    // Expire credentials send email with confirmation code
 
     function unexpireCredentials($email, $password)
     {
-        $this->validator->isValidEmail($email);
+        try {
+            $this->validator->isValidEmail($email);
 
-        global $wpdb;
+            global $wpdb;
 
-        $results = $wpdb->get_results(
-            "CALL unexpireCredentials('$email', '$password')"
-        );
+            $results = $wpdb->get_results(
+                "CALL unexpireCredentials('$email', '$password')"
+            );
 
-        if ($wpdb->last_error) {
-            throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            $credentialsExpired = $results[0]->resultSet;
+
+            if ($credentialsExpired == 'FALSE') {
+                throw new Exception('Password could not be updated at this time.', 400);
+            }
+
+            return $credentialsExpired;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
         }
-
-        $credentialsExpired = $results[0]->resultSet;
-
-        if ($credentialsExpired == 'FALSE') {
-            throw new Exception('Password could not be updated at this time.', 400);
-        }
-
-        return $credentialsExpired;
     }
 
     function matches($string1, $string2)
@@ -129,7 +134,7 @@ class Password
 
             return "Your password has been changed successfully an email has been sent to {$email} check your inbox.";
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -168,7 +173,7 @@ class Password
 
             return 'Password updated succesfully.';
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 }

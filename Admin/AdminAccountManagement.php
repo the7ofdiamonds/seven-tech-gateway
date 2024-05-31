@@ -3,7 +3,7 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Account\CreateAccount;
+use SEVEN_TECH\Gateway\Account\AccountCreate;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use SEVEN_TECH\Gateway\Session\Session;
@@ -18,7 +18,7 @@ class AdminAccountManagement
     private $createAccount;
     private $session;
 
-    public function __construct(CreateAccount $createAccount)
+    public function __construct(AccountCreate $createAccount)
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'Account Management';

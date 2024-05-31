@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\Authentication;
 
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Token\Token;
@@ -18,6 +19,7 @@ use SEVEN_TECH\Gateway\Password\Password;
 class Authentication
 {
     private $validator;
+    private $exists;
     private $token;
     private $auth;
     private $session;
@@ -26,6 +28,7 @@ class Authentication
     public function __construct(Auth $auth)
     {
         $this->validator = new Validator;
+        $this->exists = new DatabaseExists;
         $this->auth = $auth;
         $this->token = new Token($auth);
         $this->session = new Session;
@@ -61,10 +64,7 @@ class Authentication
     function is_not_authenticated($email)
     {
         try {
-
-            if (empty($email)) {
-                throw new Exception('Email is required.', 400);
-            }
+            $this->validator->isValidEmail($email);
 
             global $wpdb;
 
@@ -91,6 +91,7 @@ class Authentication
         try {
             $this->validator->isValidEmail($email);
             $this->validator->isValidPassword($password);
+            $this->exists->existsByEmail($email);
 
             $account = new Account($email);
 
@@ -161,6 +162,7 @@ class Authentication
         try {
             $this->validator->isValidEmail($email);
             $this->validator->isValidConfirmationCode($confirmationCode);
+            $this->exists->existsByEmail($email);
 
             global $wpdb;
 
@@ -189,6 +191,8 @@ class Authentication
     public function logout(WP_REST_Request $request)
     {
         try {
+            $this->validator->isValidEmail($request['email']);
+
             $refreshToken = $this->token->getRefreshToken($request);
             $verifier = $this->session->hash_token($refreshToken);
 
@@ -222,6 +226,8 @@ class Authentication
     public function logoutAll(WP_REST_Request $request)
     {
         try {
+            $this->validator->isValidEmail($request['email']);
+
             $accessToken = $this->token->getAccessToken($request);
             $uid = $accessToken->claims()->get('sub');
 

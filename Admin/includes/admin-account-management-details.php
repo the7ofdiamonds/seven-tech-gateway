@@ -1,3 +1,6 @@
+<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagementDetails.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/Session.js"; ?> defer></script>
+
 <div class="account" id="account">
     <div class="ids" id="ids">
         <div class="account-id">
@@ -44,6 +47,11 @@
     <div class="password" id="password"></div>
     <div class="confirmation-code" id="confirmation_code"></div>
 
+    <div class="roles" id="roles">
+        <h3>Roles</h3>
+        <div class="roles-row" id="roles_row"></div>
+    </div>
+
     <div class="account-status">
         <div class="account-status-label">
             <h3>Account Status</h3>
@@ -51,10 +59,5 @@
         </div>
 
         <div class="sessions" id="sessions"></div>
-    </div>
-
-    <div class="roles" id="roles">
-        <h3>Roles</h3>
-        <div class="roles-row" id="roles_row"></div>
     </div>
 </div>
