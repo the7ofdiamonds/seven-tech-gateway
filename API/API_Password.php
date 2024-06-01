@@ -13,12 +13,10 @@ use WP_REST_Request;
 class API_Password
 {
     private $password;
-    private $authentication;
 
-    public function __construct(Authentication $authentication)
+    public function __construct()
     {
         $this->password = new Password;
-        $this->authentication = $authentication;
     }
 
     function recoverPassword(WP_REST_Request $request)
@@ -71,7 +69,7 @@ class API_Password
             $email = $request['email'];
             $confirmationCode = $request['confirmationCode'];
 
-            $verified = $this->authentication->verifyCredentials($email, $confirmationCode);
+            $verified = (new Authentication($email))->verifyCredentials($confirmationCode);
 
             if (!$verified) {
                 throw new Exception('Credentials are not valid password could not be updated at this time.', 403);

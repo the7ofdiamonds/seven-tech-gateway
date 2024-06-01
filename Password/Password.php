@@ -32,8 +32,10 @@ class Password
     {
         try {
             $this->exists->existsByEmail($email);
+            $user_activation_key = wp_generate_password(20, false);
+// Update confirmation code stored procedure
 
-            $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
+            $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password. Activation Code: {$user_activation_key}";
 
             return $message;
         } catch (DestructuredException $e) {
@@ -41,7 +43,32 @@ class Password
         }
     }
 
-    // Expire credentials send email with confirmation code
+    function expireCredentials($email)
+    {
+        try {
+            $this->exists->existsByEmail($email);
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                "CALL expireCredentials('$email')"
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            $credentialsExpired = $results[0]->resultSet;
+
+            if ($credentialsExpired == 'FALSE') {
+                throw new Exception('Password could not be updated at this time.', 400);
+            }
+
+            return $credentialsExpired;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
 
     function unexpireCredentials($email, $password)
     {
@@ -68,15 +95,6 @@ class Password
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
-    }
-
-    function matches($string1, $string2)
-    {
-        if ($string1 !== $string2) {
-            return false;
-        }
-
-        return true;
     }
 
     function passwordMatchesHash($password, $hash)
@@ -109,7 +127,7 @@ class Password
                 throw new Exception('Enter your new preferred password twice.', 400);
             }
 
-            $matches = $this->matches($newPassword, $confirmPassword);
+            $matches = $this->validator->matches($newPassword, $confirmPassword);
 
             if (!$matches) {
                 throw new Exception('Enter your new preferred password exactly the same twice.', 400);
@@ -147,7 +165,7 @@ class Password
             $this->validator->isValidPassword($password);
             $this->validator->isValidPassword($confirmPassword);
 
-            $matches = $this->matches($password, $confirmPassword);
+            $matches = $this->validator->matches($password, $confirmPassword);
 
             if (!$matches) {
                 throw new Exception('Enter your new preferred password exactly the same twice.', 400);

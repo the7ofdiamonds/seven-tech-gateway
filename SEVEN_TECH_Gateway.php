@@ -43,7 +43,9 @@ use SEVEN_TECH\Gateway\API\API_Password;
 use SEVEN_TECH\Gateway\API\API_Roles;
 use SEVEN_TECH\Gateway\API\API_User;
 
-use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
+use SEVEN_TECH\Gateway\Authentication\AuthenticationToken;
+use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
 
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 
@@ -114,17 +116,19 @@ class SEVEN_TECH
             if ($auth instanceof Auth) {
                 $createAccount = new AccountCreate($auth);
                 $token = new Token($auth);
-                $authentication = new Authentication($auth);
+                $login = new AuthenticationLogin($auth);
+                $authenticationToken = new AuthenticationToken($token, $auth);
+                $logout = new AuthenticationLogout($token, $auth);
                 $authorization = new Authorization($token);
                 $password = new Password();
                 $roles = new Roles();
                 $user = new User($auth);
 
-                $accountAPI = new API_Account($createAccount, $authentication, $authorization);
-                $authAPI = new API_Authentication($authentication);
-                $passwordAPI = new API_Password($authentication, $authorization);
+                $accountAPI = new API_Account($createAccount, $login, $authorization);
+                $authAPI = new API_Authentication($login, $authenticationToken, $logout);
+                $passwordAPI = new API_Password();
                 $rolesAPI = new API_Roles($roles, $authorization);
-                $userAPI = new API_User($user, $authentication, $authorization);
+                $userAPI = new API_User($user, $login, $authorization);
 
                 add_action('rest_api_init', function () use ($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI) {
                     new API($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI);

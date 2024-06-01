@@ -18,8 +18,10 @@ class Authenticated
     public $roles;
     public $level;
 
-    public function __construct(Account $account, SignInResult $signedInUser, UserRecord $user)
+    public function __construct(string $email, SignInResult $signedInUser, UserRecord $user)
     {
+        $account = new Account($email);
+        
         $this->id = $account->id;
         $this->email = $account->email;
         $this->username = $account->username;
@@ -28,45 +30,5 @@ class Authenticated
         $this->refresh_token = $signedInUser->refreshToken();
         $this->roles = $account->roles;
         $this->level = $account->level;  
-    }
-
-    public function getID()
-    {
-        return $this->id;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    public function getProfileImage()
-    {
-        return $this->profile_image;
-    }
-    
-    public function getAccessToken()
-    {
-        return $this->access_token;
-    }
-
-    public function getRefreshToken()
-    {
-        return $this->refresh_token;
-    }
-
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-
-    public function getLevel()
-    {
-        return $this->level;
     }
 }

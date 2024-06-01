@@ -8,7 +8,15 @@ use Exception;
 
 class Validator
 {
+    function matches($string1, $string2)
+    {
+        if ($string1 !== $string2) {
+            return false;
+        }
 
+        return true;
+    }
+    
     function isValidEmail($email)
     {
         try {

@@ -25,11 +25,9 @@
     </div>
 
     <div class="account-status">
-        <div class="account-status-label">
-            <h3>Account Status</h3>
-            <h4 id="authenticated"></h4>
-        </div>
-
-        <div class="sessions" id="sessions"></div>
+        <h3>Account Status</h3>
+        <h4 id="account_status"></h4>
     </div>
+
+    <div class="sessions" id="sessions"></div>
 </div>

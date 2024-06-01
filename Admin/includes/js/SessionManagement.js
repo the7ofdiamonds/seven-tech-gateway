@@ -10,15 +10,15 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 $(".account-id #account_id").text(response.data.id);
 
+                $('#sessions').empty();
+
                 var sessions = response.data.sessions;
                 var sessionKeys = Object.keys(sessions);
 
                 if (sessionKeys.length > 0) {
-                    $(".account-status #authenticated").text('logged in');
+                    $(".account-status #account_status").text('logged in');
 
                     $('#sessions').css('display', 'flex');
-
-                    $('#sessions').empty();
 
                     sessionKeys.forEach(function (token) {
                         var session = sessions[token];
@@ -60,12 +60,11 @@ jQuery(document).ready(function ($) {
                         $('#sessions').append(sessionContainer);
                     });
                 } else {
-                    $(".account-status #authenticated").text('logged out');
+                    $(".account-status #account_status").text('logged out');
                 }
             },
             error: function (xhr, status, error) {
                 const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
                 displayMessage(status, errorMessage);
             }
         });
@@ -79,7 +78,7 @@ jQuery(document).ready(function ($) {
         getSessions(email);
     });
 
-    function removeSession(id, verifier) {
+    function removeSession(id, verifier, email) {
         return $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
@@ -93,15 +92,13 @@ jQuery(document).ready(function ($) {
 
                 if (response.data == true) {
                     message = "Session was removed.";
-                    getSessions(id);
+                    getSessions(email);
                 }
 
                 displayMessage('success', message ? message : response.data);
             },
             error: function (xhr, status, error) {
-                console.log(xhr);
                 const errorMessage = `${error}: ${xhr.responseJSON}`;
-
                 displayMessage(status, errorMessage);
             }
         });
@@ -111,9 +108,10 @@ jQuery(document).ready(function ($) {
         event.preventDefault();
 
         const button = $(event.currentTarget);
-        const id = $('#account #account_id').text();
+        const id = $('.account-id #account_id').text();
         const verifier = button.attr('id');
+        const email = $('#find_session input[name="email"]#email').val();
 
-        removeSession(id, verifier);
+        removeSession(id, verifier, email);
     });
 });

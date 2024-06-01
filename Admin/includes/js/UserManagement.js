@@ -68,29 +68,6 @@ jQuery(document).ready(function ($) {
         getUser(email);
     });
 
-    $('form#recover_email').submit(function (event) {
-        event.preventDefault();
-
-        const email = $('#find_user input[name="email"]').val();
-
-        $.ajax({
-            type: 'POST',
-            url: 'admin-ajax.php',
-            data: {
-                action: 'forgotPassword',
-                email: email
-            },
-            success: function (response) {
-                displayMessage('success', response.data);
-            },
-            error: function (xhr, status, error) {
-                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
-                displayMessage(status, errorMessage);
-            }
-        });
-    });
-
     $('#change_nicename').submit(function (event) {
         event.preventDefault();
 

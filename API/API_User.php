@@ -2,7 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
-use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\User\User;
@@ -13,14 +13,14 @@ use WP_REST_Request;
 
 class API_User
 {
-    private $authorization;
     private $user;
-    private $authentication;
+    private $login;
+    private $authorization;
 
-    public function __construct(User $user, Authentication $authentication, Authorization $authorization)
+    public function __construct(User $user, AuthenticationLogin $login, Authorization $authorization)
     {
         $this->user = $user;
-        $this->authentication = $authentication;
+        $this->login = $login;
         $this->authorization = $authorization;
     }
 
@@ -41,7 +41,7 @@ class API_User
             $this->user->addUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $activationCode);
 
             $signupResponse = [
-                'successMessage' => $this->authentication->login($request),
+                'successMessage' => $this->login->signInWithEmailAndPassword($email, $password),
                 'statusCode' => 200
             ];
 

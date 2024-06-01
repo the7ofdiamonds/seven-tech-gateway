@@ -59,13 +59,8 @@
         </div>
     </div>
 
-    <form method="post" class="recover-email" id="recover_email">
-        <h3>Send Password Recovery Email</h3>
-        <button type="submit">Send</button>
-    </form>
-
     <form method="post" class="add-user-role" id="add_user_role">
-        <h3>Add User Role</h3>
+        <h3>Add Role</h3>
 
         <select name="added_role" id="role_select_add">
             <?php
@@ -84,7 +79,7 @@
     </form>
 
     <form method="post" class="remove-user-role" id="remove_user_role">
-        <h3>Remove User Role</h3>
+        <h3>Remove Role</h3>
 
         <input type="hidden" name="user_roles" id="user_roles">
 
@@ -96,7 +91,7 @@
     </form>
 
     <form method="post" class="change-nicename" id="change_nicename">
-        <h3>Change User Nicename</h3>
+        <h3>Change Nicename</h3>
         <input type="text" name="nicename" id="nicename" placeholder="Nicename" required>
         <button type="submit">Change</button>
     </form>

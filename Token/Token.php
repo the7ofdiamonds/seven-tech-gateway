@@ -2,8 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Token;
 
-use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Authentication\Authenticated;
+use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
@@ -25,7 +24,11 @@ class Token
 
     function getVerifiedToken($token)
     {
-        return $this->auth->verifyIdToken($token, true);
+        try {
+            return $this->auth->verifyIdToken($token, true);
+        } catch (FailedToVerifyToken $e) {
+            throw new DestructuredException($e);
+        }
     }
 
     function getAccessToken(WP_REST_Request $request)
@@ -77,37 +80,21 @@ class Token
         }
     }
 
+    function getEmailFromToken($accessToken)
+    {
+        $verifiedAccessToken = $this->getVerifiedToken($accessToken);
+
+        $email = $verifiedAccessToken->claims()->get('email');
+
+        return $email;
+    }
+
     function findUserWithToken($accessToken)
     {
         try {
-            $verifiedAccessToken = $this->getVerifiedToken($accessToken);
+            $email = $this->getEmailFromToken($accessToken);
 
-            $email = $verifiedAccessToken->claims()->get('email');
-
-            return new Account($email);
-        } catch (FailedToVerifyToken $e) {
-            throw new DestructuredException($e);
-        } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function signInWithRefreshToken(WP_REST_Request $request)
-    {
-        try {
-            $refreshToken = $this->getRefreshToken($request);
-
-            $signedInUser = $this->auth->signInWithRefreshToken($refreshToken);
-
-            $account = $this->findUserWithToken($signedInUser->idToken());
-
-            $user = $this->auth->getUser($signedInUser->data()['user_id']);
-
-            $$this->is_authenticated($account->email, $account->password);
-
-            return new Authenticated($account, $signedInUser, $user);
+            return new Authentication($email);
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {

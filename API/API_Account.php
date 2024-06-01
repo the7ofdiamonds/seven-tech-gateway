@@ -5,6 +5,7 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\AccountCreate;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
@@ -15,13 +16,13 @@ use WP_REST_Request;
 class API_Account
 {
     private $createAccount;
-    private $authentication;
+    private $login;
     private $authorization;
 
-    public function __construct(AccountCreate $createAccount, Authentication $authentication, Authorization $authorization)
+    public function __construct(AccountCreate $createAccount, AuthenticationLogin $login, Authorization $authorization)
     {
         $this->createAccount = $createAccount;
-        $this->authentication = $authentication;
+        $this->login = $login;
         $this->authorization = $authorization;
     }
 
@@ -43,7 +44,7 @@ class API_Account
             $signupResponse = array(
                 'successMessage' => 'You have been signed up successfully.',
                 'statusCode' => 201,
-                'login' => $this->authentication->login($request)
+                'login' => $this->login->signInWithEmailAndPassword($email, $password)
             );
 
             return rest_ensure_response($signupResponse);
@@ -83,7 +84,7 @@ class API_Account
             $email = $request['email'];
             $confirmationCode = $request['confirmationCode'];
 
-            $verified = $this->authentication->verifyCredentials($email, $confirmationCode);
+            $verified = (new Authentication($email))->verifyCredentials($confirmationCode);
 
             if (!$verified) {
                 throw new Exception('You do not have permission to perform this action', 403);
@@ -111,7 +112,7 @@ class API_Account
             $email = $request['email'];
             $confirmationCode = $request['confirmationCode'];
 
-            $verified = $this->authentication->verifyCredentials($email, $confirmationCode);
+            $verified = (new Authentication($email))->verifyCredentials($confirmationCode);
 
             if (!$verified) {
                 throw new Exception('You do not have permission to perform this action', 403);

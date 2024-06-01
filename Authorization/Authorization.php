@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Authorization;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
 
@@ -19,8 +20,8 @@ class Authorization
     public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = '')
     {
         try {
-            $accessToken = $this->token->getAccessToken($request);
-            $account = $this->token->findUserWithToken($accessToken);
+            $email = $this->token->getEmailFromToken($request);
+            $account = new Account($email);
             $accountRoles = $account->roles;
 
             if ($account->email == $request['email']) {
