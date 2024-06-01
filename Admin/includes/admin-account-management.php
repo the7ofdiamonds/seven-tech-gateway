@@ -1,5 +1,4 @@
 <link rel="stylesheet" href=<?php echo SEVEN_TECH_URL . "Admin/includes/css/AccountManagement.css"; ?>>
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>
 <script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagement.js"; ?> defer></script>
 
 <div class="account-management" id="account_management">

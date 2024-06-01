@@ -1,0 +1,30 @@
+<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/SessionManagement.js"; ?> defer></script>
+
+<div class="session-management" id="session_management">
+    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+
+    <div class="options" id="options">
+        <button id="find_user">
+            <h3>Find Session</h3>
+        </button>
+    </div>
+
+    <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
+
+    <form method="post" class="find-session" id="find_session">
+        <h2>Find Session</h2>
+        <div class="find-session-submit">
+            <input type="email" name="email" placeholder="Email" id="email" required>
+            <button type="submit">Find</button>
+        </div>
+    </form>
+
+    <div class="account-status">
+        <div class="account-status-label">
+            <h3>Account Status</h3>
+            <h4 id="authenticated"></h4>
+        </div>
+
+        <div class="sessions" id="sessions"></div>
+    </div>
+</div>

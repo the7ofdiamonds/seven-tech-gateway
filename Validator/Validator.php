@@ -37,8 +37,9 @@ class Validator
             }
 
             $pattern = '/[0-9a-zA-Z$@#%^&*_-]{8,20}$/';
+            $isValid = preg_match($pattern, $password);
 
-            if (!preg_match($pattern, $password)) {
+            if ($isValid == 0) {
                 throw new Exception('Password is not valid', 400);
             }
 
@@ -56,8 +57,9 @@ class Validator
             }
 
             $pattern = '/[a-zA-Z0-9-]+$/';
+            $isValid = preg_match($pattern, $confirmationCode);
 
-            if (!preg_match($pattern, $confirmationCode)) {
+            if ($isValid == 0) {
                 throw new Exception('Confirmation code is not valid.');
             }
 
@@ -75,8 +77,9 @@ class Validator
             }
 
             $pattern = '/[a-zA-Z0-9]{3,20}$/';
+            $isValid = preg_match($pattern, $username);
 
-            if (!preg_match($pattern, $username)) {
+            if ($isValid == 0) {
                 throw new Exception('Username is not valid', 400);
             }
 
@@ -94,8 +97,9 @@ class Validator
             }
 
             $pattern = '/[a-zA-Z0-9]{3,20}$/';
+            $isValid = preg_match($pattern, $nicename);
 
-            if (!preg_match($pattern, $nicename)) {
+            if ($isValid == 0) {
                 throw new Exception('Nicename is not valid', 400);
             }
 
@@ -113,8 +117,9 @@ class Validator
             }
 
             $pattern = '/[0-9]{11,}$/';
+            $isValid = preg_match($pattern, $phone);
 
-            if (!preg_match($pattern, $phone)) {
+            if ($isValid == 0) {
                 throw new Exception('Phone is not valid', 400);
             }
 

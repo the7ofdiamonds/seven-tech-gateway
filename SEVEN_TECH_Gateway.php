@@ -32,7 +32,8 @@ use SEVEN_TECH\Gateway\Account\AccountCreate;
 
 use SEVEN_TECH\Gateway\Admin\Admin;
 use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
-use SEVEN_TECH\Gateway\Admin\AdminRecoverPassword;
+use SEVEN_TECH\Gateway\Admin\AdminPasswordManagement;
+use SEVEN_TECH\Gateway\Admin\AdminSessionManagement;
 use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
 
 use SEVEN_TECH\Gateway\API\API;
@@ -130,7 +131,8 @@ class SEVEN_TECH
                 });
 
                 $adminAccountManagement = new AdminAccountManagement($createAccount);
-                $adminRecoverPassword = new AdminRecoverPassword($password);
+                $adminPasswordManagement = new AdminPasswordManagement($password);
+                $adminSessionManagement = new AdminSessionManagement;
                 $adminUserManagement = new AdminUserManagement($user);
 
                 add_action('admin_init', function () use ($admin) {
@@ -139,7 +141,8 @@ class SEVEN_TECH
                 });
 
                 add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
-                add_action('admin_menu', [$adminRecoverPassword, 'register_custom_submenu_page']);
+                add_action('admin_menu', [$adminPasswordManagement, 'register_custom_submenu_page']);
+                add_action('admin_menu', [$adminSessionManagement, 'register_custom_submenu_page']);
                 add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
             }
         } catch (DestructuredException $e) {

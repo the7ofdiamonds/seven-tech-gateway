@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Password;
 
+use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
@@ -10,10 +11,12 @@ use Exception;
 class Password
 {
     private $validator;
+    private $exists;
 
     public function __construct()
     {
         $this->validator = new Validator;
+        $this->exists = new DatabaseExists;
     }
 
     function hashPassword($password)
@@ -28,7 +31,7 @@ class Password
     function recoverPassword($email)
     {
         try {
-            $this->validator->isValidEmail($email);
+            $this->exists->existsByEmail($email);
 
             $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
 
@@ -43,7 +46,7 @@ class Password
     function unexpireCredentials($email, $password)
     {
         try {
-            $this->validator->isValidEmail($email);
+            $this->exists->existsByEmail($email);
 
             global $wpdb;
 
@@ -95,8 +98,7 @@ class Password
     function changePassword($email, $password, $newPassword, $confirmPassword)
     {
         try {
-            $this->validator->isValidEmail($email);
-
+            $this->exists->existsByEmail($email);
             $this->validator->isValidPassword($password);
 
             if (empty($newPassword)) {
@@ -141,6 +143,7 @@ class Password
     function updatePassword($email, $confirmationCode, $password, $confirmPassword)
     {
         try {
+            $this->exists->existsByEmail($email);
             $this->validator->isValidPassword($password);
             $this->validator->isValidPassword($confirmPassword);
 

@@ -6,7 +6,7 @@ use SEVEN_TECH\Gateway\Password\Password;
 
 use Exception;
 
-class AdminRecoverPassword
+class AdminPasswordManagement
 {
     private $parent_slug;
     private $page_title;
@@ -35,7 +35,7 @@ class AdminRecoverPassword
 
     function create_section()
     {
-        include_once SEVEN_TECH . 'Admin/includes/admin-recover-password.php';
+        include_once SEVEN_TECH . 'Admin/includes/admin-password-management.php';
     }
 
     function section_description()
