@@ -15,9 +15,14 @@
         <h2>Find Session</h2>
         <div class="find-session-submit">
             <input type="email" name="email" placeholder="Email" id="email" required>
-            <button type="submit">Find</button>
+            <button id="find_session_btn" type="submit">Find</button>
         </div>
     </form>
+
+    <div class="account-id">
+        <h3>Account ID</h3>
+        <h4 id="account_id"></h4>
+    </div>
 
     <div class="account-status">
         <div class="account-status-label">

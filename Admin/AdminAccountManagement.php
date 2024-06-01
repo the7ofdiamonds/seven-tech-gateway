@@ -6,8 +6,6 @@ use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\AccountCreate;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
-use SEVEN_TECH\Gateway\Session\Session;
-
 class AdminAccountManagement
 {
     private $parent_slug;
@@ -16,7 +14,6 @@ class AdminAccountManagement
     private $menu_slug;
     public $page_url;
     private $createAccount;
-    private $session;
 
     public function __construct(AccountCreate $createAccount)
     {
@@ -26,13 +23,9 @@ class AdminAccountManagement
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
         $this->createAccount = $createAccount;
-        $this->session = new Session;
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
-        add_action('wp_ajax_getSessions', [$this, 'getSessions']);
-        add_action('wp_ajax_removeSession', [$this, 'removeSession']);
-        add_action('wp_ajax_sendSubscriptionEmail', [$this, 'sendSubscriptionEmail']);
         add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
         add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
         add_action('wp_ajax_enableAccount', [$this, 'enableAccount']);
@@ -90,47 +83,6 @@ class AdminAccountManagement
             $account = (new Account($email));
 
             wp_send_json_success($account);
-        } catch (DestructuredException $e) {
-            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
-        }
-    }
-
-    public function getSessions()
-    {
-        try {
-            $id = $_POST['id'];
-
-            $sessions = $this->session->getSessions($id);
-
-            wp_send_json_success($sessions);
-        } catch (DestructuredException $e) {
-            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
-        }
-    }
-
-    public function removeSession()
-    {
-        try {
-            $verifier = $_POST['verifier'];
-            $id = $_POST['id'];
-
-            $removedSession = $this->session->destroy_session($id, $verifier);
-
-            wp_send_json_success($removedSession);
-        } catch (DestructuredException $e) {
-            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
-        }
-    }
-
-    // This should be added to communications
-    public function sendSubscriptionEmail()
-    {
-        try {
-            $email = $_POST['email'];
-
-            $message = "An email has been sent to {$email} check your inbox for directions on how and where to renew subscriptions.";
-
-            wp_send_json_success($message);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }

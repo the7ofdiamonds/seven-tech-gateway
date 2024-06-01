@@ -47,11 +47,14 @@ class AdminSessionManagement
     public function getSessions()
     {
         try {
-            $id = $_POST['id'];
-
+            $email = $_POST['email'];
+            $user = get_user_by('email', $email);
+            $id = $user->ID;
             $sessions = $this->session->getSessions($id);
 
-            wp_send_json_success($sessions);
+            $accountSessions = array('id' => $id, 'sessions' => $sessions);
+
+            wp_send_json_success($accountSessions);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }

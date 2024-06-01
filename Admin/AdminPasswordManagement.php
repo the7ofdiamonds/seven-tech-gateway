@@ -2,9 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
-
-use Exception;
 
 class AdminPasswordManagement
 {
@@ -47,17 +46,12 @@ class AdminPasswordManagement
     function recoverPassword()
     {
         try {
-            if (!isset($_POST['email'])) {
-                throw new Exception('Email is required.', 400);
-            }
-
             $email = $_POST['email'];
-
             $message = $this->password->recoverPassword($email);
 
             wp_send_json_success($message);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 }

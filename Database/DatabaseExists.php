@@ -36,6 +36,8 @@ class DatabaseExists
             }
 
             return $results[0]->resultSet;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
@@ -61,6 +63,8 @@ class DatabaseExists
             }
 
             return $results[0]->resultSet;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
@@ -86,6 +90,8 @@ class DatabaseExists
             }
 
             return $results[0]->resultSet;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
@@ -111,6 +117,8 @@ class DatabaseExists
             }
 
             return $results[0]->resultSet;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

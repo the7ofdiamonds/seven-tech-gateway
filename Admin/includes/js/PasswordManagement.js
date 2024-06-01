@@ -3,13 +3,13 @@ jQuery(document).ready(function ($) {
     $('form#recover_email').submit(function (event) {
         event.preventDefault();
 
-        const email = $('#find_account input[name="email"]#email').val();
+        const email = $('#recover_email input[name="email"]#email').val();
 
         $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
             data: {
-                action: 'forgotPassword',
+                action: 'recoverPassword',
                 email: email
             },
             success: function (response) {

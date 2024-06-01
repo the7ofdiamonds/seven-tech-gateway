@@ -36,7 +36,7 @@ class Password
             $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
 
             return $message;
-        } catch (Exception $e) {
+        } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
     }

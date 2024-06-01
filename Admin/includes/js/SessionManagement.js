@@ -1,17 +1,21 @@
 jQuery(document).ready(function ($) {
-    function getSessions(id) {
+    function getSessions(email) {
         return $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
             data: {
                 action: 'getSessions',
-                id: id
+                email: email
             },
             success: function (response) {
-                var sessions = response.data;
+                $(".account-id #account_id").text(response.data.id);
+
+                var sessions = response.data.sessions;
                 var sessionKeys = Object.keys(sessions);
 
                 if (sessionKeys.length > 0) {
+                    $(".account-status #authenticated").text('logged in');
+
                     $('#sessions').css('display', 'flex');
 
                     $('#sessions').empty();
@@ -55,6 +59,8 @@ jQuery(document).ready(function ($) {
 
                         $('#sessions').append(sessionContainer);
                     });
+                } else {
+                    $(".account-status #authenticated").text('logged out');
                 }
             },
             error: function (xhr, status, error) {
@@ -64,6 +70,14 @@ jQuery(document).ready(function ($) {
             }
         });
     }
+
+    $('#find_session #find_session_btn').on('click', function (event) {
+        event.preventDefault();
+
+        const email = $('#find_session input[name="email"]#email').val();
+
+        getSessions(email);
+    });
 
     function removeSession(id, verifier) {
         return $.ajax({
