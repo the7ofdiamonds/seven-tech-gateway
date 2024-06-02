@@ -2,8 +2,10 @@
 
 namespace SEVEN_TECH\Gateway\Password;
 
+use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Email\Email;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
@@ -12,11 +14,13 @@ class Password
 {
     private $validator;
     private $exists;
+    private $email;
 
     public function __construct()
     {
         $this->validator = new Validator;
         $this->exists = new DatabaseExists;
+        $this->email = new Email;
     }
 
     function hashPassword($password)
@@ -28,19 +32,19 @@ class Password
         return $hashedPassword;
     }
 
-    function recoverPassword($email)
+    function passwordMatchesHash($password, $hash)
     {
-        try {
-            $this->exists->existsByEmail($email);
-            $user_activation_key = wp_generate_password(20, false);
-// Update confirmation code stored procedure
+        $this->validator->isValidPassword($password);
 
-            $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password. Activation Code: {$user_activation_key}";
+        $first_two_chars = substr($hash, 0, 2);
 
-            return $message;
-        } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
+        if ($first_two_chars === '$P') {
+            $password_check = wp_check_password($password, $hash);
+        } else {
+            $password_check = password_verify($password, $hash);
         }
+
+        return $password_check;
     }
 
     function expireCredentials($email)
@@ -97,22 +101,6 @@ class Password
         }
     }
 
-    function passwordMatchesHash($password, $hash)
-    {
-        $this->validator->isValidPassword($password);
-
-        $first_two_chars = substr($hash, 0, 2);
-
-        if ($first_two_chars === '$P') {
-            $password_check = wp_check_password($password, $hash);
-        } else {
-            $password_check = password_verify($password, $hash);
-        }
-
-        return $password_check;
-    }
-
-    // Send password changed email
     function changePassword($email, $password, $newPassword, $confirmPassword)
     {
         try {
@@ -133,10 +121,12 @@ class Password
                 throw new Exception('Enter your new preferred password exactly the same twice.', 400);
             }
 
+            $hashedPassword = $this->hashPassword($newPassword);
+
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL changePassword('$email', '$password', '$newPassword')"
+                "CALL changePassword('$email', '$password', '$hashedPassword')"
             );
 
             if ($wpdb->last_error) {
@@ -149,7 +139,11 @@ class Password
                 throw new Exception('Password could not be updated at this time.', 400);
             }
 
-            $this->unexpireCredentials($email, $password);
+            $auth = new Authentication($email);
+
+            $this->unexpireCredentials($email, $auth->password);
+
+            $this->email->passwordChanged($email);
 
             return "Your password has been changed successfully an email has been sent to {$email} check your inbox.";
         } catch (Exception $e) {
@@ -157,7 +151,6 @@ class Password
         }
     }
 
-    // Send password changed email
     function updatePassword($email, $confirmationCode, $password, $confirmPassword)
     {
         try {
@@ -189,7 +182,11 @@ class Password
                 throw new Exception('Password could not be updated at this time.', 400);
             }
 
-            $this->unexpireCredentials($email, $password);
+            $auth = new Authentication($email);
+
+            $this->unexpireCredentials($email, $auth->password);
+
+            $this->email->passwordChanged($email);
 
             return 'Password updated succesfully.';
         } catch (Exception $e) {

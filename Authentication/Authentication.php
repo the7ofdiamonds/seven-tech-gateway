@@ -135,4 +135,54 @@ class Authentication
             throw new DestructuredException($e);
         }
     }
+
+    function updateConfirmationCode($confirmation_code)
+    {
+        try {
+            (new DatabaseExists)->existsByEmail($this->email);
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL updateConfirmationCode('%s', '%s')", $this->email, $confirmation_code)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account confirmation code could not be logged in.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function updateActivationCode($activation_code)
+    {
+        try {
+            (new DatabaseExists)->existsByEmail($this->email);
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL updateActivationCode('%s', '%s')", $this->email, $activation_code)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account confirmation code could not be logged in.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
 }

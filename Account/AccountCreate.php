@@ -4,10 +4,12 @@ namespace SEVEN_TECH\Gateway\Account;
 
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Email\Email;
 use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
 use Exception;
+
 use Kreait\Firebase\Auth\UserRecord;
 use Kreait\Firebase\Contract\Auth;
 
@@ -17,6 +19,7 @@ class AccountCreate
     private $password;
     private $auth;
     private $roles;
+    private $email;
 
     public function __construct(Auth $auth)
     {
@@ -24,6 +27,7 @@ class AccountCreate
         $this->password = new Password;
         $this->auth = $auth;
         $this->roles = new Roles;
+        $this->email = new Email;
     }
 
     function createFirebaseUser($email, $phone, $password, $username)
@@ -107,7 +111,8 @@ class AccountCreate
                 }
             }
 
-            // send signup email with activation code
+            $this->email->accountCreated();
+
             return new Account($account->email);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);

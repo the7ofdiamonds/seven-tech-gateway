@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\User;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Email\Email;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
 use Exception;
@@ -15,11 +16,13 @@ class User
 {
     private $auth;
     private $roles;
+    private $email;
 
     public function __construct(Auth $auth)
     {
         $this->auth = $auth;
         $this->roles = new Roles;
+        $this->email = new Email;
     }
 
     public function addUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)
@@ -55,6 +58,8 @@ class User
                 error_log("User could not be added.");
                 return '';
             }
+
+            $this->email->userAdded();
 
             return $results[0];
         } catch (DestructuredException $e) {
@@ -138,7 +143,6 @@ class User
         }
     }
 
-    // Send username changed email
     function changeUsername($email, $username)
     {
         try {
@@ -168,6 +172,8 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
+            $this->email->usernameChanged();
+
             return "Username has been changed to {$username} succesfully.";
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -176,7 +182,6 @@ class User
         }
     }
 
-    // Send name changed email
     function changeFirstName($email, $firstname)
     {
         try {
@@ -205,6 +210,8 @@ class User
             if (!$results[0]->resultSet) {
                 throw new Exception('Account with this email could not be found.', 404);
             }
+
+            $this->email->nameChanged();
 
             return "Your first name has been changed to {$firstname} succesfully.";
         } catch (DestructuredException $e) {
@@ -243,6 +250,8 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
+            $this->email->nameChanged();
+
             return "Your last name has been changed to {$lastname} succesfully.";
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -280,6 +289,8 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
+            $this->email->nicknameChanged();
+
             return "Your nickname has been changed to {$nickname} succesfully.";
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -307,6 +318,8 @@ class User
             if (!is_int($updated)) {
                 throw new Exception("There has been an error updating User nice name.", 500);
             }
+
+            $this->email->nicenameChanged();
 
             return "User nicename has been changed to {$nicename} successfully";
         } catch (DestructuredException $e) {
@@ -395,7 +408,6 @@ class User
         }
     }
 
-    // Send phone number changed email
     function changePhone($email, $phone)
     {
         try {
@@ -424,6 +436,8 @@ class User
             if (!$results[0]->resultSet) {
                 throw new Exception('Account with this email could not be found.', 404);
             }
+
+            $this->email->phoneChanged();
 
             return "You phone number has been changed to {$phone} succesfully.";
         } catch (DestructuredException $e) {

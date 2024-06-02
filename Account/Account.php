@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\Account;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Email\Email;
 use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Gateway\Session\Session;
@@ -101,6 +102,8 @@ class Account
                 throw new Exception('Account could not be locked at this time.', 500);
             }
 
+            (new Email)->accountLocked($this->email);
+
             return 'Account has been locked successfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
@@ -130,6 +133,8 @@ class Account
                 throw new Exception('Account could not be unlocked at this time.', 500);
             }
 
+            (new Email)->accountUnlocked($this->email);
+
             return 'Account has been unlocked succesfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
@@ -156,6 +161,8 @@ class Account
             if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
                 throw new Exception('Account could not be removed at this time.', 500);
             }
+
+            (new Email)->accountDisabled($this->email);
 
             return 'Account disabled succesfully.';
         } catch (Exception $e) {
@@ -186,6 +193,8 @@ class Account
             if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
                 throw new Exception('Account could not be enabled at this time.', 500);
             }
+
+            (new Email)->accountEnabled($this->email);
 
             return 'Account enabled succesfully.';
         } catch (Exception $e) {
@@ -221,6 +230,8 @@ class Account
             if ($results[0]->result === 'FALSE') {
                 throw new Exception('Account could not be deleted at this time.', 500);
             }
+
+            (new Email)->accountDeleted($this->email);
 
             return 'Account deleted succesfully.';
         } catch (Exception $e) {
