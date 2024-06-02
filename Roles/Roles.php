@@ -3,7 +3,7 @@
 namespace SEVEN_TECH\Gateway\Roles;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\Email;
+use SEVEN_TECH\Gateway\Email\EmailRole;
 
 use Exception;
 
@@ -16,7 +16,7 @@ class Roles
 
     public function __construct()
     {
-        $this->email = new Email;
+        $this->email = new EmailRole;
     }
 
     public function roleExists($roleName)

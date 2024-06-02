@@ -5,7 +5,7 @@ namespace SEVEN_TECH\Gateway\Password;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\Email;
+use SEVEN_TECH\Gateway\Email\EmailPassword;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
@@ -20,7 +20,7 @@ class Password
     {
         $this->validator = new Validator;
         $this->exists = new DatabaseExists;
-        $this->email = new Email;
+        $this->email = new EmailPassword;
     }
 
     function hashPassword($password)

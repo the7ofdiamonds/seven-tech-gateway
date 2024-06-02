@@ -4,7 +4,7 @@ namespace SEVEN_TECH\Gateway\Account;
 
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\Email;
+use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
@@ -27,7 +27,7 @@ class AccountCreate
         $this->password = new Password;
         $this->auth = $auth;
         $this->roles = new Roles;
-        $this->email = new Email;
+        $this->email = new EmailAccount;
     }
 
     function createFirebaseUser($email, $phone, $password, $username)

@@ -6,59 +6,213 @@ use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
+use Exception;
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
+
 class Email
 {
-    private $validator;
-    private $exists;
+    private $mailer;
+    private $smtp_host;
+    private $smtp_port;
+    private $smtp_secure;
+    private $smtp_auth;
+    private $smtp_username;
+    private $smtp_password;
+    private $from_email;
+    private $from_name;
+    private $body;
+    private $web_address;
+    private $logo_link;
+    private $site_name;
+    private $facebook;
+    private $twitter;
+    private $contact_email;
+    private $linkedin;
+    private $instagram;
+    private $year;
+    private $company_name;
+    private $emailTemplateHeader;
+    private $emailTemplateFooter;
 
-    public function __construct()
+    public function __construct(PHPMailer $mailer)
     {
-        $this->validator = new Validator;
-        $this->exists = new DatabaseExists;
+        $this->smtp_host = get_option('quote_smtp_host');
+        $this->smtp_port = get_option('quote_smtp_port');
+        $this->smtp_secure = get_option('quote_smtp_secure');
+        $this->smtp_auth = get_option('quote_smtp_auth');
+        $this->smtp_username = get_option('quote_smtp_username');
+        $this->smtp_password = get_option('quote_smtp_password');
+        $this->from_email = get_option('quote_email');
+        $this->from_name = get_option('quote_name');
+
+        $this->mailer = $mailer;
+
+        $custom_logo_id = get_theme_mod('custom_logo');
+        $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
+        $this->web_address = esc_url(home_url());
+        $this->logo_link = '';
+
+        if (!empty($logo[0])) {
+            $this->logo_link = esc_url($logo[0]);
+        }
+
+        $this->site_name = get_bloginfo('name');
+
+        $this->facebook = esc_attr(get_option('facebook_link'));
+        $this->twitter = esc_attr(get_option('twitter_link'));
+        $this->contact_email = esc_attr(get_option('contact_email'));
+        $this->linkedin = esc_attr(get_option('linkedin_link'));
+        $this->instagram = esc_attr(get_option('instagram_link'));
+        $this->year = date("Y");
+        $this->company_name = get_theme_mod('footer_company');
+
+        $this->emailTemplateHeader = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailHeader.php';
+        $this->body = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailGatewayLink.php';
+        $this->emailTemplateFooter = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailFooter.php';
     }
 
-    function recoverPassword($email)
+    public function emailHeader()
     {
         try {
-            $this->exists->existsByEmail($email);
-            $confirmationCode = wp_generate_password(20, false);
-// Update confirmation code stored procedure
+            $swap_var = array(
+                "{WEB_ADDRESS}" => $this->web_address,
+                "{LOGO_LINK}" => $this->logo_link,
+                "{SITE_NAME}" => $this->site_name,
+            );
 
-            $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password. Confirmation Code: {$confirmationCode}";
+            if (!file_exists($this->emailTemplateHeader)) {
+                throw new Exception('Unable to locate contact email template.');
+            }
 
-            return $message;
-        } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
+            $header = file_get_contents($this->emailTemplateHeader);
+
+            foreach (array_keys($swap_var) as $key) {
+                if (strlen($key) > 2 && trim($key) != '') {
+                    $header = str_replace($key, $swap_var[$key], $header);
+                }
+            }
+
+            return $header;
+        } catch (Exception $e) {
+            throw new Exception($e);
         }
     }
 
-    function passwordChanged(){}
+    function gatewayBody($message, $link, $buttonName)
+    {
+        try {
+            $swap_var = array(
+                "{MESSAGE}" => $message,
+                "{GATEWAY_URL}" => $link,
+                "{BUTTON_NAME}" => $buttonName
+            );
 
-    function accountCreated(){}
+            if (!file_exists($this->body)) {
+                throw new Exception('Could not find gateway body template.');
+            }
 
-    function accountLocked(){}
+            $body = file_get_contents($this->body);
 
-    function accountUnlocked(){}
+            foreach (array_keys($swap_var) as $key) {
+                if (strlen($key) > 2 && trim($key) != '') {
+                    if ($swap_var[$key] != '') {
+                        $body = str_replace($key, $swap_var[$key], $body);
+                    } else {
+                        $body = str_replace($key, '', $body);
+                    }
+                }
+            }
 
-    function accountDisabled(){}
+            return $body;
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
 
-    function accountEnabled(){}
+    function gatewayEmailBody($message, $link, $buttonName)
+    {
+        try {
+            $header = $this->emailHeader();
+            $body = $this->gatewayBody($message, $link, $buttonName);
+            $footer = $this->emailFooter();
 
-    function accountDeleted(){}
+            $fullEmailBody = $header . $body . $footer;
 
-    function roleAdded(){}
+            return $fullEmailBody;
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
 
-    function roleRemoved(){}
+    public function emailFooter()
+    {
+        try {
+            $swap_var = array(
+                "{FACEBOOK}" => $this->facebook,
+                "{TWITTER}" => $this->twitter,
+                "{CONTACT_EMAIL}" => $this->contact_email,
+                "{LINKEDIN}" => $this->linkedin,
+                "{INSTAGRAM}" => $this->instagram,
+                "{YEAR}" => $this->year,
+                "{COMPANY_NAME}" => $this->company_name
+            );
 
-    function userAdded(){}
+            if (file_exists($this->emailTemplateFooter)) {
+                throw new Exception('Unable to locate contact email template.');
+            }
 
-    function usernameChanged(){}
+            $footer = file_get_contents($this->emailTemplateFooter);
 
-    function namechanged(){}
+            foreach (array_keys($swap_var) as $key) {
+                if (strlen($key) > 2 && trim($key) != '') {
+                    $footer = str_replace($key, $swap_var[$key], $footer);
+                }
+            }
 
-    function nicknameChanged(){}
+            return $footer;
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
 
-    function nicenameChanged(){}
+    public function sendGatewayEmail($user, $subject, $message, $link, $buttonName)
+    {
+        $to_email = $user->email;
+        $name =  $user->name;
+        $to_name = $name;
 
-    function phoneChanged(){}
+        try {
+            $this->mailer->isSMTP();
+            $this->mailer->SMTPAuth = $this->smtp_auth;
+            $this->mailer->Host = $this->smtp_host;
+            $this->mailer->SMTPSecure = $this->smtp_secure;
+            $this->mailer->Port = $this->smtp_port;
+
+            $this->mailer->Username = $this->smtp_username;
+            $this->mailer->Password = $this->smtp_password;
+
+            $this->mailer->setFrom($this->from_email, $this->from_name);
+            $this->mailer->addAddress($to_email, $to_name);
+
+            $this->mailer->isHTML(true);
+            $this->mailer->Subject = $subject;
+            $this->mailer->Body = $this->gatewayEmailBody($message, $link, $buttonName);
+            $this->mailer->AltBody = '<pre>' . $message . '</pre>';
+
+            $this->mailer->send();
+
+            if ($this->mailer->ErrorInfo) {
+                throw new PHPMailerException("Message could not be sent. Mailer Error: {$this->mailer->ErrorInfo}");
+            }
+
+            return 'Message has been sent';
+        } catch (PHPMailerException $e) {
+            throw new PHPMailerException($e);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
 }
+

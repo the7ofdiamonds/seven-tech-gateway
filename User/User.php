@@ -3,7 +3,7 @@
 namespace SEVEN_TECH\Gateway\User;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\Email;
+use SEVEN_TECH\Gateway\Email\EmailUser;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
 use Exception;
@@ -22,7 +22,7 @@ class User
     {
         $this->auth = $auth;
         $this->roles = new Roles;
-        $this->email = new Email;
+        $this->email = new EmailUser;
     }
 
     public function addUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $confirmationCode)

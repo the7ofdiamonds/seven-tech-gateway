@@ -22,11 +22,11 @@ Licensing Info is needed
 */
 
 defined('ABSPATH') or die('Hey, what are you doing here? You silly human!');
-define('SEVEN_TECH', plugin_dir_path(__FILE__));
-define('SEVEN_TECH_URL', plugin_dir_url(__FILE__));
+define('SEVEN_TECH_GATEWAY', plugin_dir_path(__FILE__));
+define('SEVEN_TECH_GATEWAY_URL', plugin_dir_url(__FILE__));
 define('GOOGLE_SERVICE_ACCOUNT', plugin_dir_path(__FILE__) . 'Configuration/serviceAccount.json');
 
-require_once SEVEN_TECH . 'vendor/autoload.php';
+require_once SEVEN_TECH_GATEWAY . 'vendor/autoload.php';
 
 use SEVEN_TECH\Gateway\Account\AccountCreate;
 

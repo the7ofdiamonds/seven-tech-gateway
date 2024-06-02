@@ -136,10 +136,12 @@ class Authentication
         }
     }
 
-    function updateConfirmationCode($confirmation_code)
+    function updateConfirmationCode()
     {
         try {
             (new DatabaseExists)->existsByEmail($this->email);
+
+            $confirmation_code = wp_generate_password(20, false);
 
             global $wpdb;
 
@@ -161,10 +163,12 @@ class Authentication
         }
     }
 
-    function updateActivationCode($activation_code)
+    function updateActivationCode()
     {
         try {
             (new DatabaseExists)->existsByEmail($this->email);
+
+            $activation_code = wp_generate_password(20, false);
 
             global $wpdb;
 
