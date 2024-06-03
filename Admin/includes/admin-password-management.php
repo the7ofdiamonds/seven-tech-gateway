@@ -1,3 +1,4 @@
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/PasswordManagement.css"; ?>>
 <script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/PasswordManagement.js"; ?> defer></script>
 
 <div class="password-management" id="password_management">
@@ -5,6 +6,14 @@
 
     <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-status-bar.php'; ?>
 
+    <form method="post" class="find-auth" id="find_auth">
+        <h2>Find Authentication Credentials</h2>
+        <div class="find-auth-submit">
+            <input type="email" name="email" placeholder="Email" id="email" required>
+            <button type="submit">Find</button>
+        </div>
+    </form>
+    
     <div class="account-details">
         <div class="account-ids">
             <div class="account-id">
@@ -13,7 +22,7 @@
             </div>
 
             <div class="provider-given-id">
-                <h3>Account ID</h3>
+                <h3>Provider Given ID</h3>
                 <h4 id="provider_given_id"></h4>
             </div>
         </div>
@@ -45,14 +54,6 @@
             <h4 id="phone"></h4>
         </div>
     </div>
-
-    <form method="post" class="find-auth" id="find_auth">
-        <h2>Find Authentication Credentials</h2>
-        <div class="find-auth-submit">
-            <input type="email" name="email" placeholder="Email" id="email" required>
-            <button type="submit">Find</button>
-        </div>
-    </form>
 
     <form method="post" class="recover-email" id="recover_email">
         <button type="submit" class="recover-btn" id="recover_btn">Send Recovery Email</button>

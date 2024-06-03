@@ -21,7 +21,7 @@ class Validator
     {
         try {
             if (empty($email)) {
-                throw new Exception('Email is required.');
+                throw new Exception('Email is required.', 404);
             }
 
             $pattern = '/([a-zA-Z0-9._-]+)@([a-zA-Z0-9._-]+)\.([a-zA-Z]+)$/';
@@ -41,7 +41,7 @@ class Validator
     {
         try {
             if (empty($password)) {
-                throw new Exception('Password is required.');
+                throw new Exception('Password is required.', 404);
             }
 
             $pattern = '/[0-9a-zA-Z$@#%^&*_-]{8,20}$/';
@@ -61,7 +61,7 @@ class Validator
     {
         try {
             if (empty($confirmationCode)) {
-                throw new Exception('Confirmation code is required.');
+                throw new Exception('Confirmation code is required.', 404);
             }
 
             $pattern = '/[a-zA-Z0-9-]+$/';
@@ -81,7 +81,7 @@ class Validator
     {
         try {
             if (empty($username)) {
-                throw new Exception('Username is required.');
+                throw new Exception('Username is required.', 404);
             }
 
             $pattern = '/[a-zA-Z0-9]{3,20}$/';
@@ -101,7 +101,7 @@ class Validator
     {
         try {
             if (empty($nicename)) {
-                throw new Exception('Nicename is required.');
+                throw new Exception('Nicename is required.', 404);
             }
 
             $pattern = '/[a-zA-Z0-9]{3,20}$/';
@@ -121,7 +121,7 @@ class Validator
     {
         try {
             if (empty($phone)) {
-                throw new Exception('Phone is required.');
+                throw new Exception('Phone is required.', 404);
             }
 
             $pattern = '/[0-9]{11,}$/';

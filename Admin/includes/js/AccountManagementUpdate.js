@@ -1,39 +1,90 @@
 jQuery(document).ready(function ($) {
 
-    $('form#subscription_email').submit(function (event) {
+    $('#subscription #subscribe_btn').on('click', function (event) {
         event.preventDefault();
 
         const email = $('#find_account input[name="email"]#email').val();
+        const userActivationCode = $('#account #user_activation_code').text();
 
         $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
             data: {
-                action: 'subscriptionEmail',
-                email: email
+                action: 'enableAccount',
+                email: email,
+                userActivationCode: userActivationCode
             },
             success: function (response) {
                 displayMessage('success', response.data);
             },
             error: function (xhr, status, error) {
                 const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
                 displayMessage(status, errorMessage);
             }
         });
     });
 
-    $('form#recover_email').submit(function (event) {
+    $('#subscription #unsubscribe_btn').on('click', function (event) {
         event.preventDefault();
 
         const email = $('#find_account input[name="email"]#email').val();
+        const password = $('#account #password').text();
 
         $.ajax({
             type: 'POST',
             url: 'admin-ajax.php',
             data: {
-                action: 'forgotPassword',
-                email: email
+                action: 'disableAccount',
+                email: email,
+                password: password
+            },
+            success: function (response) {
+                displayMessage('success', response.data);
+            },
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                displayMessage(status, errorMessage);
+            }
+        });
+    });
+
+    $('#password #lock_btn').on('click', function (event) {
+        event.preventDefault();
+
+        const email = $('#find_account input[name="email"]#email').val();
+        const password = $('#account #password').text();
+
+        $.ajax({
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'lockAccount',
+                email: email,
+                password: password
+            },
+            success: function (response) {
+                displayMessage('success', response.data);
+            },
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                displayMessage(status, errorMessage);
+            }
+        });
+    });
+
+    $('#password #unexpire_btn').on('click', function (event) {
+        event.preventDefault();
+
+        const email = $('#find_account input[name="email"]#email').val();
+        const userActivationCode = $('#account #user_activation_code').text();
+
+        $.ajax({
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'unlockAccount',
+                email: email,
+                userActivationCode: userActivationCode
             },
             success: function (response) {
                 displayMessage('success', response.data);
@@ -140,12 +191,6 @@ jQuery(document).ready(function ($) {
             }
         });
     });
-
-    $('#account_management #lock_account #lock_btn').css('display', 'block');
-    $('#account_management #lock_account #unlock_btn').css('display', 'block');
-    $('#account_management #enable_account #disable_btn').css('display', 'block');
-    $('#account_management #enable_account #enable_btn').css('display', 'block');
-    $('#account_management #delete_account').css('display', 'flex');
 
     // $('#account_management').on('change', function () {
     //     var unlocked = $('#lock_account h4#locked').text();

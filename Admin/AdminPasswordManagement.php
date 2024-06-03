@@ -23,8 +23,8 @@ class AdminPasswordManagement
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
 
-        add_action('wp_ajax_recoverPassword', [$this, 'recoverPassword']);
         add_action('wp_ajax_findAuthenticationCredentials', [$this, 'findAuthenticationCredentials']);
+        add_action('wp_ajax_recoverPassword', [$this, 'recoverPassword']);
     }
 
     function register_custom_submenu_page()

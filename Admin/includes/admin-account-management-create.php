@@ -1,3 +1,4 @@
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/AccountManagementCreate.css"; ?>>
 <script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/AccountManagementCreate.js"; ?> defer></script>
 
 <form method="post" class="create-account" id="create_account">

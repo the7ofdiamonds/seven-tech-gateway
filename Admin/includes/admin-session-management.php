@@ -1,3 +1,4 @@
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/SessionManagement.css"; ?>>
 <script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagement.js"; ?> defer></script>
 
 <div class="session-management" id="session_management">
@@ -18,15 +19,17 @@
             <button id="find_session_btn" type="submit">Find</button>
         </div>
     </form>
+    
+    <div class="account-details">
+        <div class="account-id">
+            <h3>Account ID</h3>
+            <h4 id="account_id"></h4>
+        </div>
 
-    <div class="account-id">
-        <h3>Account ID</h3>
-        <h4 id="account_id"></h4>
-    </div>
-
-    <div class="account-status">
-        <h3>Account Status</h3>
-        <h4 id="account_status"></h4>
+        <div class="account-status">
+            <h3>Account Status</h3>
+            <h4 id="account_status"></h4>
+        </div>
     </div>
 
     <div class="sessions" id="sessions"></div>

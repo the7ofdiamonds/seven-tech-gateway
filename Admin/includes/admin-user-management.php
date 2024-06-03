@@ -25,7 +25,7 @@
         </div>
     </form>
 
-    <div class="user" id="user">
+    <div class="user-details" id="user_details">
         <div class="user-id">
             <h3>User ID</h3>
             <h4 id="user_id"></h4>

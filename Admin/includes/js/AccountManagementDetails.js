@@ -13,26 +13,26 @@ jQuery(document).ready(function ($) {
                 var fullname = `${response.data.first_name} ${response.data.last_name}`;
                 var email = response.data.email;
 
-                $('#account #account_id').text(id);
-                $('#account #email').text(email);
-                $('#account #username').text(response.data.username);
-                $('#account #full_name').text(fullname);
-                $('#account #nicename').text(response.data.nicename);
-                $('#account #phone').text(response.data.phone);
-                $('#account #provider_given_id').text(response.data.provider_given_id);
+                $('#account_details #account_id').text(id);
+                $('#account_details #email').text(email);
+                $('#account_details #username').text(response.data.username);
+                $('#account_details #full_name').text(fullname);
+                $('#account_details #nicename').text(response.data.nicename);
+                $('#account_details #phone').text(response.data.phone);
+                $('#account_details #provider_given_id').text(response.data.provider_given_id);
 
-                $('#account #roles').css('display', 'flex');
-                $('#account #roles_row').empty();
+                $('#account_details #roles').css('display', 'flex');
+                $('#account_details #roles_row').empty();
                 $.each(response.data.roles, function (index, role) {
                     var roleTag = $('<h3>', {
                         text: role.display_name
                     });
-                    $('#account #roles_row').append(roleTag);
+                    $('#account_details #roles_row').append(roleTag);
                 });
 
-                $('#account #user_activation_code').text(response.data.user_activation_code);
-                $('#account #password').text(response.data.password);
-                $('#account #confirmation_code').text(response.data.confirmation_code);
+                $('#account_details #user_activation_code').text(response.data.user_activation_code);
+                $('#account_details #password').text(response.data.password);
+                $('#account_details #confirmation_code').text(response.data.confirmation_code);
 
                 var authenticated = response.data.is_authenticated == true ? 'logged in' : 'logged out';
                 var unexpired = response.data.is_account_non_expired;
@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
                 var credentials = response.data.is_credentials_non_expired;
                 var enabled = response.data.is_enabled;
 
-                $('#account #authenticated').text(authenticated);
+                $('#account_details #authenticated').text(authenticated);
 
                 var sessions = response.data.sessions;
                 var sessionKeys = Object.keys(sessions);
@@ -91,10 +91,10 @@ jQuery(document).ready(function ($) {
                     });
                 }
 
-                $('#account_management #expired').text(unexpired);
-                $('#account_management #locked').text(unlocked);
-                $('#account_management #credentials').text(credentials);
-                $('#account_management #enabled').text(enabled);
+                $('#subscription #expired').text(unexpired);
+                $('#lock_account #locked').text(unlocked);
+                $('#password #credentials').text(credentials);
+                $('#enable_account #enabled').text(enabled);
             })
             .fail(function (xhr, status, error) {
                 const errorMessage = `${error}: ${xhr.responseJSON.data}`;

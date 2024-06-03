@@ -1,0 +1,56 @@
+.session-management {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.session-management h2,
+.session-management h3,
+.session-management h4 {
+  margin: 0;
+  padding: 0.25rem 0;
+}
+
+.session-management .options {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.session-management .find-session {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.session-management .account-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: white;
+}
+
+.session-management .sessions .session {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: white;
+}
+
+.session-management .sessions .session .session-token,
+.session-management .sessions .session .session-ip,
+.session-management .sessions .session .session-login-time,
+.session-management .sessions .session .session-expiration,
+.session-management .sessions .session .session-user-agent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}

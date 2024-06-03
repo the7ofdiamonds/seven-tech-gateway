@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
     $("#options button#find_user").on('click', () => {
-        $("#user_management div#user").css('display', 'flex');
+        $("#user_management div#user_details").css('display', 'flex');
         $("form#change_nicename").css('display', 'none');
         $("form#add_user_role").css('display', 'none');
         $("form#remove_user_role").css('display', 'none');
@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
     });
 
     $("#options button#update_user").on('click', () => {
-        $("#user_management div#user").css('display', 'none');
+        $("#user_management div#user_details").css('display', 'none');
         $("form#change_nicename").css('display', 'flex');
         $("form#add_user_role").css('display', 'flex');
         $("form#remove_user_role").css('display', 'flex');
@@ -27,20 +27,20 @@ jQuery(document).ready(function ($) {
             .done(function (response) {
                 var fullname = `${response.data['firstname']} ${response.data['lastname']}`;
 
-                $('#user #user_id').text(response.data['id']);
-                $('#user #full_name').text(fullname);
-                $('#user #username').text(response.data['username']);
-                $('#user #nicename').text(response.data['nicename']);
+                $('#user_details #user_id').text(response.data['id']);
+                $('#user_details #full_name').text(fullname);
+                $('#user_details #username').text(response.data['username']);
+                $('#user_details #nicename').text(response.data['nicename']);
 
-                $('#user #roles_row').empty();
+                $('#user_details #roles_row').empty();
                 $.each(response.data['roles'], function (index, role) {
                     var roleTag = $('<h3>', {
                         text: role.display_name
                     });
-                    $('#user #roles_row').append(roleTag);
+                    $('#user_details #roles_row').append(roleTag);
                 });
 
-                $('#user #email').text(response.data['email']);
+                $('#user_details #email').text(response.data['email']);
 
                 $('#remove_user_role #role_select_remove').empty();
 

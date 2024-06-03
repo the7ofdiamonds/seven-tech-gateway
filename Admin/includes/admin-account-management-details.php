@@ -1,6 +1,7 @@
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/AccountManagementDetails.css"; ?>>
 <script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/AccountManagementDetails.js"; ?> defer></script>
 
-<div class="account" id="account">
+<div class="account-details" id="account_details">
     <div class="ids" id="ids">
         <div class="account-id">
             <h3>Account ID</h3>
@@ -47,7 +48,18 @@
         <div class="roles-row" id="roles_row"></div>
     </div>
 
-    <div class="user-activation-code" id="user_activation_code"></div>
-    <div class="password" id="password"></div>
-    <div class="confirmation-code" id="confirmation_code"></div>
+    <div class="user-activation-code">
+        <h3>Activation Code</h3>
+        <h4 id="user_activation_code"></h4>
+    </div>
+
+    <div class="password">
+        <h3>Password</h3>
+        <h4 id="password"></h4>
+    </div>
+
+    <div class="confirmation-code">
+        <h3>Confirmation Code</h3>
+        <h4 id="confirmation_code"></h4>
+    </div>
 </div>

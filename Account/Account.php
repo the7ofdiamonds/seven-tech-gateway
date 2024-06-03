@@ -81,7 +81,6 @@ class Account
         }
     }
 
-    // Send account locked email
     public function lockAccount($password)
     {
         try {
@@ -141,7 +140,6 @@ class Account
         }
     }
 
-    // Send account removed email
     function disableAccount($password)
     {
         try {
@@ -170,7 +168,6 @@ class Account
         }
     }
 
-    // Send account enabled email
     function enableAccount($userActivationCode)
     {
         try {
