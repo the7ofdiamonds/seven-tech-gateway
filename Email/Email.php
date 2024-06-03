@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\Email;
 
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
 
@@ -33,7 +34,7 @@ class Email
     private $emailTemplateFooter;
     public $support_email;
 
-    public function __construct(PHPMailer $mailer)
+    public function __construct()
     {
         $this->smtp_host = get_option('quote_smtp_host');
         $this->smtp_port = get_option('quote_smtp_port');
@@ -44,7 +45,7 @@ class Email
         $this->from_email = get_option('quote_email');
         $this->from_name = get_option('quote_name');
 
-        $this->mailer = $mailer;
+        $this->mailer = new PHPMailer();
 
         $custom_logo_id = get_theme_mod('custom_logo');
         $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
@@ -79,8 +80,10 @@ class Email
                 "{SITE_NAME}" => $this->site_name,
             );
 
-            if (!file_exists($this->emailTemplateHeader)) {
-                throw new Exception('Unable to locate contact email template.');
+            $fileExists = file_exists($this->emailTemplateHeader);
+
+            if (!$fileExists) {
+                throw new Exception("Unable to locate email header template at {$this->emailTemplateHeader}.", 404);
             }
 
             $header = file_get_contents($this->emailTemplateHeader);
@@ -93,7 +96,7 @@ class Email
 
             return $header;
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -102,8 +105,10 @@ class Email
         try {
             $header = $this->emailHeader();
 
-            if (!file_exists($template)) {
-                throw new Exception("Could not find body template at {$template}.");
+            $fileExists = file_exists($template);
+
+            if (!$fileExists) {
+                throw new Exception("Could not find body template at {$template}.", 404);
             }
 
             $body = file_get_contents($template);
@@ -124,7 +129,7 @@ class Email
 
             return $fullEmailBody;
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
@@ -141,8 +146,10 @@ class Email
                 "{COMPANY_NAME}" => $this->company_name
             );
 
-            if (file_exists($this->emailTemplateFooter)) {
-                throw new Exception('Unable to locate contact email template.');
+            $fileExists = file_exists($this->emailTemplateFooter);
+
+            if (!$fileExists) {
+                throw new Exception("Unable to locate email footer template at {$this->emailTemplateFooter}.", 404);
             }
 
             $footer = file_get_contents($this->emailTemplateFooter);
@@ -155,17 +162,17 @@ class Email
 
             return $footer;
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 
     public function sendEmail(Account $account, $subject, $template, $content, $message)
     {
-        $to_email = $account->email;
-        $name =  "{$account->first_name} {$account->last_name}";
-        $to_name = $name;
-
         try {
+            $to_email = $account->email;
+            $name =  "{$account->first_name} {$account->last_name}";
+            $to_name = $name;
+
             $this->mailer->isSMTP();
             $this->mailer->SMTPAuth = $this->smtp_auth;
             $this->mailer->Host = $this->smtp_host;
@@ -186,14 +193,14 @@ class Email
             $this->mailer->send();
 
             if ($this->mailer->ErrorInfo) {
-                throw new PHPMailerException("Message could not be sent. Mailer Error: {$this->mailer->ErrorInfo}");
+                throw new PHPMailerException("Message could not be sent. Mailer Error: {$this->mailer->ErrorInfo}", 500);
             }
 
             return 'Message has been sent';
         } catch (PHPMailerException $e) {
-            throw new PHPMailerException($e);
+            throw new DestructuredException($e);
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new DestructuredException($e);
         }
     }
 }

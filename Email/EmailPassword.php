@@ -7,13 +7,15 @@ use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
-class EmailPassword extends Email
+class EmailPassword
 {
     private $exists;
+    private $email;
 
     public function __construct()
     {
         $this->exists = new DatabaseExists;
+        $this->email = new Email;
     }
 
     function recoverPassword($email)
@@ -23,7 +25,7 @@ class EmailPassword extends Email
 
             $account = new Account($email);
 
-            $subject = "Password Recovery Instructions for {$this->site_name}";
+            $subject = "Password Recovery Instructions for {$this->email->site_name}";
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailPasswordRecovery.php';
 
@@ -36,13 +38,13 @@ class EmailPassword extends Email
             $content = array(
                 "{NAME}" => "{$account->first_name} {$account->last_name}",
                 "{PASSWORD_RESET_LINK}" => $password_reset_link,
-                "{SUPPORT_EMAIL}" => $this->support_email,
-                "{COMPANY_NAME}" => $this->company_name,
+                "{SUPPORT_EMAIL}" => $this->email->support_email,
+                "{COMPANY_NAME}" => $this->email->company_name,
             );
 
             $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password. Confirmation Code: {$auth->confirmation_code}";
 
-            $this->sendEmail($account, $subject, $template, $content, $message);
+            $this->email->sendEmail($account, $subject, $template, $content, $message);
 
             return "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
         } catch (DestructuredException $e) {
@@ -57,7 +59,7 @@ class EmailPassword extends Email
 
             $account = new Account($email);
 
-            $subject = "Password Changed at {$this->site_name}";
+            $subject = "Password Changed at {$this->email->site_name}";
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
@@ -71,7 +73,7 @@ class EmailPassword extends Email
                 "{BUTTON_NAME}" => $button_name
             );
 
-            $this->sendEmail($account, $subject, $template, $content, $message);
+            $this->email->sendEmail($account, $subject, $template, $content, $message);
 
             return "Your password has been changed an email has been sent to {$email} check your inbox to confirm this action was completed.";
         } catch (DestructuredException $e) {
