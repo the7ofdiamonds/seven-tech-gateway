@@ -141,7 +141,7 @@ class EmailAccount
             $account = new Account($email);
 
             $subject = "Your account has been enabled at {$this->email->site_name}";
-// Create a welcome email template
+
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
             $message = "Your password has been changed.";
