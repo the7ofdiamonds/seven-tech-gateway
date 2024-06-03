@@ -2,9 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Email;
 
-use SEVEN_TECH\Gateway\Database\DatabaseExists;
-use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Validator\Validator;
+use SEVEN_TECH\Gateway\Account\Account;
 
 use Exception;
 
@@ -22,19 +20,18 @@ class Email
     private $smtp_password;
     private $from_email;
     private $from_name;
-    private $body;
-    private $web_address;
     private $logo_link;
-    private $site_name;
+    public $site_name;
     private $facebook;
     private $twitter;
     private $contact_email;
     private $linkedin;
     private $instagram;
     private $year;
-    private $company_name;
+    public $company_name;
     private $emailTemplateHeader;
     private $emailTemplateFooter;
+    public $support_email;
 
     public function __construct(PHPMailer $mailer)
     {
@@ -51,7 +48,6 @@ class Email
 
         $custom_logo_id = get_theme_mod('custom_logo');
         $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
-        $this->web_address = esc_url(home_url());
         $this->logo_link = '';
 
         if (!empty($logo[0])) {
@@ -69,15 +65,16 @@ class Email
         $this->company_name = get_theme_mod('footer_company');
 
         $this->emailTemplateHeader = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailHeader.php';
-        $this->body = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailGatewayLink.php';
         $this->emailTemplateFooter = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailFooter.php';
+
+        $this->support_email = get_option('support_email') ? get_option('support_email') : get_option('admin_email');
     }
 
     public function emailHeader()
     {
         try {
             $swap_var = array(
-                "{WEB_ADDRESS}" => $this->web_address,
+                "{WEB_ADDRESS}" => home_url(),
                 "{LOGO_LINK}" => $this->logo_link,
                 "{SITE_NAME}" => $this->site_name,
             );
@@ -100,42 +97,27 @@ class Email
         }
     }
 
-    function gatewayBody($message, $link, $buttonName)
+    function emailBody($template, $content)
     {
         try {
-            $swap_var = array(
-                "{MESSAGE}" => $message,
-                "{GATEWAY_URL}" => $link,
-                "{BUTTON_NAME}" => $buttonName
-            );
+            $header = $this->emailHeader();
 
-            if (!file_exists($this->body)) {
-                throw new Exception('Could not find gateway body template.');
+            if (!file_exists($template)) {
+                throw new Exception("Could not find body template at {$template}.");
             }
 
-            $body = file_get_contents($this->body);
+            $body = file_get_contents($template);
 
-            foreach (array_keys($swap_var) as $key) {
+            foreach (array_keys($content) as $key) {
                 if (strlen($key) > 2 && trim($key) != '') {
-                    if ($swap_var[$key] != '') {
-                        $body = str_replace($key, $swap_var[$key], $body);
+                    if ($content[$key] != '') {
+                        $body = str_replace($key, $content[$key], $body);
                     } else {
                         $body = str_replace($key, '', $body);
                     }
                 }
             }
 
-            return $body;
-        } catch (Exception $e) {
-            throw new Exception($e);
-        }
-    }
-
-    function gatewayEmailBody($message, $link, $buttonName)
-    {
-        try {
-            $header = $this->emailHeader();
-            $body = $this->gatewayBody($message, $link, $buttonName);
             $footer = $this->emailFooter();
 
             $fullEmailBody = $header . $body . $footer;
@@ -177,10 +159,10 @@ class Email
         }
     }
 
-    public function sendGatewayEmail($user, $subject, $message, $link, $buttonName)
+    public function sendEmail(Account $account, $subject, $template, $content, $message)
     {
-        $to_email = $user->email;
-        $name =  $user->name;
+        $to_email = $account->email;
+        $name =  "{$account->first_name} {$account->last_name}";
         $to_name = $name;
 
         try {
@@ -198,7 +180,7 @@ class Email
 
             $this->mailer->isHTML(true);
             $this->mailer->Subject = $subject;
-            $this->mailer->Body = $this->gatewayEmailBody($message, $link, $buttonName);
+            $this->mailer->Body = $this->emailBody($template, $content);
             $this->mailer->AltBody = '<pre>' . $message . '</pre>';
 
             $this->mailer->send();
@@ -215,4 +197,3 @@ class Email
         }
     }
 }
-

@@ -75,7 +75,7 @@ class Admin
 
     function create_section()
     {
-        include_once SEVEN_TECH . 'Admin/includes/admin.php';
+        include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin.php';
     }
 
     function section_description()

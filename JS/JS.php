@@ -14,8 +14,8 @@ class JS
 
     public function __construct()
     {
-        $this->dir = SEVEN_TECH;
-        $this->dirURL = SEVEN_TECH_URL;
+        $this->dir = SEVEN_TECH_GATEWAY;
+        $this->dirURL = SEVEN_TECH_GATEWAY_URL;
 
         $this->buildDir = $this->dir . 'dist/js/';
         $this->buildDirURL = $this->dirURL . 'dist/js/';

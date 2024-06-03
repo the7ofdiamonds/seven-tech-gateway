@@ -1,5 +1,5 @@
-<link rel="stylesheet" href=<?php echo SEVEN_TECH_URL . "Admin/includes/css/AccountManagement.css"; ?>>
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagement.js"; ?> defer></script>
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/AccountManagement.css"; ?>>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/AccountManagement.js"; ?> defer></script>
 
 <div class="account-management" id="account_management">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
@@ -22,9 +22,9 @@
         </button>
     </div>
 
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-status-bar.php'; ?>
     
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-account-management-create.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-account-management-create.php'; ?>
 
     <form method="post" class="find-account" id="find_account">
         <h2>Find Account</h2>
@@ -34,9 +34,9 @@
         </div>
     </form>
 
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-account-management-details.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-account-management-details.php'; ?>
 
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-account-management-update.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-account-management-update.php'; ?>
 
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-account-management-delete.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-account-management-delete.php'; ?>
 </div>

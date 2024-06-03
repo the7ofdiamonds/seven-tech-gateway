@@ -17,7 +17,7 @@ class Templates
     ) {
         $this->css = $css;
         $this->js = $js;
-        $this->pluginDir = SEVEN_TECH;
+        $this->pluginDir = SEVEN_TECH_GATEWAY;
     }
 
     function get_front_page_template($frontpage_template, $sections)

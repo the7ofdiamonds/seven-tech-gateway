@@ -1,6 +1,6 @@
-<link rel="stylesheet" href=<?php echo SEVEN_TECH_URL . "Admin/includes/css/UserManagement.css"; ?>>
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/UserManagement.js"; ?> defer></script>
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/UserManagement.css"; ?>>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/UserManagement.js"; ?> defer></script>
 
 <div class="user-management" id="user_management">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
@@ -15,7 +15,7 @@
         </button>
     </div>
 
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-status-bar.php'; ?>
 
     <form method="post" class="find-user" id="find_user">
         <h2>Find User</h2>

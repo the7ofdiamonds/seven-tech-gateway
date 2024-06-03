@@ -36,7 +36,7 @@ class AdminSessionManagement
 
     function create_section()
     {
-        include_once SEVEN_TECH . 'Admin/includes/admin-session-management.php';
+        include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-session-management.php';
     }
 
     function section_description()

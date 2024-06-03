@@ -1,5 +1,5 @@
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/Dashboard.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/Dashboard.js"; ?> defer></script>
 
 <style>
     .dashboard {
@@ -27,7 +27,7 @@
 <div class="dashboard">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-status-bar.php'; ?>
 
     <h2>Google Service Account</h2>
 

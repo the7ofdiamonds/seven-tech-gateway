@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Email\EmailPassword;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
 
@@ -13,16 +14,14 @@ class AdminPasswordManagement
     private $menu_title;
     private $menu_slug;
     public $page_url;
-    private $password;
 
-    public function __construct(Password $password)
+    public function __construct()
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'Password Management';
         $this->menu_title = 'Password';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->password = $password;
 
         add_action('wp_ajax_recoverPassword', [$this, 'recoverPassword']);
         add_action('wp_ajax_findAuthenticationCredentials', [$this, 'findAuthenticationCredentials']);
@@ -36,7 +35,7 @@ class AdminPasswordManagement
 
     function create_section()
     {
-        include_once SEVEN_TECH . 'Admin/includes/admin-password-management.php';
+        include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-password-management.php';
     }
 
     function section_description()
@@ -57,12 +56,11 @@ class AdminPasswordManagement
         }
     }
 
-    // Send password recovery email
     function recoverPassword()
     {
         try {
             $email = $_POST['email'];
-            $message = $this->password->recoverPassword($email);
+            $message = (new EmailPassword)->recoverPassword($email);
 
             wp_send_json_success($message);
         } catch (DestructuredException $e) {

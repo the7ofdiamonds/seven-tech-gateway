@@ -18,9 +18,9 @@ class CSS
 
     public function __construct()
     {
-        $this->handle_prefix = 'seven_tech_';
-        $this->dir = SEVEN_TECH;
-        $this->dirURL = SEVEN_TECH_URL;
+        $this->handle_prefix = 'seven_tech_gateway_';
+        $this->dir = SEVEN_TECH_GATEWAY;
+        $this->dirURL = SEVEN_TECH_GATEWAY_URL;
 
         $this->cssFolderPath = $this->dir . 'dist/css/';
         $this->cssFolderPathURL = $this->dirURL . 'dist/css/';

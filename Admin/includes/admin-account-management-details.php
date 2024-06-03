@@ -1,4 +1,4 @@
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/AccountManagementDetails.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/AccountManagementDetails.js"; ?> defer></script>
 
 <div class="account" id="account">
     <div class="ids" id="ids">

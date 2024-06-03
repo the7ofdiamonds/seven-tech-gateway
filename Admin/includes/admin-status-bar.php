@@ -8,4 +8,4 @@
     <p id="message"></p>
 </div>
 
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/StatusBar.js"; ?> defer></script>

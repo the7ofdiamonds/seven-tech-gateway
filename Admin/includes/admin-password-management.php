@@ -1,9 +1,9 @@
-<script src=<?php echo SEVEN_TECH_URL . "Admin/includes/js/PasswordManagement.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/PasswordManagement.js"; ?> defer></script>
 
 <div class="password-management" id="password_management">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
-    <?php include_once SEVEN_TECH . 'Admin/includes/admin-status-bar.php'; ?>
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-status-bar.php'; ?>
 
     <div class="account-details">
         <div class="account-ids">

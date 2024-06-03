@@ -38,7 +38,7 @@ class AdminUserManagement
 
     function create_section()
     {
-        include_once SEVEN_TECH . 'Admin/includes/admin-user-management.php';
+        include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-user-management.php';
     }
 
     function section_description()

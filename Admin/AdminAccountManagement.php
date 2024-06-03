@@ -41,7 +41,7 @@ class AdminAccountManagement
 
     function create_section()
     {
-        include_once SEVEN_TECH . 'Admin/includes/admin-account-management.php';
+        include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-account-management.php';
     }
 
     function section_description()
@@ -88,7 +88,6 @@ class AdminAccountManagement
         }
     }
 
-    // Send account locked email
     public function lockAccount()
     {
         try {
@@ -117,7 +116,6 @@ class AdminAccountManagement
         }
     }
 
-    // Send account removed email
     // Account should be locked before being disabled
     function disableAccount()
     {
@@ -133,7 +131,6 @@ class AdminAccountManagement
         }
     }
 
-    // Send account enabled email
     function enableAccount()
     {
         try {
@@ -148,7 +145,6 @@ class AdminAccountManagement
         }
     }
 
-    // Send Account deleted email
     function deleteAccount()
     {
         try {
