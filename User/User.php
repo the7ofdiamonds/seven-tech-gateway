@@ -59,7 +59,7 @@ class User
                 return '';
             }
 
-            $this->email->userAdded();
+            $this->email->userAdded($email);
 
             return $results[0];
         } catch (DestructuredException $e) {
@@ -172,7 +172,7 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
-            $this->email->usernameChanged();
+            $this->email->usernameChanged($email, $username);
 
             return "Username has been changed to {$username} succesfully.";
         } catch (DestructuredException $e) {
@@ -211,7 +211,7 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
-            $this->email->nameChanged();
+            $this->email->nameChanged($email, $firstname);
 
             return "Your first name has been changed to {$firstname} succesfully.";
         } catch (DestructuredException $e) {
@@ -250,7 +250,7 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
-            $this->email->nameChanged();
+            $this->email->nameChanged($email);
 
             return "Your last name has been changed to {$lastname} succesfully.";
         } catch (DestructuredException $e) {
@@ -289,7 +289,7 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
-            $this->email->nicknameChanged();
+            $this->email->nicknameChanged($email, $nickname);
 
             return "Your nickname has been changed to {$nickname} succesfully.";
         } catch (DestructuredException $e) {
@@ -319,7 +319,7 @@ class User
                 throw new Exception("There has been an error updating User nice name.", 500);
             }
 
-            $this->email->nicenameChanged();
+            $this->email->nicenameChanged($email, $nicename);
 
             return "User nicename has been changed to {$nicename} successfully";
         } catch (DestructuredException $e) {
@@ -437,7 +437,7 @@ class User
                 throw new Exception('Account with this email could not be found.', 404);
             }
 
-            $this->email->phoneChanged();
+            $this->email->phoneChanged($email, $phone);
 
             return "You phone number has been changed to {$phone} succesfully.";
         } catch (DestructuredException $e) {

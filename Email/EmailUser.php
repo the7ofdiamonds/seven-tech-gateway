@@ -46,7 +46,7 @@ class EmailUser
         }
     }
 
-    function usernameChanged($email)
+    function usernameChanged($email, $username)
     {
         try {
             $this->exists->existsByEmail($email);
@@ -57,7 +57,7 @@ class EmailUser
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
-            $message = "Your username has been changed.";
+            $message = "Your username has been changed to {$username}.";
             $url = home_url() . "/login";
             $button_name = 'LOGIN';
 
@@ -69,7 +69,7 @@ class EmailUser
 
             $this->email->sendEmail($account, $subject, $template, $content, $message);
 
-            return "Your username has been changed.";
+            return $message;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
@@ -86,7 +86,7 @@ class EmailUser
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
-            $message = "Your name has been changed.";
+            $message = "Your name has been changed to {$account->first_name} {$account->last_name}.";
             $url = home_url() . "/login";
             $button_name = 'LOGIN';
 
@@ -98,13 +98,13 @@ class EmailUser
 
             $this->email->sendEmail($account, $subject, $template, $content, $message);
 
-            return "Your name has been changed.";
+            return $message;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function nicknameChanged($email)
+    function nicknameChanged($email, $nickname)
     {
         try {
             $this->exists->existsByEmail($email);
@@ -115,7 +115,7 @@ class EmailUser
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
-            $message = "Your nickname has been changed.";
+            $message = "Your nickname has been changed to {$nickname}.";
             $url = home_url() . "/login";
             $button_name = 'LOGIN';
 
@@ -127,13 +127,13 @@ class EmailUser
 
             $this->email->sendEmail($account, $subject, $template, $content, $message);
 
-            return "Your nickname has been changed.";
+            return $message;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function nicenameChanged($email)
+    function nicenameChanged($email, $nicename)
     {
         try {
             $this->exists->existsByEmail($email);
@@ -144,7 +144,7 @@ class EmailUser
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
-            $message = "Your nicename has been changed.";
+            $message = "Your nicename has been changed to {$nicename}.";
             $url = home_url() . "/login";
             $button_name = 'LOGIN';
 
@@ -156,13 +156,13 @@ class EmailUser
 
             $this->email->sendEmail($account, $subject, $template, $content, $message);
 
-            return "Your nicename has been changed.";
+            return $message;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function phoneChanged($email)
+    function phoneChanged($email, $phone)
     {
         try {
             $this->exists->existsByEmail($email);
@@ -173,7 +173,7 @@ class EmailUser
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
-            $message = "Your phone number has been changed.";
+            $message = "Your phone number has been changed to {$phone}.";
             $url = home_url() . "/login";
             $button_name = 'LOGIN';
 
@@ -185,7 +185,7 @@ class EmailUser
 
             $this->email->sendEmail($account, $subject, $template, $content, $message);
 
-            return "Your phone number has been changed.";
+            return $message;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
