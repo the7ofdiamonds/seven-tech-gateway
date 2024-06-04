@@ -1,10 +1,17 @@
 jQuery(document).ready(function ($) {
     $("#options button#find_user").on('click', () => {
         $("#user_management div#user_management_update").css('display', 'none');
+        $("#user_management div#user_management_role").css('display', 'none');
     });
 
     $("#options button#update_user").on('click', () => {
         $("#user_management div#user_management_update").css('display', 'flex');
+        $("#user_management div#user_management_role").css('display', 'none');
+    });
+
+    $("#options button#user_role").on('click', () => {
+        $("#user_management div#user_management_update").css('display', 'none');
+        $("#user_management div#user_management_role").css('display', 'flex');
     });
 
     function getUser(email) {
@@ -23,6 +30,7 @@ jQuery(document).ready(function ($) {
                 $('#user_details #full_name').text(fullname);
                 $('#user_details #username').text(response.data['username']);
                 $('#user_details #nicename').text(response.data['nicename']);
+                $('#user_details #phone').text(response.data['phone']);
 
                 $('#user_details #roles_row').empty();
                 $.each(response.data['roles'], function (index, role) {
@@ -126,9 +134,6 @@ jQuery(document).ready(function ($) {
         const email = $('#user_details #email').text();
         const username = $('#change_username #username').val();
         
-        if (id !== '') {
-            console.log(id);
-        }
         if ((username !== '' || username !== undefined) && (email !== '' || email !== undefined)) {
             $.ajax({
                 type: 'POST',
@@ -140,12 +145,10 @@ jQuery(document).ready(function ($) {
                 },
                 success: function (response) {
                     getUser(email);
-
                     displayMessage('success', response.data);
                 },
                 error: function (xhr, status, error) {
                     const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
                     displayMessage(status, errorMessage);
                 }
             });
@@ -171,12 +174,10 @@ jQuery(document).ready(function ($) {
                 },
                 success: function (response) {
                     getUser(email);
-
                     displayMessage('success', response.data);
                 },
                 error: function (xhr, status, error) {
                     const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
                     displayMessage(status, errorMessage);
                 }
             });
@@ -202,12 +203,10 @@ jQuery(document).ready(function ($) {
                 },
                 success: function (response) {
                     getUser(email);
-
                     displayMessage('success', response.data);
                 },
                 error: function (xhr, status, error) {
                     const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
                     displayMessage(status, errorMessage);
                 }
             });
@@ -233,12 +232,10 @@ jQuery(document).ready(function ($) {
                 },
                 success: function (response) {
                     getUser(email);
-
                     displayMessage('success', response.data);
                 },
                 error: function (xhr, status, error) {
                     const errorMessage = `${error}: ${xhr.responseJSON.data}`;
-
                     displayMessage(status, errorMessage);
                 }
             });
@@ -264,7 +261,6 @@ jQuery(document).ready(function ($) {
                 },
                 success: function (response) {
                     getUser(email);
-
                     displayMessage('success', response.data);
                 },
                 error: function (xhr, status, error) {
@@ -288,13 +284,12 @@ jQuery(document).ready(function ($) {
                 type: 'POST',
                 url: 'admin-ajax.php',
                 data: {
-                    action: 'changePhone',
+                    action: 'changePhoneNumber',
                     email: email,
                     phone: phone
                 },
                 success: function (response) {
                     getUser(email);
-
                     displayMessage('success', response.data);
                 },
                 error: function (xhr, status, error) {

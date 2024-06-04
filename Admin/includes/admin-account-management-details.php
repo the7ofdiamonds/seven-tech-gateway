@@ -43,11 +43,6 @@
         </div>
     </div>
 
-    <div class="roles" id="roles">
-        <h3>Roles</h3>
-        <div class="roles-row" id="roles_row"></div>
-    </div>
-
     <div class="user-activation-code">
         <h3>Activation Code</h3>
         <h4 id="user_activation_code"></h4>
@@ -61,5 +56,10 @@
     <div class="confirmation-code">
         <h3>Confirmation Code</h3>
         <h4 id="confirmation_code"></h4>
+    </div>
+
+    <div class="roles" id="roles">
+        <h3>Roles</h3>
+        <div class="roles-row" id="roles_row"></div>
     </div>
 </div>

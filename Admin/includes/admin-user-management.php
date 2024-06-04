@@ -13,6 +13,10 @@
         <button id="update_user">
             <h3>Update User</h3>
         </button>
+
+        <button id="user_role">
+            <h3>User Role</h3>
+        </button>
     </div>
 
     <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-status-bar.php'; ?>
@@ -53,13 +57,18 @@
             </div>
         </div>
 
+        <div class="phone">
+            <h3>Phone</h3>
+            <h4 id="phone"></h4>
+        </div>
+
         <div class="roles" id="roles">
             <h3>Roles</h3>
             <div class="roles-row" id="roles_row"></div>
         </div>
     </div>
 
-    <div class="user-management-update" id="user_management_update">
+    <div class="user-management-role" id="user_management_role">
         <form method="post" class="add-user-role" id="add_user_role">
             <h3>Add Role</h3>
 
@@ -90,7 +99,9 @@
 
             <button type="submit">Remove</button>
         </form>
+    </div>
 
+    <div class="user-management-update" id="user_management_update">
         <form method="post" class="change-username" id="change_username">
             <h3>Change Username</h3>
             <input type="text" name="username" id="username" placeholder="Username" required>
