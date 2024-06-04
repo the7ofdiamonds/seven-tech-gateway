@@ -2,9 +2,10 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
-use Exception;
-
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Gateway\User\User;
+use SEVEN_TECH\Gateway\User\UserCreate;
 
 class AdminUserManagement
 {
@@ -13,21 +14,26 @@ class AdminUserManagement
     private $menu_title;
     private $menu_slug;
     public $page_url;
-    private $user;
+    private $createUser;
 
-    public function __construct(User $user)
+    public function __construct(UserCreate $createUser)
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'User Management';
         $this->menu_title = 'User';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->user = $user;
+        $this->createUser = $createUser;
 
+        add_action('wp_ajax_createUser', [$this, 'createUser']);
         add_action('wp_ajax_getUser', [$this, 'getUser']);
-        add_action('wp_ajax_changeUserNicename', [$this, 'changeUserNicename'], 10, 2);
         add_action('wp_ajax_addUserRole', [$this, 'addUserRole']);
         add_action('wp_ajax_removeUserRole', [$this, 'removeUserRole']);
+        add_action('wp_ajax_changeUsername', [$this, 'changeUsername']);
+        add_action('wp_ajax_changeNicename', [$this, 'changeNicename']);
+        add_action('wp_ajax_changeNickname', [$this, 'changeNickname']);
+        add_action('wp_ajax_changeFirstName', [$this, 'changeFirstName']);
+        add_action('wp_ajax_changeLastName', [$this, 'changeLastName']);
     }
 
     function register_custom_submenu_page()
@@ -46,80 +52,136 @@ class AdminUserManagement
         echo 'Manage Users';
     }
 
-    public function getUser()
+    public function createUser()
     {
         try {
-            if (!isset($_POST['email'])) {
-                throw new Exception("Email is required.", 400);
-            }
-
             $email = $_POST['email'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $nicename = $_POST['nicename'];
+            $nickname = $_POST['nickname'];
+            $firstname = $_POST['firstname'];
+            $lastname = $_POST['lastname'];
+            $phone = $_POST['phone'];
 
-            $user = $this->user->getUser($email);
+            $createdUser = $this->createUser->createUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone);
 
-            if (!$user) {
-                throw new Exception("User could not be found.");
-            }
-
-            wp_send_json_success($user);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+            wp_send_json_success($createdUser);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
-    function changeUserNicename()
+    public function getUser()
     {
         try {
-            if (!isset($_POST['id'])) {
-                throw new Exception('ID is required.', 400);
-            }
+            $email = $_POST['email'];
 
-            $id = $_POST['id'];
-            $nicename = $_POST['nicename'];
+            $user = new User($email);
 
-            $change_nicename = $this->user->changeNicename($id, $nicename);
-
-            wp_send_json_success($change_nicename);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+            wp_send_json_success($user);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
     public function addUserRole()
     {
         try {
-            if (!isset($_POST['id'])) {
-                throw new Exception('ID is required.', 400);
-            }
-
             $id = $_POST['id'];
             $roleName = $_POST['added_role'];
             $roleDisplayName = $_POST['display_name_added'];
 
-            $add_role = $this->user->addUserRole($id, $roleName, $roleDisplayName);
+            $add_role = (new Roles)->addRole($id, $roleName, $roleDisplayName);
 
             wp_send_json_success($add_role);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 
     public function removeUserRole()
     {
         try {
-            if (!isset($_POST['id'])) {
-                throw new Exception('ID is required.', 400);
-            }
-
             $id = $_POST['id'];
             $roleName = $_POST['remove_role'];
             $roleDisplayName = $_POST['display_name_remove'];
 
-            $remove_role = $this->user->removeUserRole($id, $roleName, $roleDisplayName);
+            $remove_role = (new Roles)->removeRole($id, $roleName, $roleDisplayName);
 
             wp_send_json_success($remove_role);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function changeUsername()
+    {
+        try {
+            $email = $_POST['email'];
+            $username = $_POST['username'];
+
+            $change_username = (new User($email))->changeUsername($username);
+
+            wp_send_json_success($change_username);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function changeNicename()
+    {
+        try {
+            $email = $_POST['email'];
+            $nicename = $_POST['nicename'];
+
+            $change_nicename = (new User($email))->changeNicename($nicename);
+
+            wp_send_json_success($change_nicename);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function changeNickname()
+    {
+        try {
+            $email = $_POST['email'];
+            $nickname = $_POST['nickname'];
+
+            $change_nickname = (new User($email))->changeNickname($nickname);
+
+            wp_send_json_success($change_nickname);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function changeFirstName()
+    {
+        try {
+            $email = $_POST['email'];
+            $firstname = $_POST['firstname'];
+
+            $change_firstname = (new User($email))->changeFirstname($firstname);
+
+            wp_send_json_success($change_firstname);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function changeLastName()
+    {
+        try {
+            $email = $_POST['email'];
+            $lastname = $_POST['lastname'];
+
+            $change_lastname = (new User($email))->changeLastName($lastname);
+
+            wp_send_json_success($change_lastname);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
     }
 }

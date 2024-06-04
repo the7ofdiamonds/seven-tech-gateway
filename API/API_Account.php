@@ -48,6 +48,8 @@ class API_Account
             );
 
             return rest_ensure_response($signupResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -65,6 +67,8 @@ class API_Account
             $lockedAccount = (new Account($request['email']))->lockAccount($request['confirmationCode']);
 
             return rest_ensure_response($lockedAccount);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -93,6 +97,8 @@ class API_Account
             $unlockedAccount = (new Account($request['email']))->unlockAccount($request['confirmationCode']);
 
             return rest_ensure_response($unlockedAccount);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -121,6 +127,8 @@ class API_Account
             $enabledAccount = (new Account($request['email']))->enableAccount($request['confirmationCode']);
 
             return rest_ensure_response($enabledAccount);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }

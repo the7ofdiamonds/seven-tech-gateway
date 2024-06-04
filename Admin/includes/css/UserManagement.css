@@ -62,11 +62,20 @@
   width: fit-content;
 }
 
-form.recover-email,
-form.change-nicename,
-form.add-user-role,
-form.remove-user-role {
+.user-management .user-management-update {
   display: none;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+form.add-user-role,
+form.remove-user-role,
+form.change-username,
+form.change-nicename,
+form.change-firstname,
+form.change-lastname {
+  display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
 }

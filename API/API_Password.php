@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\API;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Email\EmailPassword;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
 
@@ -28,9 +29,11 @@ class API_Password
                 throw new Exception('An email is required to reset password.', 400);
             }
 
-            $response = $this->password->recoverPassword($email);
+            $response = (new EmailPassword)->recoverPassword($email);
 
             return rest_ensure_response($response);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -50,6 +53,8 @@ class API_Password
             ];
 
             return rest_ensure_response($removeEmailResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -84,6 +89,8 @@ class API_Password
             ];
 
             return rest_ensure_response($updatePasswordResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }

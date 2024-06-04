@@ -3,7 +3,6 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-
 use SEVEN_TECH\Gateway\Session\Session;
 
 class AdminSessionManagement

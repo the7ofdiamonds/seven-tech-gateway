@@ -116,7 +116,6 @@ class AdminAccountManagement
         }
     }
 
-    // Account should be locked before being disabled
     function disableAccount()
     {
         try {

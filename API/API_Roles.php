@@ -27,7 +27,7 @@ class API_Roles
             $roles = $this->roles->getRoles();
 
             return rest_ensure_response($roles);
-        } catch (Exception $e) {
+        } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
@@ -40,7 +40,7 @@ class API_Roles
             $availableRoles = $this->roles->getAvailableRoles($authorized->level);
 
             return rest_ensure_response($availableRoles);
-        } catch (Exception $e) {
+        } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }

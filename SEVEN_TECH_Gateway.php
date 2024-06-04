@@ -78,7 +78,7 @@ use SEVEN_TECH\Gateway\Templates\Templates;
 
 use SEVEN_TECH\Gateway\Token\Token;
 
-use SEVEN_TECH\Gateway\User\User;
+use SEVEN_TECH\Gateway\User\UserCreate;
 
 use Exception;
 
@@ -122,13 +122,13 @@ class SEVEN_TECH
                 $authorization = new Authorization($token);
                 $password = new Password();
                 $roles = new Roles();
-                $user = new User($auth);
+                $userCreate = new UserCreate($auth);
 
                 $accountAPI = new API_Account($createAccount, $login, $authorization);
                 $authAPI = new API_Authentication($login, $authenticationToken, $logout);
                 $passwordAPI = new API_Password();
                 $rolesAPI = new API_Roles($roles, $authorization);
-                $userAPI = new API_User($user, $login, $authorization);
+                $userAPI = new API_User($userCreate, $login, $authorization);
 
                 add_action('rest_api_init', function () use ($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI) {
                     new API($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI);
@@ -137,7 +137,7 @@ class SEVEN_TECH
                 $adminAccountManagement = new AdminAccountManagement($createAccount);
                 $adminPasswordManagement = new AdminPasswordManagement($password);
                 $adminSessionManagement = new AdminSessionManagement;
-                $adminUserManagement = new AdminUserManagement($user);
+                $adminUserManagement = new AdminUserManagement($userCreate);
 
                 add_action('admin_init', function () use ($admin) {
                     $admin;

@@ -62,6 +62,8 @@ class API_Authentication
             return rest_ensure_response($loginResponse);
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
+        } catch (Exception $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
@@ -71,9 +73,9 @@ class API_Authentication
             $logoutResponse = $this->logout->logout($request);
 
             return rest_ensure_response($logoutResponse);
-        } catch (Exception $e) {
+        } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
-        }
+        } 
     }
 
     public function logoutAll(WP_REST_Request $request)
@@ -82,8 +84,8 @@ class API_Authentication
             $logoutAllResponse = $this->logout->logoutAll($request);
 
             return rest_ensure_response($logoutAllResponse);
-        } catch (Exception $e) {
+        } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
-        }
+        } 
     }
 }

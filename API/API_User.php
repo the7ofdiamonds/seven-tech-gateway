@@ -5,7 +5,9 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Gateway\User\User;
+use SEVEN_TECH\Gateway\User\UserCreate;
 
 use Exception;
 
@@ -13,13 +15,13 @@ use WP_REST_Request;
 
 class API_User
 {
-    private $user;
+    private $createUser;
     private $login;
     private $authorization;
 
-    public function __construct(User $user, AuthenticationLogin $login, Authorization $authorization)
+    public function __construct(UserCreate $createUser, AuthenticationLogin $login, Authorization $authorization)
     {
-        $this->user = $user;
+        $this->createUser = $createUser;
         $this->login = $login;
         $this->authorization = $authorization;
     }
@@ -35,10 +37,8 @@ class API_User
             $lastname = $request['lastname'];
             $nickname = $request['nickname'];
             $phone = $request['phone'];
-            $role = '';
-            $activationCode = '';
-
-            $this->user->addUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $role, $activationCode);
+           
+            $this->createUser->createUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone);
 
             $signupResponse = [
                 'successMessage' => $this->login->signInWithEmailAndPassword($email, $password),
@@ -46,6 +46,8 @@ class API_User
             ];
 
             return rest_ensure_response($signupResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -66,9 +68,11 @@ class API_User
 
             $email = $request['email'];
 
-            $user = $this->user->getUser($email);
+            $user = (new User($email));
 
             return rest_ensure_response($user);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -95,12 +99,14 @@ class API_User
             $username = $request['username'];
 
             $updateUsernameResponse = [
-                'successMessage' => $this->user->changeUsername($email, $username),
+                'successMessage' => (new User($email))->changeUsername($username),
                 'username' => $username,
                 'statusCode' => 200
             ];
 
             return rest_ensure_response($updateUsernameResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -131,9 +137,9 @@ class API_User
             }
 
             if ($firstname != '' && $lastname != '') {
-                $this->user->changeFirstName($email, $firstname);
+                (new User($email))->changeFirstName($firstname);
 
-                $this->user->changeLastName($email, $lastname);
+                (new User($email))->changeLastName($lastname);
 
                 $changeNameResponse = [
                     'successMessage' => "Your name has been changed to {$firstname} {$lastname} succesfully.",
@@ -147,7 +153,7 @@ class API_User
 
             if ($firstname != '') {
                 $changeNameResponse = [
-                    'successMessage' => $this->user->changeFirstName($email, $firstname),
+                    'successMessage' => (new User($email))->changeFirstName($firstname),
                     'firstname' => $firstname,
                     'statusCode' => 200
                 ];
@@ -157,13 +163,15 @@ class API_User
 
             if ($lastname != '') {
                 $changeNameResponse = [
-                    'successMessage' => $this->user->changeLastName($email, $lastname),
+                    'successMessage' => (new User($email))->changeLastName($lastname),
                     'lastname' => $lastname,
                     'statusCode' => 200
                 ];
 
                 return rest_ensure_response($changeNameResponse);
             }
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -190,12 +198,14 @@ class API_User
             $nickname = $request['nickName'];
 
             $changeNickNameResponse = [
-                'successMessage' => $this->user->changeNickname($email, $nickname),
+                'successMessage' => (new User($email))->changeNickname($nickname),
                 'nickname' => $nickname,
                 'statusCode' => 200
             ];
 
             return rest_ensure_response($changeNickNameResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -222,12 +232,14 @@ class API_User
             $nicename = $request['nicename'];
 
             $changeNickNameResponse = [
-                'successMessage' => $this->user->changeNicename($email, $nicename),
+                'successMessage' => (new User($email))->changeNicename($nicename),
                 'nicename' => $nicename,
                 'statusCode' => 200
             ];
 
             return rest_ensure_response($changeNickNameResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -243,12 +255,14 @@ class API_User
             }
 
             $addUserRoleResponse = [
-                'successMessage' => $this->user->addUserRole($authorized->id, $request['name'], $request['display_name']),
-                'roles' => $this->user->getUserRoles($authorized->id),
+                'successMessage' => (new Roles)->addRole($authorized->id, $request['name'], $request['display_name']),
+                'roles' => (new User($authorized->email))->getUserRoles(),
                 'statusCode' => 200
             ];
 
             return rest_ensure_response($addUserRoleResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -264,12 +278,14 @@ class API_User
             }
 
             $removeUserRoleResponse = [
-                'successMessage' => $this->user->removeUserRole($authorized->id, $request['name'], $request['display_name']),
-                'roles' => $this->user->getUserRoles($authorized->id),
+                'successMessage' => (new Roles)->removeRole($authorized->id, $request['name'], $request['display_name']),
+                'roles' => (new User($authorized->email))->getUserRoles(),
                 'statusCode' => 200
             ];
 
             return rest_ensure_response($removeUserRoleResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
@@ -296,12 +312,14 @@ class API_User
             $phone = '+' . $request['phone'];
 
             $changePhoneResponse = [
-                'successMessage' => $this->user->changePhone($email, $phone),
+                'successMessage' => (new User($email))->changePhone($phone),
                 'phone' => $phone,
                 'statusCode' => 200
             ];
 
             return rest_ensure_response($changePhoneResponse);
+        } catch (DestructuredException $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         }
