@@ -42,7 +42,7 @@ class User
             $this->lastname = get_user_meta($this->id, 'last_name');
             $this->nickname = get_user_meta($this->id, 'nickname');
             $this->nicename = $user_data->data->user_nicename;
-            $this->roles = $this->getUserRoles($this->id, $user_data->roles);
+            $this->roles = $this->getUserRoles($user_data->roles);
             $this->phone = get_user_meta($this->id, 'phone_number');
             $this->url = $user_data->data->user_url;
         } catch (DestructuredException $e) {
@@ -52,16 +52,9 @@ class User
         }
     }
 
-    public function getUserRoles()
+    public function getUserRoles($roles)
     {
         try {
-            if (empty($this->id)) {
-                throw new Exception('ID is required to get roles.');
-            }
-
-            $user = new WP_User($this->email);
-            $roles = $user->roles;
-
             $wp_roles = wp_roles()->get_names();
 
             $user_roles = [];

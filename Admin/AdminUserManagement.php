@@ -34,6 +34,7 @@ class AdminUserManagement
         add_action('wp_ajax_changeNickname', [$this, 'changeNickname']);
         add_action('wp_ajax_changeFirstName', [$this, 'changeFirstName']);
         add_action('wp_ajax_changeLastName', [$this, 'changeLastName']);
+        add_action('wp_ajax_changePhoneNumber', [$this, 'changePhoneNumber']);
     }
 
     function register_custom_submenu_page()
@@ -163,7 +164,7 @@ class AdminUserManagement
             $email = $_POST['email'];
             $firstname = $_POST['firstname'];
 
-            $change_firstname = (new User($email))->changeFirstname($firstname);
+            $change_firstname = (new User($email))->changeFirstName($firstname);
 
             wp_send_json_success($change_firstname);
         } catch (DestructuredException $e) {
@@ -180,6 +181,20 @@ class AdminUserManagement
             $change_lastname = (new User($email))->changeLastName($lastname);
 
             wp_send_json_success($change_lastname);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function changePhoneNumber()
+    {
+        try {
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+
+            $change_phone = (new User($email))->changePhone($phone);
+
+            wp_send_json_success($change_phone);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }

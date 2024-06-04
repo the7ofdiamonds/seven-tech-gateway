@@ -73,8 +73,10 @@ form.add-user-role,
 form.remove-user-role,
 form.change-username,
 form.change-nicename,
+form.change-nickname,
 form.change-firstname,
-form.change-lastname {
+form.change-lastname,
+form.change-phone {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;

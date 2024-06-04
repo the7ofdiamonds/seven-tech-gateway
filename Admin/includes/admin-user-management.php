@@ -103,6 +103,12 @@
             <button type="submit">Change</button>
         </form>
 
+        <form method="post" class="change-nickname" id="change_nickname">
+            <h3>Change Nickname</h3>
+            <input type="text" name="nickname" id="nickname" placeholder="Nickname" required>
+            <button type="submit">Change</button>
+        </form>
+
         <form method="post" class="change-firstname" id="change_firstname">
             <h3>Change First Name</h3>
             <input type="text" name="firstname" id="firstname" placeholder="First Name" required>
@@ -112,6 +118,12 @@
         <form method="post" class="change-lastname" id="change_lastname">
             <h3>Change Last Name</h3>
             <input type="text" name="lastname" id="lastname" placeholder="Last Name" required>
+            <button type="submit">Change</button>
+        </form>
+
+        <form method="post" class="change-phone" id="change_phone">
+            <h3>Change Phone</h3>
+            <input type="text" name="phone" id="phone" placeholder="Phone" required>
             <button type="submit">Change</button>
         </form>
     </div>

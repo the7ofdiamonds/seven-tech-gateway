@@ -123,8 +123,8 @@ jQuery(document).ready(function ($) {
     $('#change_username').submit(function (event) {
         event.preventDefault();
 
-        const username = $('#change_username #username').val();
         const email = $('#user_details #email').text();
+        const username = $('#change_username #username').val();
         
         if (id !== '') {
             console.log(id);
@@ -135,11 +135,10 @@ jQuery(document).ready(function ($) {
                 url: 'admin-ajax.php',
                 data: {
                     action: 'changeUsername',
-                    id: id,
+                    email: email,
                     username: username
                 },
                 success: function (response) {
-                    console.log(response.data);
                     getUser(email);
 
                     displayMessage('success', response.data);
@@ -158,21 +157,19 @@ jQuery(document).ready(function ($) {
     $('#change_nicename').submit(function (event) {
         event.preventDefault();
 
-        const id = $('#user_details #user_id').text();
-        const nicename = $('#change_nicename #nicename').val();
         const email = $('#user_details #email').text();
+        const nicename = $('#change_nicename #nicename').val();
 
-        if ((id !== '' || id !== undefined) && (nicename !== '' || nicename !== undefined) && (email !== '' || email !== undefined)) {
+        if ((nicename !== '' || nicename !== undefined) && (email !== '' || email !== undefined)) {
             $.ajax({
                 type: 'POST',
                 url: 'admin-ajax.php',
                 data: {
                     action: 'changeNicename',
-                    id: id,
+                    email: email,
                     nicename: nicename
                 },
                 success: function (response) {
-                    console.log(response.data);
                     getUser(email);
 
                     displayMessage('success', response.data);
@@ -188,20 +185,50 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    $('#change_nickname').submit(function (event) {
+        event.preventDefault();
+
+        const email = $('#user_details #email').text();
+        const nickname = $('#change_nickname #nickname').val();
+
+        if ((nickname !== '' || nickname !== undefined) && (email !== '' || email !== undefined)) {
+            $.ajax({
+                type: 'POST',
+                url: 'admin-ajax.php',
+                data: {
+                    action: 'changeNickname',
+                    email: email,
+                    nickname: nickname
+                },
+                success: function (response) {
+                    getUser(email);
+
+                    displayMessage('success', response.data);
+                },
+                error: function (xhr, status, error) {
+                    const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+
+                    displayMessage(status, errorMessage);
+                }
+            });
+        } else {
+            displayMessage('error', 'ID, Nickname and Email are required.');
+        }
+    });
+
     $('#change_firstname').submit(function (event) {
         event.preventDefault();
 
-        const id = $('#user_details #user_id').text();
-        const firstname = $('#change_firstname #firstname').val();
         const email = $('#user_details #email').text();
+        const firstname = $('#change_firstname #firstname').val();
 
-        if ((id !== '' || id !== undefined) && (firstname !== '' || firstname !== undefined) && (email !== '' || email !== undefined)) {
+        if ((firstname !== '' || firstname !== undefined) && (email !== '' || email !== undefined)) {
             $.ajax({
                 type: 'POST',
                 url: 'admin-ajax.php',
                 data: {
                     action: 'changeFirstName',
-                    id: id,
+                    email: email,
                     firstname: firstname
                 },
                 success: function (response) {
@@ -223,17 +250,16 @@ jQuery(document).ready(function ($) {
     $('#change_lastname').submit(function (event) {
         event.preventDefault();
 
-        const id = $('#user_details #user_id').text();
-        const lastname = $('#change_lastname #lastname').val();
         const email = $('#user_details #email').text();
+        const lastname = $('#change_lastname #lastname').val();
 
-        if ((id !== '' || id !== undefined) && (lastname !== '' || lastname !== undefined) && (email !== '' || email !== undefined)) {
+        if ((lastname !== '' || lastname !== undefined) && (email !== '' || email !== undefined)) {
             $.ajax({
                 type: 'POST',
                 url: 'admin-ajax.php',
                 data: {
                     action: 'changeLastName',
-                    id: id,
+                    email: email,
                     lastname: lastname
                 },
                 success: function (response) {
@@ -251,4 +277,33 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    $('#change_phone').submit(function (event) {
+        event.preventDefault();
+
+        const email = $('#user_details #email').text();
+        const phone = $('#change_phone #phone').val();
+
+        if ((phone !== '' || phone !== undefined) && (email !== '' || email !== undefined)) {
+            $.ajax({
+                type: 'POST',
+                url: 'admin-ajax.php',
+                data: {
+                    action: 'changePhone',
+                    email: email,
+                    phone: phone
+                },
+                success: function (response) {
+                    getUser(email);
+
+                    displayMessage('success', response.data);
+                },
+                error: function (xhr, status, error) {
+                    const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                    displayMessage(status, errorMessage);
+                }
+            });
+        } else {
+            displayMessage('error', 'ID, Last Name and Email are required.');
+        }
+    });
 });

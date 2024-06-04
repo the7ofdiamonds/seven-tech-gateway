@@ -256,7 +256,7 @@ class API_User
 
             $addUserRoleResponse = [
                 'successMessage' => (new Roles)->addRole($authorized->id, $request['name'], $request['display_name']),
-                'roles' => (new User($authorized->email))->getUserRoles(),
+                'roles' => (new User($authorized->email))->roles,
                 'statusCode' => 200
             ];
 
@@ -279,7 +279,7 @@ class API_User
 
             $removeUserRoleResponse = [
                 'successMessage' => (new Roles)->removeRole($authorized->id, $request['name'], $request['display_name']),
-                'roles' => (new User($authorized->email))->getUserRoles(),
+                'roles' => (new User($authorized->email))->roles,
                 'statusCode' => 200
             ];
 
