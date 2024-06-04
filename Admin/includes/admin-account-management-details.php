@@ -1,5 +1,6 @@
 <link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/AccountManagementDetails.css"; ?>>
 <script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/AccountManagementDetails.js"; ?> defer></script>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagement.js"; ?> defer></script>
 
 <div class="account-details" id="account_details">
     <div class="ids" id="ids">
@@ -7,7 +8,7 @@
             <h3>Account ID</h3>
             <h4 id="account_id"></h4>
         </div>
-
+<!-- Create link to firebase -->
         <div class="provider-given-id">
             <h3>Provider Given ID</h3>
             <h4 id="provider_given_id"></h4>
@@ -62,4 +63,13 @@
         <h3>Roles</h3>
         <div class="roles-row" id="roles_row"></div>
     </div>
+
+    <div class="account-status">
+        <h3>Account Status</h3>
+        <h4 id="account_status"></h4>
+    </div>
+</div>
+
+<div class="account-details-session-management" id="account_details_session_management">
+    <div class="sessions" id="sessions"></div>
 </div>

@@ -16,7 +16,7 @@ get_header(); ?>
 <div class="dashboard">
     <?php
 
-    include SEVEN_TECH . 'includes/react.php';
+    include SEVEN_TECH_GATEWAY . 'includes/react.php';
 
     if (!function_exists('is_plugin_active')) {
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');

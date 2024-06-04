@@ -10,6 +10,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 get_header();
 
-include SEVEN_TECH . 'includes/react.php';
+include SEVEN_TECH_GATEWAY . 'includes/react.php';
 
 get_footer();

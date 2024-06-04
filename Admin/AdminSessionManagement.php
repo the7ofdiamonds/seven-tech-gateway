@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
 
@@ -47,11 +48,14 @@ class AdminSessionManagement
     {
         try {
             $email = $_POST['email'];
-            $user = get_user_by('email', $email);
-            $id = $user->ID;
+
+            $account = new Account($email);
+
+            $id = $account->id;
+            $provider_given_id = $account->provider_given_id;
             $sessions = $this->session->getSessions($id);
 
-            $accountSessions = array('id' => $id, 'sessions' => $sessions);
+            $accountSessions = array('id' => $id, 'provider_given_id' => $provider_given_id, 'sessions' => $sessions);
 
             wp_send_json_success($accountSessions);
         } catch (DestructuredException $e) {

@@ -26,6 +26,11 @@
             <h4 id="account_id"></h4>
         </div>
 
+        <div class="provider-given-id">
+            <h3>Provider Given ID</h3>
+            <h4 id="provider_given_id"></h4>
+        </div>
+        
         <div class="account-status">
             <h3>Account Status</h3>
             <h4 id="account_status"></h4>

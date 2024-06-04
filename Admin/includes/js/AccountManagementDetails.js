@@ -40,15 +40,15 @@ jQuery(document).ready(function ($) {
                 var credentials = response.data.is_credentials_non_expired;
                 var enabled = response.data.is_enabled;
 
-                $('#account_details #authenticated').text(authenticated);
+                $('#account_details #account_status').text(authenticated);
 
                 var sessions = response.data.sessions;
                 var sessionKeys = Object.keys(sessions);
 
+                $('#sessions').empty();
+
                 if (sessionKeys.length > 0) {
                     $('#sessions').css('display', 'flex');
-
-                    $('#sessions').empty();
 
                     sessionKeys.forEach(function (token) {
                         var session = sessions[token];

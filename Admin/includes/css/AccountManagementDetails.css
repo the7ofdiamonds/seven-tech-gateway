@@ -43,52 +43,48 @@
   width: fit-content;
 }
 
-.account-management .account-details .account-status .account-status-label {
+.account-management .account-details .account-status {
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
 }
 
-.account-management .account-details .account-status .sessions {
+.account-management .account-details-session-management .sessions {
   display: none;
   flex-direction: column;
   gap: 1rem;
 }
 
-.account-management .account-details .account-status .sessions .session {
+.account-management .account-details-session-management .sessions .session {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
+  background-color: white;
 }
 
 .account-management
-  .account-details
-  .account-status
+  .account-details-session-management
   .sessions
   .session
   .session-token,
 .account-management
-  .account-details
-  .account-status
+  .account-details-session-management
   .sessions
   .session
   .session-ip,
 .account-management
-  .account-details
-  .account-status
+  .account-details-session-management
   .sessions
   .session
   .session-login-time,
 .account-management
-  .account-details
-  .account-status
+  .account-details-session-management
   .sessions
   .session
   .session-expiration,
 .account-management
-  .account-details
-  .account-status
+  .account-details-session-management
   .sessions
   .session
   .session-user-agent {

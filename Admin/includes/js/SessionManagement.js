@@ -9,6 +9,7 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                 $(".account-id #account_id").text(response.data.id);
+                $(".provider-given-id #provider_given_id").text(response.data.provider_given_id);
 
                 $('#sessions').empty();
 

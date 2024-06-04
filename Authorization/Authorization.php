@@ -20,7 +20,8 @@ class Authorization
     public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = '')
     {
         try {
-            $email = $this->token->getEmailFromToken($request);
+            $accessToken = $this->token->getAccessToken($request);
+            $email = $this->token->getEmailFromToken($accessToken);
             $account = new Account($email);
             $accountRoles = $account->roles;
 
