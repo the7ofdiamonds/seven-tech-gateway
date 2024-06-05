@@ -111,7 +111,7 @@ class AccountCreate
                 }
             }
 
-            $this->email->accountCreated();
+            $this->email->accountCreated($email);
 
             return new Account($account->email);
         } catch (DestructuredException $e) {

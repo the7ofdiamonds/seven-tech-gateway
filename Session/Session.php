@@ -2,12 +2,20 @@
 
 namespace SEVEN_TECH\Gateway\Session;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
+use Kreait\Firebase\Auth;
 
 class Session
 {
+    private $auth;
+
+    public function __construct(Auth $auth)
+    {
+        $this->auth = $auth;
+    }
 
     public function getSessions($id)
     {
@@ -15,6 +23,12 @@ class Session
             if (empty($id)) {
                 throw new Exception('ID is required.', 400);
             }
+$user_data = get_user_by('ID', $id);
+            // $account = new Account($id);
+
+            $user = $this->auth->getUserByEmail($user_data->data->user_email);
+
+            error_log(print_r($user, true));
 
             $account_status = get_user_meta($id, 'session_tokens');
 

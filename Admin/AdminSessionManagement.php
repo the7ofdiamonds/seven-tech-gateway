@@ -15,14 +15,14 @@ class AdminSessionManagement
     public $page_url;
     private $session;
 
-    public function __construct()
+    public function __construct(Session $session)
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'Session Management';
         $this->menu_title = 'Session';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->session = new Session;
+        $this->session = $session;
 
         add_action('wp_ajax_getSessions', [$this, 'getSessions']);
         add_action('wp_ajax_removeSession', [$this, 'removeSession']);

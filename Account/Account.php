@@ -68,7 +68,7 @@ class Account
             $this->nicename = $account->nicename;
             $this->phone = $account->phone;
             $this->provider_given_id = $account->provider_given_id;
-            $this->sessions = (new Session)->getSessions($account->id);
+            // $this->sessions = (new Session)->getSessions($account->id);
             $this->is_authenticated = (bool) $account->is_authenticated;
             $this->is_account_non_expired = (bool) $account->is_account_non_expired;
             $this->is_account_non_locked = (bool) $account->is_account_non_locked;

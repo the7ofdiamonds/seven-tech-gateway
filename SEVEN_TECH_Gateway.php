@@ -71,7 +71,8 @@ use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Gateway\Router\Router;
 
 use SEVEN_TECH\Gateway\Shortcodes\Shortcodes;
-
+use SEVEN_TECH\Gateway\Session\Session;
+use SEVEN_TECH\Gateway\Session\SessionRedis;
 use SEVEN_TECH\Gateway\Taxonomies\Taxonomies;
 
 use SEVEN_TECH\Gateway\Templates\Templates;
@@ -105,7 +106,7 @@ class SEVEN_TECH
 
         $plugin_data = get_plugin_data(__FILE__);
         define('PLUGIN_NAME', $plugin_data['Name']);
-
+new SessionRedis;
         $admin = new Admin();
 
         add_action('admin_menu', [$admin, 'register_custom_menu_page']);
@@ -123,6 +124,7 @@ class SEVEN_TECH
                 $password = new Password();
                 $roles = new Roles();
                 $userCreate = new UserCreate($auth);
+                $session = new Session($auth);
 
                 $accountAPI = new API_Account($createAccount, $login, $authorization);
                 $authAPI = new API_Authentication($login, $authenticationToken, $logout);
@@ -136,7 +138,7 @@ class SEVEN_TECH
 
                 $adminAccountManagement = new AdminAccountManagement($createAccount);
                 $adminPasswordManagement = new AdminPasswordManagement($password);
-                $adminSessionManagement = new AdminSessionManagement;
+                $adminSessionManagement = new AdminSessionManagement($session);
                 $adminUserManagement = new AdminUserManagement($userCreate);
 
                 add_action('admin_init', function () use ($admin) {
