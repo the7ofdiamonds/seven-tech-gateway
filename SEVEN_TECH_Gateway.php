@@ -83,6 +83,7 @@ use SEVEN_TECH\Gateway\User\UserCreate;
 
 use Exception;
 
+use  Dotenv\Dotenv;
 use Kreait\Firebase\Contract\Auth;
 
 class SEVEN_TECH
@@ -106,7 +107,11 @@ class SEVEN_TECH
 
         $plugin_data = get_plugin_data(__FILE__);
         define('PLUGIN_NAME', $plugin_data['Name']);
-new SessionRedis;
+
+        $dotenv = Dotenv::createImmutable(__DIR__);
+        $dotenv->load();
+
+        new SessionRedis;
         $admin = new Admin();
 
         add_action('admin_menu', [$admin, 'register_custom_menu_page']);

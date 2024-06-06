@@ -6,13 +6,20 @@ use Predis\Client;
 
 class SessionRedis
 {
-    private $redis;
+    private $redisConnection;
 
     public function __construct()
     {
-        $this->redis = new Client();
-        // get parameters from env file
-        error_log(print_r($this->redis, true));
+        $options = ['parameters' => [
+            'password' => 'password'
+        ]];
+        $this->redisConnection = new Client([
+            'scheme' => $_ENV['REDIS_SCHEME'],
+            'host'   => $_ENV['REDIS_HOST'],
+            'port'   => $_ENV['REDIS_PORT'],
+        ]);
+
+        $this->redisConnection->set(2, 'session');
     }
 
     function findAll()
