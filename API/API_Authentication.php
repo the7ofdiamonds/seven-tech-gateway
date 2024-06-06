@@ -7,6 +7,7 @@ use SEVEN_TECH\Gateway\Authentication\AuthenticationToken;
 use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
+use SEVEN_TECH\Gateway\Session\SessionRedis;
 
 use Exception;
 
@@ -47,7 +48,8 @@ class API_Authentication
             // }
 
             wp_set_current_user($authenticatedAccount->id);
-            (new Session)->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
+            // (new Session)->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
+            (new SessionRedis)->createSession($_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $authenticatedAccount);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);

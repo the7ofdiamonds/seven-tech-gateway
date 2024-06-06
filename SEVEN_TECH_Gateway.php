@@ -111,7 +111,6 @@ class SEVEN_TECH
         $dotenv = Dotenv::createImmutable(__DIR__);
         $dotenv->load();
 
-        new SessionRedis;
         $admin = new Admin();
 
         add_action('admin_menu', [$admin, 'register_custom_menu_page']);
