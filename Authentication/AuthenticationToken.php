@@ -3,36 +3,37 @@
 namespace SEVEN_TECH\Gateway\Authentication;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Services\ServicesFirebase;
 use SEVEN_TECH\Gateway\Token\Token;
+use SEVEN_TECH\Gateway\Token\TokenFirebase;
 
 use Exception;
 
 use WP_REST_Request;
 
-use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
 class AuthenticationToken
 {
-    private $token;
-    private $auth;
+    private $tokenFirebase;
+    private $servicesFirebase;
 
-    public function __construct(Token $token, Auth $auth)
+    public function __construct(TokenFirebase $tokenFirebase, ServicesFirebase $servicesFirebase)
     {
-        $this->token = $token;
-        $this->auth = $auth;
+        $this->tokenFirebase = $tokenFirebase;
+        $this->servicesFirebase = $servicesFirebase;
     }
 
     function signInWithRefreshToken(WP_REST_Request $request)
     {
         try {
-            $refreshToken = $this->token->getRefreshToken($request);
+            $refreshToken = (new Token)->getRefreshToken($request);
 
-            $signedInUser = $this->auth->signInWithRefreshToken($refreshToken);
+            $signedInUser = $this->servicesFirebase->signInWithRefreshToken($refreshToken);
 
-            $authenticationCredentials = $this->token->findUserWithToken($signedInUser->idToken());
+            $authenticationCredentials = $this->tokenFirebase->findUserWithToken($signedInUser->idToken());
 
-            $user = $this->auth->getUser($signedInUser->data()['user_id']);
+            $user = $this->servicesFirebase->getUserByID($signedInUser->data()['user_id']);
 
            (new Authentication($authenticationCredentials->email))->isAuthenticated($authenticationCredentials->password);
 

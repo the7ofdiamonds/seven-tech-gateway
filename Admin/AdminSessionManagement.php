@@ -4,7 +4,7 @@ namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Session\Session;
+use SEVEN_TECH\Gateway\Session\SessionWordpress;
 
 class AdminSessionManagement
 {
@@ -13,16 +13,16 @@ class AdminSessionManagement
     private $menu_title;
     private $menu_slug;
     public $page_url;
-    private $session;
+    private $sessionWordpress;
 
-    public function __construct(Session $session)
+    public function __construct()
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'Session Management';
         $this->menu_title = 'Session';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->session = $session;
+        $this->sessionWordpress = new SessionWordpress;
 
         add_action('wp_ajax_getSessions', [$this, 'getSessions']);
         add_action('wp_ajax_removeSession', [$this, 'removeSession']);
@@ -53,7 +53,7 @@ class AdminSessionManagement
 
             $id = $account->id;
             $provider_given_id = $account->provider_given_id;
-            $sessions = $this->session->getSessions($id);
+            $sessions = $this->sessionWordpress->getSessions($id);
 
             $accountSessions = array('id' => $id, 'provider_given_id' => $provider_given_id, 'sessions' => $sessions);
 
@@ -69,7 +69,7 @@ class AdminSessionManagement
             $verifier = $_POST['verifier'];
             $id = $_POST['id'];
 
-            $removedSession = $this->session->destroy_session($id, $verifier);
+            $removedSession = $this->sessionWordpress->deleteSession($id, $verifier);
 
             wp_send_json_success($removedSession);
         } catch (DestructuredException $e) {

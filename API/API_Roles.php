@@ -6,25 +6,21 @@ use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
-use Exception;
-
 use WP_REST_Request;
 
 class API_Roles
 {
-    private $roles;
     private $authorization;
 
-    public function __construct(Roles $roles, Authorization $authorization)
+    public function __construct(Authorization $authorization)
     {
-        $this->roles = $roles;
         $this->authorization = $authorization;
     }
 
     public function getRoles(WP_REST_Request $request)
     {
         try {
-            $roles = $this->roles->getRoles();
+            $roles = (new Roles)->getRoles();
 
             return rest_ensure_response($roles);
         } catch (DestructuredException $e) {
@@ -37,7 +33,7 @@ class API_Roles
         try {
             $authorized = $this->authorization->isAuthorized($request);
 
-            $availableRoles = $this->roles->getAvailableRoles($authorized->level);
+            $availableRoles = (new Roles)->getAvailableRoles($authorized->level);
 
             return rest_ensure_response($availableRoles);
         } catch (DestructuredException $e) {

@@ -4,40 +4,25 @@ namespace SEVEN_TECH\Gateway\User;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailUser;
+use SEVEN_TECH\Gateway\Services\ServicesFirebase;
 
 use Exception;
 
-use Kreait\Firebase\Auth;
-
 class UserCreate
 {
-    private $auth;
+    private $servicesFirebase;
     private $email;
 
-    public function __construct(Auth $auth)
+    public function __construct(ServicesFirebase $servicesFirebase)
     {
-        $this->auth = $auth;
+        $this->servicesFirebase = $servicesFirebase;
         $this->email = new EmailUser;
     }
 
     public function createUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone)
     {
         try {
-            $newUser = [
-                'email' => $email,
-                'emailVerified' => false,
-                'phoneNumber' => '+' . $phone,
-                'password' => $password,
-                'displayName' => $username,
-                'disabled' => false,
-            ];
-
-            $newFirebaseUser = $this->auth->createUser($newUser);
-            $providergivenID = $newFirebaseUser->uid;
-
-            if (empty($providergivenID)) {
-                error_log("Unable to add user with email {$email} to firebase.");
-            }
+            $this->servicesFirebase->createFirebaseUser($email, $phone, $password, $username);
 
             global $wpdb;
 

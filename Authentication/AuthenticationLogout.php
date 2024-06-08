@@ -4,25 +4,22 @@ namespace SEVEN_TECH\Gateway\Authentication;
 
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Session\Session;
+use SEVEN_TECH\Gateway\Session\SessionWordpress;
 use SEVEN_TECH\Gateway\Token\Token;
+use SEVEN_TECH\Gateway\Token\TokenFirebase;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
 use WP_REST_Request;
 
-use Kreait\Firebase\Auth;
-
 class AuthenticationLogout
 {
-    private $token;
-private $auth;
+    private $tokenFirebase;
 
-    public function __construct(Token $token, Auth $auth)
+    public function __construct(TokenFirebase $tokenFirebase)
     {
-        $this->token = $token;
-        $this->auth = $auth;
+        $this->tokenFirebase = $tokenFirebase;
     }
 
     public function logout(WP_REST_Request $request)
@@ -30,11 +27,11 @@ private $auth;
         try {
             (new Validator)->isValidEmail($request['email']);
 
-            $refreshToken = $this->token->getRefreshToken($request);
-            $verifier = (new Session)->hash_token($refreshToken);
+            $refreshToken = (new Token)->getRefreshToken($request);
+            $verifier = (new Token)->hashToken($refreshToken);
 
-            $session_destroyed = (new Session)->destroy_session($request['id'], $verifier);
-
+            $session_destroyed = (new SessionWordpress)->deleteSession($request['id'], $verifier);
+// delete redis session
             if (!$session_destroyed) {
                 throw new Exception('Unable to remove session.');
             }
@@ -63,19 +60,8 @@ private $auth;
     public function logoutAll(WP_REST_Request $request)
     {
         try {
-            (new DatabaseExists)->existsByEmail($request['email']);
-
-            $accessToken = $this->token->getAccessToken($request);
-            $uid = $accessToken->claims()->get('sub');
-
-            $this->auth->revokeRefreshTokens($uid);
+            (new DatabaseExists)->existsByEmail($request['email']);            
             
-            wp_logout();
-
-            if (is_user_logged_in()) {
-                throw new Exception('Account could not be logged out.', 400);
-            }
-
             if (!isset($request['id'])) {
                 throw new Exception('ID is required to logout all accounts.', 500);
             }
@@ -84,6 +70,15 @@ private $auth;
 
             if (!$session_tokens_deleted) {
                 throw new Exception('There was an error deleting sessions.', 500);
+            }
+
+            $this->tokenFirebase->revokeAllRefreshTokens($request);
+// delete redis session
+
+            wp_logout();
+
+            if (is_user_logged_in()) {
+                throw new Exception('Account could not be logged out.', 400);
             }
 
             (new Authentication($request['email']))->isNotAuthenticated();

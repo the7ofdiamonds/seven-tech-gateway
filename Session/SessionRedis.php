@@ -2,66 +2,51 @@
 
 namespace SEVEN_TECH\Gateway\Session;
 
-use Predis\Client;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
+use SEVEN_TECH\Gateway\Services\ServicesRedis;
 
 class SessionRedis
 {
-    private $redisConnection;
 
-    public function __construct()
+    function findSessions()
     {
-        $options = ['parameters' => [
-            'password' => 'password'
-        ]];
-        $this->redisConnection = new Client([
-            'scheme' => $_ENV['REDIS_SCHEME'],
-            'host'   => $_ENV['REDIS_HOST'],
-            'port'   => $_ENV['REDIS_PORT'],
-        ]);
     }
 
-    function createSession($ip, $userAgent, Authenticated $authenticated)
+    function createSession(string $ip, string $userAgent, Authenticated $authenticated, $hashedToken)
     {
-        $session = array(
-            'algorithm' => '',
+        $sessionArray = array(
+            'id' => $authenticated->id,
+            'algorithm' => $authenticated->algorithm,
             'expiration' => time() + DAY_IN_SECONDS,
             'ip' => $ip,
-            'ua' => $userAgent,
+            'user_agent' => $userAgent,
             'login' => time(),
             'access_token' => $authenticated->access_token,
             'refresh_token' => $authenticated->refresh_token,
             'username' => $authenticated->username,
-            // 'authorities' => $authenticated->roles
+            'authorities' => $authenticated->roles
         );
-        $this->redisConnection->hmset($authenticated->refresh_token, $session);
+
+        return (new ServicesRedis)->sessionDBConnection->hmset($hashedToken, $sessionArray);
     }
 
-    function findAll()
+    function findSession($session_id)
     {
+        return (new ServicesRedis)->sessionDBConnection->get($session_id);
     }
 
-    function findByAccessToken()
+    function updateSession($session_id, $accessToken)
     {
+        $updatedSession = array(
+            'expiration' => time() + DAY_IN_SECONDS,
+            'access_token' => $accessToken,
+        );
+
+        return (new ServicesRedis)->sessionDBConnection->hmset($session_id, $updatedSession);
     }
 
-    function findByRefreshToken()
+    function deleteSession($session_id)
     {
-    }
-
-    function findByUsername()
-    {
-    }
-
-    function findByRevokedTrue()
-    {
-    }
-
-    function updateSession()
-    {
-    }
-
-    function deleteById()
-    {
+        return (new ServicesRedis)->sessionDBConnection->delete($session_id);
     }
 }

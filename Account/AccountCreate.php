@@ -7,43 +7,27 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Roles\Roles;
+use SEVEN_TECH\Gateway\Services\ServicesFirebase;
 
 use Exception;
 
 use Kreait\Firebase\Auth\UserRecord;
-use Kreait\Firebase\Contract\Auth;
 
 class AccountCreate
 {
     private $databaseExists;
     private $password;
-    private $auth;
+    private $servicesFirebase;
     private $roles;
     private $email;
 
-    public function __construct(Auth $auth)
+    public function __construct(ServicesFirebase $servicesFirebase)
     {
         $this->databaseExists = new DatabaseExists;
         $this->password = new Password;
-        $this->auth = $auth;
+        $this->servicesFirebase = $servicesFirebase;
         $this->roles = new Roles;
         $this->email = new EmailAccount;
-    }
-
-    function createFirebaseUser($email, $phone, $password, $username)
-    {
-        $newUser = [
-            'email' => $email,
-            'emailVerified' => false,
-            'phoneNumber' => '+' . $phone,
-            'password' => $password,
-            'displayName' => $username,
-            'disabled' => false,
-        ];
-
-        $newFirebaseUser = $this->auth->createUser($newUser);
-
-        return $newFirebaseUser;
     }
 
     function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
@@ -77,7 +61,7 @@ class AccountCreate
 
             $user_activation_key = wp_generate_password(20, false);
 
-            $newFirebaseUser = $this->createFirebaseUser($email, $phone, $password, $username);
+            $newFirebaseUser = $this->servicesFirebase->createFirebaseUser($email, $phone, $password, $username);
 
             if (!$newFirebaseUser instanceof UserRecord) {
                 error_log("Unable to add user with email {$email} to firebase.");

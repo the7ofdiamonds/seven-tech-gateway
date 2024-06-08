@@ -139,6 +139,7 @@ class Admin
         } 
     }
 
+    // Upload google credentrials
     public function uploadFile()
     {
         try {
@@ -151,4 +152,6 @@ class Admin
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
+
+    // upload redis credentials
 }

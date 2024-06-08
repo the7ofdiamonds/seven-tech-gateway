@@ -5,23 +5,24 @@ namespace SEVEN_TECH\Gateway\Authorization;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
+use SEVEN_TECH\Gateway\Token\TokenFirebase;
 
 use WP_REST_Request;
 
 class Authorization
 {
-    private $token;
+    private $tokenFirebase;
 
-    public function __construct(Token $token)
+    public function __construct(TokenFirebase $tokenFirebase)
     {
-        $this->token = $token;
+        $this->tokenFirebase = $tokenFirebase;
     }
 
     public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = '')
     {
         try {
-            $accessToken = $this->token->getAccessToken($request);
-            $email = $this->token->getEmailFromToken($accessToken);
+            $accessToken = (new Token)->getAccessToken($request);
+            $email = $this->tokenFirebase->getEmailFromToken($accessToken);
             $account = new Account($email);
             $accountRoles = $account->roles;
 

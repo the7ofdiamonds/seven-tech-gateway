@@ -56,28 +56,29 @@ use SEVEN_TECH\Gateway\CSS\Customizer\Color;
 use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
 
 use SEVEN_TECH\Gateway\Database\Database;
+
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use SEVEN_TECH\Gateway\JS\JS;
 
 use SEVEN_TECH\Gateway\Pages\Pages;
 
-use SEVEN_TECH\Gateway\Password\Password;
+use SEVEN_TECH\Gateway\Password\PasswordChange;
 
 use SEVEN_TECH\Gateway\Post_Types\Post_Types;
 
-use SEVEN_TECH\Gateway\Roles\Roles;
-
 use SEVEN_TECH\Gateway\Router\Router;
 
+use SEVEN_TECH\Gateway\Services\ServicesFirebase;
+
 use SEVEN_TECH\Gateway\Shortcodes\Shortcodes;
-use SEVEN_TECH\Gateway\Session\Session;
-use SEVEN_TECH\Gateway\Session\SessionRedis;
+
 use SEVEN_TECH\Gateway\Taxonomies\Taxonomies;
 
 use SEVEN_TECH\Gateway\Templates\Templates;
 
 use SEVEN_TECH\Gateway\Token\Token;
+use SEVEN_TECH\Gateway\Token\TokenFirebase;
 
 use SEVEN_TECH\Gateway\User\UserCreate;
 
@@ -112,28 +113,37 @@ class SEVEN_TECH
         $dotenv->load();
 
         $admin = new Admin();
+        $adminPasswordManagement = new AdminPasswordManagement();
+        $adminSessionManagement = new AdminSessionManagement();
+
+        add_action('admin_init', function () use ($admin) {
+            $admin;
+            add_filter("plugin_action_links_{$this->plugin_file}", [$admin, 'settings_link']);
+        });
 
         add_action('admin_menu', [$admin, 'register_custom_menu_page']);
+        add_action('admin_menu', [$adminPasswordManagement, 'register_custom_submenu_page']);
+        add_action('admin_menu', [$adminSessionManagement, 'register_custom_submenu_page']);
 
         try {
             $auth = $admin->areGoogleCredentialsPresent();
 
             if ($auth instanceof Auth) {
-                $createAccount = new AccountCreate($auth);
-                $token = new Token($auth);
-                $login = new AuthenticationLogin($auth);
-                $authenticationToken = new AuthenticationToken($token, $auth);
-                $logout = new AuthenticationLogout($token, $auth);
-                $authorization = new Authorization($token);
-                $password = new Password();
-                $roles = new Roles();
-                $userCreate = new UserCreate($auth);
-                $session = new Session($auth);
+                $servicesFirebase = new ServicesFirebase($auth);
+
+                $createAccount = new AccountCreate($servicesFirebase);
+                $login = new AuthenticationLogin($servicesFirebase);
+                $tokenFirebase = new TokenFirebase($servicesFirebase);
+                $authenticationToken = new AuthenticationToken($tokenFirebase, $servicesFirebase);
+                $logout = new AuthenticationLogout($tokenFirebase);
+                $authorization = new Authorization($tokenFirebase);
+                $userCreate = new UserCreate($servicesFirebase);
+                $passwordChange = new PasswordChange($servicesFirebase);
 
                 $accountAPI = new API_Account($createAccount, $login, $authorization);
                 $authAPI = new API_Authentication($login, $authenticationToken, $logout);
-                $passwordAPI = new API_Password();
-                $rolesAPI = new API_Roles($roles, $authorization);
+                $passwordAPI = new API_Password($passwordChange);
+                $rolesAPI = new API_Roles($authorization);
                 $userAPI = new API_User($userCreate, $login, $authorization);
 
                 add_action('rest_api_init', function () use ($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI) {
@@ -141,18 +151,9 @@ class SEVEN_TECH
                 });
 
                 $adminAccountManagement = new AdminAccountManagement($createAccount);
-                $adminPasswordManagement = new AdminPasswordManagement($password);
-                $adminSessionManagement = new AdminSessionManagement($session);
                 $adminUserManagement = new AdminUserManagement($userCreate);
 
-                add_action('admin_init', function () use ($admin) {
-                    $admin;
-                    add_filter("plugin_action_links_{$this->plugin_file}", [$admin, 'settings_link']);
-                });
-
                 add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
-                add_action('admin_menu', [$adminPasswordManagement, 'register_custom_submenu_page']);
-                add_action('admin_menu', [$adminSessionManagement, 'register_custom_submenu_page']);
                 add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
             }
         } catch (DestructuredException $e) {

@@ -2,32 +2,28 @@
 
 namespace SEVEN_TECH\Gateway\Token;
 
-use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 use Exception;
 
 use WP_REST_Request;
 
-use Kreait\Firebase\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 
 class Token
 {
-    private $auth;
 
-    public function __construct(Auth $auth)
+    public function __construct()
     {
-        $this->auth = $auth;
     }
 
-    function getVerifiedToken($token)
+    function hashToken($token)
     {
-        try {
-            return $this->auth->verifyIdToken($token, true);
-        } catch (FailedToVerifyToken $e) {
-            throw new DestructuredException($e);
+        if (function_exists('hash')) {
+            return hash('sha256', $token);
+        } else {
+            return sha1($token);
         }
     }
 
@@ -40,14 +36,14 @@ class Token
                 throw new Exception('Authorization header could not be found in the headers of this request.', 403);
             }
 
-            $authentication = $headers['authorization'][0];
-            $accessToken = substr($authentication, 7);
+            $authorization = $headers['authorization'][0];
+            $accessToken = substr($authorization, 7);
 
             if (empty($accessToken)) {
                 throw new Exception('Access Token could not be found.', 403);
             }
 
-            return $this->getVerifiedToken($accessToken);
+            return $accessToken;
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (RevokedIdToken $e) {
@@ -72,30 +68,6 @@ class Token
         } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (RevokedIdToken $e) {
-            throw new DestructuredException($e);
-        } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function getEmailFromToken($accessToken)
-    {
-        $verifiedAccessToken = $this->getVerifiedToken($accessToken);
-
-        $email = $verifiedAccessToken->claims()->get('email');
-
-        return $email;
-    }
-
-    function findUserWithToken($accessToken)
-    {
-        try {
-            $email = $this->getEmailFromToken($accessToken);
-
-            return new Authentication($email);
-        } catch (FailedToVerifyToken $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);

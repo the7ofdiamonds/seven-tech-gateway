@@ -8,6 +8,7 @@ use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Session\SessionRedis;
+use SEVEN_TECH\Gateway\Session\SessionWordpress;
 
 use Exception;
 
@@ -48,8 +49,15 @@ class API_Authentication
             // }
 
             wp_set_current_user($authenticatedAccount->id);
-            // (new Session)->createSesssion($authenticatedAccount->id, true, is_ssl(), $authenticatedAccount->refresh_token);
-            (new SessionRedis)->createSession($_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $authenticatedAccount);
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+            $session = new Session($ip, $user_agent, $authenticatedAccount);
+            $hashedToken = $session->set($authenticatedAccount->refresh_token);
+
+            // (new SessionRedis)->createSession($session);
+            (new SessionWordpress)->createSession($authenticatedAccount->id, $hashedToken);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);
@@ -77,7 +85,7 @@ class API_Authentication
             return rest_ensure_response($logoutResponse);
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
-        } 
+        }
     }
 
     public function logoutAll(WP_REST_Request $request)
@@ -88,6 +96,6 @@ class API_Authentication
             return rest_ensure_response($logoutAllResponse);
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
-        } 
+        }
     }
 }
