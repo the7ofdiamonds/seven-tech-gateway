@@ -11,65 +11,56 @@ use Exception;
 
 class Session
 {
-    public function __construct()
+    public $id;
+    public $username;
+    public $authorities;
+    public $algorithm;
+    public $access_token;
+    public $refresh_token;
+    public $hashed_token;
+    public $ip;
+    public $user_agent;
+    public $login;
+    public $remember;
+    public $secure;
+    public $expiration;
+    public $expire;
+    public $auth_cookie_name;
+    public $scheme;
+
+    public function __construct(Authenticated $authenticated = null, $ip = '', $user_agent = '', $remember = false, $secure = '')
     {
-    }
+        $this->id = $authenticated->id;
+        $this->username = $authenticated->username;
+        $this->authorities = $authenticated->roles;
+        $this->algorithm = $authenticated->algorithm;
+        $this->access_token = $authenticated->access_token;
+        $this->refresh_token = $authenticated->refresh_token;
+        $this->hashed_token = (new Token)->hashToken($authenticated->refresh_token);
+        $this->ip = $ip;
+        $this->user_agent = $user_agent;
+        $this->login = time();
+        $this->remember = $remember;
+        $this->secure = $secure;
 
-    function set($id, $refresh_token, $remember = false, $secure = '')
-    {
-        try {
-            if ($remember) {
-                $expiration = time() + apply_filters('auth_cookie_expiration', 14 * DAY_IN_SECONDS, $id, $remember);
-                $expire = $expiration + (12 * HOUR_IN_SECONDS);
-            } else {
-                $expiration = time() + apply_filters('auth_cookie_expiration', 2 * DAY_IN_SECONDS, $id, $remember);
-                $expire     = 0;
-            }
+        if ($remember) {
+            $this->expiration = time() + apply_filters('auth_cookie_expiration', 14 * DAY_IN_SECONDS, $this->id, $remember);
+            $this->expire = $this->expiration + (12 * HOUR_IN_SECONDS);
+        } else {
+            $this->expiration = time() + apply_filters('auth_cookie_expiration', 2 * DAY_IN_SECONDS, $this->id, $remember);
+            $this->expire     = 0;
+        }
 
-            if ('' === $secure) {
-                $secure = is_ssl();
-            }
+        if ('' === $secure) {
+            $this->secure = is_ssl();
+        }
 
-            $secure_logged_in_cookie = $secure && 'https' === parse_url(get_option('home'), PHP_URL_SCHEME);
-
-            $secure = apply_filters('secure_auth_cookie', $secure, $id);
-
-            $secure_logged_in_cookie = apply_filters('secure_logged_in_cookie', $secure_logged_in_cookie, $id, $secure);
-
-            if ($secure) {
-                $auth_cookie_name = SECURE_AUTH_COOKIE;
-                $scheme           = 'secure_auth';
-            } else {
-                $auth_cookie_name = AUTH_COOKIE;
-                $scheme           = 'auth';
-            }
-
-            $hashed_token = (new Token)->hashToken($refresh_token);
-
-            $auth_cookie      = wp_generate_auth_cookie($id, $expiration, $scheme, $hashed_token);
-            $logged_in_cookie = wp_generate_auth_cookie($id, $expiration, 'logged_in', $hashed_token);
-
-            do_action('set_auth_cookie', $auth_cookie, $expire, $expiration, $id, $scheme, $hashed_token);
-
-            do_action('set_logged_in_cookie', $logged_in_cookie, $expire, $expiration, $id, 'logged_in', $hashed_token);
-
-            if (!apply_filters('send_auth_cookies', true, $expire, $expiration, $id, $scheme, $hashed_token)) {
-                return;
-            }
-
-            setcookie($auth_cookie_name, $auth_cookie, $expire, PLUGINS_COOKIE_PATH, COOKIE_DOMAIN, $secure, true);
-            setcookie($auth_cookie_name, $auth_cookie, $expire, ADMIN_COOKIE_PATH, COOKIE_DOMAIN, $secure, true);
-            setcookie(LOGGED_IN_COOKIE, $logged_in_cookie, $expire, COOKIEPATH, COOKIE_DOMAIN, $secure_logged_in_cookie, true);
-
-            if (COOKIEPATH != SITECOOKIEPATH) {
-                setcookie(LOGGED_IN_COOKIE, $logged_in_cookie, $expire, SITECOOKIEPATH, COOKIE_DOMAIN, $secure_logged_in_cookie, true);
-            }
-
-            return $hashed_token;
-        } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
+        if ($secure) {
+            $this->auth_cookie_name = SECURE_AUTH_COOKIE;
+            $this->scheme           = 'secure_auth';
+        } else {
+            $this->auth_cookie_name = AUTH_COOKIE;
+            $this->scheme           = 'auth';
         }
     }
 

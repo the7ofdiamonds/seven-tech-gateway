@@ -53,10 +53,10 @@ class API_Authentication
             $ip = $_SERVER['REMOTE_ADDR'];
             $user_agent = $_SERVER['HTTP_USER_AGENT'];
 
-            $hashedToken = (new Session)->set($ip, $user_agent, $authenticatedAccount->refresh_token);
+            $session = new Session($authenticatedAccount, $ip, $user_agent);
 
             // (new SessionRedis)->createSession($session);
-            (new SessionWordpress)->createSession($authenticatedAccount->id, $hashedToken);
+            (new SessionWordpress)->createSession($session);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);

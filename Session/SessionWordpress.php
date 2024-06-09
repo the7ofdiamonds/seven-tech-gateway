@@ -30,34 +30,26 @@ class SessionWordpress
         }
     }
 
-    function createSession($id, $hashed_token)
+    function createSession(Session $session)
     {
         try {
-            if (empty($id)) {
-                throw new Exception('ID is required to store session.', 400);
-            }
-
-            if (empty($hashed_token)) {
-                throw new Exception('A token is required to store session.', 400);
-            }
-
-            $session_tokens = $this->getSessions($id);
+            $session_tokens = $this->getSessions($session->id);
 
             $session_token = array(
-                'expiration' => time() + DAY_IN_SECONDS,
-                'ip' => $_SERVER['REMOTE_ADDR'],
-                'ua' => $_SERVER['HTTP_USER_AGENT'],
-                'login' => time()
+                'expiration' => $session->expiration,
+                'ip' => $session->ip,
+                'ua' => $session->user_agent,
+                'login' => $session->login
             );
 
-            $session_tokens[$hashed_token] = $session_token;
+            $session_tokens[$session->hashed_token] = $session_token;
 
             $serializedSessions = serialize($session_tokens);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL createSession('%s', '%s')", $id, $serializedSessions)
+                $wpdb->prepare("CALL createSession('%s', '%s')", $session->id, $serializedSessions)
             );
 
             if ($wpdb->last_error) {

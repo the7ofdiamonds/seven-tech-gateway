@@ -3,7 +3,7 @@ use SEVEN_TECH\Gateway\Cookie\Cookie;
 
 $cookie = new Cookie($_COOKIE);
 
-if (!$cookie->isValid) {
+if ((new Cookie)->isValid($_COOKIE)) {
     $fullUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
     header("Location: /login?redirectTo=" . $fullUrl);
