@@ -4,7 +4,7 @@ namespace SEVEN_TECH\Gateway\Token;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Services\ServicesFirebase;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 
 use Exception;
 
@@ -16,11 +16,11 @@ use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 
 class TokenFirebase
 {
-    private $servicesFirebase;
+    private $firebaseAuth;
 
-    public function __construct(ServicesFirebase $servicesFirebase)
+    public function __construct()
     {
-        $this->servicesFirebase = $servicesFirebase;
+        $this->firebaseAuth = new FirebaseAuth;
     }
 
     function hashToken($token)
@@ -34,7 +34,7 @@ class TokenFirebase
 
     function getEmailFromToken($accessToken)
     {
-        $verifiedAccessToken = $this->servicesFirebase->getVerifiedToken($accessToken);
+        $verifiedAccessToken = $this->firebaseAuth->getVerifiedToken($accessToken);
 
         $email = $verifiedAccessToken->claims()->get('email');
 
@@ -44,7 +44,7 @@ class TokenFirebase
     function findUserWithToken($accessToken)
     {
         try {
-            $email = $this->servicesFirebase->getEmailFromToken($accessToken);
+            $email = $this->firebaseAuth->getEmailFromToken($accessToken);
 
             return new Authentication($email);
         } catch (FailedToVerifyToken $e) {
@@ -59,9 +59,9 @@ class TokenFirebase
     function revokeAllRefreshTokens(WP_REST_Request $request)
     {
         $accessToken = (new Token)->getAccessToken($request);
-        $verifiedAccessToken = $this->servicesFirebase->getVerifiedToken($accessToken);
+        $verifiedAccessToken = $this->firebaseAuth->getVerifiedToken($accessToken);
         $uid = $verifiedAccessToken->claims()->get('sub');
 
-        return $this->servicesFirebase->revokeRefreshTokens($uid);
+        return $this->firebaseAuth->revokeRefreshTokens($uid);
     }
 }

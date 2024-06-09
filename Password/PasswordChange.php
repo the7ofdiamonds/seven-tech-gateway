@@ -6,7 +6,7 @@ use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailPassword;
-use SEVEN_TECH\Gateway\Services\ServicesFirebase;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
@@ -16,14 +16,14 @@ class PasswordChange
     private $validator;
     private $exists;
     private $email;
-private $servicesFirebase;
+private $firebaseAuth;
 
-    public function __construct(ServicesFirebase $servicesFirebase)
+    public function __construct()
     {
         $this->validator = new Validator;
         $this->exists = new DatabaseExists;
         $this->email = new EmailPassword;
-        $this->servicesFirebase = $servicesFirebase;
+        $this->firebaseAuth = new FirebaseAuth;
     }
 
     function hashPassword($password)
@@ -144,7 +144,7 @@ private $servicesFirebase;
 
             
             $auth = new Authentication($email);
-            $this->servicesFirebase->changeFirebasePassword($auth->provider_given_id, $newPassword);
+            $this->firebaseAuth->changeFirebasePassword($auth->provider_given_id, $newPassword);
 
             $this->unexpireCredentials($email, $auth->password);
 

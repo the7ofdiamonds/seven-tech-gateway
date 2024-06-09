@@ -28,8 +28,6 @@ define('GOOGLE_SERVICE_ACCOUNT', plugin_dir_path(__FILE__) . 'Configuration/serv
 
 require_once SEVEN_TECH_GATEWAY . 'vendor/autoload.php';
 
-use SEVEN_TECH\Gateway\Account\AccountCreate;
-
 use SEVEN_TECH\Gateway\Admin\Admin;
 use SEVEN_TECH\Gateway\Admin\AdminAccountManagement;
 use SEVEN_TECH\Gateway\Admin\AdminPasswordManagement;
@@ -37,17 +35,6 @@ use SEVEN_TECH\Gateway\Admin\AdminSessionManagement;
 use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
 
 use SEVEN_TECH\Gateway\API\API;
-use SEVEN_TECH\Gateway\API\API_Account;
-use SEVEN_TECH\Gateway\API\API_Authentication;
-use SEVEN_TECH\Gateway\API\API_Password;
-use SEVEN_TECH\Gateway\API\API_Roles;
-use SEVEN_TECH\Gateway\API\API_User;
-
-use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
-use SEVEN_TECH\Gateway\Authentication\AuthenticationToken;
-use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
-
-use SEVEN_TECH\Gateway\Authorization\Authorization;
 
 use SEVEN_TECH\Gateway\CSS\CSS;
 use SEVEN_TECH\Gateway\CSS\Customizer\Customizer;
@@ -57,19 +44,13 @@ use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
 
 use SEVEN_TECH\Gateway\Database\Database;
 
-use SEVEN_TECH\Gateway\Exception\DestructuredException;
-
 use SEVEN_TECH\Gateway\JS\JS;
 
 use SEVEN_TECH\Gateway\Pages\Pages;
 
-use SEVEN_TECH\Gateway\Password\PasswordChange;
-
 use SEVEN_TECH\Gateway\Post_Types\Post_Types;
 
 use SEVEN_TECH\Gateway\Router\Router;
-
-use SEVEN_TECH\Gateway\Services\ServicesFirebase;
 
 use SEVEN_TECH\Gateway\Shortcodes\Shortcodes;
 
@@ -77,15 +58,7 @@ use SEVEN_TECH\Gateway\Taxonomies\Taxonomies;
 
 use SEVEN_TECH\Gateway\Templates\Templates;
 
-use SEVEN_TECH\Gateway\Token\Token;
-use SEVEN_TECH\Gateway\Token\TokenFirebase;
-
-use SEVEN_TECH\Gateway\User\UserCreate;
-
-use Exception;
-
-use  Dotenv\Dotenv;
-use Kreait\Firebase\Contract\Auth;
+use Dotenv\Dotenv;
 
 class SEVEN_TECH
 {
@@ -115,6 +88,8 @@ class SEVEN_TECH
         $admin = new Admin();
         $adminPasswordManagement = new AdminPasswordManagement();
         $adminSessionManagement = new AdminSessionManagement();
+        $adminAccountManagement = new AdminAccountManagement();
+        $adminUserManagement = new AdminUserManagement();
 
         add_action('admin_init', function () use ($admin) {
             $admin;
@@ -124,43 +99,12 @@ class SEVEN_TECH
         add_action('admin_menu', [$admin, 'register_custom_menu_page']);
         add_action('admin_menu', [$adminPasswordManagement, 'register_custom_submenu_page']);
         add_action('admin_menu', [$adminSessionManagement, 'register_custom_submenu_page']);
-
-        try {
-            $auth = $admin->areGoogleCredentialsPresent();
-
-            if ($auth instanceof Auth) {
-                $servicesFirebase = new ServicesFirebase($auth);
-
-                $createAccount = new AccountCreate($servicesFirebase);
-                $login = new AuthenticationLogin($servicesFirebase);
-                $tokenFirebase = new TokenFirebase($servicesFirebase);
-                $authenticationToken = new AuthenticationToken($tokenFirebase, $servicesFirebase);
-                $logout = new AuthenticationLogout($tokenFirebase);
-                $authorization = new Authorization($tokenFirebase);
-                $userCreate = new UserCreate($servicesFirebase);
-                $passwordChange = new PasswordChange($servicesFirebase);
-
-                $accountAPI = new API_Account($createAccount, $login, $authorization);
-                $authAPI = new API_Authentication($login, $authenticationToken, $logout);
-                $passwordAPI = new API_Password($passwordChange);
-                $rolesAPI = new API_Roles($authorization);
-                $userAPI = new API_User($userCreate, $login, $authorization);
-
-                add_action('rest_api_init', function () use ($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI) {
-                    new API($accountAPI, $authAPI, $passwordAPI, $rolesAPI, $userAPI);
-                });
-
-                $adminAccountManagement = new AdminAccountManagement($createAccount);
-                $adminUserManagement = new AdminUserManagement($userCreate);
-
-                add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
-                add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
-            }
-        } catch (DestructuredException $e) {
-            error_log($e->getErrorMessage());
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-        }
+        add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
+        add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
+        
+        add_action('rest_api_init', function () {
+            new API();
+        });
 
         $pages = new Pages;
         $posttypes = new Post_Types;

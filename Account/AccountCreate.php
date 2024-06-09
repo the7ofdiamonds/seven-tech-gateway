@@ -7,7 +7,7 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Roles\Roles;
-use SEVEN_TECH\Gateway\Services\ServicesFirebase;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 
 use Exception;
 
@@ -17,15 +17,15 @@ class AccountCreate
 {
     private $databaseExists;
     private $password;
-    private $servicesFirebase;
+    private $firebaseAuth;
     private $roles;
     private $email;
 
-    public function __construct(ServicesFirebase $servicesFirebase)
+    public function __construct()
     {
         $this->databaseExists = new DatabaseExists;
         $this->password = new Password;
-        $this->servicesFirebase = $servicesFirebase;
+        $this->firebaseAuth = new FirebaseAuth;
         $this->roles = new Roles;
         $this->email = new EmailAccount;
     }
@@ -61,7 +61,7 @@ class AccountCreate
 
             $user_activation_key = wp_generate_password(20, false);
 
-            $newFirebaseUser = $this->servicesFirebase->createFirebaseUser($email, $phone, $password, $username);
+            $newFirebaseUser = $this->firebaseAuth->createFirebaseUser($email, $phone, $password, $username);
 
             if (!$newFirebaseUser instanceof UserRecord) {
                 error_log("Unable to add user with email {$email} to firebase.");

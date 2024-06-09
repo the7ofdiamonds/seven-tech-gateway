@@ -19,11 +19,11 @@ class API_User
     private $login;
     private $authorization;
 
-    public function __construct(UserCreate $createUser, AuthenticationLogin $login, Authorization $authorization)
+    public function __construct()
     {
-        $this->createUser = $createUser;
-        $this->login = $login;
-        $this->authorization = $authorization;
+        $this->createUser = new UserCreate;
+        $this->login = new AuthenticationLogin;
+        $this->authorization = new Authorization;
     }
 
     function addUser(WP_REST_Request $request)

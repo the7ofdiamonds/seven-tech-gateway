@@ -15,14 +15,14 @@ class AdminAccountManagement
     public $page_url;
     private $createAccount;
 
-    public function __construct(AccountCreate $createAccount)
+    public function __construct()
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'Account Management';
         $this->menu_title = 'Account';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->createAccount = $createAccount;
+        $this->createAccount = new AccountCreate;
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);

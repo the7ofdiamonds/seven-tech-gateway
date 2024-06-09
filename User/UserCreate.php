@@ -4,25 +4,25 @@ namespace SEVEN_TECH\Gateway\User;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailUser;
-use SEVEN_TECH\Gateway\Services\ServicesFirebase;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 
 use Exception;
 
 class UserCreate
 {
-    private $servicesFirebase;
+    private $firebaseAuth;
     private $email;
 
-    public function __construct(ServicesFirebase $servicesFirebase)
+    public function __construct()
     {
-        $this->servicesFirebase = $servicesFirebase;
+        $this->firebaseAuth = new FirebaseAuth;
         $this->email = new EmailUser;
     }
 
     public function createUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone)
     {
         try {
-            $this->servicesFirebase->createFirebaseUser($email, $phone, $password, $username);
+            $this->firebaseAuth->createFirebaseUser($email, $phone, $password, $username);
 
             global $wpdb;
 

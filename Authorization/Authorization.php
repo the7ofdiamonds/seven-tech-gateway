@@ -13,9 +13,9 @@ class Authorization
 {
     private $tokenFirebase;
 
-    public function __construct(TokenFirebase $tokenFirebase)
+    public function __construct()
     {
-        $this->tokenFirebase = $tokenFirebase;
+        $this->tokenFirebase = new TokenFirebase;
     }
 
     public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = '')

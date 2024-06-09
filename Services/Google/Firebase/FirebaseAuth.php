@@ -1,6 +1,6 @@
 <?php
 
-namespace SEVEN_TECH\Gateway\Services;
+namespace SEVEN_TECH\Gateway\Services\Google\Firebase;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
@@ -9,19 +9,20 @@ use Exception;
 
 use WP_REST_Request;
 
-use Kreait\Firebase\Auth;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Contract\Auth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 
-// use Kreait\Firebase\Contract\Auth;
-
-class ServicesFirebase
+class FirebaseAuth
 {
     private $auth;
 
-    public function __construct(Auth $auth)
+    public function __construct()
     {
-        $this->auth = $auth;
+        $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
+
+        $this->auth = $factory->createAuth();
     }
 
     function createFirebaseUser($email, $phone, $password, $username)
@@ -83,7 +84,7 @@ class ServicesFirebase
 
         return $email;
     }
-    
+
     function changeFirebasePassword($uid, $newPassword)
     {
         return $this->auth->changeUserPassword($uid, $newPassword);

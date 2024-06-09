@@ -4,8 +4,14 @@ namespace SEVEN_TECH\Gateway\API;
 
 class API
 {
-  public function __construct(API_Account $accountAPI, API_Authentication $authAPI, API_Password $passwordAPI, API_Roles $rolesAPI, API_User $userAPI)
+  public function __construct()
   {
+    $accountAPI = new API_Account();
+    $authAPI = new API_Authentication();
+    $passwordAPI = new API_Password();
+    $rolesAPI = new API_Roles();
+    $userAPI = new API_User();
+
     register_rest_route('seven-tech/v1', '/account/create', array(
       'methods' => 'POST',
       'callback' => array($accountAPI, 'createAccount'),

@@ -1,19 +1,19 @@
 <?php
 
-namespace SEVEN_TECH\Gateway\Services;
+namespace SEVEN_TECH\Gateway\Services\Redis;
 
 use Predis\Client;
 
-class ServicesRedis
+class RedisSession
 {
-    public $sessionDBConnection;
+    public $connection;
 
     public function __construct()
     {
         $options = ['parameters' => [
             'password' => 'password'
         ]];
-        $this->sessionDBConnection = new Client([
+        $this->connection = new Client([
             'scheme' => $_ENV['REDIS_SCHEME'],
             'host'   => $_ENV['REDIS_HOST'],
             'port'   => $_ENV['REDIS_PORT'],

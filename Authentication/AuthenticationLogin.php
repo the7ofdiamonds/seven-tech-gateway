@@ -6,20 +6,18 @@ use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
-use SEVEN_TECH\Gateway\Services\ServicesFirebase;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
-use Kreait\Firebase\Auth;
-
 class AuthenticationLogin
 {
-    private $servicesFirebase;
+    private $firebaseAuth;
 
-    public function __construct(ServicesFirebase $servicesFirebase)
+    public function __construct()
     {
-        $this->servicesFirebase = $servicesFirebase;
+        $this->firebaseAuth = new FirebaseAuth;
     }
 
     function signInWithEmailAndPassword($email, $password)
@@ -36,9 +34,9 @@ class AuthenticationLogin
                 throw new Exception('The password you entered for this username is not correct.', 400);
             }
 
-            $signedInUser = $this->servicesFirebase->signInWithEmailAndPassword($email, $password);
+            $signedInUser = $this->firebaseAuth->signInWithEmailAndPassword($email, $password);
 
-            $user = $this->servicesFirebase->getUserByID($signedInUser->data()['localId']);
+            $user = $this->firebaseAuth->getUserByID($signedInUser->data()['localId']);
 
             $authentication->isAuthenticated($password);
 

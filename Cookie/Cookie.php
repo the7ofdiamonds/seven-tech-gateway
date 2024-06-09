@@ -8,9 +8,10 @@ use SEVEN_TECH\Gateway\Session\Session;
 class Cookie
 {
     public string $email;
+    public int $expiration;
     public string $verifier;
     public bool $isUser;
-    public bool $isValid;
+    public bool $isValid = false;
 
     public function __construct(array $cookies)
     {
@@ -26,7 +27,12 @@ class Cookie
             $cookieParts = explode('|', $matchingCookieValue);
 
             $this->email = $cookieParts[0];
+            $this->expiration = $cookieParts[1];
             $this->verifier = $cookieParts[2];
+
+            if (time() < $this->expiration) {
+                error_log('Cookie expired.');
+            }
 
             $account = new Account($this->email);
 

@@ -15,9 +15,9 @@ class API_Password
 {
     private $passwordChange;
 
-    public function __construct(PasswordChange $passwordChange)
+    public function __construct()
     {
-        $this->passwordChange = $passwordChange;
+        $this->passwordChange = new PasswordChange;
     }
 
     function recoverPassword(WP_REST_Request $request)

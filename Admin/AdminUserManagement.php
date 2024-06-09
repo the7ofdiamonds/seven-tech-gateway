@@ -16,14 +16,14 @@ class AdminUserManagement
     public $page_url;
     private $createUser;
 
-    public function __construct(UserCreate $createUser)
+    public function __construct()
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
         $this->page_title = 'User Management';
         $this->menu_title = 'User';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->createUser = $createUser;
+        $this->createUser = new UserCreate;
 
         add_action('wp_ajax_createUser', [$this, 'createUser']);
         add_action('wp_ajax_getUser', [$this, 'getUser']);

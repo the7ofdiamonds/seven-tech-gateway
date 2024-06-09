@@ -19,11 +19,11 @@ class API_Account
     private $login;
     private $authorization;
 
-    public function __construct(AccountCreate $createAccount, AuthenticationLogin $login, Authorization $authorization)
+    public function __construct()
     {
-        $this->createAccount = $createAccount;
-        $this->login = $login;
-        $this->authorization = $authorization;
+        $this->createAccount = new AccountCreate;
+        $this->login = new AuthenticationLogin;
+        $this->authorization = new Authorization;
     }
 
     function createAccount(WP_REST_Request $request)

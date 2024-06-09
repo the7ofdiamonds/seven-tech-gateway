@@ -17,9 +17,9 @@ class AuthenticationLogout
 {
     private $tokenFirebase;
 
-    public function __construct(TokenFirebase $tokenFirebase)
+    public function __construct()
     {
-        $this->tokenFirebase = $tokenFirebase;
+        $this->tokenFirebase = new TokenFirebase;
     }
 
     public function logout(WP_REST_Request $request)

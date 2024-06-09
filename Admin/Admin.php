@@ -2,13 +2,9 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
-use SEVEN_TECH\Gateway\Configuration\Configuration;
+use SEVEN_TECH\Gateway\ENV\ENV;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-
-use Exception;
-
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Contract\Auth;
+use SEVEN_TECH\Gateway\Services\Google\Google;
 
 class Admin
 {
@@ -19,7 +15,8 @@ class Admin
         $this->admin_url = $this->get_plugin_page_url('admin.php', $this->get_parent_slug());
 
         add_action('wp_ajax_areGoogleCredentialsPresentAdmin', [$this, 'areGoogleCredentialsPresentAdmin']);
-        add_action('wp_ajax_uploadFile', [$this, 'uploadFile']);
+        add_action('wp_ajax_uploadGoogleServiceAccountFile', [$this, 'uploadGoogleServiceAccountFile']);
+        add_action('wp_ajax_uploadENVFile', [$this, 'uploadENVFile']);
     }
 
     public function get_parent_slug()
@@ -83,55 +80,10 @@ class Admin
         echo 'Manage User Accounts';
     }
 
-    public function areGoogleCredentialsPresent()
-    {
-        try {
-            if (!file_exists(GOOGLE_SERVICE_ACCOUNT)) {
-                throw new Exception('Google service account file does not exist.', 400);
-            }
-
-            $jsonFileContents = file_get_contents(GOOGLE_SERVICE_ACCOUNT);
-
-            if ($jsonFileContents === false) {
-                throw new Exception('Unable to read Google service account file.', 400);
-            }
-
-            $decodedData = json_decode($jsonFileContents, true);
-
-            $missingFields = [];
-            $requiredFields = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email', 'client_id', 'auth_uri', 'token_uri', 'auth_provider_x509_cert_url', 'client_x509_cert_url', 'universe_domain'];
-
-            foreach ($requiredFields as $field) {
-                if (!isset($decodedData[$field])) {
-                    $missingFields[] = $field;
-                }
-            }
-
-            if (!empty($missingFields)) {
-                $errorMessage = 'Required fields are missing: ' . implode(', ', $missingFields);
-                throw new Exception($errorMessage, 400);
-            }
-
-            if ($decodedData['type'] !== 'service_account') {
-                throw new Exception('Type is not set to service_account.', 400);
-            }
-
-            $factory = (new Factory)->withServiceAccount(GOOGLE_SERVICE_ACCOUNT);
-
-            return $factory->createAuth();
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
     public function areGoogleCredentialsPresentAdmin()
     {
         try {
-            $credentialsPresent = $this->areGoogleCredentialsPresent();
-
-            if ($credentialsPresent instanceof Auth) {
-                $credentialsPresent = true;
-            }
+            $credentialsPresent = (new Google)->serviceAccountIsValid;
 
             wp_send_json_success($credentialsPresent);
         } catch (DestructuredException $e) {
@@ -139,19 +91,29 @@ class Admin
         } 
     }
 
-    // Upload google credentrials
-    public function uploadFile()
+    public function uploadGoogleServiceAccountFile()
     {
         try {
             foreach ($_FILES as $file) {
-                $uploadedFile = (new Configuration)->uploadConfigFile($file);
+                $uploadedGoogleServiceAccountFile = (new Google)->uploadServiceAccountFile($file);
             }
 
-            wp_send_json_success($uploadedFile);
-        } catch (Exception $e) {
-            wp_send_json_error($e->getMessage(), $e->getCode());
-        }
+            wp_send_json_success($uploadedGoogleServiceAccountFile);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        } 
     }
 
-    // upload redis credentials
+    public function uploadENVFile()
+    {
+        try {
+            foreach ($_FILES as $file) {
+                $uploadedENVFile = (new ENV)->uploadENVFile($file);
+            }
+
+            wp_send_json_success($uploadedENVFile);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        } 
+    }
 }

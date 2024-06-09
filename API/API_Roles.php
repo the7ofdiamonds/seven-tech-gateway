@@ -12,9 +12,9 @@ class API_Roles
 {
     private $authorization;
 
-    public function __construct(Authorization $authorization)
+    public function __construct()
     {
-        $this->authorization = $authorization;
+        $this->authorization = new Authorization;
     }
 
     public function getRoles(WP_REST_Request $request)

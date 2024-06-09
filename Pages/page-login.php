@@ -2,9 +2,8 @@
 use SEVEN_TECH\Gateway\Cookie\Cookie;
 
 $cookie = new Cookie($_COOKIE);
-error_log(print_r($_REQUEST, true));
 
-if ((new Cookie($_COOKIE))->isValid) {
+if ($cookie->isValid) {
     header('Location: /logout');
 }
 

@@ -20,11 +20,11 @@ class API_Authentication
     private $token;
     private $logout;
 
-    public function __construct(AuthenticationLogin $login, AuthenticationToken $token, AuthenticationLogout $logout)
+    public function __construct()
     {
-        $this->login = $login;
-        $this->token = $token;
-        $this->logout = $logout;
+        $this->login = new AuthenticationLogin;
+        $this->token = new AuthenticationToken;
+        $this->logout = new AuthenticationLogout;
     }
 
     function login(WP_REST_Request $request)
@@ -53,8 +53,7 @@ class API_Authentication
             $ip = $_SERVER['REMOTE_ADDR'];
             $user_agent = $_SERVER['HTTP_USER_AGENT'];
 
-            $session = new Session($ip, $user_agent, $authenticatedAccount);
-            $hashedToken = $session->set($authenticatedAccount->refresh_token);
+            $hashedToken = (new Session)->set($ip, $user_agent, $authenticatedAccount->refresh_token);
 
             // (new SessionRedis)->createSession($session);
             (new SessionWordpress)->createSession($authenticatedAccount->id, $hashedToken);

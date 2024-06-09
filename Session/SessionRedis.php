@@ -3,7 +3,7 @@
 namespace SEVEN_TECH\Gateway\Session;
 
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
-use SEVEN_TECH\Gateway\Services\ServicesRedis;
+use SEVEN_TECH\Gateway\Services\Redis\RedisSession;
 
 class SessionRedis
 {
@@ -27,12 +27,12 @@ class SessionRedis
             'authorities' => $authenticated->roles
         );
 
-        return (new ServicesRedis)->sessionDBConnection->hmset($hashedToken, $sessionArray);
+        return (new RedisSession)->connection->hmset($hashedToken, $sessionArray);
     }
 
     function findSession($session_id)
     {
-        return (new ServicesRedis)->sessionDBConnection->get($session_id);
+        return (new RedisSession)->connection->get($session_id);
     }
 
     function updateSession($session_id, $accessToken)
@@ -42,11 +42,11 @@ class SessionRedis
             'access_token' => $accessToken,
         );
 
-        return (new ServicesRedis)->sessionDBConnection->hmset($session_id, $updatedSession);
+        return (new RedisSession)->connection->hmset($session_id, $updatedSession);
     }
 
     function deleteSession($session_id)
     {
-        return (new ServicesRedis)->sessionDBConnection->delete($session_id);
+        return (new RedisSession)->connection->delete($session_id);
     }
 }
