@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
+use Exception;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\SessionWordpress;
@@ -26,6 +27,7 @@ class AdminSessionManagement
 
         add_action('wp_ajax_getSessions', [$this, 'getSessions']);
         add_action('wp_ajax_removeSession', [$this, 'removeSession']);
+        add_action('wp_ajax_lengthSession', [$this, 'lengthSession']);
     }
 
     function register_custom_submenu_page()
@@ -72,6 +74,25 @@ class AdminSessionManagement
             $removedSession = $this->sessionWordpress->deleteSession($id, $verifier);
 
             wp_send_json_success($removedSession);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function lengthSession()
+    {
+        try {
+            $length = $_POST['length'];
+
+            $updated = update_option('session_length', $length);
+
+            if (!$updated) {
+                throw new Exception('Session expiration could not be updated.', 500);
+            }
+
+            $successMsg = "Session Expiration has been updated to {$length}";
+
+            wp_send_json_success($successMsg);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }

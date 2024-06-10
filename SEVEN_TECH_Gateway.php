@@ -42,6 +42,8 @@ use SEVEN_TECH\Gateway\CSS\Customizer\BorderRadius;
 use SEVEN_TECH\Gateway\CSS\Customizer\Color;
 use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
 
+use SEVEN_TECH\Gateway\Cookie\Cookie;
+
 use SEVEN_TECH\Gateway\Database\Database;
 
 use SEVEN_TECH\Gateway\JS\JS;
@@ -101,7 +103,7 @@ class SEVEN_TECH
         add_action('admin_menu', [$adminSessionManagement, 'register_custom_submenu_page']);
         add_action('admin_menu', [$adminAccountManagement, 'register_custom_submenu_page']);
         add_action('admin_menu', [$adminUserManagement, 'register_custom_submenu_page']);
-        
+
         add_action('rest_api_init', function () {
             new API();
         });
@@ -144,6 +146,10 @@ class SEVEN_TECH
             $templates
         );
         $this->pages = new Pages;
+
+        $cookie = new Cookie;
+
+        add_filter('auth_cookie', [$cookie, 'validate_auth_cookie'], 10, 2);
 
         add_action('after_setup_theme', [$this, 'hide_admin_bar']);
     }

@@ -5,6 +5,7 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
 use SEVEN_TECH\Gateway\Authentication\AuthenticationToken;
 use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
+use SEVEN_TECH\Gateway\Cookie\Cookie;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Session\SessionRedis;
@@ -53,10 +54,11 @@ class API_Authentication
             $ip = $_SERVER['REMOTE_ADDR'];
             $user_agent = $_SERVER['HTTP_USER_AGENT'];
 
-            $session = new Session($authenticatedAccount, $ip, $user_agent);
+            $session = new Session($authenticatedAccount, $ip, $user_agent, true);
 
             // (new SessionRedis)->createSession($session);
             (new SessionWordpress)->createSession($session);
+            // (new Cookie)->set($session);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);

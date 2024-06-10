@@ -1,7 +1,6 @@
 <?php
-use SEVEN_TECH\Gateway\Cookie\Cookie;
 
-if ((new Cookie)->isValid($_COOKIE)) {
+if (is_user_logged_in()) {
     header('Location: /logout');
 }
 

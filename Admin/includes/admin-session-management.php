@@ -38,4 +38,6 @@
     </div>
 
     <div class="sessions" id="sessions"></div>
+
+    <?php include_once SEVEN_TECH_GATEWAY . 'Admin/includes/admin-session-management-length.php'; ?>
 </div>
