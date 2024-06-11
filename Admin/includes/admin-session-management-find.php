@@ -65,5 +65,9 @@
             <h3>Refresh Token</h3>
             <h4 id="refresh_token"></h4>
         </div>
+
+        <button class="session-delete-btn" id="session_delete_btn">
+            <h3>Remove</h3>
+        </button>
     </div>
 </div>

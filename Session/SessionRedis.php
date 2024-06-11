@@ -47,6 +47,6 @@ class SessionRedis
 
     function deleteSession($session_id)
     {
-        return (new RedisSession)->connection->delete($session_id);
+        return (new RedisSession)->connection->del($session_id);
     }
 }

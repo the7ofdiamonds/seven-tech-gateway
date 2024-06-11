@@ -90,6 +90,12 @@ class AdminSessionManagement
         try {
             $length = $_POST['length'];
 
+            $savedLength = get_option('session_length');
+
+            if ($savedLength == $length) {
+                throw new Exception("Session expiration is the same at {$length} seconds.", 400);
+            }
+
             $updated = update_option('session_length', $length);
 
             if (!$updated) {

@@ -2,7 +2,7 @@
   display: none;
   flex-direction: column;
   gap: 0.5rem;
-  overflow: hidden;
+  overflow: none;
 }
 
 .session-management .session-management-find .find-session {
@@ -40,4 +40,5 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 100%;
 }

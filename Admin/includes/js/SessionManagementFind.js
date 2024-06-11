@@ -7,7 +7,7 @@ jQuery(document).ready(function ($) {
                 action: 'findSession',
                 verifier: verifier
             },
-            success: function (response) {  
+            success: function (response) {
                 const id = response.data.id;
                 const username = response.data.username;
                 const authorities = response.data.authorities;
@@ -45,4 +45,30 @@ jQuery(document).ready(function ($) {
 
         findSession(verifier);
     });
+
+    function deleteSession(id, verifier) {
+        return $.ajax({
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'removeSession',
+                id: id,
+                verifier: verifier
+            },
+            success: function (response) {
+                displayMessage('success', response.data);
+            },
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                displayMessage(status, errorMessage);
+            }
+        });
+    }
+
+    $('button#session_delete_btn').on('click', function () {
+        const verifier = $('#verifier').val();
+        const id = $('#account_id').text();
+
+        deleteSession(id, verifier);
+    })
 });

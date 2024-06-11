@@ -69,7 +69,6 @@ class Session
             if (empty($session_verifier)) {
                 throw new Exception('Session Verifier is required to find session.', 404);
             }
-            error_log($session_verifier);
 
             // $session = false;
 
@@ -118,7 +117,9 @@ class Session
     function deleteSession($id, $verifier)
     {
         try {
-            return (new SessionWordpress)->deleteSession($id, $verifier);
+            // $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
+            $sessionDeleted = (new SessionRedis)->deleteSession($verifier);
+            return $sessionDeleted;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
