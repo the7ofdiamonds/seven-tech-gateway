@@ -21,7 +21,7 @@ jQuery(document).ready(function ($) {
         event.preventDefault();
 
         const length = $('#session_length_select').val();
-console.log(length);
+
         updateSessionLength(length);
     });
 });

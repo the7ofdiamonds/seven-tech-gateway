@@ -1,7 +1,7 @@
-<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/SessionManagementLength.css"; ?>>
-<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagementLength.js"; ?> defer></script>
+<link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/SessionManagementConfigure.css"; ?>>
+<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagementConfigure.js"; ?> defer></script>
 
-<div class="session-management-length" id="session_management_length">
+<div class="session-management-configure" id="session_management_configure">
     <form method="post" class="session-length" id="session_length">
         <h3>Session Length</h3>
         <select name="session_length" id="session_length_select">

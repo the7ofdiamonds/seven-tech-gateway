@@ -32,7 +32,7 @@ class SessionRedis
 
     function findSession($session_id)
     {
-        return (new RedisSession)->connection->get($session_id);
+        return (new RedisSession)->connection->hgetall($session_id);
     }
 
     function updateSession($session_id, $accessToken)

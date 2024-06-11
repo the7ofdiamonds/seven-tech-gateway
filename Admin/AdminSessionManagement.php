@@ -2,10 +2,10 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
-use Exception;
-use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Session\SessionWordpress;
+use SEVEN_TECH\Gateway\Session\Session;
+
+use Exception;
 
 class AdminSessionManagement
 {
@@ -14,7 +14,6 @@ class AdminSessionManagement
     private $menu_title;
     private $menu_slug;
     public $page_url;
-    private $sessionWordpress;
 
     public function __construct()
     {
@@ -23,8 +22,8 @@ class AdminSessionManagement
         $this->menu_title = 'Session';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->sessionWordpress = new SessionWordpress;
 
+        add_action('wp_ajax_findSession', [$this, 'findSession']);
         add_action('wp_ajax_getSessions', [$this, 'getSessions']);
         add_action('wp_ajax_removeSession', [$this, 'removeSession']);
         add_action('wp_ajax_lengthSession', [$this, 'lengthSession']);
@@ -46,20 +45,27 @@ class AdminSessionManagement
         echo 'Manage Sessions';
     }
 
+    function findSession()
+    {
+        try {
+            $verifier = $_POST['verifier'];
+
+            $session = (new Session)->findSession($verifier);
+
+            wp_send_json_success($session);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
     public function getSessions()
     {
         try {
             $email = $_POST['email'];
 
-            $account = new Account($email);
+            $sessions = (new Session)->getSessions($email);
 
-            $id = $account->id;
-            $provider_given_id = $account->provider_given_id;
-            $sessions = $this->sessionWordpress->getSessions($id);
-
-            $accountSessions = array('id' => $id, 'provider_given_id' => $provider_given_id, 'sessions' => $sessions);
-
-            wp_send_json_success($accountSessions);
+            wp_send_json_success($sessions);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
@@ -71,7 +77,7 @@ class AdminSessionManagement
             $verifier = $_POST['verifier'];
             $id = $_POST['id'];
 
-            $removedSession = $this->sessionWordpress->deleteSession($id, $verifier);
+            $removedSession = (new Session)->deleteSession($id, $verifier);
 
             wp_send_json_success($removedSession);
         } catch (DestructuredException $e) {
@@ -90,11 +96,13 @@ class AdminSessionManagement
                 throw new Exception('Session expiration could not be updated.', 500);
             }
 
-            $successMsg = "Session Expiration has been updated to {$length}";
+            $successMsg = "Session Expiration has been updated to {$length} seconds";
 
             wp_send_json_success($successMsg);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage(), $e->getCode());
         }
     }
 }

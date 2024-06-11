@@ -74,7 +74,7 @@ class SessionWordpress
     {
         $session = false;
 
-        $session_tokens = (new SessionWordpress)->getSessions($id);
+        $session_tokens = $this->getSessions($id);
 
         foreach ($session_tokens as $session_key => $session_value) {
             if ((new Validator)->matches($session_key, $session_verifier)) {
@@ -86,8 +86,11 @@ class SessionWordpress
         return $session;
     }
 
-    function updateSession()
+    function updateSession($id, $session_verifier)
     {
+        $session = $this->findSession($id, $session_verifier);
+
+        error_log(print_r($session, true));
     }
 
     function deleteSession($id, $verifier)

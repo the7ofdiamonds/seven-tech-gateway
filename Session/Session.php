@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Session;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
@@ -13,6 +14,7 @@ class Session
 {
     public $id;
     public $username;
+    public $passwordFrag;
     public $authorities;
     public $algorithm;
     public $access_token;
@@ -32,6 +34,7 @@ class Session
         if ($authenticated != null && $ip != '' && $user_agent != '') {
             $this->id = $authenticated->id;
             $this->username = $authenticated->username;
+            $this->passwordFrag = $authenticated->passwordFrag;
             $this->authorities = $authenticated->roles;
             $this->algorithm = $authenticated->algorithm;
             $this->access_token = $authenticated->access_token;
@@ -55,21 +58,71 @@ class Session
                 $this->auth_cookie_name = AUTH_COOKIE;
                 $this->scheme           = 'auth';
             }
+
+            error_log($this->scheme);
         }
     }
 
     function findSession($session_verifier, $id = '')
     {
-        if (empty($session_verifier)) {
-            throw new Exception('Session Verifier is required to find session.', 404);
+        try {
+            if (empty($session_verifier)) {
+                throw new Exception('Session Verifier is required to find session.', 404);
+            }
+            error_log($session_verifier);
+
+            // $session = false;
+
+            // if ($id != '') {
+            //     $session = (new SessionWordpress)->findSession($id, $session_verifier);
+            // }
+
+            $session = (new SessionRedis)->findSession($session_verifier);
+
+            return $session;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
         }
+    }
 
-        $session = false;
+    function getSessions($email)
+    {
+        try {
+            $account = new Account($email);
 
-        if ($id != '') {
-            $session = (new SessionWordpress)->findSession($id, $session_verifier);
+            $sessions = (new SessionWordpress)->getSessions($account->id);
+
+            // get sessions from redis as well
+            $accountSessions = array('id' => $account->id, 'provider_given_id' => $account->provider_given_id, 'sessions' => $sessions);
+
+            return $accountSessions;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
         }
+    }
 
-        return $session;
+    function updateSession()
+    {
+        try {
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function deleteSession($id, $verifier)
+    {
+        try {
+            return (new SessionWordpress)->deleteSession($id, $verifier);
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
     }
 }

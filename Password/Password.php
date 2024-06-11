@@ -19,6 +19,11 @@ class Password
         $this->exists = new DatabaseExists;
     }
 
+    function passwordFrag($password)
+    {
+        return substr($password, 8, 4);
+    }
+
     function hashPassword($password)
     {
         $this->validator->isValidPassword($password);

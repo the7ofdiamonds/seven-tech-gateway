@@ -17,7 +17,7 @@ class Cookie
     public int $expiration;
     public string $verifier;
     public bool $isUser;
-    public bool $isValid = false;
+    public bool $isValid = true;
 
     function set(Session $session)
     {
@@ -26,24 +26,24 @@ class Cookie
 
             $secure = apply_filters('secure_auth_cookie', $session->secure, $session->id);
 
-            $secure_logged_in_cookie = apply_filters('secure_logged_in_cookie', $secure_logged_in_cookie, $session->id, $secure);
+            $secure_logged_in_cookie = apply_filters('secure_logged_in_cookie', $secure_logged_in_cookie, $session->id, $session->secure);
 
             $auth_cookie      = wp_generate_auth_cookie($session->id, $session->expiration, $session->scheme, $session->hashed_token);
             $logged_in_cookie = wp_generate_auth_cookie($session->id, $session->expiration, 'logged_in', $session->hashed_token);
+            $cookie_elements = wp_parse_auth_cookie($logged_in_cookie);
 
             do_action('set_auth_cookie', $auth_cookie, $session->expire, $session->expiration, $session->id, $session->scheme, $session->hashed_token);
 
             do_action('set_logged_in_cookie', $logged_in_cookie, $session->expire, $session->expiration, $session->id, 'logged_in', $session->hashed_token);
 
             if (!apply_filters('send_auth_cookies', true, $session->expire, $session->expiration, $session->id, $session->scheme, $session->hashed_token)) {
-                error_log('unable to send auth cookies');
                 return;
             }
 
             setcookie($session->auth_cookie_name, $auth_cookie, $session->expire, PLUGINS_COOKIE_PATH, COOKIE_DOMAIN, $session->secure, true);
             setcookie($session->auth_cookie_name, $auth_cookie, $session->expire, ADMIN_COOKIE_PATH, COOKIE_DOMAIN, $session->secure, true);
             setcookie(LOGGED_IN_COOKIE, $logged_in_cookie, $session->expire, COOKIEPATH, COOKIE_DOMAIN, $secure_logged_in_cookie, true);
-            
+
             if (COOKIEPATH != SITECOOKIEPATH) {
                 setcookie(LOGGED_IN_COOKIE, $logged_in_cookie, $session->expire, SITECOOKIEPATH, COOKIE_DOMAIN, $secure_logged_in_cookie, true);
             }
@@ -134,7 +134,11 @@ class Cookie
 
         $pass_frag = substr($user->user_pass, 8, 4);
 
-        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
+
+
+
+        // scheme must be set in variable
+        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, 'secure_auth');
 
         // If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
         $algo = function_exists('hash') ? 'sha256' : 'sha1';
@@ -216,28 +220,44 @@ class Cookie
         $matchingCookies = [];
 
         foreach ($cookies as $key => $value) {
-            if (strpos($key, 'wordpress_logged_in_') === 0) {
+            if (strpos($key, 'wordpress_') === 0) {
+                if (strpos($key, 'wordpress_test_cookie') === 0) {
+                    continue;
+                }
+
                 $matchingCookies[$key] = $value;
             }
         }
 
         foreach ($matchingCookies as $matchingCookieKey => $matchingCookieValue) {
-            $cookieParts = explode('|', $matchingCookieValue);
+            $cookie_elements = wp_parse_auth_cookie($matchingCookieValue);
 
-            //     $this->email = $cookieParts[0];
-            //     $this->expiration = $cookieParts[1];
-            //     $this->verifier = $cookieParts[2];
+            $scheme     = $cookie_elements['scheme'];
+            $this->email   = $cookie_elements['username'];
+            $hmac       = $cookie_elements['hmac'];
+            $this->verifier      = $cookie_elements['token'];
+            $expired    = $cookie_elements['expiration'];
+            $this->expiration = $cookie_elements['expiration'];
 
-            //     if (time() > $this->expiration) {
-            //         error_log('Cookie expired.');
-            //     }
+            if (time() > $this->expiration) {
+                error_log('Cookie expired.');
+                $this->isValid = false;
+                break;
+            }
 
-            //     $account = new Account($this->email);
+            $account = new Account($this->email);
 
-            //     if ($account instanceof Account) {
-            //         $this->isValid = true;
-            //     }
+            if (!$account instanceof Account) {
+                $this->isValid = false;
+                break;
+            }
+
+            // error_log($scheme);
+            // error_log($hmac);
+            // error_log($this->verifier);
+            // error_log($this->expiration);
         }
+
         return $this->isValid;
     }
 }

@@ -6,7 +6,6 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
-use SEVEN_TECH\Gateway\Session\Session;
 
 use Exception;
 
@@ -28,7 +27,6 @@ class Account
     public $phone;
     public $bio;
     public $provider_given_id;
-    public $sessions;
     public $is_authenticated;
     public $is_account_non_expired;
     public $is_account_non_locked;
@@ -68,7 +66,6 @@ class Account
             $this->nicename = $account->nicename;
             $this->phone = $account->phone;
             $this->provider_given_id = $account->provider_given_id;
-            // $this->sessions = (new Session)->getSessions($account->id);
             $this->is_authenticated = (bool) $account->is_authenticated;
             $this->is_account_non_expired = (bool) $account->is_account_non_expired;
             $this->is_account_non_locked = (bool) $account->is_account_non_locked;
