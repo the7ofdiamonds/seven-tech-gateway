@@ -90,9 +90,11 @@ class Session
         try {
             $account = new Account($email);
 
-            $sessions = (new SessionWordpress)->getSessions($account->id);
+            // $sessions = (new SessionWordpress)->getSessions($account->id);
 
             // get sessions from redis as well
+
+            $sessions = (new SessionRedis)->getSessions($account->id);
             $accountSessions = array('id' => $account->id, 'provider_given_id' => $account->provider_given_id, 'sessions' => $sessions);
 
             return $accountSessions;

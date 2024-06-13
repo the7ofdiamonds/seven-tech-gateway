@@ -15,7 +15,7 @@ function getSessions(email) {
             $(".provider-given-id #provider_given_id").text(response.data.provider_given_id);
 
             $('#sessions').empty();
-
+console.log(response.data);
             var sessions = response.data.sessions;
             var sessionKeys = Object.keys(sessions);
 

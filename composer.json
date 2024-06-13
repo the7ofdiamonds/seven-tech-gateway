@@ -22,7 +22,7 @@
         "google/apiclient": "^2.15",
         "kreait/firebase-php": "^7.5",
         "google/apiclient-services": "*",
-        "php": "^8.1",
+        "php": "^7.2",
         "ext-pdo": "*",
         "ext-pdo_pgsql": "*",
         "phpmailer/phpmailer": "^6.8",

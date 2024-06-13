@@ -149,7 +149,7 @@ class SEVEN_TECH
 
         $cookie = new Cookie;
 
-        add_filter('auth_cookie', [$cookie, 'isValid'], 1, 5);
+        add_filter('auth_cookie', [$cookie, 'isValid'], 11, 5);
 
         add_action('after_setup_theme', [$this, 'hide_admin_bar']);
     }
