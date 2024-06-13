@@ -7,6 +7,7 @@ use SEVEN_TECH\Gateway\Authentication\AuthenticationToken;
 use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
 use SEVEN_TECH\Gateway\Cookie\Cookie;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Services\Redis\RedisSession;
 use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Session\SessionRedis;
 use SEVEN_TECH\Gateway\Session\SessionWordpress;
@@ -51,24 +52,20 @@ class API_Authentication
             // }
 
             wp_set_current_user($authenticatedAccount->id);
-            $hasedToken = (new Token)->hashToken($authenticatedAccount->refresh_token);
-            error_log($hasedToken);
-            wp_set_auth_cookie($authenticatedAccount->id, true, true, $hasedToken);
 
-            // $ip = $_SERVER['REMOTE_ADDR'];
-            // $user_agent = $_SERVER['HTTP_USER_AGENT'];
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $user_agent = $_SERVER['HTTP_USER_AGENT'];
 
-            // $session = new Session($authenticatedAccount, $ip, $user_agent, true);
+            $session = new Session($authenticatedAccount, $ip, $user_agent, true);
+            $redisSessionDB = new RedisSession;
 
-            // (new SessionRedis)->createSession($session);
-            // (new SessionWordpress)->createSession($session);
-            // (new Cookie)->set($session);
+            if ($redisSessionDB->isReady) {
+                (new SessionRedis)->createSession($session);
+            } else {
+                (new SessionWordpress)->createSession($session);
+            }
 
-            // $isValidCookie = (new Cookie)->isValid($_COOKIE);
-
-            // if ($isValidCookie) {
-            //     error_log('Cookie is valid.');
-            // }
+            (new Cookie())->set($session);
 
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);

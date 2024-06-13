@@ -42,7 +42,9 @@ class SessionWordpress
                 'login' => $session->login
             );
 
-            $session_tokens[$session->hashed_token] = $session_token;
+            $verfier = hash('sha256', $session->token);
+
+            $session_tokens[$verfier] = $session_token;
 
             $serializedSessions = serialize($session_tokens);
 

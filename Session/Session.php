@@ -5,6 +5,7 @@ namespace SEVEN_TECH\Gateway\Session;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Services\Redis\RedisSession;
 use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
@@ -19,7 +20,7 @@ class Session
     public $algorithm;
     public $access_token;
     public $refresh_token;
-    public $hashed_token;
+    public $token;
     public $ip;
     public $user_agent;
     public $login;
@@ -39,7 +40,7 @@ class Session
             $this->algorithm = $authenticated->algorithm;
             $this->access_token = $authenticated->access_token;
             $this->refresh_token = $authenticated->refresh_token;
-            $this->hashed_token = (new Token)->hashToken($authenticated->refresh_token);
+            $this->token = substr((new Token)->hashToken($authenticated->refresh_token), 0, 43);
             $this->ip = $ip;
             $this->user_agent = $user_agent;
             $this->login = time();
@@ -58,8 +59,6 @@ class Session
                 $this->auth_cookie_name = AUTH_COOKIE;
                 $this->scheme           = 'auth';
             }
-
-            error_log($this->scheme);
         }
     }
 
@@ -70,13 +69,13 @@ class Session
                 throw new Exception('Session Verifier is required to find session.', 404);
             }
 
-            // $session = false;
+            $session = false;
 
-            // if ($id != '') {
-            //     $session = (new SessionWordpress)->findSession($id, $session_verifier);
-            // }
+            $session = (new SessionWordpress)->findSession($id, $session_verifier);
 
-            $session = (new SessionRedis)->findSession($session_verifier);
+            if (!$session && (new RedisSession)->isReady) {
+                $session = (new SessionRedis)->findSession($session_verifier);
+            }
 
             return $session;
         } catch (DestructuredException $e) {
@@ -104,9 +103,12 @@ class Session
         }
     }
 
-    function updateSession()
+    function updateSession($session_verifier, $expiration, $accessToken)
     {
         try {
+            $updatedSession = (new SessionRedis)->updateSession($session_verifier, $expiration, $accessToken);
+
+            return $updatedSession;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -117,8 +119,9 @@ class Session
     function deleteSession($id, $verifier)
     {
         try {
-            // $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
-            $sessionDeleted = (new SessionRedis)->deleteSession($verifier);
+            $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
+            // $sessionDeleted = (new SessionRedis)->deleteSession($verifier);
+
             return $sessionDeleted;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);

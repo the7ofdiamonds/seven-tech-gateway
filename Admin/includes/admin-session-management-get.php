@@ -1,5 +1,6 @@
 <link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/SessionManagementGet.css"; ?>>
-<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagementGet.js"; ?> defer></script>
+<script type="module" src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagementGet.js"; ?>></script>
+<script type="module" src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagementRemove.js"; ?>></script>
 
 <div class="session-management-get" id="session_management_get">
     <form method="post" class="get-sessions" id="get_sessions">

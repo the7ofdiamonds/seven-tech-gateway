@@ -35,7 +35,6 @@ class DestructuredException extends Exception
     public function rest_ensure_response_error()
     {
         $statusCode = $this->getStatusCode();
-        error_log($statusCode);
         $response_data = [
             'errorMessage' => $this->getErrorMessage(),
             'statusCode' => $statusCode

@@ -48,9 +48,10 @@ class AdminSessionManagement
     function findSession()
     {
         try {
+            $id = $_POST['id'];
             $verifier = $_POST['verifier'];
 
-            $session = (new Session)->findSession($verifier);
+            $session = (new Session)->findSession($verifier, $id);
 
             wp_send_json_success($session);
         } catch (DestructuredException $e) {

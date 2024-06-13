@@ -26,7 +26,8 @@
         "ext-pdo": "*",
         "ext-pdo_pgsql": "*",
         "phpmailer/phpmailer": "^6.8",
-        "predis/predis": "^2.2"
+        "predis/predis": "^2.2",
+        "mkorkmaz/redislabs-rejson": "^2.3"
     },
     "autoload": {
         "psr-4": {

@@ -1,5 +1,5 @@
 <link rel="stylesheet" href=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/css/SessionManagementFind.css"; ?>>
-<script src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagementFind.js"; ?> defer></script>
+<script type="module" src=<?php echo SEVEN_TECH_GATEWAY_URL . "Admin/includes/js/SessionManagementFind.js"; ?>></script>
 
 <div class="session-management-find" id="session_management_find">
     <form method="post" class="find-session" id="find_session">
