@@ -57,13 +57,8 @@ class API_Authentication
             $user_agent = $_SERVER['HTTP_USER_AGENT'];
 
             $session = new Session($authenticatedAccount, $ip, $user_agent, true);
-            $redisSessionDB = new RedisSession;
 
-            if ($redisSessionDB->isReady) {
-                (new SessionRedis)->createSession($session);
-            } else {
-                (new SessionWordpress)->createSession($session);
-            }
+            (new Session)->createSession($session);
 
             (new Cookie())->set($session);
 

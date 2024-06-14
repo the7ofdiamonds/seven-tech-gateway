@@ -62,14 +62,23 @@ class Session
         }
     }
 
+    function createSession(Session $session)
+    {
+        $redisSessionDB = new RedisSession;
+
+        if ($redisSessionDB->isReady) {
+            (new SessionRedis)->createSession($session);
+        } else {
+            (new SessionWordpress)->createSession($session);
+        }
+    }
+
     function findSession($session_verifier, $id = '')
     {
         try {
             if (empty($session_verifier)) {
                 throw new Exception('Session Verifier is required to find session.', 404);
             }
-
-            $session = false;
 
             $session = (new SessionWordpress)->findSession($id, $session_verifier);
 
@@ -90,11 +99,24 @@ class Session
         try {
             $account = new Account($email);
 
-            // $sessions = (new SessionWordpress)->getSessions($account->id);
+            $sessions = [];
 
-            // get sessions from redis as well
+            $sessionsWordpress = (new SessionWordpress)->getSessions($account->id);
 
-            $sessions = (new SessionRedis)->getSessions($account->id);
+            if (is_array($sessionsWordpress)) {
+                $sessions = $sessionsWordpress;
+            }
+
+            $redisSessionDB = new RedisSession;
+
+            if ($redisSessionDB->isReady) {
+                $sessionsRedis = (new SessionRedis)->getSessions($account->id);
+
+                if (is_array($sessionsRedis)) {
+                    $sessions = array_merge($sessions, $sessionsRedis);
+                }
+            }
+
             $accountSessions = array('id' => $account->id, 'provider_given_id' => $account->provider_given_id, 'sessions' => $sessions);
 
             return $accountSessions;
@@ -109,7 +131,7 @@ class Session
     {
         try {
             $updatedSession = (new SessionRedis)->updateSession($session_verifier, $expiration, $accessToken);
-
+// Update session with new access token
             return $updatedSession;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -121,10 +143,21 @@ class Session
     function deleteSession($id, $verifier)
     {
         try {
-            $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
-            // $sessionDeleted = (new SessionRedis)->deleteSession($verifier);
+            $sessionWordpress = (new SessionWordpress)->findSession($id, $verifier);
 
-            return $sessionDeleted;
+            if (is_array($sessionWordpress)) {
+                $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
+
+                return $sessionDeleted;
+            }
+
+            $sessionRedis = (new SessionRedis)->findSession($verifier);
+
+            if (is_array($sessionRedis)) {
+                $sessionDeleted = (new SessionRedis)->deleteSession($verifier);
+
+                return $sessionDeleted;
+            }
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
