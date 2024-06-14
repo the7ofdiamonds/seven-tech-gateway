@@ -7,11 +7,7 @@ use SEVEN_TECH\Gateway\Authentication\AuthenticationToken;
 use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
 use SEVEN_TECH\Gateway\Cookie\Cookie;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Services\Redis\RedisSession;
 use SEVEN_TECH\Gateway\Session\Session;
-use SEVEN_TECH\Gateway\Session\SessionRedis;
-use SEVEN_TECH\Gateway\Session\SessionWordpress;
-use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
 
@@ -53,10 +49,7 @@ class API_Authentication
 
             wp_set_current_user($authenticatedAccount->id);
 
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $user_agent = $_SERVER['HTTP_USER_AGENT'];
-
-            $session = new Session($authenticatedAccount, $ip, $user_agent, true);
+            $session = new Session($authenticatedAccount, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], true);
 
             (new Session)->createSession($session);
 

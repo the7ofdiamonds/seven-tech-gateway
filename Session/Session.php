@@ -45,7 +45,7 @@ class Session
             $this->user_agent = $user_agent;
             $this->login = time();
             $this->secure = $secure;
-            $this->expiration = time() + apply_filters('auth_cookie_expiration', get_option('session_length', DAY_IN_SECONDS), $this->id, true);
+            $this->expiration = time() + $authenticated->expiresIn;
             $this->expire = $this->expiration;
 
             if ($secure === '') {

@@ -75,4 +75,35 @@ class Token
             throw new DestructuredException($e);
         }
     }
+
+    function base64UrlDecode($input)
+    {
+        $remainder = strlen($input) % 4;
+        if ($remainder) {
+            $addlen = 4 - $remainder;
+            $input .= str_repeat('=', $addlen);
+        }
+        return base64_decode(strtr($input, '-_', '+/'));
+    }
+
+    function getJwtAlgorithm($jwtToken)
+    {
+        // Split the JWT into its parts
+        $parts = explode('.', $jwtToken);
+        if (count($parts) !== 3) {
+            throw new Exception("Invalid JWT token format");
+        }
+
+        // Decode the header
+        $header = $parts[0];
+        $decodedHeader = $this->base64UrlDecode($header);
+        $headerJson = json_decode($decodedHeader, true);
+
+        // Extract the algorithm
+        if (isset($headerJson['alg'])) {
+            return $headerJson['alg'];
+        } else {
+            throw new Exception("Algorithm not found in JWT header");
+        }
+    }
 }

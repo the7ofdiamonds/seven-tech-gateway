@@ -15,7 +15,7 @@ function getSessions(email) {
             $(".provider-given-id #provider_given_id").text(response.data.provider_given_id);
 
             $('#sessions').empty();
-console.log(response.data);
+
             var sessions = response.data.sessions;
             var sessionKeys = Object.keys(sessions);
 
@@ -28,7 +28,6 @@ console.log(response.data);
                     var session = sessions[token];
                     var sessionContainer = $(`<div class='session' id='session_${token}'></div>`);
 
-                    const authorities = session.authorities ? session.authorities : 'N/A';
                     const ip = session.ip;
                     const login = new Date(session.login * 1000);
                     const expiration = new Date(session.expiration * 1000);
