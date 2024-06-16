@@ -30,7 +30,7 @@ class API_Authentication
     {
         try {
             $authenticatedAccount = '';
-
+            
             if (isset($request['email']) && isset($request['password'])) {
                 $authenticatedAccount = $this->login->signInWithEmailAndPassword($request['email'], $request['password']);
             } else {
@@ -47,14 +47,12 @@ class API_Authentication
             //     error_log(print_r($location, true));
             // }
 
-            wp_set_current_user($authenticatedAccount->id);
-
-            $session = new Session($authenticatedAccount, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], true);
+            $session = new Session($authenticatedAccount, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
 
             (new Session)->createSession($session);
 
             (new Cookie())->set($session);
-
+           
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);
             }

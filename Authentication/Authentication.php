@@ -22,6 +22,8 @@ class Authentication
     public function __construct($email)
     {
         try {
+            (new DatabaseExists)->existsByEmail($email);
+
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -51,11 +53,12 @@ class Authentication
         }
     }
 
-    function isAuthenticated($password)
+    function isAuthenticated($password = '')
     {
         try {
-            (new DatabaseExists)->existsByEmail($this->email);
-            (new Password)->passwordMatchesHash($password, $this->password);
+            if ($password !== '') {
+                (new Password)->passwordMatchesHash($password, $this->password);
+            }
 
             global $wpdb;
 
@@ -80,8 +83,6 @@ class Authentication
     function isNotAuthenticated()
     {
         try {
-            (new DatabaseExists)->existsByEmail($this->email);
-
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -105,7 +106,6 @@ class Authentication
     function verifyCredentials($confirmation_code)
     {
         try {
-            (new DatabaseExists)->existsByEmail($this->email);
             (new Validator)->isValidConfirmationCode($confirmation_code);
 
             $matches = (new Validator)->matches($confirmation_code, $this->confirmation_code);
@@ -139,8 +139,6 @@ class Authentication
     function updateConfirmationCode()
     {
         try {
-            (new DatabaseExists)->existsByEmail($this->email);
-
             $confirmation_code = wp_generate_password(20, false);
 
             global $wpdb;
@@ -166,8 +164,6 @@ class Authentication
     function updateActivationCode()
     {
         try {
-            (new DatabaseExists)->existsByEmail($this->email);
-
             $activation_code = wp_generate_password(20, false);
 
             global $wpdb;

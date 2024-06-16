@@ -86,24 +86,58 @@ class Token
         return base64_decode(strtr($input, '-_', '+/'));
     }
 
-    function getJwtAlgorithm($jwtToken)
+    function getJWT($jwtToken)
     {
-        // Split the JWT into its parts
         $parts = explode('.', $jwtToken);
+
         if (count($parts) !== 3) {
             throw new Exception("Invalid JWT token format");
         }
 
-        // Decode the header
-        $header = $parts[0];
+        return $parts;
+    }
+
+    function getJWTHeader($jwtToken)
+    {
+        $header = $this->getJWT($jwtToken)[0];
         $decodedHeader = $this->base64UrlDecode($header);
         $headerJson = json_decode($decodedHeader, true);
 
-        // Extract the algorithm
+        return $headerJson;
+    }
+
+    function getJWTBody($jwtToken)
+    {
+        $body = $this->getJWT($jwtToken)[1];
+        $decodedBody = $this->base64UrlDecode($body);
+        $bodyJson = json_decode($decodedBody, true);
+
+        return $bodyJson;
+    }
+
+    function getJWTSignature($jwtToken)
+    {
+        $signature = $this->getJWT($jwtToken)[2];
+        // $decodedSignature = $this->base64UrlDecode($signature);
+        // $signatureJson = json_decode($decodedSignature, true);
+
+        return $signature;
+    }
+
+    function getJWTAlgorithm($jwtToken)
+    {
+        $headerJson = $this->getJWTHeader($jwtToken);
+        
         if (isset($headerJson['alg'])) {
             return $headerJson['alg'];
         } else {
             throw new Exception("Algorithm not found in JWT header");
         }
+    }
+
+    function getEmailFromToken($jwtToken){
+        $body = $this->getJWTBody($jwtToken);
+
+        return $body['email'];
     }
 }

@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidEmail, isValidPassword } from '../utils/Validation';
 
 const loginUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL : "/wp-json/seven-tech/v1/authentication/login";
 
@@ -62,18 +61,6 @@ export const login = createAsyncThunk('login/login', async ({ email, password, l
     try {
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
-
-        const emailIsValid = isValidEmail(email);
-
-        if (!emailIsValid) {
-            throw Error('Email entered is not valid.')
-        }
-
-        const passwordIsValid = isValidPassword(password);
-
-        if (!passwordIsValid) {
-            throw Error('Password entered is not valid.')
-        }
 
         const response = await fetch(`${loginUrl}`, {
             method: 'POST',

@@ -26,6 +26,10 @@ define('SEVEN_TECH_GATEWAY', plugin_dir_path(__FILE__));
 define('SEVEN_TECH_GATEWAY_URL', plugin_dir_url(__FILE__));
 define('GOOGLE_SERVICE_ACCOUNT', plugin_dir_path(__FILE__) . 'Configuration/serviceAccount.json');
 
+if (!defined('COOKIE_DOMAIN')) {
+    define('COOKIE_DOMAIN', parse_url(home_url())['host']);
+}
+
 require_once SEVEN_TECH_GATEWAY . 'vendor/autoload.php';
 
 use SEVEN_TECH\Gateway\Admin\Admin;
@@ -72,6 +76,7 @@ class SEVEN_TECH
     public $router;
     public $templates;
     public $roles;
+    public $cookie;
 
     public function __construct()
     {
@@ -130,6 +135,7 @@ class SEVEN_TECH
             $router->load_page();
             $router->react_rewrite_rules();
             new Shortcodes;
+            $this->override_auth_cookie();
         });
 
         add_action('customize_register', function ($wp_customize) {
@@ -146,12 +152,12 @@ class SEVEN_TECH
             $templates
         );
         $this->pages = new Pages;
+        $this->cookie = new Cookie;
 
-        $cookie = new Cookie;
-
-        add_filter('auth_cookie', [$cookie, 'isValid'], 11, 5);
-
+        add_action('auth_cookie_valid', [$this->cookie, 'authCookieValid'], 10, 2);
         add_action('after_setup_theme', [$this, 'hide_admin_bar']);
+
+        add_filter("determine_current_user", [$this, "determine_current_user"], 10, 1);
     }
 
     function activate()
@@ -172,6 +178,35 @@ class SEVEN_TECH
     function deactivate()
     {
         flush_rewrite_rules();
+    }
+
+    function override_auth_cookie()
+    {
+        remove_filter('auth_cookie', 'validate_auth_cookie', 10);
+        add_filter('auth_cookie', [$this->cookie, 'isValid'], 10, 5);
+    }
+
+    function determine_current_user($user_id)
+    {
+        $cookie_elements = wp_parse_auth_cookie($_COOKIE[LOGGED_IN_COOKIE], 'logged_in');
+
+        $username   = $cookie_elements['username'];
+        $expiration = $cookie_elements['expiration'];
+        $token      = $cookie_elements['token'];
+
+        if ($user_id == false || empty($user_id)) {
+            $current_user = get_user_by('login', $username);
+
+            $user_id = $current_user->ID;
+        }
+
+        $validCookie = $this->cookie->isValid($_COOKIE[LOGGED_IN_COOKIE], $user_id, $expiration, 'logged_in', $token);
+
+        if (!$validCookie) {
+            return false;
+        }
+
+        return $user_id;
     }
 }
 

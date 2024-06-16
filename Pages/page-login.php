@@ -7,6 +7,9 @@ if (is_user_logged_in()) {
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+// global $current_user;
+
+// error_log(print_r($current_user, true));
 
 get_header();
 

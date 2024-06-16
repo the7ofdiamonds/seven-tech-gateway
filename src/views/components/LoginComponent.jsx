@@ -110,6 +110,19 @@ function LoginComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // const emailIsValid = isValidEmail(identity);
+
+    // if (!emailIsValid) {
+    //   throw Error('Email entered is not valid.');
+    // }
+
+    // const passwordIsValid = isValidPassword(password);
+
+    // if (!passwordIsValid) {
+    //   throw Error('Password entered is not valid.');
+    // }
+
     dispatch(
       login({
         email: identity,

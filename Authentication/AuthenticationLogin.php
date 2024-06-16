@@ -22,25 +22,12 @@ class AuthenticationLogin
 
     function signInWithEmailAndPassword($email, $password)
     {
-        try {
-            (new DatabaseExists)->existsByEmail($email);
-            (new Validator)->isValidPassword($password);
-
-            $authentication = new Authentication($email);
-
-            $password_check = (new Password)->passwordMatchesHash($password, $authentication->password);
-
-            if (!$password_check) {
-                throw new Exception('The password you entered for this username is not correct.', 400);
-            }
-
+        try {          
             $signedInUser = $this->firebaseAuth->signInWithEmailAndPassword($email, $password);
 
-            $user = $this->firebaseAuth->getUserByID($signedInUser->data()['localId']);
-
-            $authentication->isAuthenticated($password);
-
-            return new Authenticated($email, $signedInUser, $user);
+            (new Authentication($email))->isAuthenticated($password);
+            
+            return new Authenticated($signedInUser->idToken(), $signedInUser->refreshToken());
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

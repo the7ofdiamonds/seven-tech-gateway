@@ -45,6 +45,10 @@ class Password
             $password_check = password_verify($password, $hash);
         }
 
+        if (!$password_check) {
+            throw new Exception('The password you entered for this username is not correct.', 400);
+        }
+        
         return $password_check;
     }
 

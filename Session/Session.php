@@ -27,10 +27,10 @@ class Session
     public $secure;
     public $expiration;
     public $expire;
-    public $auth_cookie_name;
+    public $admin_cookie_name;
     public $scheme;
 
-    public function __construct(Authenticated $authenticated = null, $ip = '', $user_agent = '', $secure = '')
+    public function __construct(Authenticated $authenticated = null, $ip = '', $user_agent = '')
     {
         if ($authenticated != null && $ip != '' && $user_agent != '') {
             $this->id = $authenticated->id;
@@ -43,20 +43,16 @@ class Session
             $this->token = substr((new Token)->hashToken($authenticated->refresh_token), 0, 43);
             $this->ip = $ip;
             $this->user_agent = $user_agent;
-            $this->login = time();
-            $this->secure = $secure;
-            $this->expiration = time() + $authenticated->expiresIn;
+            $this->login = $authenticated->auth_time;
+            $this->secure = is_ssl();
+            $this->expiration = $authenticated->expiration;
             $this->expire = $this->expiration;
 
-            if ($secure === '') {
-                $this->secure = is_ssl();
-            }
-
-            if ($secure) {
-                $this->auth_cookie_name = SECURE_AUTH_COOKIE;
+            if ($this->secure) {
+                $this->admin_cookie_name = SECURE_AUTH_COOKIE;
                 $this->scheme           = 'secure_auth';
             } else {
-                $this->auth_cookie_name = AUTH_COOKIE;
+                $this->admin_cookie_name = AUTH_COOKIE;
                 $this->scheme           = 'auth';
             }
         }

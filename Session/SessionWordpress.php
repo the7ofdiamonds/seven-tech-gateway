@@ -78,6 +78,10 @@ class SessionWordpress
 
         $session_tokens = $this->getSessions($id);
 
+        if (empty($session_tokens)) {
+           return $session;
+        }
+
         foreach ($session_tokens as $session_key => $session_value) {
             if ((new Validator)->matches($session_key, $session_verifier)) {
                 $session = $session_value;
