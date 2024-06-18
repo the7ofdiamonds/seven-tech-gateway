@@ -2,12 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\Cookie;
 
-use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
-use SEVEN_TECH\Gateway\Session\SessionRedis;
-use SEVEN_TECH\Gateway\Session\SessionWordpress;
-
-use Exception;
+use SEVEN_TECH\Gateway\Token\Token;
 
 class Cookie
 {
@@ -15,27 +11,92 @@ class Cookie
     public string $verifier = '';
     public bool $isUser;
     public string $scheme = 'auth';
+    public string $username = '';
     public string $email;
     public string $hmac;
     public string $token;
     public string $expired;
     public string $expiration;
+    public string $logged_in_cookie;
 
-    public function __construct()
+    public function __construct(array $cookie = null)
     {
+        if (is_array($cookie)) {
+            foreach ($cookie as $key => $value) {
+                if (strpos($key, 'wordpress_logged_in_') == 0) {
+                    $this->logged_in_cookie = $value;
+
+                    $cookie_elements = wp_parse_auth_cookie($value, 'logged_in');
+
+                    if (is_array($cookie_elements)) {
+                        $this->username = $cookie_elements['username'];
+                        $this->hmac = $cookie_elements['hmac'];
+                        $this->token = $cookie_elements['token'];
+                        $this->expired = $cookie_elements['expiration'];
+                        $this->expiration = $cookie_elements['expiration'];
+                    }
+                }
+            }
+        }
     }
 
-    function authCookieValid($cookie_elements, $user){
+    function determine_current_user($user_id)
+    {
+        $logged_in_cookie = '';
+
+        foreach ($_COOKIE as $key => $value) {
+            if (strpos($key, 'wordpress_logged_in_') == 0) {
+                $logged_in_cookie = $value;
+            }
+        }
+
+        $cookie_elements = wp_parse_auth_cookie($logged_in_cookie, 'logged_in');
+
+        if (!$cookie_elements) {
+            return false;
+        }
+
+        $username   = $cookie_elements['username'];
+        $expiration = $cookie_elements['expiration'];
+        $token      = $cookie_elements['token'];
+
+        if ($user_id == false || empty($user_id)) {
+            $current_user = get_user_by('login', $username);
+
+            $user_id = $current_user->ID;
+        }
+
+        $validCookie = $this->isValid($logged_in_cookie, $user_id, $expiration, 'logged_in', $token);
+
+        if (!$validCookie) {
+            return false;
+        }
+
+        return $user_id;
+    }
+
+    function auth_cookie_valid($cookie_elements, $user)
+    {
         wp_set_current_user($user->ID);
+    }
+
+    function hash($username, $pass_frag, $expiration, $token, $scheme)
+    {
+        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
+
+        $algo = function_exists('hash') ? 'sha256' : 'sha1';
+        $hash = hash_hmac($algo, $username . '|' . $expiration . '|' . $token, $key);
+
+        return $hash;
     }
 
     function isValid(string $cookie, int $user_id, int $expiration, string $scheme, string $token)
     {
-       $cookie_elements = wp_parse_auth_cookie($cookie, $scheme);
+        $cookie_elements = wp_parse_auth_cookie($cookie, $scheme);
 
         if (!$cookie_elements) {
             do_action('auth_cookie_malformed', $cookie, $scheme);
-            error_log('auth cookie malformed');
+            error_log('auth_cookie_malformed');
             return false;
         }
 
@@ -51,8 +112,7 @@ class Cookie
 
         if ($expired < time()) {
             do_action('auth_cookie_expired', $cookie_elements);
-            error_log('auth cookie expired');
-
+            error_log('auth_cookie_expired');
             return false;
         }
 
@@ -66,10 +126,7 @@ class Cookie
 
         $pass_frag = substr($user->user_pass, 8, 4);
 
-        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
-
-        $algo = function_exists('hash') ? 'sha256' : 'sha1';
-        $hash = hash_hmac($algo, $username . '|' . $expiration . '|' . $token, $key);
+        $hash = $this->hash($username, $pass_frag, $expiration, $token, $scheme);
 
         if (!hash_equals($hash, $hmac)) {
             do_action('auth_cookie_bad_hash', $cookie_elements);
@@ -77,15 +134,11 @@ class Cookie
             return false;
         }
 
-        $verifySessionRedis = (new SessionRedis)->findSession($token);
+        $verifier = (new Token)->hashToken($token);
 
-        $verifier = hash('sha256', $token);
-        $verifySessionWordpress = (new SessionWordpress)->findSession($user_id, $verifier);
+        $sessionVerified = (new Session)->findSession($verifier, $user->ID);
 
-        $sessionRedisVerified = empty($verifySessionRedis) ? false : true;
-        $sessionWordpressVerified = empty($verifySessionWordpress) ? false : true;
-
-        if (!$sessionRedisVerified && !$sessionWordpressVerified) {
+        if (!$sessionVerified) {
             do_action('auth_cookie_bad_session_token', $cookie_elements);
             error_log('auth_cookie_bad_session_token');
             return false;
@@ -100,14 +153,31 @@ class Cookie
         return $cookie;
     }
 
+    function generate($user_id, $expiration, $scheme, $token)
+    {
+        $user = get_userdata($user_id);
+
+        if (!$user) {
+            return '';
+        }
+
+        $pass_frag = substr($user->user_pass, 8, 4);
+
+        $hash = $this->hash($user->user_email, $pass_frag, $expiration, $token, $scheme);
+
+        $cookie = $user->user_login . '|' . $expiration . '|' . $token . '|' . $hash;
+
+        return $cookie;
+    }
+
     function set(Session $session)
     {
         $secure_logged_in_cookie = $session->secure && 'https' === parse_url(get_option('home'), PHP_URL_SCHEME);
 
         $secure_logged_in_cookie = apply_filters('secure_logged_in_cookie', $secure_logged_in_cookie, $session->id, $session->secure);
 
-        $auth_cookie = wp_generate_auth_cookie($session->id, $session->expiration, $session->scheme, $session->token);
-        $logged_in_cookie = wp_generate_auth_cookie($session->id, $session->expiration, 'logged_in', $session->token);
+        $auth_cookie = $this->generate($session->id, $session->expiration, $session->scheme, $session->token);
+        $logged_in_cookie = $this->generate($session->id, $session->expiration, 'logged_in', $session->token);
 
         do_action('set_auth_cookie', $auth_cookie, $session->expire, $session->expiration, $session->id, $session->scheme, $session->token);
         do_action('set_logged_in_cookie', $logged_in_cookie, $session->expire, $session->expiration, $session->id, 'logged_in', $session->token);

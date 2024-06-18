@@ -21,7 +21,7 @@ class SessionRedis
 
             foreach ($keys as $key) {
                 $session = (new RedisSession)->connection->get($key, '$');
-                
+
                 if (isset($session['id']) && $session['id'] == $user_id) {
                     $sessions[$key] = $session;
                 }
@@ -37,10 +37,10 @@ class SessionRedis
         }
     }
 
-    function createSession(Session $session)
+    function createSession(string $verifier, Session $session)
     {
         try {
-            $savedSession = (new RedisSession)->connection->set($session->token, '$', $session);
+            $savedSession = (new RedisSession)->connection->set($verifier, '$', $session);
 
             if ($savedSession !== 'OK') {
                 throw new Exception('There was an error saving your session to redis database.', 500);
@@ -55,6 +55,10 @@ class SessionRedis
     function findSession($session_id)
     {
         try {
+            if (empty($session_id)) {
+                throw new Exception('Session verifier is required to find the session.', 400);
+            }
+
             $session = (new RedisSession)->connection->get($session_id);
 
             if (empty($session)) {

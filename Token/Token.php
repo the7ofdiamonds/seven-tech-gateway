@@ -27,6 +27,16 @@ class Token
         }
     }
 
+    function verifier($username, $pass_frag, $expiration, $token, $scheme)
+    {
+        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
+
+        $algo = function_exists('hash') ? 'sha256' : 'sha1';
+        $hash = hash_hmac($algo, $username . '|' . $expiration . '|' . $token, $key);
+
+        return $hash;
+    }
+
     function getAccessToken(WP_REST_Request $request)
     {
         try {
@@ -127,7 +137,7 @@ class Token
     function getJWTAlgorithm($jwtToken)
     {
         $headerJson = $this->getJWTHeader($jwtToken);
-        
+
         if (isset($headerJson['alg'])) {
             return $headerJson['alg'];
         } else {
@@ -135,7 +145,8 @@ class Token
         }
     }
 
-    function getEmailFromToken($jwtToken){
+    function getEmailFromToken($jwtToken)
+    {
         $body = $this->getJWTBody($jwtToken);
 
         return $body['email'];

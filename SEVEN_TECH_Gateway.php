@@ -154,10 +154,11 @@ class SEVEN_TECH
         $this->pages = new Pages;
         $this->cookie = new Cookie;
 
-        add_action('auth_cookie_valid', [$this->cookie, 'authCookieValid'], 10, 2);
+        add_action('auth_cookie_valid', [$this->cookie, 'auth_cookie_valid'], 10, 2);
+
         add_action('after_setup_theme', [$this, 'hide_admin_bar']);
 
-        add_filter("determine_current_user", [$this, "determine_current_user"], 10, 1);
+        add_filter('determine_current_user', [$this->cookie, 'determine_current_user'], 10, 1);
     }
 
     function activate()
@@ -184,29 +185,6 @@ class SEVEN_TECH
     {
         remove_filter('auth_cookie', 'validate_auth_cookie', 10);
         add_filter('auth_cookie', [$this->cookie, 'isValid'], 10, 5);
-    }
-
-    function determine_current_user($user_id)
-    {
-        $cookie_elements = wp_parse_auth_cookie($_COOKIE[LOGGED_IN_COOKIE], 'logged_in');
-
-        $username   = $cookie_elements['username'];
-        $expiration = $cookie_elements['expiration'];
-        $token      = $cookie_elements['token'];
-
-        if ($user_id == false || empty($user_id)) {
-            $current_user = get_user_by('login', $username);
-
-            $user_id = $current_user->ID;
-        }
-
-        $validCookie = $this->cookie->isValid($_COOKIE[LOGGED_IN_COOKIE], $user_id, $expiration, 'logged_in', $token);
-
-        if (!$validCookie) {
-            return false;
-        }
-
-        return $user_id;
     }
 }
 

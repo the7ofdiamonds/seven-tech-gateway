@@ -8,6 +8,7 @@ use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
 use SEVEN_TECH\Gateway\Cookie\Cookie;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
+use SEVEN_TECH\Gateway\Session\SessionCreate;
 
 use Exception;
 
@@ -47,9 +48,11 @@ class API_Authentication
             //     error_log(print_r($location, true));
             // }
 
+            wp_set_current_user($authenticatedAccount->id);
+
             $session = new Session($authenticatedAccount, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
 
-            (new Session)->createSession($session);
+            new SessionCreate($session);
 
             (new Cookie())->set($session);
            

@@ -21,7 +21,7 @@ class SessionWordpress
             $session_tokens = get_user_meta($id, 'session_tokens');
 
             if (!isset($session_tokens[0])) {
-                return '';
+                return false;
             }
 
             return $session_tokens[0];
@@ -30,7 +30,7 @@ class SessionWordpress
         }
     }
 
-    function createSession(Session $session)
+    function createSession(string $verifier, Session $session)
     {
         try {
             $session_tokens = $this->getSessions($session->id);
@@ -42,9 +42,11 @@ class SessionWordpress
                 'login' => $session->login
             );
 
-            $verfier = hash('sha256', $session->token);
+            if (!$session_tokens) {
+                $session_tokens = [];
+            }
 
-            $session_tokens[$verfier] = $session_token;
+            $session_tokens[$verifier] = $session_token;
 
             $serializedSessions = serialize($session_tokens);
 
@@ -79,7 +81,7 @@ class SessionWordpress
         $session_tokens = $this->getSessions($id);
 
         if (empty($session_tokens)) {
-           return $session;
+            return $session;
         }
 
         foreach ($session_tokens as $session_key => $session_value) {
