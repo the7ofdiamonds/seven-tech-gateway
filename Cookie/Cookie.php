@@ -174,15 +174,15 @@ class Cookie
     {
         $secure_logged_in_cookie = $session->secure && 'https' === parse_url(get_option('home'), PHP_URL_SCHEME);
 
-        $secure_logged_in_cookie = apply_filters('secure_logged_in_cookie', $secure_logged_in_cookie, $session->id, $session->secure);
+        $secure_logged_in_cookie = apply_filters('secure_logged_in_cookie', $secure_logged_in_cookie, $session->user_id, $session->secure);
 
-        $auth_cookie = $this->generate($session->id, $session->expiration, $session->scheme, $session->token);
-        $logged_in_cookie = $this->generate($session->id, $session->expiration, 'logged_in', $session->token);
+        $auth_cookie = $this->generate($session->user_id, $session->expiration, $session->scheme, $session->token);
+        $logged_in_cookie = $this->generate($session->user_id, $session->expiration, 'logged_in', $session->token);
 
-        do_action('set_auth_cookie', $auth_cookie, $session->expire, $session->expiration, $session->id, $session->scheme, $session->token);
-        do_action('set_logged_in_cookie', $logged_in_cookie, $session->expire, $session->expiration, $session->id, 'logged_in', $session->token);
+        do_action('set_auth_cookie', $auth_cookie, $session->expire, $session->expiration, $session->user_id, $session->scheme, $session->token);
+        do_action('set_logged_in_cookie', $logged_in_cookie, $session->expire, $session->expiration, $session->user_id, 'logged_in', $session->token);
 
-        if (!apply_filters('send_auth_cookies', true, $session->expire, $session->expiration, $session->id, $session->scheme, $session->token)) {
+        if (!apply_filters('send_auth_cookies', true, $session->expire, $session->expiration, $session->user_id, $session->scheme, $session->token)) {
             return;
         }
 

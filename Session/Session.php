@@ -14,6 +14,7 @@ use Exception;
 class Session
 {
     public $id;
+    public $user_id;
     public $email;
     public $username;
     public $passwordFrag;
@@ -34,7 +35,7 @@ class Session
     public function __construct(Authenticated $authenticated = null, $ip = '', $user_agent = '')
     {
         if ($authenticated != null && $ip != '' && $user_agent != '') {
-            $this->id = $authenticated->id;
+            $this->user_id = $authenticated->id;
             $this->email = $authenticated->email;
             $this->username = $authenticated->username;
             $this->passwordFrag = $authenticated->passwordFrag;
@@ -43,6 +44,7 @@ class Session
             $this->access_token = $authenticated->access_token;
             $this->refresh_token = $authenticated->refresh_token;
             $this->token = substr((new Token)->hashToken($authenticated->refresh_token), 0, 43);
+            $this->id = (new Token)->hashToken($this->token);
             $this->ip = $ip;
             $this->user_agent = $user_agent;
             $this->login = $authenticated->auth_time;
@@ -70,6 +72,10 @@ class Session
             $session = (new SessionWordpress)->findSession($id, $session_verifier);
 
             if (!$session && (new RedisSession)->isReady) {
+                if (strpos($session_verifier, 'sessions:') !== 0) {
+                    $session_verifier = "sessions:{$session_verifier}";
+                }
+
                 $session = (new SessionRedis)->findSession($session_verifier);
             }
 
@@ -136,14 +142,14 @@ class Session
 
                     return $sessionDeleted;
                 }
-            } else {
-                $sessionWordpress = (new SessionWordpress)->findSession($id, $verifier);
+            }
 
-                if (is_array($sessionWordpress)) {
-                    $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
+            $sessionWordpress = (new SessionWordpress)->findSession($id, $verifier);
 
-                    return $sessionDeleted;
-                }
+            if (is_array($sessionWordpress)) {
+                $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
+
+                return $sessionDeleted;
             }
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);

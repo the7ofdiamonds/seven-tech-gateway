@@ -33,8 +33,8 @@ function getSessions(email) {
                     const expiration = new Date(session.expiration * 1000);
                     const user_agent = session.user_agent ? session.user_agent : session.ua;
                     const algorithm = session.algorithm ? session.algorithm : 'N/A';
-                    const access_token = session.access_token ? session.access_token : 'N/A';
-                    const refresh_token = session.refresh_token ? session.refresh_token : 'N/A';
+                    const access_token = session.access_token ? session.access_token : session.accessToken;
+                    const refresh_token = session.refresh_token ? session.refresh_token : session.refreshToken;
 
                     var sessionToken = $("<div class='session-token'></div>");
                     $("<h3>token</h3>").appendTo(sessionToken);

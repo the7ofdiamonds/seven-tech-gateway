@@ -20,8 +20,8 @@ function findSession(id, verifier) {
             const expiration = response.data.expiration;
             const user_agent = response.data.user_agent ? response.data.user_agent : response.data.ua;
             const algorithm = response.data.algorithm ? response.data.algorithm : 'N/A';
-            const access_token = response.data.access_token ? response.data.access_token : 'N/A';
-            const refresh_token = response.data.refresh_token ? response.data.refresh_token : 'N/A';
+            const access_token = response.data.access_token ? response.data.access_token : response.data.accessToken;
+            const refresh_token = response.data.refresh_token ? response.data.refresh_token : response.data.refreshToken;
 
             $('#session #account_id').text(id);
             $('#session #provider_given_id').text();
