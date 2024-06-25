@@ -42,15 +42,15 @@ class API_Authentication
                 throw new Exception('Access Denied: Either a token or username and password are required to login.', 403);
             }
 
-            // if (isset($request['location'])) {
-            //     $location = $request['location'];
-
-            //     error_log(print_r($location, true));
-            // }
+            $location = '';
+            
+            if (isset($request['location'])) {
+                $location = $request['location'];
+            }
 
             wp_set_current_user($authenticatedAccount->id);
 
-            $session = new Session($authenticatedAccount, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
+            $session = new Session($authenticatedAccount, $_SERVER['REMOTE_ADDR'], $location, $_SERVER['HTTP_USER_AGENT']);
 
             new SessionCreate($session);
 

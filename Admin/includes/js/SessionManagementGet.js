@@ -29,6 +29,8 @@ function getSessions(email) {
                     var sessionContainer = $(`<div class='session' id='session_${token}'></div>`);
 
                     const ip = session.ip;
+                    const longitude = session.location.longitude;
+                    const latitude = session.location.latitude;
                     const login = new Date(session.login * 1000);
                     const expiration = new Date(session.expiration * 1000);
                     const user_agent = session.user_agent ? session.user_agent : session.ua;
@@ -45,6 +47,18 @@ function getSessions(email) {
                     $("<h3>ip</h3>").appendTo(sessionIP);
                     $("<h4 class='ip'></h4>").text(ip).appendTo(sessionIP);
                     sessionIP.appendTo(sessionContainer);
+
+                    var sessionLocation = $("<div class='location'></div>");
+                    $("<h3>location</h3>").appendTo(sessionLocation);
+                    var sessionLongitude = $("<div class='longitude'></div>");
+                    $("<h3>longitude</h3>").appendTo(sessionLongitude);
+                    $("<h4 class='longitude'></h4>").text(longitude).appendTo(sessionLongitude);
+                    var sessionLatitude = $("<div class='latitude'></div>");
+                    $("<h3>latitude</h3>").appendTo(sessionLatitude);
+                    $("<h4 class='latitude'></h4>").text(latitude).appendTo(sessionLatitude);
+                    sessionLongitude.appendTo(sessionLocation);
+                    sessionLatitude.appendTo(sessionLocation);
+                    sessionLocation.appendTo(sessionContainer);
 
                     var sessionLoginTime = $("<div class='session-login-time'></div>");
                     $("<h3>login time</h3>").appendTo(sessionLoginTime);

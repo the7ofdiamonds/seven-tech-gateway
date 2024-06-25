@@ -24,6 +24,7 @@ class Session
     public $refresh_token;
     public $token;
     public $ip;
+    public $location;
     public $user_agent;
     public $login;
     public $secure;
@@ -32,7 +33,7 @@ class Session
     public $admin_cookie_name;
     public $scheme;
 
-    public function __construct(Authenticated $authenticated = null, $ip = '', $user_agent = '')
+    public function __construct(Authenticated $authenticated = null, $ip = '', $location = '', $user_agent = '')
     {
         if ($authenticated != null && $ip != '' && $user_agent != '') {
             $this->user_id = $authenticated->id;
@@ -46,6 +47,7 @@ class Session
             $this->token = substr((new Token)->hashToken($authenticated->refresh_token), 0, 43);
             $this->id = (new Token)->hashToken($this->token);
             $this->ip = $ip;
+            $this->location = $location;
             $this->user_agent = $user_agent;
             $this->login = $authenticated->auth_time;
             $this->secure = is_ssl();
