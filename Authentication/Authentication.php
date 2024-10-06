@@ -27,7 +27,7 @@ class Authentication
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL findAuthByEmail('%s')", $email)
+                $wpdb->prepare("CALL findUserByEmail('%s')", $email)
             );
 
             if ($wpdb->last_error) {
@@ -63,7 +63,7 @@ class Authentication
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL isAuthenticated('%s', '%s')", $this->email, $this->password)
+                $wpdb->prepare("CALL isAuthenticated('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -136,6 +136,53 @@ class Authentication
         }
     }
 
+    function addProviderGivenID(String $provider_given_id) {
+        try {
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL addProviderGivenID('%s', '%s')", $this->email, $provider_given_id)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account confirmation code could used.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function addConfirmationCode()
+    {
+        try {
+            $confirmation_code = wp_generate_password(20, false);
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL addConfirmationCode('%s', '%s')", $this->email, $confirmation_code)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account confirmation code could used.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function updateConfirmationCode()
     {
         try {
@@ -145,6 +192,31 @@ class Authentication
 
             $results = $wpdb->get_results(
                 $wpdb->prepare("CALL updateConfirmationCode('%s', '%s')", $this->email, $confirmation_code)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account confirmation code could used.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function addActivationCode()
+    {
+        try {
+            $activation_code = wp_generate_password(20, false);
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL addActivationCode('%s', '%s')", $this->email, $activation_code)
             );
 
             if ($wpdb->last_error) {

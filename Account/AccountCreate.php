@@ -2,102 +2,58 @@
 
 namespace SEVEN_TECH\Gateway\Account;
 
-use SEVEN_TECH\Gateway\Database\DatabaseExists;
+use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
-use SEVEN_TECH\Gateway\Password\Password;
-use SEVEN_TECH\Gateway\Roles\Roles;
-use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
+use SEVEN_TECH\Gateway\Model\Response\ResponseCreateAccount;
+use SEVEN_TECH\Gateway\User\UserCreate;
 
 use Exception;
 
-use Kreait\Firebase\Auth\UserRecord;
+use WP_User;
 
 class AccountCreate
 {
-    private $databaseExists;
-    private $password;
-    private $firebaseAuth;
-    private $roles;
+    private $userCreate;
     private $email;
 
     public function __construct()
     {
-        $this->databaseExists = new DatabaseExists;
-        $this->password = new Password;
-        $this->firebaseAuth = new FirebaseAuth;
-        $this->roles = new Roles;
+        $this->userCreate = new UserCreate();
         $this->email = new EmailAccount;
     }
 
-    function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles)
+    function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone)
     {
         try {
-            $emailExists = $this->databaseExists->existsByEmail($email);
-
-            if ($emailExists == 'TRUE') {
-                throw new Exception('This email is currently in use check your inbox.', 400);
-            }
-
-            $usernameExists = $this->databaseExists->existsByUsername($username);
-
-            if ($usernameExists == 'TRUE') {
-                throw new Exception('This username is in use at this time.', 400);
-            }
-
-            $nicenameExists = $this->databaseExists->existsByNicename($nicename);
-
-            if ($nicenameExists == 'TRUE') {
-                throw new Exception('This nicename is in use at this time.', 400);
-            }
-
-            $phoneExists = $this->databaseExists->existsByPhone($phone);
-
-            if ($phoneExists == 'TRUE') {
-                throw new Exception('This phone number is in use at this time.', 400);
-            }
-
-            $hashedPassword = $this->password->hashPassword($password);
-
-            $user_activation_key = wp_generate_password(20, false);
-
-            $newFirebaseUser = $this->firebaseAuth->createFirebaseUser($email, $phone, $password, $username);
-
-            if (!$newFirebaseUser instanceof UserRecord) {
-                error_log("Unable to add user with email {$email} to firebase.");
-            }
-
-            $providergivenID = $newFirebaseUser->uid;
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL createAccount('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')", $email, $username, $hashedPassword, $nicename, $nickname, $firstname, $lastname, $phone, $user_activation_key, $providergivenID)
+            $createdUser = $this->userCreate->createUser(
+                $email,
+                $username,
+                $password,
+                $nicename,
+                $nickname,
+                $firstname,
+                $lastname,
+                $phone
             );
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
+            $userData = new WP_User($createdUser->id);
+            $userData->first_name = $firstname;
+            $userData->last_name = $lastname;
+            $userData->user_nicename = $nicename;
+            $userData->nickname = $nickname;
+            $userData->user_activation_key = wp_generate_password(20, false);
+            wp_update_user($userData);
 
-            $account = $results[0];
+            $authentication = new Authentication($email);
+            $authentication->addProviderGivenID($createdUser->providergivenID);
+            $authentication->addConfirmationCode();
 
-            if (empty($account)) {
-                throw new Exception("Account could not be created.", 404);
-            }
+            $account = new Account($email);
 
-            if (empty($roles)) {
-                $this->roles->addRole($account->id, 'subscriber');
-            }
+            // $this->email->accountCreated($email);
 
-            if (is_array($roles)) {
-                foreach ($roles as $role) {
-                    $this->roles->addRole($account->id, $role);
-                }
-            }
-
-            $this->email->accountCreated($email);
-
-            return new Account($account->email);
+            return new ResponseCreateAccount($account->id, $account->user_activation_code, $account->confirmation_code);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

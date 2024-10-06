@@ -11,7 +11,7 @@ use Exception;
 
 class Account
 {
-    public $id;
+    public int $id;
     public $joined;
     public $user_activation_code;
     public $email;
