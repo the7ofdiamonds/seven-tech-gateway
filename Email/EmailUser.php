@@ -86,7 +86,7 @@ class EmailUser
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
-            $message = "Your name has been changed to {$account->first_name} {$account->last_name}.";
+            $message = "Your name has been changed to {$account->firstName} {$account->lastName}.";
             $url = home_url() . "/login";
             $button_name = 'LOGIN';
 

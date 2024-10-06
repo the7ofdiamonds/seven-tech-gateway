@@ -17,7 +17,7 @@ use Exception;
 
 use WP_REST_Request;
 
-class AuthenticationLogout
+class Logout
 {
     private $tokenFirebase;
 

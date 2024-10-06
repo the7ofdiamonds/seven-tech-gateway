@@ -94,7 +94,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $lockedAccount = (new Account($email))->lockAccount($password);
+            $lockedAccount = (new Account($email))->lock($password);
 
             wp_send_json_success($lockedAccount);
         } catch (DestructuredException $e) {
@@ -108,7 +108,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
             $userActivationCode = $_POST['userActivationCode'];
 
-            $unlockedAccount = (new Account($email))->unlockAccount($userActivationCode);
+            $unlockedAccount = (new Account($email))->unlock($userActivationCode);
 
             wp_send_json_success($unlockedAccount);
         } catch (DestructuredException $e) {
@@ -122,7 +122,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $disabledAccount = (new Account($email))->disableAccount($password);
+            $disabledAccount = (new Account($email))->disable($password);
 
             wp_send_json_success($disabledAccount);
         } catch (DestructuredException $e) {
@@ -136,7 +136,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
             $userActivationCode = $_POST['userActivationCode'];
 
-            $enabledAccount = (new Account($email))->enableAccount($userActivationCode);
+            $enabledAccount = (new Account($email))->enable($userActivationCode);
 
             wp_send_json_success($enabledAccount);
         } catch (DestructuredException $e) {
@@ -149,7 +149,7 @@ class AdminAccountManagement
         try {
             $email = $_POST['email'];
 
-            $deletedAccount = (new Account($email))->deleteAccount($email);
+            $deletedAccount = (new Admin())->deleteAccount($email);
 
             wp_send_json_success($deletedAccount);
         } catch (DestructuredException $e) {

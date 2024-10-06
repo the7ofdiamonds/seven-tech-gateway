@@ -208,15 +208,15 @@ class Authentication
         }
     }
 
-    function addActivationCode()
+    function addActivationKey()
     {
         try {
-            $activation_code = wp_generate_password(20, false);
+            $activationKey = wp_generate_password(20, false);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL addActivationCode('%s', '%s')", $this->email, $activation_code)
+                $wpdb->prepare("CALL addActivationCode('%s', '%s')", $this->email, $activationKey)
             );
 
             if ($wpdb->last_error) {
@@ -233,15 +233,15 @@ class Authentication
         }
     }
 
-    function updateActivationCode()
+    function updateActivationKey()
     {
         try {
-            $activation_code = wp_generate_password(20, false);
+            $activationKey = wp_generate_password(20, false);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL updateActivationCode('%s', '%s')", $this->email, $activation_code)
+                $wpdb->prepare("CALL updateActivationCode('%s', '%s')", $this->email, $activationKey)
             );
 
             if ($wpdb->last_error) {
@@ -257,4 +257,6 @@ class Authentication
             throw new DestructuredException($e);
         }
     }
+
+    public function login() {}
 }

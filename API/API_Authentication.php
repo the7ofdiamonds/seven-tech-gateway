@@ -2,13 +2,9 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
-use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
-use SEVEN_TECH\Gateway\Authentication\AuthenticationToken;
-use SEVEN_TECH\Gateway\Authentication\AuthenticationLogout;
-use SEVEN_TECH\Gateway\Cookie\Cookie;
+use SEVEN_TECH\Gateway\Authentication\Login;
+use SEVEN_TECH\Gateway\Authentication\Logout;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Session\Session;
-use SEVEN_TECH\Gateway\Session\SessionCreate;
 
 use Exception;
 
@@ -17,54 +13,18 @@ use WP_REST_Request;
 class API_Authentication
 {
     private $login;
-    private $token;
     private $logout;
 
     public function __construct()
     {
-        $this->login = new AuthenticationLogin;
-        $this->token = new AuthenticationToken;
-        $this->logout = new AuthenticationLogout;
+        $this->login = new Login;
+        $this->logout = new Logout;
     }
 
     function login(WP_REST_Request $request)
     {
         try {
-            $authenticatedAccount = '';
-            
-            if (isset($request['email']) && isset($request['password'])) {
-                $authenticatedAccount = $this->login->signInWithEmailAndPassword($request['email'], $request['password']);
-            } else {
-                $authenticatedAccount = $this->token->signInWithRefreshToken($request);
-            }
-
-            if ($authenticatedAccount == '') {
-                throw new Exception('Access Denied: Either a token or username and password are required to login.', 403);
-            }
-
-            $location = '';
-            
-            if (isset($request['location'])) {
-                $location = $request['location'];
-            }
-
-            wp_set_current_user($authenticatedAccount->id);
-
-            $session = new Session($authenticatedAccount, $_SERVER['REMOTE_ADDR'], $location, $_SERVER['HTTP_USER_AGENT']);
-
-            new SessionCreate($session);
-
-            (new Cookie())->set($session);
-           
-            if (!is_user_logged_in()) {
-                throw new Exception('You could not be logged in.', 403);
-            }
-
-            $loginResponse = [
-                'successMessage' => 'You have been logged in successfully',
-                'authenticatedAccount' => $authenticatedAccount,
-                'statusCode' => 200
-            ];
+            $loginResponse = $this->login->signIn($request);
 
             return rest_ensure_response($loginResponse);
         } catch (DestructuredException $e) {

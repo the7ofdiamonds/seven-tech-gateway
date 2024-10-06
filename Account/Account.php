@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Account;
 
+use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Validator\Validator;
@@ -13,29 +14,31 @@ class Account
 {
     public int $id;
     public $joined;
-    public $user_activation_code;
+    public $userActivationKey;
     public $email;
     public $username;
     public $password;
     public $roles;
     public $level;
-    public $profile_image;
-    public $confirmation_code;
-    public $first_name;
-    public $last_name;
+    public $profileImage;
+    public $confirmationCode;
+    public $firstName;
+    public $lastName;
     public $nicename;
     public $phone;
     public $bio;
-    public $provider_given_id;
-    public $is_authenticated;
-    public $is_account_non_expired;
-    public $is_account_non_locked;
-    public $is_credentials_non_expired;
-    public $is_enabled;
+    public $providerGivenID;
+    public $isAuthenticated;
+    public $isAccountNonExpired;
+    public $isAccountNonLocked;
+    public $isCredentialsNonExpired;
+    public $isEnabled;
 
     public function __construct($email)
     {
         try {
+            (new Validator)->isValidEmail($this->email);
+
             global $wpdb;
 
             $results = $wpdb->get_results(
@@ -53,24 +56,24 @@ class Account
             $account = $results[0];
             $this->id = $account->id;
             $this->joined = $account->joined;
-            $this->user_activation_code = $account->user_activation_code;
             $this->email =  $account->email;
             $this->username = $account->username;
             $this->password = $account->password;
-            $this->roles =  (new Roles)->unserializeRoles($account->roles);
-            $this->level =  (new Roles)->getRolesHighestLevel($this->roles);
-            $this->profile_image = get_avatar_url($account->id);
-            $this->confirmation_code = $account->confirmation_code;
-            $this->first_name = $account->first_name;
-            $this->last_name = $account->last_name;
+            $this->firstName = $account->first_name;
+            $this->lastName = $account->last_name;
             $this->nicename = $account->nicename;
             $this->phone = $account->phone;
-            $this->provider_given_id = $account->provider_given_id;
-            $this->is_authenticated = (bool) $account->is_authenticated;
-            $this->is_account_non_expired = (bool) $account->is_account_non_expired;
-            $this->is_account_non_locked = (bool) $account->is_account_non_locked;
-            $this->is_credentials_non_expired = (bool) $account->is_credentials_non_expired;
-            $this->is_enabled = (bool) $account->is_enabled;
+            $this->userActivationKey = $account->user_activation_key;
+            $this->confirmationCode = $account->confirmation_code;
+            $this->providerGivenID = $account->provider_given_id;
+            $this->isAuthenticated = (bool) $account->is_authenticated;
+            $this->isAccountNonExpired = (bool) $account->is_account_non_expired;
+            $this->isAccountNonLocked = (bool) $account->is_account_non_locked;
+            $this->isCredentialsNonExpired = (bool) $account->is_credentials_non_expired;
+            $this->isEnabled = (bool) $account->is_enabled;
+            $this->roles = (new Roles)->unserializeRoles($account->roles);
+            $this->level = (new Roles)->getRolesHighestLevel($this->roles);
+            $this->profileImage = get_avatar_url($account->id);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -78,23 +81,52 @@ class Account
         }
     }
 
-    public function lockAccount($password)
+    public function activate($userActivationCode)
     {
         try {
-            (new Validator)->isValidEmail($this->email);
-            (new Validator)->isValidPassword($password);
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL lockAccount('%s', '%s')", $this->email, $password)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if (empty($userActivationCode)) {
+                throw new Exception('User Activation Code is required.', 400);
             }
 
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+            if ($userActivationCode !== $this->userActivationKey) {
+                throw new Exception('User Activation Code not valid.', 400);
+            }
+
+            (new Authentication($this->email))->updateActivationKey();
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    public function verify($confirmationCode)
+    {
+        try {
+            if (empty($confirmationCode)) {
+                throw new Exception('Confirmation Code is required.', 400);
+            }
+
+            if ($confirmationCode !== $this->confirmationCode) {
+                throw new Exception('Confirmation Code not valid.', 400);
+            }
+
+            (new Authentication($this->email))->updateConfirmationCode();
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    public function lock($confirmationCode)
+    {
+        try {
+            $this->verify($confirmationCode);
+
+            $accountLocked = (new Details)->lockAccount($this->email);
+
+            if (!$accountLocked) {
                 throw new Exception('Account could not be locked at this time.', 500);
             }
 
@@ -106,26 +138,14 @@ class Account
         }
     }
 
-    function unlockAccount($userActivationCode)
+    function unlock($confirmationCode)
     {
         try {
-            (new Validator)->isValidEmail($this->email);
+            $this->verify($confirmationCode);
 
-            if (empty($userActivationCode)) {
-                throw new Exception('User Activation Code is required.', 400);
-            }
+            $accountUnlocked = (new Details)->unlockAccount($this->email);
 
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL unlockAccount('%s', '%s')", $this->email, $userActivationCode)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+            if (!$accountUnlocked) {
                 throw new Exception('Account could not be unlocked at this time.', 500);
             }
 
@@ -137,24 +157,15 @@ class Account
         }
     }
 
-    function disableAccount($password)
+    function disable($confirmationCode)
     {
         try {
-            (new Validator)->isValidEmail($this->email);
-            (new Validator)->isValidPassword($password);
+            $this->verify($confirmationCode);
 
-            global $wpdb;
+            $accountDisable = (new Details)->disableAccount($this->email);
 
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL disableAccount('%s', '%s')", $this->email, $password)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account could not be removed at this time.', 500);
+            if (!$accountDisable) {
+                throw new Exception('Account could not be disabled at this time.', 500);
             }
 
             (new EmailAccount)->accountDisabled($this->email);
@@ -165,26 +176,14 @@ class Account
         }
     }
 
-    function enableAccount($userActivationCode)
+    function enable($confirmationCode)
     {
         try {
-            (new Validator)->isValidEmail($this->email);
+            $this->verify($confirmationCode);
 
-            if (empty($userActivationCode)) {
-                throw new Exception('User Activation Code is required.', 400);
-            }
+            $accountEnabled = (new Details)->enableAccount($this->email);
 
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL enableAccount('%s', '%s')", $this->email, $userActivationCode)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+            if (!$accountEnabled) {
                 throw new Exception('Account could not be enabled at this time.', 500);
             }
 
@@ -196,38 +195,18 @@ class Account
         }
     }
 
-    function deleteAccount()
+    function unexpire($userActivationCode)
     {
         try {
-            (new Validator)->isValidEmail($this->email);
+            $this->activate($userActivationCode);
 
-            $account = new Account($this->email);
+            $unexpireAccount = (new Details)->unexpireAccount($this->email);
 
-            if ($account->is_account_non_locked) {
-                throw new Exception('Account must first be locked.', 400);
+            if (!$unexpireAccount) {
+                throw new Exception('Account could not be unexpired at this time.', 500);
             }
-
-            if ($account->is_enabled) {
-                throw new Exception('Account must first be disabled.', 400);
-            }
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL deleteAccount('%s')", $this->email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if ($results[0]->result === 'FALSE') {
-                throw new Exception('Account could not be deleted at this time.', 500);
-            }
-
-            (new EmailAccount)->accountDeleted($this->email);
-
-            return 'Account deleted succesfully.';
+            // send subscription email
+            return 'Account unexpired successfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

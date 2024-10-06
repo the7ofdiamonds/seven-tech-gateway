@@ -3,27 +3,29 @@
 namespace SEVEN_TECH\Gateway\Account;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Authentication\AuthenticationLogin;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
-use SEVEN_TECH\Gateway\Model\Response\ResponseCreateAccount;
 use SEVEN_TECH\Gateway\User\UserCreate;
 
 use Exception;
 
 use WP_User;
 
-class AccountCreate
+class Create
 {
     private $userCreate;
     private $email;
+    private $login;
 
     public function __construct()
     {
         $this->userCreate = new UserCreate();
         $this->email = new EmailAccount;
+        $this->login = new AuthenticationLogin;
     }
 
-    function createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone)
+    function account($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone)
     {
         try {
             $createdUser = $this->userCreate->createUser(
@@ -53,7 +55,19 @@ class AccountCreate
 
             // $this->email->accountCreated($email);
 
-            return new ResponseCreateAccount($account->id, $account->userActivationKey, $account->confirmationCode);
+            $auth = $this->login->signInWithEmailAndPassword($email, $password);
+  
+            $signupResponse = array(
+                'successMessage' => 'You have been signed up successfully.',
+                'id' => $account->id,
+                'userActivationCode' => $account->userActivationKey,
+                'confirmationCode' => $account->confirmationCode,
+                'refreshToken' => $auth->refresh_token,
+                'accessToken' => $auth->access_token,
+                'statusCode' => 200,
+            );
+
+            return $signupResponse;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

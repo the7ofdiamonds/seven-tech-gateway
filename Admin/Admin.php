@@ -2,9 +2,14 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\ENV\ENV;
+use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Services\Google\Google;
+use SEVEN_TECH\Gateway\Validator\Validator;
+
+use Exception;
 
 class Admin
 {
@@ -115,5 +120,42 @@ class Admin
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         } 
+    }
+
+    function deleteAccount(String $email)
+    {
+        try {
+            (new Validator)->isValidEmail($email);
+
+            $account = new Account($email);
+
+            if ($account->isAccountNonLocked) {
+                throw new Exception('Account must first be locked.', 400);
+            }
+
+            if ($account->isEnabled) {
+                throw new Exception('Account must first be disabled.', 400);
+            }
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL deleteAccount('%s')", $email)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if ($results[0]->result === 'FALSE') {
+                throw new Exception('Account could not be deleted at this time.', 500);
+            }
+
+            (new EmailAccount)->accountDeleted($email);
+
+            return 'Account deleted succesfully.';
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
     }
 }

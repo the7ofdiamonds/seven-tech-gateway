@@ -30,7 +30,7 @@ class Authorization
                 return $account;
             }
 
-            if ($account->is_account_non_expired == 0) {
+            if ($account->isAccountNonExpired == false) {
                 $account->level = 0;
             }
 
@@ -42,7 +42,7 @@ class Authorization
                 foreach ($accountRoles as $accountRole) {
                     foreach ($resourceRoles as $resourceRole) {
                         if ($accountRole == $resourceRole) {
-                            return true;
+                            return $account;
                         }
                     }
                 }
