@@ -3,7 +3,7 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Account\AccountCreate;
+use SEVEN_TECH\Gateway\Account\Create;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 class AdminAccountManagement
@@ -13,7 +13,7 @@ class AdminAccountManagement
     private $menu_title;
     private $menu_slug;
     public $page_url;
-    private $createAccount;
+    private $create;
 
     public function __construct()
     {
@@ -22,7 +22,7 @@ class AdminAccountManagement
         $this->menu_title = 'Account';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->createAccount = new AccountCreate;
+        $this->create = new Create;
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
@@ -67,7 +67,7 @@ class AdminAccountManagement
                 $roles = '';
             }
 
-            $createdAccount = $this->createAccount->createAccount($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
+            $createdAccount = $this->create->account($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone, $roles);
 
             wp_send_json_success($createdAccount);
         } catch (DestructuredException $e) {
@@ -147,8 +147,9 @@ class AdminAccountManagement
     function deleteAccount()
     {
         try {
-            $email = $_POST['email'];
+            error_log($_POST['email']);
 
+            $email = $_POST['email'];
             $deletedAccount = (new Admin())->deleteAccount($email);
 
             wp_send_json_success($deletedAccount);

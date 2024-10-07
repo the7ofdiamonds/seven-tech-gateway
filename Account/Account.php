@@ -37,7 +37,7 @@ class Account
     public function __construct($email)
     {
         try {
-            (new Validator)->isValidEmail($this->email);
+            (new Validator)->isValidEmail($email);
 
             global $wpdb;
 
@@ -184,7 +184,7 @@ class Account
             $accountEnabled = (new Details)->enableAccount($this->email);
 
             if (!$accountEnabled) {
-                throw new Exception('Account could not be enabled at this time.', 500);
+                throw new Exception('Account could not be enabled at this time123.', 500);
             }
 
             (new EmailAccount)->accountEnabled($this->email);

@@ -43,7 +43,12 @@ jQuery(document).ready(function ($) {
                 $('#account_details #account_status').text(authenticated);
 
                 var sessions = response.data.sessions;
-                var sessionKeys = Object.keys(sessions);
+
+                var sessionKeys = null;
+
+                if(sessions != null) {
+                    sessionKeys = Object.keys(sessions);
+                }
 
                 $('#sessions').empty();
 

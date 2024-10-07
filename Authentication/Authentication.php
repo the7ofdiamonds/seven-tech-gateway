@@ -14,8 +14,8 @@ class Authentication
     public $id;
     public $email;
     public $password;
-    public $activation_code;
-    public $confirmation_code;
+    public $userActivationKey;
+    public $confirmationCode;
     public $phone;
     public $provider_given_id;
 
@@ -42,8 +42,8 @@ class Authentication
             $this->id = $auth->id;
             $this->email = $auth->email;
             $this->password = $auth->password;
-            $this->activation_code = $auth->activation_code;
-            $this->confirmation_code = $auth->confirmation_code;
+            $this->userActivationKey = $auth->user_activation_key;
+            $this->confirmationCode = $auth->confirmation_code;
             $this->phone = $auth->phone;
             $this->provider_given_id = $auth->provider_given_id;
         } catch (DestructuredException $e) {
@@ -108,7 +108,7 @@ class Authentication
         try {
             (new Validator)->isValidConfirmationCode($confirmation_code);
 
-            $matches = (new Validator)->matches($confirmation_code, $this->confirmation_code);
+            $matches = (new Validator)->matches($confirmation_code, $this->confirmationCode);
 
             if (!$matches) {
                 throw new Exception("Confirmation code provided does not match our records.", 403);
@@ -117,7 +117,7 @@ class Authentication
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL verifyCredentials('%s', '%s')", $this->email, $this->confirmation_code)
+                $wpdb->prepare("CALL verifyCredentials('%s', '%s')", $this->email, $this->confirmationCode)
             );
 
             if ($wpdb->last_error) {
@@ -257,6 +257,4 @@ class Authentication
             throw new DestructuredException($e);
         }
     }
-
-    public function login() {}
 }

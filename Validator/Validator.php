@@ -117,20 +117,17 @@ class Validator
         }
     }
 
-    function isValidPhone($phone)
-    {
+    function isValidPhone($phone) {
         try {
             if (empty($phone)) {
                 throw new Exception('Phone is required.', 404);
             }
 
-            $pattern = '/[0-9]{11,}$/';
-            $isValid = preg_match($pattern, $phone);
-
-            if ($isValid == 0) {
+            $pattern = '/^\+?[0-9\s\-]{10,15}$/';
+            if (!preg_match($pattern, $phone)) {
                 throw new Exception('Phone is not valid', 400);
             }
-
+    
             return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);

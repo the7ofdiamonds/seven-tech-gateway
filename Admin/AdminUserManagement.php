@@ -2,10 +2,11 @@
 
 namespace SEVEN_TECH\Gateway\Admin;
 
+use SEVEN_TECH\Gateway\Change\Change;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Gateway\User\User;
-use SEVEN_TECH\Gateway\User\UserCreate;
+use SEVEN_TECH\Gateway\User\Add;
 
 class AdminUserManagement
 {
@@ -14,7 +15,6 @@ class AdminUserManagement
     private $menu_title;
     private $menu_slug;
     public $page_url;
-    private $createUser;
 
     public function __construct()
     {
@@ -23,7 +23,6 @@ class AdminUserManagement
         $this->menu_title = 'User';
         $this->menu_slug = (new Admin)->get_menu_slug($this->page_title);
         $this->page_url = (new Admin)->get_plugin_page_url('admin.php', $this->menu_slug);
-        $this->createUser = new UserCreate;
 
         add_action('wp_ajax_createUser', [$this, 'createUser']);
         add_action('wp_ajax_getUser', [$this, 'getUser']);
@@ -65,7 +64,7 @@ class AdminUserManagement
             $lastname = $_POST['lastname'];
             $phone = $_POST['phone'];
 
-            $createdUser = $this->createUser->createUser($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone);
+            $createdUser = (new Add)->user($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone);
 
             wp_send_json_success($createdUser);
         } catch (DestructuredException $e) {
@@ -122,7 +121,7 @@ class AdminUserManagement
             $email = $_POST['email'];
             $username = $_POST['username'];
 
-            $change_username = (new User($email))->changeUsername($username);
+            $change_username = (new Change($email))->username($username);
 
             wp_send_json_success($change_username);
         } catch (DestructuredException $e) {
@@ -136,7 +135,7 @@ class AdminUserManagement
             $email = $_POST['email'];
             $nicename = $_POST['nicename'];
 
-            $change_nicename = (new User($email))->changeNicename($nicename);
+            $change_nicename = (new Change($email))->nicename($nicename);
 
             wp_send_json_success($change_nicename);
         } catch (DestructuredException $e) {
@@ -150,7 +149,7 @@ class AdminUserManagement
             $email = $_POST['email'];
             $nickname = $_POST['nickname'];
 
-            $change_nickname = (new User($email))->changeNickname($nickname);
+            $change_nickname = (new Change($email))->nickname($nickname);
 
             wp_send_json_success($change_nickname);
         } catch (DestructuredException $e) {
@@ -164,7 +163,7 @@ class AdminUserManagement
             $email = $_POST['email'];
             $firstname = $_POST['firstname'];
 
-            $change_firstname = (new User($email))->changeFirstName($firstname);
+            $change_firstname = (new Change($email))->firstName($firstname);
 
             wp_send_json_success($change_firstname);
         } catch (DestructuredException $e) {
@@ -178,7 +177,7 @@ class AdminUserManagement
             $email = $_POST['email'];
             $lastname = $_POST['lastname'];
 
-            $change_lastname = (new User($email))->changeLastName($lastname);
+            $change_lastname = (new Change($email))->lastName($lastname);
 
             wp_send_json_success($change_lastname);
         } catch (DestructuredException $e) {
@@ -192,7 +191,7 @@ class AdminUserManagement
             $email = $_POST['email'];
             $phone = $_POST['phone'];
 
-            $change_phone = (new User($email))->changePhone($phone);
+            $change_phone = (new Change($email))->phone($phone);
 
             wp_send_json_success($change_phone);
         } catch (DestructuredException $e) {
