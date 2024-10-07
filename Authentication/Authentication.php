@@ -241,7 +241,7 @@ class Authentication
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL updateActivationCode('%s', '%s')", $this->email, $activationKey)
+                $wpdb->prepare("CALL updateUserActivationKey('%s', '%s')", $this->email, $activationKey)
             );
 
             if ($wpdb->last_error) {

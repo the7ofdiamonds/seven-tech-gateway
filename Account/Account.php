@@ -81,7 +81,7 @@ class Account
         }
     }
 
-    public function activate($userActivationCode)
+    public function activate(String $userActivationCode) : bool
     {
         try {
             if (empty($userActivationCode)) {
