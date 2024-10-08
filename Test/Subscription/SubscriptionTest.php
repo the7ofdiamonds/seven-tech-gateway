@@ -11,12 +11,26 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class SubscriptionTest extends TestCase
 {
-    /** @test */
+    private String $email = "";
+
+    /**
+     * Data provider for SubscriptionTest
+     */
+    public Static function subscriptionDataProvider()
+    {
+        return (new Spreadsheet((new DataProviders)->subscriptionPath, 'Subscription'))->getData();
+    }
+
+    /** 
+     * @test
+     * @dataProvider subscriptionDataProvider
+     */
     public function testSubscribe($email, $userActivationKey)
     {
         try {
+            $this->email = $email;
             $subscribed = (new Subscription())->subscribe($email, $userActivationKey);
-
+            
             $this->assertTrue($subscribed, "Should be subscribed.");
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
@@ -24,10 +38,15 @@ class SubscriptionTest extends TestCase
     }
 
     /** @test */
-    public function testUnsubscribe($email)
+    public function testUnsubscribe()
     {
         try {
-            $unsubscribed = (new Subscription())->unsubscribe($email);
+
+            if (empty($this->email)) {
+                $this->fail("Email is not set. Run the subscription test first.");
+            }
+
+            $unsubscribed = (new Subscription())->unsubscribe($this->email);
 
             $this->assertTrue($unsubscribed, "Should be unsubscribed.");
         } catch (DestructuredException $e) {

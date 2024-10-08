@@ -11,10 +11,42 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class ChangeTest extends TestCase
 {
-    /** @test */
-    public function testUsername($email, $username)
+        private String $email;
+        private String $nicename;
+        private String $nickname;
+        private String $firstname;
+        private String $lastname;
+        private String $phone;
+
+    /**
+     * Data provider for ChangeTest
+     */
+    public static function changeDataProvider()
     {
+        return (new Spreadsheet((new DataProviders)->changePath, 'Change'))->getData();
+    }
+
+    /** 
+     * @test
+     * @dataProvider changeDataProvider
+     */
+    public function testUsername(
+        $email,
+        $username,
+        $nicename,
+        $nickname,
+        $firstname,
+        $lastname,
+        $phone
+    ) {
         try {
+            $this->email = $email;
+        $this->nicename = $nicename;
+        $this->nickname = $nickname;
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->phone = $phone;
+
             $usernameChanged = (new Change($email))->username($username);
 
             $this->assertTrue($usernameChanged, "Username should be changed.");
@@ -24,10 +56,10 @@ class ChangeTest extends TestCase
     }
 
     /** @test */
-    public function testNicename($email, $nicename)
+    public function testNicename()
     {
         try {
-            $nicenameChanged = (new Change($email))->nicename($nicename);
+            $nicenameChanged = (new Change($this->email))->nicename($this->nicename);
 
             $this->assertTrue($nicenameChanged, "Nicename should be changed.");
         } catch (DestructuredException $e) {
@@ -36,10 +68,10 @@ class ChangeTest extends TestCase
     }
 
     /** @test */
-    public function testNickname($email, $nickname)
+    public function testNickname()
     {
         try {
-            $nicknameChanged = (new Change($email))->nickname($nickname);
+            $nicknameChanged = (new Change($this->email))->nickname($this->nickname);
 
             $this->assertTrue($nicknameChanged, "Nickname should be changed.");
         } catch (DestructuredException $e) {
@@ -48,10 +80,10 @@ class ChangeTest extends TestCase
     }
 
     /** @test */
-    public function testFirstName($email, $firstname)
+    public function testFirstName()
     {
         try {
-            $firstNameChanged = (new Change($email))->firstName($firstname);
+            $firstNameChanged = (new Change($this->email))->firstName($this->firstname);
 
             $this->assertTrue($firstNameChanged, "First name should be changed.");
         } catch (DestructuredException $e) {
@@ -60,10 +92,10 @@ class ChangeTest extends TestCase
     }
 
     /** @test */
-    public function testLastName($email, $lastname)
+    public function testLastName()
     {
         try {
-            $lastNameChanged = (new Change($email))->lastName($lastname);
+            $lastNameChanged = (new Change($this->email))->lastName($this->lastname);
 
             $this->assertTrue($lastNameChanged, "Last name should be changed.");
         } catch (DestructuredException $e) {
@@ -72,10 +104,10 @@ class ChangeTest extends TestCase
     }
 
     /** @test */
-    public function testName($email, $firstName, $lastName)
+    public function testName()
     {
         try {
-            $nameChanged = (new Change($email))->name($firstName, $lastName);
+            $nameChanged = (new Change($this->email))->name($this->firstname, $this->lastname);
 
             $this->assertTrue($nameChanged, "Name should be changed.");
         } catch (DestructuredException $e) {
@@ -84,10 +116,10 @@ class ChangeTest extends TestCase
     }
 
     /** @test */
-    public function testPhone($email, $phone)
+    public function testPhone()
     {
         try {
-            $phoneNumberChanged = (new Change($email))->phone($phone);
+            $phoneNumberChanged = (new Change($this->email))->phone($this->phone);
 
             $this->assertTrue($phoneNumberChanged, "Phone number should be changed.");
         } catch (DestructuredException $e) {

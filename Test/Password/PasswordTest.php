@@ -11,21 +11,45 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class PasswordTest extends TestCase
 {
-    /** @test */
+    private String $email = "";
+    private String $confirmationCode = "";
+    private String $updatePassword = "";
+    private String $updateConfirmPassword = "";
+
+    /**
+     * Data provider for PasswordTest
+     */
+    public static function passwordTestDataProvider()
+    {
+        return (new Spreadsheet((new DataProviders)->passwordPath, 'Password'))->getData();
+    }
+
+    /** 
+     * @test
+     * @dataProvider passwordTestDataProvider
+     */
     public function testChange(
         $email,
         $password,
         $newPassword,
-        $confirmPassword
+        $confirmPassword,
+        $confirmationCode,
+        $updatePassword,
+        $updateConfirmPassword
     ) {
         try {
+            $this->email = $email;
+            $this->confirmationCode = $confirmationCode;
+            $this->updatePassword = $updatePassword;
+            $this->updateConfirmPassword = $updateConfirmPassword;
+
             $changed = (new Password())->change(
                 $email,
                 $password,
                 $newPassword,
                 $confirmPassword
             );
-
+            
             $this->assertTrue($changed, "Password should be changed.");
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
@@ -33,18 +57,14 @@ class PasswordTest extends TestCase
     }
 
     /** @test */
-    public function testUpdate(
-        $email,
-        $confirmationCode,
-        $password,
-        $confirmPassword
-    ) {
+    public function testUpdate()
+    {
         try {
             $updated = (new Password())->update(
-                $email,
-                $confirmationCode,
-                $password,
-                $confirmPassword
+                $this->email,
+                $this->confirmationCode,
+                $this->updatePassword,
+                $this->updateConfirmPassword
             );
 
             $this->assertTrue($updated, "Email should be updated.");

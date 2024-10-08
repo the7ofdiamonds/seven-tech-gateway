@@ -11,11 +11,30 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class AuthenticationTest extends TestCase
 {
+    private String $email;
+    private String $provider_given_id;
 
-    /** @test */
-    public function testVerifyCredentials($email, $confirmation_code)
+    /**
+     * Data provider for AuthenticationTest
+     */
+    public static function authDataProvider()
     {
+        return (new Spreadsheet((new DataProviders)->authPath, 'Auth'))->getData();
+    }
+
+    /** 
+     * @test
+     * @dataProvider authDataProvider
+     */
+    public function testVerifyCredentials(
+        $email,
+        $confirmation_code,
+        $provider_given_id
+    ) {
         try {
+            $this->email = $email;
+            $this->provider_given_id = $provider_given_id;
+
             $credentialsVerified = (new Authentication($email))->verifyCredentials($confirmation_code);
 
             $this->assertTrue($credentialsVerified, "Credentials should be verified.");
@@ -25,10 +44,10 @@ class AuthenticationTest extends TestCase
     }
 
     /** @test */
-    public function testAddProviderGivenID($email, $provider_given_id)
+    public function testAddProviderGivenID()
     {
         try {
-            $providerGivenIDAdded = (new Authentication($email))->addProviderGivenID($provider_given_id);
+            $providerGivenIDAdded = (new Authentication($this->email))->addProviderGivenID($this->provider_given_id);
 
             $this->assertTrue($providerGivenIDAdded, "ID given by provider should be added.");
         } catch (DestructuredException $e) {
@@ -37,10 +56,10 @@ class AuthenticationTest extends TestCase
     }
 
     /** @test */
-    public function testAddConfirmationCode($email)
+    public function testAddConfirmationCode()
     {
         try {
-            $confirmationCodeAdded = (new Authentication($email))->addConfirmationCode();
+            $confirmationCodeAdded = (new Authentication($this->email))->addConfirmationCode();
 
             $this->assertTrue($confirmationCodeAdded, "Confirmation code should be added.");
         } catch (DestructuredException $e) {
@@ -48,10 +67,10 @@ class AuthenticationTest extends TestCase
         }
     }
     /** @test */
-    public function testUpdateConfirmationCode($email)
+    public function testUpdateConfirmationCode()
     {
         try {
-            $confirmationCodeUpdated = (new Authentication($email))->updateConfirmationCode();
+            $confirmationCodeUpdated = (new Authentication($this->email))->updateConfirmationCode();
 
             $this->assertTrue($confirmationCodeUpdated, "Confirmation code should be updated.");
         } catch (DestructuredException $e) {
@@ -60,10 +79,10 @@ class AuthenticationTest extends TestCase
     }
 
     /** @test */
-    public function testAddActivationKey($email)
+    public function testAddActivationKey()
     {
         try {
-            $activationKeyAdded = (new Authentication($email))->addActivationKey();
+            $activationKeyAdded = (new Authentication($this->email))->addActivationKey();
 
             $this->assertTrue($activationKeyAdded, "User Activation Key should be added.");
         } catch (DestructuredException $e) {
@@ -72,10 +91,10 @@ class AuthenticationTest extends TestCase
     }
 
     /** @test */
-    public function testUpdateActivationKey($email)
+    public function testUpdateActivationKey()
     {
         try {
-            $activationKeyUpdated = (new Authentication($email))->updateActivationKey();
+            $activationKeyUpdated = (new Authentication($this->email))->updateActivationKey();
 
             $this->assertTrue($activationKeyUpdated, "User Activation Key should be updated.");
         } catch (DestructuredException $e) {

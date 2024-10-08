@@ -12,7 +12,18 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 class AdminTest extends TestCase
 {
 
-    /** @test */
+    /**
+     * Data provider for testDeleteAccount
+     */
+    public Static function deleteAccountDataProvider()
+    {
+        return (new Spreadsheet((new DataProviders)->adminPath, 'Delete'))->getData();
+    }
+
+    /** 
+     * @test
+     * @dataProvider deleteAccountDataProvider
+     */
     public function testDeleteAccount($email)
     {
         try {
