@@ -2,16 +2,15 @@
 
 namespace SEVEN_TECH\Gateway\Authentication;
 
-use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\Cookie\Cookie;
-use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
-use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Session\SessionCreate;
-use SEVEN_TECH\Gateway\Validator\Validator;
+use SEVEN_TECH\Gateway\Token\Token;
 
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
@@ -33,10 +32,15 @@ class Login
     function signInWithEmailAndPassword($email, $password)
     {
         try {          
+            $account = new Account($email);
+
+            if ($password !== '') {
+                (new Password)->passwordMatchesHash($password, $account->password);
+            }
+
+            (new Details($email))->isAuthenticated();
             $signedInUser = $this->firebaseAuth->signInWithEmailAndPassword($email, $password);
 
-            (new Authentication($email))->isAuthenticated($password);
-            
             return new Authenticated($signedInUser->idToken(), $signedInUser->refreshToken());
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -51,8 +55,7 @@ class Login
             $accessToken = $this->token->getAccessToken($request);
             $refreshToken = $this->token->getRefreshToken($request);
             $email = $this->token->getEmailFromToken($accessToken);
-
-            (new Authentication($email))->isAuthenticated();
+            (new Details($email))->isAuthenticated();
 
             return new Authenticated($accessToken, $refreshToken);
         } catch (FailedToVerifyToken $e) {

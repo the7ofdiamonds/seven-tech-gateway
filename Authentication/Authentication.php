@@ -4,7 +4,6 @@ namespace SEVEN_TECH\Gateway\Authentication;
 
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
@@ -53,57 +52,7 @@ class Authentication
         }
     }
 
-    function isAuthenticated($password = '')
-    {
-        try {
-            if ($password !== '') {
-                (new Password)->passwordMatchesHash($password, $this->password);
-            }
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL isAuthenticated('%s')", $this->email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account could not be logged in.', 500);
-            }
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function isNotAuthenticated()
-    {
-        try {
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL isNotAuthenticated('%s')", $this->email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account could not be logged out.', 500);
-            }
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function verifyCredentials($confirmation_code)
+    function verifyCredentials(String $confirmation_code)
     {
         try {
             (new Validator)->isValidConfirmationCode($confirmation_code);

@@ -47,7 +47,7 @@ class Change {
         }
     }
 
-    function username($username)
+    function username(String $username)
     {
         try {
             
@@ -87,7 +87,7 @@ class Change {
         }
     }
 
-    public function nicename($nicename)
+    public function nicename(String $nicename)
     {
         try {
 
@@ -118,7 +118,7 @@ class Change {
         }
     }
 
-    function nickname($nickname)
+    function nickname(String $nickname)
     {
         try {
 
@@ -158,7 +158,7 @@ class Change {
         }
     }
 
-    function firstName($firstname)
+    function firstName(String $firstname)
     {
         try {
 
@@ -198,7 +198,7 @@ class Change {
         }
     }
 
-    function lastName($lastname)
+    function lastName(String $lastname)
     {
         try {
 

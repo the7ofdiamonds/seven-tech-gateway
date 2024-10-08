@@ -22,6 +22,52 @@ class Details
         } 
     }
 
+    function isAuthenticated()
+    {
+        try {
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL isAuthenticated('%s')", $this->email)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be logged in.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function isNotAuthenticated()
+    {
+        try {
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL isNotAuthenticated('%s')", $this->email)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be logged out.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function expireCredentials()
     {
         try {
@@ -36,7 +82,7 @@ class Details
             }
 
             if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account could not be enabled at this time.', 500);
+                throw new Exception('Password could not be updated at this time.', 500);
             }
 
             return true;

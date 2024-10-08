@@ -100,25 +100,6 @@ class Account
         }
     }
 
-    public function verify($confirmationCode)
-    {
-        try {
-            if (empty($confirmationCode)) {
-                throw new Exception('Confirmation Code is required.', 400);
-            }
-
-            if ($confirmationCode !== $this->confirmationCode) {
-                throw new Exception('Confirmation Code not valid.', 400);
-            }
-
-            (new Authentication($this->email))->updateConfirmationCode();
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
     public function addDetails($metaKey, $metaValue) : bool {
         try {
             global $wpdb;
@@ -143,7 +124,7 @@ class Account
     public function lock($confirmationCode)
     {
         try {
-            $this->verify($confirmationCode);
+            (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
             $accountLocked = (new Details($this->email))->lockAccount();
 
@@ -162,7 +143,7 @@ class Account
     function unlock($confirmationCode)
     {
         try {
-            $this->verify($confirmationCode);
+            (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
             $accountUnlocked = (new Details($this->email))->unlockAccount();
 
@@ -181,7 +162,7 @@ class Account
     function disable($confirmationCode)
     {
         try {
-            $this->verify($confirmationCode);
+            (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
             $accountDisable = (new Details($this->email))->disableAccount();
 
@@ -200,7 +181,7 @@ class Account
     function enable($confirmationCode)
     {
         try {
-            $this->verify($confirmationCode);
+            (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
             $accountEnabled = (new Details($this->email))->enableAccount();
 
@@ -211,23 +192,6 @@ class Account
             (new EmailAccount)->accountEnabled($this->email);
 
             return 'Account enabled succesfully.';
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function unexpire($userActivationCode)
-    {
-        try {
-            $this->activate($userActivationCode);
-
-            $unexpireAccount = (new Details($this->email))->unexpireAccount();
-
-            if (!$unexpireAccount) {
-                throw new Exception('Account could not be unexpired at this time.', 500);
-            }
-            // send subscription email
-            return 'Account unexpired successfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

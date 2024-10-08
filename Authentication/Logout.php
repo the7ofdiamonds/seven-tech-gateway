@@ -14,7 +14,7 @@ use SEVEN_TECH\Gateway\Token\TokenFirebase;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
-
+use SEVEN_TECH\Gateway\Account\Details;
 use WP_REST_Request;
 
 class Logout
@@ -46,7 +46,7 @@ class Logout
                 throw new Exception('Account could not be logged out.', 400);
             }
 
-            (new Authentication($request['email']))->isNotAuthenticated();
+            (new Details($request['email']))->isNotAuthenticated();
 
             $logoutResponse = [
                 'successMessage' => 'You have been logged out',
@@ -98,7 +98,7 @@ class Logout
                 throw new Exception('Account could not be logged out.', 400);
             }
 
-            (new Authentication($request['email']))->isNotAuthenticated();
+            (new Details($request['email']))->isNotAuthenticated();
 
             $logoutResponse = [
                 'successMessage' => 'You have been logged out of all accounts successfully',

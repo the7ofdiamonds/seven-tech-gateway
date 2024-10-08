@@ -125,7 +125,6 @@ class Admin
     function deleteAccount($email)
     {
         try {
-            error_log($email);
             (new Validator)->isValidEmail($email);
 
             $account = new Account($email);

@@ -51,20 +51,6 @@ class AccountTest extends TestCase
         }
     }
 
-    /** @test */
-    public function testVerify()
-    {
-        try {
-            $account = new Account($this->email);
-
-            $verificationResult = $account->verify($account->confirmationCode);
-
-            $this->assertTrue($verificationResult, "Verification should return true.");
-        } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
-        }
-    }
-
     /** 
      * @test
      * @dataProvider addDetailsDataProvider
@@ -133,20 +119,6 @@ class AccountTest extends TestCase
             $enableResult = $account->enable($account->confirmationCode);
 
             $this->assertTrue($enableResult, "Account should be enabled.");
-        } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
-        }
-    }
-
-    /** @test */
-    public function testUnexpire()
-    {
-        try {
-            $account = new Account($this->email);
-
-            $unexpireResult = $account->unexpire($account->userActivationKey);
-
-            $this->assertTrue($unexpireResult, "Account should be unexpired.");
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }

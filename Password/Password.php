@@ -2,8 +2,12 @@
 
 namespace SEVEN_TECH\Gateway\Password;
 
+use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Account\Details;
+use SEVEN_TECH\Gateway\Email\EmailPassword;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
@@ -12,11 +16,15 @@ class Password
 {
     private $validator;
     private $exists;
+    private $email;
+    private $firebaseAuth;
 
     public function __construct()
     {
         $this->validator = new Validator;
         $this->exists = new DatabaseExists;
+        $this->email = new EmailPassword;
+        $this->firebaseAuth = new FirebaseAuth;
     }
 
     function passwordFrag($password)
@@ -48,59 +56,100 @@ class Password
         if (!$password_check) {
             throw new Exception('The password you entered for this username is not correct.', 400);
         }
-        
+
         return $password_check;
     }
 
-    function expireCredentials($email)
+    function change($email, $password, $newPassword, $confirmPassword)
     {
         try {
             $this->exists->existsByEmail($email);
+            $this->validator->isValidPassword($password);
+
+            if (empty($newPassword)) {
+                throw new Exception('Enter your new preferred password.', 400);
+            }
+
+            if (empty($confirmPassword)) {
+                throw new Exception('Enter your new preferred password twice.', 400);
+            }
+
+            $matches = $this->validator->matches($newPassword, $confirmPassword);
+
+            if (!$matches) {
+                throw new Exception('Enter your new preferred password exactly the same twice.', 400);
+            }
+
+            $hashedPassword = $this->hashPassword($newPassword);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL expireCredentials('$email')"
+                "CALL changePassword('$email', '$password', '$hashedPassword')"
             );
 
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $credentialsExpired = $results[0]->resultSet;
+            $passwordChanged = $results[0]->resultSet;
 
-            if ($credentialsExpired == 'FALSE') {
+            if ($passwordChanged == 'FALSE') {
                 throw new Exception('Password could not be updated at this time.', 400);
             }
 
-            return $credentialsExpired;
+
+            $auth = new Authentication($email);
+            $this->firebaseAuth->changeFirebasePassword($auth->provider_given_id, $newPassword);
+
+            (new Details($email))->unexpireCredentials($auth->password);
+
+            $this->email->passwordChanged($email);
+
+            return "Your password has been changed successfully an email has been sent to {$email} check your inbox.";
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function unexpireCredentials($email, $password)
+    function update($email, $confirmationCode, $password, $confirmPassword)
     {
         try {
             $this->exists->existsByEmail($email);
+            $this->validator->isValidPassword($password);
+            $this->validator->isValidPassword($confirmPassword);
+
+            $matches = $this->validator->matches($password, $confirmPassword);
+
+            if (!$matches) {
+                throw new Exception('Enter your new preferred password exactly the same twice.', 400);
+            }
+
+            $hashedPassword = $this->hashPassword($password);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL unexpireCredentials('$email', '$password')"
+                "CALL updatePassword('$email', '$confirmationCode', '$hashedPassword')"
             );
 
             if ($wpdb->last_error) {
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
-            $credentialsExpired = $results[0]->resultSet;
+            $results = $results[0]->resultSet;
 
-            if ($credentialsExpired == 'FALSE') {
+            if (empty($results)) {
                 throw new Exception('Password could not be updated at this time.', 400);
             }
 
-            return $credentialsExpired;
+            $auth = new Authentication($email);
+
+            (new Details($email))->unexpireCredentials($auth->password);
+
+            $this->email->passwordChanged($email);
+
+            return 'Password updated succesfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
