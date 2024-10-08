@@ -3,18 +3,32 @@
 namespace SEVEN_TECH\Gateway\Account;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
 class Details
 {
-    
-    public function add($id,$metaKey, $metaValue) {
+    private String $email;
+
+    public function __construct($email)
+    {
+        try {
+            (new Validator)->isValidEmail($email);
+
+            $this->email = $email;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } 
+    }
+
+    function expireCredentials()
+    {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL addUserMeta('%s', '%s', '%s')", $id, $metaKey, $metaValue)
+                $wpdb->prepare("CALL expireCredentials('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -31,13 +45,13 @@ class Details
         }
     }
 
-    function expireCredentials(String $email)
+    function unexpireCredentials()
     {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL expireCredentials('%s')", $email)
+                $wpdb->prepare("CALL unexpireCredentials('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -54,36 +68,13 @@ class Details
         }
     }
 
-    function unexpireCredentials(String $email)
+    function lockAccount()
     {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL unexpireCredentials('%s')", $email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account could not be enabled at this time.', 500);
-            }
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function lockAccount(String $email)
-    {
-        try {
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL lockAccount('%s')", $email)
+                $wpdb->prepare("CALL lockAccount('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -100,13 +91,13 @@ class Details
         }
     }
 
-    function unlockAccount(String $email)
+    function unlockAccount()
     {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL unlockAccount('%s')", $email)
+                $wpdb->prepare("CALL unlockAccount('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -123,13 +114,13 @@ class Details
         }
     }
 
-    function disableAccount(String $email)
+    function disableAccount()
     {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL disableAccount('%s')", $email)
+                $wpdb->prepare("CALL disableAccount('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -146,13 +137,13 @@ class Details
         }
     }
 
-    function enableAccount(String $email)
+    function enableAccount()
     {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL enableAccount('%s')", $email)
+                $wpdb->prepare("CALL enableAccount('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -169,13 +160,13 @@ class Details
         }
     }
 
-    function expireAccount(String $email)
+    function expireAccount()
     {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL expireAccount('%s')", $email)
+                $wpdb->prepare("CALL expireAccount('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {
@@ -192,13 +183,13 @@ class Details
         }
     }
 
-    function unexpireAccount(String $email)
+    function unexpireAccount()
     {
         try {
             global $wpdb;
 
             $results = $wpdb->get_results(
-                $wpdb->prepare("CALL unexpireAccount('%s')", $email)
+                $wpdb->prepare("CALL unexpireAccount('%s')", $this->email)
             );
 
             if ($wpdb->last_error) {

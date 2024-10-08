@@ -119,12 +119,33 @@ class Account
         }
     }
 
+    public function addDetails($metaKey, $metaValue) : bool {
+        try {
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL addUserMeta('%s', '%s', '%s')", $this->id, $metaKey, $metaValue)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be enabled at this time.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     public function lock($confirmationCode)
     {
         try {
             $this->verify($confirmationCode);
 
-            $accountLocked = (new Details)->lockAccount($this->email);
+            $accountLocked = (new Details($this->email))->lockAccount();
 
             if (!$accountLocked) {
                 throw new Exception('Account could not be locked at this time.', 500);
@@ -143,7 +164,7 @@ class Account
         try {
             $this->verify($confirmationCode);
 
-            $accountUnlocked = (new Details)->unlockAccount($this->email);
+            $accountUnlocked = (new Details($this->email))->unlockAccount();
 
             if (!$accountUnlocked) {
                 throw new Exception('Account could not be unlocked at this time.', 500);
@@ -162,7 +183,7 @@ class Account
         try {
             $this->verify($confirmationCode);
 
-            $accountDisable = (new Details)->disableAccount($this->email);
+            $accountDisable = (new Details($this->email))->disableAccount();
 
             if (!$accountDisable) {
                 throw new Exception('Account could not be disabled at this time.', 500);
@@ -181,7 +202,7 @@ class Account
         try {
             $this->verify($confirmationCode);
 
-            $accountEnabled = (new Details)->enableAccount($this->email);
+            $accountEnabled = (new Details($this->email))->enableAccount();
 
             if (!$accountEnabled) {
                 throw new Exception('Account could not be enabled at this time123.', 500);
@@ -200,7 +221,7 @@ class Account
         try {
             $this->activate($userActivationCode);
 
-            $unexpireAccount = (new Details)->unexpireAccount($this->email);
+            $unexpireAccount = (new Details($this->email))->unexpireAccount();
 
             if (!$unexpireAccount) {
                 throw new Exception('Account could not be unexpired at this time.', 500);

@@ -25,9 +25,14 @@ class Create
         $this->login = new Login;
     }
 
-    function account($email, $username, $password, $nicename, $nickname, $firstname, $lastname, $phone)
+    function account($email, $username, $password, $confirmPassword, $nicename, $nickname, $firstname, $lastname, $phone)
     {
         try {
+             
+            if ($password !== $confirmPassword) {
+                throw new Exception("Passwords do not match reenter the same password twice.");
+            }
+
             $createdUser = $this->add->user(
                 $email,
                 $username,
@@ -49,14 +54,11 @@ class Create
             $authentication->addConfirmationCode();
 
             $account = new Account($email);
-            $id = $account->id;
-            
-            $details = new Details();
-            $details->add($id, 'is_enabled', 1);
-            $details->add($id, 'is_authenticated', 1);
-            $details->add($id, 'is_account_non_expired', 0);
-            $details->add($id, 'is_account_non_locked', 1);
-            $details->add($id, 'is_credentials_non_expired', 1);
+            (new Account($email))->addDetails('is_enabled', 1);
+            (new Account($email))->addDetails('is_authenticated', 1);
+            (new Account($email))->addDetails('is_account_non_expired', 0);
+            (new Account($email))->addDetails('is_account_non_locked', 1);
+            (new Account($email))->addDetails('is_credentials_non_expired', 1);            
             
             // $this->email->accountCreated($email);
 

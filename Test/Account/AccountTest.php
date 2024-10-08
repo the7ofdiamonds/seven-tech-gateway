@@ -1,20 +1,47 @@
 <?php
+namespace SEVEN_TECH\Gateway\Test\Account;
 
 use PHPUnit\Framework\TestCase;
+
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Test\Spreadsheet;
+use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class AccountTest extends TestCase
 {
     private String $email = "testuser40@gmail.com";
-    private String $userActivationKey = "LvlGWjtoehgShEZnmWte";
-    private String $confirmationCode = "963eEDKdO4H3yE2By3dd";
 
-    /** @test */
-    public function testActivate()
+    /**
+     * Data provider for testCreateAccount
+     */
+    public Static function accountDataProvider()
+    {
+        return (new Spreadsheet((new DataProviders)->accountPath, 'Account'))->getData();
+    }
+
+    /**
+     * Data provider for testAddDetails
+     */
+    public Static function addDetailsDataProvider()
+    {
+        return [
+            ['is_enabled', 1],
+            ['is_authenticated', 1],
+            ['is_account_non_expired', 0],
+            ['is_account_non_locked', 1],
+            ['is_credentials_non_expired', 1]
+        ];
+    }
+
+    /** 
+     * @test
+     * @dataProvider accountDataProvider
+     *  */
+    public function testActivate(String $email)
     {
         try {
-            $account = new Account($this->email);
+            $account = new Account($email);
 
             $accountActivated = $account->activate($account->userActivationKey);
 
@@ -37,6 +64,23 @@ class AccountTest extends TestCase
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
+
+    /** 
+     * @test
+     * @dataProvider addDetailsDataProvider
+     *  */
+    public function testAddDetails($metaKey, $metaValue)
+    {
+         try {
+             $account = new Account($this->email);
+ 
+             $detailsAdded = $account->addDetails($metaKey, $metaValue);
+ 
+             $this->assertSame($detailsAdded, true);
+         } catch (DestructuredException $e) {
+             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+         }
+     }
 
     /** @test */
     public function testLock()

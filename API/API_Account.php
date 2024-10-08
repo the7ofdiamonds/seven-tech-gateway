@@ -16,7 +16,7 @@ class API_Account
     function register(WP_REST_Request $request)
     {
         try {
-            $authenticatedAccount = (new Create)->account($request['email'], $request['username'], $request['password'], $request['nicename'], $request['nickname'], $request['firstname'], $request['lastname'], $request['phone']);
+            $authenticatedAccount = (new Create)->account($request['email'], $request['username'], $request['password'], $request['confirmPassword'], $request['nicename'], $request['nickname'], $request['firstname'], $request['lastname'], $request['phone']);
 
             return rest_ensure_response($authenticatedAccount);
         } catch (DestructuredException $e) {
