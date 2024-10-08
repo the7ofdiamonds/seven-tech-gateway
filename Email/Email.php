@@ -170,7 +170,7 @@ class Email
     {
         try {
             $to_email = $account->email;
-            $name =  "{$account->first_name} {$account->last_name}";
+            $name =  "{$account->firstName} {$account->lastName}";
             $to_name = $name;
 
             $this->mailer->isSMTP();
