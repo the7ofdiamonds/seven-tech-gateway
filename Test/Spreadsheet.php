@@ -2,6 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\Test;
 
+use PhpOffice\PhpSpreadsheet\Reader\IReader;
+
 class Spreadsheet {
     private String $inputFileName;
     private String $sheet;
@@ -15,17 +17,16 @@ class Spreadsheet {
     public function getSheet() : array {
         $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($this->inputFileName);
         $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
-        $reader->setReadEmptyCells(false);
         $reader->setLoadSheetsOnly($this->sheet);
         $spreadsheet = $reader->load($this->inputFileName);
         
-        return $spreadsheet->getActiveSheet()->toArray();
+        return $spreadsheet->getActiveSheet()->toArray(null, true, true, false, true);
     }
 
     public function getData() : array {
         $array = $this->getSheet();
         unset($array[0]);
 
-        return $array;
+        return array_values($array);
     }
 }

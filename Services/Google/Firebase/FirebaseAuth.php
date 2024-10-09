@@ -25,7 +25,7 @@ class FirebaseAuth
         $this->auth = $factory->createAuth();
     }
 
-    function createFirebaseUser($email, $phone, $password, $username)
+    function createFirebaseUser(String $email, String $phone, String $password, String $username)
     {
         $newUser = [
             'email' => $email,
@@ -46,12 +46,12 @@ class FirebaseAuth
         return $newFirebaseUser;
     }
 
-    function getUserByID($id)
+    function getUserByID(String $uid)
     {
-        return $this->auth->getUser($id);
+        return $this->auth->getUser($uid);
     }
 
-    function signInWithEmailAndPassword($email, $password)
+    function signInWithEmailAndPassword(String $email, String $password)
     {
         try {
             return $this->auth->signInWithEmailAndPassword($email, $password);
@@ -62,12 +62,12 @@ class FirebaseAuth
         }
     }
 
-    function signInWithRefreshToken($refreshToken)
+    function signInWithRefreshToken(String $refreshToken)
     {
         return $this->auth->signInWithRefreshToken($refreshToken);
     }
 
-    function getVerifiedToken($token)
+    function getVerifiedToken(String $token)
     {
         try {
             return $this->auth->verifyIdToken($token, true);
@@ -76,7 +76,7 @@ class FirebaseAuth
         }
     }
 
-    function getEmailFromToken($accessToken)
+    function getEmailFromToken(String $accessToken)
     {
         $verifiedAccessToken = $this->getVerifiedToken($accessToken);
 
@@ -85,13 +85,17 @@ class FirebaseAuth
         return $email;
     }
 
-    function changeFirebasePassword($uid, $newPassword)
+    function changeFirebasePassword(String $uid, String $newPassword)
     {
         return $this->auth->changeUserPassword($uid, $newPassword);
     }
 
-    function revokeRefreshTokens($uid)
+    function revokeRefreshTokens(String $uid)
     {
         return $this->auth->revokeRefreshTokens($uid);
+    }
+
+    function deleteUser(String $uid) {
+        return $this->auth->deleteUser($uid);
     }
 }

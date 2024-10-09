@@ -22,6 +22,27 @@ class Details
         } 
     }
 
+    public function addDetails($id, $metaKey, $metaValue) : bool {
+        try {
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL addUserMeta('%s', '%s', '%s')", $id, $metaKey, $metaValue)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
+                throw new Exception('Account could not be enabled at this time.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function isAuthenticated()
     {
         try {

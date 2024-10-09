@@ -2,6 +2,11 @@
     <testsuites>
         <testsuite name="Account Test">
             <directory>Test/Account</directory>
+            <directory>Test/Admin</directory>
+            <directory>Test/Authentication</directory>
+            <directory>Test/Change</directory>
+            <directory>Test/Password</directory>
+            <directory>Test/Subscription</directory>
         </testsuite>
     </testsuites>
 </phpunit>

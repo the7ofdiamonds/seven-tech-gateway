@@ -7,6 +7,8 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
+use WP_Error;
+use WP_User;
 
 class Authentication
 {
@@ -52,6 +54,35 @@ class Authentication
         }
     }
 
+    function addActivationKey()
+    {
+        try {
+            $userActivationKey = wp_generate_password(20, false);
+            $userData = new WP_User($this->id);
+            $userData->user_activation_key = $userActivationKey;
+            $updatedUser = wp_update_user($userData);
+
+            if ($updatedUser !== $this->id) {
+                throw new Exception("User Activation Key could not be added.", 500);
+            }
+
+            return $userActivationKey;
+        } catch (WP_Error $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function updateActivationKey()
+    {
+        try {
+            return $this->addActivationKey();
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function verifyCredentials(String $confirmation_code)
     {
         try {
@@ -85,7 +116,8 @@ class Authentication
         }
     }
 
-    function addProviderGivenID(String $provider_given_id) {
+    function addProviderGivenID(String $provider_given_id)
+    {
         try {
             global $wpdb;
 
@@ -97,6 +129,8 @@ class Authentication
                 throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
             }
 
+            error_log($results[0]->resultSet);
+            
             if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
                 throw new Exception('Account confirmation code could used.', 500);
             }
@@ -126,7 +160,7 @@ class Authentication
                 throw new Exception('Account confirmation code could used.', 500);
             }
 
-            return true;
+            return $confirmation_code;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
@@ -151,57 +185,7 @@ class Authentication
                 throw new Exception('Account confirmation code could used.', 500);
             }
 
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function addActivationKey()
-    {
-        try {
-            $activationKey = wp_generate_password(20, false);
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL addActivationCode('%s', '%s')", $this->email, $activationKey)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account confirmation code could not be logged in.', 500);
-            }
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function updateActivationKey()
-    {
-        try {
-            $activationKey = wp_generate_password(20, false);
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL updateUserActivationKey('%s', '%s')", $this->email, $activationKey)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account confirmation code could not be logged in.', 500);
-            }
-
-            return true;
+            return $confirmation_code;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

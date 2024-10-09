@@ -13,26 +13,26 @@ use Exception;
 class Account
 {
     public int $id;
-    public $joined;
-    public $userActivationKey;
-    public $email;
-    public $username;
-    public $password;
-    public $roles;
-    public $level;
-    public $profileImage;
-    public $confirmationCode;
-    public $firstName;
-    public $lastName;
-    public $nicename;
-    public $phone;
-    public $bio;
-    public $providerGivenID;
-    public $isAuthenticated;
-    public $isAccountNonExpired;
-    public $isAccountNonLocked;
-    public $isCredentialsNonExpired;
-    public $isEnabled;
+    public String $joined;
+    public String $userActivationKey;
+    public String $email;
+    public String $username;
+    public String $password;
+    public array $roles;
+    public String $level;
+    public String $profileImage;
+    public String $confirmationCode;
+    public String $firstName;
+    public String $lastName;
+    public String $nicename;
+    public String $phone = "";
+    public String $bio;
+    public String $providerGivenID;
+    public bool $isAuthenticated;
+    public bool $isAccountNonExpired;
+    public bool $isAccountNonLocked;
+    public bool $isCredentialsNonExpired;
+    public bool $isEnabled;
 
     public function __construct($email)
     {
@@ -56,21 +56,21 @@ class Account
             $account = $results[0];
             $this->id = $account->id;
             $this->joined = $account->joined;
-            $this->email =  $account->email;
-            $this->username = $account->username;
-            $this->password = $account->password;
-            $this->firstName = $account->first_name;
-            $this->lastName = $account->last_name;
-            $this->nicename = $account->nicename;
-            $this->phone = $account->phone;
-            $this->userActivationKey = $account->user_activation_key;
-            $this->confirmationCode = $account->confirmation_code;
-            $this->providerGivenID = $account->provider_given_id;
-            $this->isAuthenticated = (bool) $account->is_authenticated;
-            $this->isAccountNonExpired = (bool) $account->is_account_non_expired;
-            $this->isAccountNonLocked = (bool) $account->is_account_non_locked;
-            $this->isCredentialsNonExpired = (bool) $account->is_credentials_non_expired;
-            $this->isEnabled = (bool) $account->is_enabled;
+            $this->email =  $account->email ? : '';
+            $this->username = $account->username ? : '';
+            $this->password = $account->password ? : '';
+            $this->firstName = $account->first_name ? : '';
+            $this->lastName = $account->last_name ? : '';
+            $this->nicename = $account->nicename ? : '';
+            $this->phone = $account->phone ? : '';
+            $this->userActivationKey = $account->user_activation_key ? : '';
+            $this->confirmationCode = $account->confirmation_code ? : '';
+            $this->providerGivenID = $account->provider_given_id ? : '';
+            $this->isAuthenticated = (bool) $account->is_authenticated ? : null;
+            $this->isAccountNonExpired = (bool) $account->is_account_non_expired ? : null;
+            $this->isAccountNonLocked = (bool) $account->is_account_non_locked ? : null;
+            $this->isCredentialsNonExpired = (bool) $account->is_credentials_non_expired ? : null;
+            $this->isEnabled = (bool) $account->is_enabled ? : null;
             $this->roles = (new Roles)->unserializeRoles($account->roles);
             $this->level = (new Roles)->getRolesHighestLevel($this->roles);
             $this->profileImage = get_avatar_url($account->id);
@@ -93,27 +93,6 @@ class Account
             }
 
             (new Authentication($this->email))->updateActivationKey();
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    public function addDetails($metaKey, $metaValue) : bool {
-        try {
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL addUserMeta('%s', '%s', '%s')", $this->id, $metaKey, $metaValue)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account could not be enabled at this time.', 500);
-            }
 
             return true;
         } catch (Exception $e) {

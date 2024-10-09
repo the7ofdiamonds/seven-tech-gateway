@@ -10,40 +10,40 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class AccountTest extends TestCase
 {
-    private String $email = "testuser40@gmail.com";
 
     /**
-     * Data provider for testCreateAccount
+     * Data provider for AccountTest
      */
     public Static function accountDataProvider()
     {
         return (new Spreadsheet((new DataProviders)->accountPath, 'Account'))->getData();
     }
 
-    /**
-     * Data provider for testAddDetails
-     */
-    public Static function addDetailsDataProvider()
+    /** 
+     * @test
+     * @dataProvider accountDataProvider
+     *  */
+    public function testConstructor($email)
     {
-        return [
-            ['is_enabled', 1],
-            ['is_authenticated', 1],
-            ['is_account_non_expired', 0],
-            ['is_account_non_locked', 1],
-            ['is_credentials_non_expired', 1]
-        ];
+        try {
+            $account = new Account($email);
+
+            $this->assertSame($email, $account->email);
+        } catch (DestructuredException $e) {
+            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+        }
     }
 
     /** 
      * @test
      * @dataProvider accountDataProvider
      *  */
-    public function testActivate(String $email)
+    public function testActivate($email)
     {
         try {
             $account = new Account($email);
-
-            $accountActivated = $account->activate($account->userActivationKey);
+            $userActivationKey = $account->userActivationKey;
+            $accountActivated = $account->activate($userActivationKey);
 
             $this->assertSame($accountActivated, true);
         } catch (DestructuredException $e) {
@@ -53,27 +53,12 @@ class AccountTest extends TestCase
 
     /** 
      * @test
-     * @dataProvider addDetailsDataProvider
+     * @dataProvider accountDataProvider
      *  */
-    public function testAddDetails($metaKey, $metaValue)
-    {
-         try {
-             $account = new Account($this->email);
- 
-             $detailsAdded = $account->addDetails($metaKey, $metaValue);
- 
-             $this->assertSame($detailsAdded, true);
-         } catch (DestructuredException $e) {
-             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
-         }
-     }
-
-    /** @test */
-    public function testLock()
+    public function testLock($email)
     {
         try {
-            $account = new Account($this->email);
-
+            $account = new Account($email);
             $lockResult = $account->lock($account->confirmationCode);
 
             $this->assertTrue($lockResult, "Account should be locked.");
@@ -82,12 +67,14 @@ class AccountTest extends TestCase
         }
     }
 
-    /** @test */
-    public function testUnlock()
+    /** 
+     * @test
+     * @dataProvider accountDataProvider
+     *  */
+    public function testUnlock($email)
     {
         try {
-            $account = new Account($this->email);
-
+            $account = new Account($email);
             $unlockResult = $account->unlock($account->confirmationCode);
 
             $this->assertTrue($unlockResult, "Account should be unlocked.");
@@ -96,12 +83,14 @@ class AccountTest extends TestCase
         }
     }
 
-    /** @test */
-    public function testDisable()
+    /** 
+     * @test
+     * @dataProvider accountDataProvider
+     *  */
+    public function testDisable($email)
     {
         try {
-            $account = new Account($this->email);
-
+            $account = new Account($email);
             $disableResult = $account->disable($account->confirmationCode);
 
             $this->assertTrue($disableResult, "Account should be disabled.");
@@ -110,12 +99,14 @@ class AccountTest extends TestCase
         }
     }
 
-    /** @test */
-    public function testEnable()
+    /** 
+     * @test
+     * @dataProvider accountDataProvider
+     *  */
+    public function testEnable($email)
     {
         try {
-            $account = new Account($this->email);
-
+            $account = new Account($email);
             $enableResult = $account->enable($account->confirmationCode);
 
             $this->assertTrue($enableResult, "Account should be enabled.");

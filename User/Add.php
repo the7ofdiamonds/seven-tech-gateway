@@ -25,9 +25,14 @@ class Add
         $this->email = new EmailUser;
     }
 
-    public function user($email, $username, $password, $nicename, $phone)
+    public function user($email, $username, $password, $confirmPassword, $nicename, $phone)
     {
         try {
+
+            if ($password !== $confirmPassword) {
+                throw new Exception("Passwords do not match reenter the same password twice.");
+            }
+            
             $emailExists = $this->databaseExists->existsByEmail($email);
 
             if ($emailExists == 'TRUE') {

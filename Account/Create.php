@@ -9,7 +9,7 @@ use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\User\Add;
 
 use Exception;
-
+use WP_Error;
 use WP_User;
 
 class Create
@@ -28,37 +28,40 @@ class Create
     function account($email, $username, $password, $confirmPassword, $nicename, $nickname, $firstname, $lastname, $phone)
     {
         try {
-             
-            if ($password !== $confirmPassword) {
-                throw new Exception("Passwords do not match reenter the same password twice.");
-            }
 
             $createdUser = $this->add->user(
                 $email,
                 $username,
                 $password,
+                $confirmPassword,
                 $nicename,
                 $phone
             );
 
+            $authentication = new Authentication($email);
+            $authentication->addProviderGivenID($createdUser->providergivenID);
+            $userActivationKey = $authentication->addActivationKey();
+            $confirmationCode = $authentication->addConfirmationCode();
+error_log("Created User ID: {$createdUser->id}");
             $userData = new WP_User($createdUser->id);
             $userData->first_name = $firstname;
             $userData->last_name = $lastname;
             $userData->user_nicename = $nicename;
             $userData->nickname = $nickname;
-            $userData->user_activation_key = wp_generate_password(20, false);
-            wp_update_user($userData);
+            $userData->user_activation_key = $userActivationKey;
+            $updatedUser = wp_insert_user($userData);
 
-            $authentication = new Authentication($email);
-            $authentication->addProviderGivenID($createdUser->providergivenID);
-            $authentication->addConfirmationCode();
+            error_log("Updated User ID: {$updatedUser}");
 
-            $account = new Account($email);
-            (new Account($email))->addDetails('is_enabled', 1);
-            (new Account($email))->addDetails('is_authenticated', 1);
-            (new Account($email))->addDetails('is_account_non_expired', 0);
-            (new Account($email))->addDetails('is_account_non_locked', 1);
-            (new Account($email))->addDetails('is_credentials_non_expired', 1);            
+            add_user_meta($updatedUser, 'phone_number', $phone);
+
+            $id = $userData->ID;
+
+            (new Details($email))->addDetails($id, 'is_enabled', 1);
+            (new Details($email))->addDetails($id, 'is_authenticated', 1);
+            (new Details($email))->addDetails($id, 'is_account_non_expired', 0);
+            (new Details($email))->addDetails($id, 'is_account_non_locked', 1);
+            (new Details($email))->addDetails($id, 'is_credentials_non_expired', 1);            
             
             // $this->email->accountCreated($email);
 
@@ -66,15 +69,17 @@ class Create
   
             $signupResponse = array(
                 'successMessage' => 'You have been signed up successfully.',
-                'id' => $account->id,
-                'userActivationCode' => $account->userActivationKey,
-                'confirmationCode' => $account->confirmationCode,
+                'id' => $id,
+                'userActivationCode' => $userActivationKey,
+                'confirmationCode' => $confirmationCode,
                 'refreshToken' => $auth->refresh_token,
                 'accessToken' => $auth->access_token,
                 'statusCode' => 200,
             );
 
             return $signupResponse;
+        } catch (WP_Error $e) {
+            throw new DestructuredException($e);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

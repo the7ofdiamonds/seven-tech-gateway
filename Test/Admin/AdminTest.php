@@ -17,7 +17,7 @@ class AdminTest extends TestCase
      */
     public Static function deleteAccountDataProvider()
     {
-        return (new Spreadsheet((new DataProviders)->adminPath, 'Delete'))->getData();
+        return (new Spreadsheet((new DataProviders)->adminPath, 'Admin'))->getData();
     }
 
     /** 

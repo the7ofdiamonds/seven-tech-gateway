@@ -12,16 +12,16 @@ class CreateTest extends TestCase
 {
 
     /**
-     * Data provider for testCreateAccount
+     * Data provider for CreateTest
      */
-    public Static function accountDataProvider()
+    public Static function createDataProvider()
     {
-        return (new Spreadsheet((new DataProviders)->accountPath, 'Account'))->getData();
+        return (new Spreadsheet((new DataProviders)->accountPath, 'Create'))->getData();
     }
 
     /** 
      * @test
-     * @dataProvider accountDataProvider
+     * @dataProvider createDataProvider
      *  */
     public function testCreateAccount($email, $username, $password, $confirmPassword, $nicename, $nickname, $firstname, $lastname, $phone)
     {

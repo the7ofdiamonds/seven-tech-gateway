@@ -10,6 +10,7 @@ use SEVEN_TECH\Gateway\Services\Google\Google;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 
 class Admin
 {
@@ -125,15 +126,13 @@ class Admin
     function deleteAccount($email)
     {
         try {
-            (new Validator)->isValidEmail($email);
-
             $account = new Account($email);
 
-            if ($account->isAccountNonLocked) {
+            if ($account->isAccountNonLocked || $account->isAccountNonLocked == null) {
                 throw new Exception('Account must first be locked.', 400);
             }
 
-            if ($account->isEnabled) {
+            if ($account->isEnabled || $account->isEnabled == null) {
                 throw new Exception('Account must first be disabled.', 400);
             }
 
@@ -151,9 +150,13 @@ class Admin
                 throw new Exception('Account could not be deleted at this time.', 500);
             }
 
+            (new FirebaseAuth)->deleteUser($account->providerGivenID);
+
             (new EmailAccount)->accountDeleted($email);
 
             return 'Account deleted succesfully.';
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
