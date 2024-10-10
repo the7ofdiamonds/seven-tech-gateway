@@ -44,8 +44,8 @@ class Session
             $this->algorithm = $authenticated->algorithm;
             $this->access_token = $authenticated->access_token;
             $this->refresh_token = $authenticated->refresh_token;
-            $this->token = substr((new Token)->hashToken($authenticated->refresh_token), 0, 43);
-            $this->id = (new Token)->hashToken($this->token);
+            $this->token = $this->getToken($this->refresh_token);
+            $this->id = $this->getId($this->token);
             $this->ip = $ip;
             $this->location = $location;
             $this->user_agent = $user_agent;
@@ -64,6 +64,14 @@ class Session
         }
     }
 
+    function getToken($refresh_token) : string {
+        return substr((new Token)->hashToken($refresh_token), 0, 43);
+    }
+
+    function getId($token) : string {
+        return (new Token)->hashToken($token);
+    }
+
     function findSession($session_verifier, $id = '')
     {
         try {
@@ -71,7 +79,7 @@ class Session
                 throw new Exception('Session Verifier is required to find session.', 404);
             }
 
-            $session = (new SessionWordpress)->findSession($id, $session_verifier);
+            $session = (new SessionWordpress)->find($id, $session_verifier);
 
             if (!$session && (new RedisSession)->isReady) {
                 if (strpos($session_verifier, 'sessions:') !== 0) {
@@ -96,7 +104,7 @@ class Session
 
             $sessions = [];
 
-            $sessionsWordpress = (new SessionWordpress)->getSessions($account->id);
+            $sessionsWordpress = (new SessionWordpress)->get($account->id);
 
             if (is_array($sessionsWordpress)) {
                 $sessions = $sessionsWordpress;
@@ -110,7 +118,7 @@ class Session
                 }
             }
 
-            $accountSessions = array('id' => $account->id, 'provider_given_id' => $account->provider_given_id, 'sessions' => $sessions);
+            $accountSessions = array('id' => $account->id, 'provider_given_id' => $account->providerGivenID, 'sessions' => $sessions);
 
             return $accountSessions;
         } catch (DestructuredException $e) {
@@ -146,10 +154,10 @@ class Session
                 }
             }
 
-            $sessionWordpress = (new SessionWordpress)->findSession($id, $verifier);
+            $sessionWordpress = (new SessionWordpress)->find($id, $verifier);
 
             if (is_array($sessionWordpress)) {
-                $sessionDeleted = (new SessionWordpress)->deleteSession($id, $verifier);
+                $sessionDeleted = (new SessionWordpress)->delete($id, $verifier);
 
                 return $sessionDeleted;
             }

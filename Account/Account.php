@@ -66,11 +66,11 @@ class Account
             $this->userActivationKey = $account->user_activation_key ? : '';
             $this->confirmationCode = $account->confirmation_code ? : '';
             $this->providerGivenID = $account->provider_given_id ? : '';
-            $this->isAuthenticated = (bool) $account->is_authenticated ? : null;
-            $this->isAccountNonExpired = (bool) $account->is_account_non_expired ? : null;
-            $this->isAccountNonLocked = (bool) $account->is_account_non_locked ? : null;
-            $this->isCredentialsNonExpired = (bool) $account->is_credentials_non_expired ? : null;
-            $this->isEnabled = (bool) $account->is_enabled ? : null;
+            $this->isAuthenticated = $account->is_authenticated ? : false;
+            $this->isAccountNonExpired = $account->is_account_non_expired ? : false;
+            $this->isAccountNonLocked = $account->is_account_non_locked ? : false;
+            $this->isCredentialsNonExpired = $account->is_credentials_non_expired ? : false;
+            $this->isEnabled = $account->is_enabled ? : false;
             $this->roles = (new Roles)->unserializeRoles($account->roles);
             $this->level = (new Roles)->getRolesHighestLevel($this->roles);
             $this->profileImage = get_avatar_url($account->id);
@@ -105,7 +105,7 @@ class Account
         try {
             (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
-            $accountLocked = (new Details($this->email))->lockAccount();
+            $accountLocked = (new Details())->lockAccount($this->id);
 
             if (!$accountLocked) {
                 throw new Exception('Account could not be locked at this time.', 500);
@@ -124,7 +124,7 @@ class Account
         try {
             (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
-            $accountUnlocked = (new Details($this->email))->unlockAccount();
+            $accountUnlocked = (new Details())->unlockAccount($this->id);
 
             if (!$accountUnlocked) {
                 throw new Exception('Account could not be unlocked at this time.', 500);
@@ -143,7 +143,7 @@ class Account
         try {
             (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
-            $accountDisable = (new Details($this->email))->disableAccount();
+            $accountDisable = (new Details())->disableAccount($this->id);
 
             if (!$accountDisable) {
                 throw new Exception('Account could not be disabled at this time.', 500);
@@ -162,7 +162,7 @@ class Account
         try {
             (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
-            $accountEnabled = (new Details($this->email))->enableAccount();
+            $accountEnabled = (new Details())->enableAccount($this->id);
 
             if (!$accountEnabled) {
                 throw new Exception('Account could not be enabled at this time123.', 500);

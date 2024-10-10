@@ -2,6 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\Test\Authentication;
 
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
@@ -11,23 +13,18 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class AuthenticationTest extends TestCase
 {
-    private String $email;
-    private String $provider_given_id;
 
-    /**
-     * Data provider for AuthenticationTest
-     */
     public static function authDataProvider()
     {
         return (new Spreadsheet((new DataProviders)->authPath, 'Auth'))->getData();
     }
 
-    /** 
-     * @test
-     * @dataProvider authDataProvider
-     */
-    public function testAddProviderGivenID($email, $provider_given_id) : array
+    public function testAddProviderGivenID()
     {
+        $email = "testuser40@gmail.com";
+        $provider_given_id= "ABC123def456";
+        $data = ['email' => $email];
+
         try {
             $providerGivenIDAdded = (new Authentication($email))->addProviderGivenID($provider_given_id);
 
@@ -36,87 +33,76 @@ class AuthenticationTest extends TestCase
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
 
-        return compact('email');
+        return $data;
     }
 
-    /** 
-     * @test
-     * @depends testAddProviderGivenID
-     */
-    public function testAddActivationKey(array $data) : array
+    #[Depends('testAddProviderGivenID')]
+    public function testAddActivationKey(array $data)
     {
         try {
             $activationKey = (new Authentication($data['email']))->addActivationKey();
 
-            error_log("User Activation Key: {$activationKey}");
-
             $this->assertNotNull($activationKey);
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
 
-        return compact(['email' => $data['email']]);
+        return $data;
     }
-
-    /** @test
-     * @depends testAddActivationKey
-     */
-    public function testUpdateActivationKey(array $data) : array
+    
+    #[Depends('testAddActivationKey')]
+    public function testUpdateActivationKey(array $data)
     {
         try {
             $activationKey = (new Authentication($data['email']))->updateActivationKey();
 
-            error_log("User Activation Key: {$activationKey}");
-
             $this->assertNotNull($activationKey);
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
 
-        return compact(['email' => $data['email']]);
+        return $data;
     }
 
-    /** @test
-     * @depends testUpdateActivationKey
-     */
-    public function testAddConfirmationCode(array $data) : array
+    #[Depends('testUpdateActivationKey')]
+    public function testAddConfirmationCode(array $data)
     {
         try {
-            $confirmationCode = (new Authentication($data['email']))->addConfirmationCode();
-
-            error_log("Confirmation Code: {$confirmationCode}");
+            $auth = new Authentication($data['email']);
+            $confirmationCode = $auth->addConfirmationCode();
+            $data['confirmationCode'] = $confirmationCode;
 
             $this->assertNotNull($confirmationCode);
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
 
-        return compact(['email' => $data['email']]);
+        return $data;
     }
 
-    /** @test
-     * @depends testAddConfirmationCode
-     */
-    public function testUpdateConfirmationCode(array $data) : array
+    #[Depends('testAddConfirmationCode')]
+    public function testUpdateConfirmationCode(array $data)
     {
         try {
-            $confirmationCode = (new Authentication($data['email']))->updateConfirmationCode();
+            $auth = new Authentication($data['email']);
 
-            error_log("Confirmation Code: {$confirmationCode}");
+            $confirmationCode = $auth->updateConfirmationCode();
 
             $this->assertNotNull($confirmationCode);
+
+            $data['confirmationCode'] = $confirmationCode;
+
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
 
-        return compact(['email' => $data['email'], 'confirmationCode' => $confirmationCode]);
+        return $data;    
     }
 
-    /** @test
-     * @depends testUpdateConfirmationCode
-     */
+    #[Depends('testUpdateConfirmationCode')]
     public function testVerifyCredentials(array $data) {
         try {
+            error_log($data['confirmationCode']);
             $credentialsVerified = (new Authentication($data['email']))->verifyCredentials($data['confirmationCode']);
 
             $this->assertTrue($credentialsVerified, "Credentials should be verified.");

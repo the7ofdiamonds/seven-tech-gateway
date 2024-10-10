@@ -20,7 +20,7 @@ class Authentication
     public $phone;
     public $provider_given_id;
 
-    public function __construct($email)
+    public function __construct(String $email)
     {
         try {
             (new DatabaseExists)->existsByEmail($email);
@@ -51,10 +51,40 @@ class Authentication
             throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
+        } 
+    }
+
+    function addProviderGivenID(String $provider_given_id): bool
+    {
+        try {
+            $providerGivenIDAdded = add_user_meta($this->id, 'provider_given_id', $provider_given_id);
+
+            if (!$providerGivenIDAdded) {
+                throw new Exception('Account provider given ID could not be added.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
         }
     }
 
-    function addActivationKey()
+    function updateProviderGivenID(String $provider_given_id): bool
+    {
+        try {
+            $providerGivenIDUpdated = update_user_meta($this->id, 'provider_given_id', $provider_given_id);
+
+            if (!$providerGivenIDUpdated) {
+                throw new Exception('Account provider given ID could not be updated.', 500);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function addActivationKey(): string
     {
         try {
             $userActivationKey = wp_generate_password(20, false);
@@ -62,19 +92,21 @@ class Authentication
             $userData->user_activation_key = $userActivationKey;
             $updatedUser = wp_update_user($userData);
 
-            if ($updatedUser !== $this->id) {
-                throw new Exception("User Activation Key could not be added.", 500);
+            if (is_wp_error($updatedUser)) {
+                $all_error_messages = $updatedUser->get_error_messages();
+                foreach ($all_error_messages as $message) {
+                    error_log("Error: " . $message);
+                    throw new Exception($message, 500);
+                }
             }
 
             return $userActivationKey;
-        } catch (WP_Error $e) {
-            throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function updateActivationKey()
+    function updateActivationKey() : string
     {
         try {
             return $this->addActivationKey();
@@ -83,7 +115,39 @@ class Authentication
         }
     }
 
-    function verifyCredentials(String $confirmation_code)
+    function addConfirmationCode(): string
+    {
+        try {
+            $confirmation_code = wp_generate_password(20, false);
+            $confirmationCodeAdded = add_user_meta($this->id, 'confirmation_code', $confirmation_code);
+
+            if (!$confirmationCodeAdded) {
+                throw new Exception('Account confirmation code could not be added.', 500);
+            }
+
+            return $confirmation_code;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function updateConfirmationCode(): string
+    {
+        try {
+            $confirmation_code = wp_generate_password(20, false);
+            $confirmationCodeUpdated = update_user_meta($this->id, 'confirmation_code', $confirmation_code);
+
+            if (!$confirmationCodeUpdated) {
+                throw new Exception('Account confirmation code could not be updated.', 500);
+            }
+
+            return $confirmation_code;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function verifyCredentials(String $confirmation_code): bool
     {
         try {
             (new Validator)->isValidConfirmationCode($confirmation_code);
@@ -94,98 +158,9 @@ class Authentication
                 throw new Exception("Confirmation code provided does not match our records.", 403);
             }
 
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL verifyCredentials('%s', '%s')", $this->email, $this->confirmationCode)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception("There was an error verifying your credentials please try again at another time.", 500);
-            }
-
-            return true;
+            return $matches;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function addProviderGivenID(String $provider_given_id)
-    {
-        try {
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL addProviderGivenID('%s', '%s')", $this->email, $provider_given_id)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            error_log($results[0]->resultSet);
-            
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account confirmation code could used.', 500);
-            }
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function addConfirmationCode()
-    {
-        try {
-            $confirmation_code = wp_generate_password(20, false);
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL addConfirmationCode('%s', '%s')", $this->email, $confirmation_code)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account confirmation code could used.', 500);
-            }
-
-            return $confirmation_code;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function updateConfirmationCode()
-    {
-        try {
-            $confirmation_code = wp_generate_password(20, false);
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL updateConfirmationCode('%s', '%s')", $this->email, $confirmation_code)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (empty($results[0]->resultSet) || $results[0]->resultSet === 'FALSE') {
-                throw new Exception('Account confirmation code could used.', 500);
-            }
-
-            return $confirmation_code;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

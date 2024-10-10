@@ -17,6 +17,7 @@ use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Exception;
 
 use WP_REST_Request;
+use WP_REST_Response;
 
 class Login
 {
@@ -31,14 +32,17 @@ class Login
 
     function signInWithEmailAndPassword($email, $password)
     {
-        try {          
+        try {
             $account = new Account($email);
 
             if ($password !== '') {
                 (new Password)->passwordMatchesHash($password, $account->password);
             }
 
-            (new Details($email))->isAuthenticated();
+            if (!$account->isAuthenticated) {
+                (new Details())->isAuthenticated($account->id);
+            }
+
             $signedInUser = $this->firebaseAuth->signInWithEmailAndPassword($email, $password);
 
             return new Authenticated($signedInUser->idToken(), $signedInUser->refreshToken());
@@ -55,7 +59,8 @@ class Login
             $accessToken = $this->token->getAccessToken($request);
             $refreshToken = $this->token->getRefreshToken($request);
             $email = $this->token->getEmailFromToken($accessToken);
-            (new Details($email))->isAuthenticated();
+            $account = new Account($email);
+            (new Details())->isAuthenticated($account->id);
 
             return new Authenticated($accessToken, $refreshToken);
         } catch (FailedToVerifyToken $e) {
@@ -71,7 +76,7 @@ class Login
     {
         try {
             $authenticatedAccount = '';
-            
+
             if (isset($request['email']) && isset($request['password'])) {
                 $authenticatedAccount = $this->signInWithEmailAndPassword($request['email'], $request['password']);
             } else {
@@ -83,7 +88,7 @@ class Login
             }
 
             $location = '';
-            
+
             if (isset($request['location'])) {
                 $location = $request['location'];
             }
@@ -95,18 +100,24 @@ class Login
             new SessionCreate($session);
 
             (new Cookie())->set($session);
-           
+
             if (!is_user_logged_in()) {
                 throw new Exception('You could not be logged in.', 403);
             }
 
             $loginResponse = [
                 'successMessage' => 'You have been logged in successfully',
-                'authenticatedAccount' => $authenticatedAccount,
+                'username' => $authenticatedAccount->username,
+                'access_token' => $authenticatedAccount->access_token,
+                'refresh_token' => $authenticatedAccount->refresh_token,
                 'statusCode' => 200
             ];
 
-            return rest_ensure_response($loginResponse);
+            $response = new WP_REST_Response($loginResponse);
+
+            $response->set_status( 200 );
+
+            return rest_ensure_response($response);
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {

@@ -14,7 +14,8 @@
     "update-dev": "git push seven-tech-gateway development",
     "update-prod": "git push seven-tech-gateway production",
     "watch:sass": "sass --watch ./Admin/includes/scss/_main.scss ./Admin/includes/css/seven-tech-gateway-admin.css",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "docker": "docker exec -it php /bin/sh -c 'cd wp-content/plugins/seven-tech-gateway && /bin/bash'"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",

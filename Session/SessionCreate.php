@@ -9,12 +9,12 @@ class SessionCreate
 {
     public function __construct(Session $session)
     {
-        $verifier = (new Token)->hashToken($session->token);
+        $verifier = $session->id;
 
         if ((new RedisSession)->isReady) {
             (new SessionRedis)->createSession($verifier, $session);
         } else {
-            (new SessionWordpress)->createSession($verifier, $session);
+            (new SessionWordpress)->create($verifier, $session);
         }
     }
 }

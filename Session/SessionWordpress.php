@@ -11,29 +11,48 @@ use Exception;
 class SessionWordpress
 {
 
-    function getSessions($id)
+    function get($id) : array
     {
         try {
             if (empty($id)) {
-                throw new Exception('ID is required.', 400);
+                throw new Exception('User ID is required.', 400);
             }
 
-            $session_tokens = get_user_meta($id, 'session_tokens');
+            $session_tokens = get_user_meta($id, 'session_tokens', true);
 
-            if (!isset($session_tokens[0])) {
-                return false;
+            if (empty($session_tokens)) {
+                return [];
             }
 
-            return $session_tokens[0];
+            if (is_serialized($session_tokens)) {
+                $session_tokens = unserialize($session_tokens);
+
+                if ($session_tokens === false) {
+                    error_log('Failed to unserialize session tokens for user ID: ' . $id);
+                    return [];
+                }
+            }
+
+            return $session_tokens;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function createSession(string $verifier, Session $session)
+    function create(string $verifier, Session $session): int
     {
         try {
-            $session_tokens = $this->getSessions($session->id);
+            $userMeta = "add";
+
+            $session_tokens = $this->get($session->user_id);
+
+            if (!is_array($session_tokens) || $session_tokens == false || $session_tokens == '') {
+                $session_tokens = [];
+            }
+
+            if (!empty($session_tokens)) {
+                $userMeta = "update";
+            }
 
             $session_token = array(
                 'expiration' => $session->expiration,
@@ -42,28 +61,22 @@ class SessionWordpress
                 'login' => $session->login
             );
 
-            if (!$session_tokens) {
-                $session_tokens = [];
-            }
-
             $session_tokens[$verifier] = $session_token;
 
             $serializedSessions = serialize($session_tokens);
 
-            global $wpdb;
+            $sessionCreated = false;
 
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL createSession('%s', '%s')", $session->id, $serializedSessions)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if ($userMeta === "update") {
+                $sessionCreated = update_user_meta($session->user_id, 'session_tokens', $serializedSessions);
             }
 
-            $sessionCreated = $results[0]->resultSet;
+            if ($userMeta === "add") {
+                $sessionCreated = add_user_meta($session->user_id, 'session_tokens', $serializedSessions);
+            }
 
-            if ($sessionCreated == 'FALSE') {
-                throw new Exception('Password could not be updated at this time.', 400);
+            if ($sessionCreated == false) {
+                throw new Exception('Session could not be created at this time.', 400);
             }
 
             return $sessionCreated;
@@ -74,13 +87,13 @@ class SessionWordpress
         }
     }
 
-    function findSession($id, $session_verifier)
+    function find($id, $session_verifier): array
     {
-        $session = false;
+        $session = [];
 
-        $session_tokens = $this->getSessions($id);
+        $session_tokens = $this->get($id);
 
-        if (empty($session_tokens)) {
+        if (!is_array($session_tokens)) {
             return $session;
         }
 
@@ -94,14 +107,16 @@ class SessionWordpress
         return $session;
     }
 
-    function updateSession($id, $session_verifier)
+    function update($id, string $session_verifier): bool
     {
-        $session = $this->findSession($id, $session_verifier);
+        $session = $this->find($id, $session_verifier);
 
-        error_log(print_r($session, true));
+        // error_log(print_r($session, true));
+
+        return true;
     }
 
-    function deleteSession($id, $verifier)
+    function delete($id, $verifier)
     {
         try {
             if (empty($id)) {
@@ -112,22 +127,46 @@ class SessionWordpress
                 throw new Exception('Verifier is required to destroy session.', 400);
             }
 
-            $session_tokens = $this->getSessions($id);
+            $session_tokens = $this->get($id);
 
             if (!is_array($session_tokens)) {
-                return;
+                error_log("Not an array");
+                return true;
             }
 
-            foreach ($session_tokens as $key => $value) {
-                if ($key == $verifier) {
-                    unset($session_tokens[$key]);
-                    break;
+            if (is_array($session_tokens)) {
+                foreach ($session_tokens as $key => $value) {
+                    if ($key == $verifier) {
+                        error_log(print_r($key, true));
+                        unset($session_tokens[$key]);
+                        break;
+                    }
+                }
+
+                error_log(print_r($session_tokens, true));
+
+                if (!is_array($session_tokens)) {
+                    $sessionsDeleted = delete_user_meta($id, 'session_tokens');
+
+                    if ($sessionsDeleted == false) {
+                        throw new Exception("Sessions could not be deleted.");
+                    }
                 }
             }
 
-            $session_destroyed = update_user_meta($id, 'session_tokens', $session_tokens);
+            $sessionUpdated = update_user_meta($id, 'session_tokens', $session_tokens);
 
-            return $session_destroyed;
+            if ($sessionUpdated instanceof int || $sessionUpdated == false) {
+                return false;
+            }
+
+            $sessionFound = $this->find($id, $verifier);
+
+            if (is_array($sessionFound)) {
+                return false;
+            }
+
+            return $sessionUpdated;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

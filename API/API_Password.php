@@ -5,7 +5,7 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Email\EmailPassword;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Password\PasswordChange;
+use SEVEN_TECH\Gateway\Password\Password;
 
 use Exception;
 
@@ -13,11 +13,11 @@ use WP_REST_Request;
 
 class API_Password
 {
-    private $passwordChange;
+    private $password;
 
     public function __construct()
     {
-        $this->passwordChange = new PasswordChange;
+        $this->password = new Password;
     }
 
     function recoverPassword(WP_REST_Request $request)
@@ -48,7 +48,7 @@ class API_Password
             $confirmPassword = $request['confirmPassword'];
 
             $removeEmailResponse = [
-                'successMessage' => $this->passwordChange->changePassword($email, $password, $newPassword, $confirmPassword),
+                'successMessage' => $this->password->change($email, $password, $newPassword, $confirmPassword),
                 'statusCode' => 200
             ];
 
@@ -84,7 +84,7 @@ class API_Password
             $confirmPassword = $request['confirmPassword'];
 
             $updatePasswordResponse = [
-                'successMessage' => $this->passwordChange->updatePassword($email, $confirmationCode, $password, $confirmPassword),
+                'successMessage' => $this->password->update($email, $confirmationCode, $password, $confirmPassword),
                 'statusCode' => 200
             ];
 

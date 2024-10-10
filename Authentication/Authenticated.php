@@ -36,7 +36,7 @@ class Authenticated
         $this->email = $account->email;
         $this->username = $account->username;
         $this->passwordFrag = (new Password)->passwordFrag($account->password);
-        $this->profile_image = $user->photoUrl ? $user->photoUrl : $account->profile_image;
+        $this->profile_image = $user->photoUrl ? $user->photoUrl : $account->profileImage;
         $this->algorithm = (new Token)->getJWTAlgorithm($access_token);
         $this->access_token = $access_token;
         $this->refresh_token = $refresh_token;
