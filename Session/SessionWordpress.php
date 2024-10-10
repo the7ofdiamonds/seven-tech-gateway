@@ -11,7 +11,7 @@ use Exception;
 class SessionWordpress
 {
 
-    function get($id) : array
+    function get($id): array
     {
         try {
             if (empty($id)) {
@@ -28,8 +28,7 @@ class SessionWordpress
                 $session_tokens = unserialize($session_tokens);
 
                 if ($session_tokens === false) {
-                    error_log('Failed to unserialize session tokens for user ID: ' . $id);
-                    return [];
+                    throw new Exception('Failed to unserialize session tokens for user ID: ' . $id);
                 }
             }
 
@@ -107,16 +106,47 @@ class SessionWordpress
         return $session;
     }
 
-    function update($id, string $session_verifier): bool
-    {
-        $session = $this->find($id, $session_verifier);
+    function update(
+        $id,
+        string $verifier,
+        string $key,
+        string $value
+    ): bool {
+        $session_tokens = $this->get($id);
 
-        // error_log(print_r($session, true));
+        if (!is_array($session_tokens)) {
+            throw new Exception("Sessions could not be found for updating.");
+        }
 
-        return true;
+        if (is_array($session_tokens)) {
+            foreach ($session_tokens as $session) {
+                if ((new Validator)->matches($session, $verifier)) {
+                    $session[$key] = $value;
+                    break;
+                }
+            }
+
+            $sessionUpdated = update_user_meta($id, 'session_tokens', $session_tokens);
+
+            if ($sessionUpdated instanceof int || $sessionUpdated == false) {
+                return false;
+            }
+
+            return $sessionUpdated;
+        }
+
+        $sessionFound = $this->find($id, $verifier);
+
+        if (is_array($sessionFound)) {
+            if ($sessionFound[$key] == $value) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    function delete($id, $verifier)
+    function delete($id, $verifier): bool
     {
         try {
             if (empty($id)) {
@@ -130,27 +160,25 @@ class SessionWordpress
             $session_tokens = $this->get($id);
 
             if (!is_array($session_tokens)) {
-                error_log("Not an array");
                 return true;
             }
 
             if (is_array($session_tokens)) {
                 foreach ($session_tokens as $key => $value) {
-                    if ($key == $verifier) {
-                        error_log(print_r($key, true));
+                    if ((new Validator)->matches($key, $verifier)) {
                         unset($session_tokens[$key]);
                         break;
                     }
                 }
 
-                error_log(print_r($session_tokens, true));
-
-                if (!is_array($session_tokens)) {
+                if (empty($session_tokens)) {
                     $sessionsDeleted = delete_user_meta($id, 'session_tokens');
 
                     if ($sessionsDeleted == false) {
                         throw new Exception("Sessions could not be deleted.");
                     }
+
+                    return $sessionsDeleted;
                 }
             }
 

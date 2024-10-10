@@ -1,6 +1,7 @@
 <?php
 namespace SEVEN_TECH\Gateway\Test\Account;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Account\Account;
@@ -11,18 +12,12 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 class AccountTest extends TestCase
 {
 
-    /**
-     * Data provider for AccountTest
-     */
     public Static function accountDataProvider()
     {
         return (new Spreadsheet((new DataProviders)->accountPath, 'Account'))->getData();
     }
 
-    /** 
-     * @test
-     * @dataProvider accountDataProvider
-     *  */
+    #[DataProvider('accountDataProvider')]
     public function testConstructor($email)
     {
         try {
@@ -34,10 +29,7 @@ class AccountTest extends TestCase
         }
     }
 
-    /** 
-     * @test
-     * @dataProvider accountDataProvider
-     *  */
+    #[DataProvider('accountDataProvider')]
     public function testActivate($email)
     {
         try {
@@ -51,10 +43,7 @@ class AccountTest extends TestCase
         }
     }
 
-    /** 
-     * @test
-     * @dataProvider accountDataProvider
-     *  */
+    #[DataProvider('accountDataProvider')]
     public function testLock($email)
     {
         try {
@@ -67,10 +56,7 @@ class AccountTest extends TestCase
         }
     }
 
-    /** 
-     * @test
-     * @dataProvider accountDataProvider
-     *  */
+    #[DataProvider('accountDataProvider')]
     public function testUnlock($email)
     {
         try {
@@ -83,10 +69,7 @@ class AccountTest extends TestCase
         }
     }
 
-    /** 
-     * @test
-     * @dataProvider accountDataProvider
-     *  */
+    #[DataProvider('accountDataProvider')]
     public function testDisable($email)
     {
         try {
@@ -99,10 +82,7 @@ class AccountTest extends TestCase
         }
     }
 
-    /** 
-     * @test
-     * @dataProvider accountDataProvider
-     *  */
+    #[DataProvider('accountDataProvider')]
     public function testEnable($email)
     {
         try {

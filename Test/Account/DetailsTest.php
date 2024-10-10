@@ -2,6 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\Test\Account;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Account\Account;
@@ -12,27 +14,20 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class DetailsTest extends TestCase
 {
-    private String $email = "";
-
-    /**
-     * Data provider for DetailsTest
-     */
+   
     public static function detailsDataProvider()
     {
         return (new Spreadsheet((new DataProviders)->accountPath, 'Details'))->getData();
     }
 
-    /** 
-     * @test
-     * @dataProvider detailsDataProvider
-     *  */
-    public function testAddDetails($email)
+    public function testAddDetails()
     {
         try {
-            $this->email = $email;
-
+            $data = $this->detailsDataProvider();
+            $emails = $data[0];
+            $email = $emails[0];
             $account = new Account($email);
-            $details = new Details($account->email);
+            $details = new Details();
             $isEnabledAdded = $details->addDetails($account->id, 'is_enabled', 1);
             $isAuthenticatedAdded = $details->addDetails($account->id, 'is_authenticated', 1);
             $isAccountNonExpiredAdded = $details->addDetails($account->id, 'is_account_non_expired', 0);
@@ -44,108 +39,118 @@ class DetailsTest extends TestCase
             $this->assertSame($isAccountNonExpiredAdded, true);
             $this->assertSame($isAccountNonLockedAdded, true);
             $this->assertSame($isCredentialsNonExpiredAdded, true);
+
+            $data = ['id' => $account->id];
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testExpireCredentials()
+    #[Depends('testAddDetails')]
+    public function testExpireCredentials(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountCredentialsExpired = $details->expireCredentials();
+            $accountCredentialsExpired = (new Details())->expireCredentials($data['id']);
 
             $this->assertSame($accountCredentialsExpired, true);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testUnexpireCredentials()
+    #[Depends('testExpireCredentials')]
+    public function testUnexpireCredentials(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountCredentialsUnexpired = $details->unexpireCredentials();
+            $accountCredentialsUnexpired = (new Details())->unexpireCredentials($data['id']);
 
             $this->assertSame($accountCredentialsUnexpired, true);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testLockAccount()
+    #[Depends('testUnexpireCredentials')]
+    public function testLockAccount(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountLocked = $details->lockAccount();
+            $accountLocked = (new Details())->lockAccount($data['id']);
 
             $this->assertSame($accountLocked, true);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testUnlockAccount()
+    #[Depends('testLockAccount')]
+    public function testUnlockAccount(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountUnlocked = $details->unlockAccount();
+            $accountUnlocked = (new Details())->unlockAccount($data['id']);
 
             $this->assertSame($accountUnlocked, true);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testDisableAccount()
+    #[Depends('testUnlockAccount')]
+    public function testDisableAccount(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountDisabled = $details->disableAccount();
+            $accountDisabled = (new Details())->disableAccount($data['id']);
 
             $this->assertSame($accountDisabled, true);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testEnableAccount()
+    #[Depends('testDisableAccount')]
+    public function testEnableAccount(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountEnabled = $details->enableAccount();
+            $accountEnabled = (new Details())->enableAccount($data['id']);
 
             $this->assertSame($accountEnabled, true);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testExpireAccount()
+    #[Depends('testEnableAccount')]
+    public function testExpireAccount(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountExpired = $details->expireAccount();
+            $accountExpired = (new Details())->expireAccount($data['id']);
 
             $this->assertSame($accountExpired, true);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testUnexpireAccount()
+    #[Depends('testExpireAccount')]
+    public function testUnexpireAccount(array $data)
     {
         try {
-            $details = new Details($this->email);
-            $accountUnexpired = $details->unexpireAccount();
+            $accountUnexpired = (new Details())->unexpireAccount($data['id']);
 
             $this->assertTrue($accountUnexpired, true);
         } catch (DestructuredException $e) {

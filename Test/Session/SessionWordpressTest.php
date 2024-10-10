@@ -23,7 +23,7 @@ class SessionWordpressTest extends TestCase
 
             $sessions = (new SessionWordpress())->get($user_id);
 
-            $this->assertNotNull($sessions);
+            $this->assertIsArray($sessions);
 
             $data['user_id'] = $user_id;
 
@@ -62,7 +62,6 @@ class SessionWordpressTest extends TestCase
         try{
             $foundSession = (new SessionWordpress())->find($data['user_id'], $data['verifier']);
 
-            $this->assertNotNull($foundSession);
             $this->assertIsArray($foundSession);
 
             return $data;
@@ -74,8 +73,10 @@ class SessionWordpressTest extends TestCase
     #[Depends('testFindSession')]
     public function testUpdateSession(array $data) {
         try{
-            $sessionUpdate = (new SessionWordpress())->update($data['user_id'], $data['verifier']);
-
+            $key = 'expiration';
+            $value = 1234567;
+            $sessionUpdate = (new SessionWordpress())->update($data['user_id'], $data['verifier'], $key, $value);
+            
             $this->assertTrue($sessionUpdate);
 
             return $data;

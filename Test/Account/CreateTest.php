@@ -1,6 +1,7 @@
 <?php
 namespace SEVEN_TECH\Gateway\Test\Account;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Account\Create;
@@ -11,18 +12,12 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 class CreateTest extends TestCase
 {
 
-    /**
-     * Data provider for CreateTest
-     */
     public Static function createDataProvider()
     {
         return (new Spreadsheet((new DataProviders)->accountPath, 'Create'))->getData();
     }
 
-    /** 
-     * @test
-     * @dataProvider createDataProvider
-     *  */
+    #[DataProvider('createDataProvider')]
     public function testCreateAccount($email, $username, $password, $confirmPassword, $nicename, $nickname, $firstname, $lastname, $phone)
     {
         try {

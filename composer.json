@@ -40,6 +40,17 @@
         "phpunit/phpunit": "^11.4"
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit",
+        "test-account": "vendor/bin/phpunit ./Test/Account/AccountTest.php",
+        "test-account-create": "vendor/bin/phpunit ./Test/Account/CreateTest.php",
+        "test-account-details": "vendor/bin/phpunit ./Test/Account/DetailsTest.php",
+        "test-admin": "vendor/bin/phpunit ./Test/Admin/AdminTest.php",
+        "test-auth": "vendor/bin/phpunit ./Test/Authentication/AuthenticationTest.php",
+        "test-change": "vendor/bin/phpunit ./Test/Change/ChangeTest.php",
+        "test-password": "vendor/bin/phpunit ./Test/Password/PasswordTest.php",
+        "test-session": "vendor/bin/phpunit ./Test/Session/SessionTest.php",
+        "test-session-wordpress": "vendor/bin/phpunit ./Test/Session/SessionWordpressTest.php",
+        "test-subscription": "vendor/bin/phpunit ./Test/",
+        "test-user-add": "vendor/bin/phpunit ./Test/User/AddTest.php"
     }
 }
