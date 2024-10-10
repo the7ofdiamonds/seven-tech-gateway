@@ -1,6 +1,7 @@
 <?php
 namespace SEVEN_TECH\Gateway\Test\User;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\User\Add;
@@ -11,18 +12,12 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 class AddTest extends TestCase
 {
 
-    /**
-     * Data provider for AddTest
-     */
     public Static function addDataProvider()
     {
         return (new Spreadsheet((new DataProviders)->accountPath, 'User'))->getData();
     }
 
-    /** 
-     * @test
-     * @dataProvider addDataProvider
-     *  */
+    #[DataProvider('addDataProvider')]
     public function testAddUser($email, $username, $password, $confirmPassword, $nicename, $phone)
     {
         try {

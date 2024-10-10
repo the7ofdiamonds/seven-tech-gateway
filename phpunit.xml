@@ -1,12 +1,28 @@
 <phpunit bootstrap="Test/bootstrap.php">
     <testsuites>
-        <testsuite name="Account Test">
+        <testsuite name="Account">
             <directory>Test/Account</directory>
+        </testsuite>
+        <testsuite name="Admin">
             <directory>Test/Admin</directory>
+        </testsuite>
+        <testsuite name="Authentication">
             <directory>Test/Authentication</directory>
+        </testsuite>
+        <testsuite name="Change">
             <directory>Test/Change</directory>
+        </testsuite>
+        <testsuite name="Password">
             <directory>Test/Password</directory>
+        </testsuite>
+        <testsuite name="Session">
+            <directory>Test/Session</directory>
+        </testsuite>
+        <testsuite name="Subscription">
             <directory>Test/Subscription</directory>
         </testsuite>
+        <testsuite name="User">
+            <directory>Test/User</directory>
+        </testsuite>  
     </testsuites>
 </phpunit>

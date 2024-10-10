@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Test\Admin;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Admin\Admin;
@@ -12,18 +13,12 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 class AdminTest extends TestCase
 {
 
-    /**
-     * Data provider for testDeleteAccount
-     */
     public Static function deleteAccountDataProvider()
     {
         return (new Spreadsheet((new DataProviders)->adminPath, 'Admin'))->getData();
     }
 
-    /** 
-     * @test
-     * @dataProvider deleteAccountDataProvider
-     */
+    #[DataProvider('deleteAccountDataProvider')]
     public function testDeleteAccount($email)
     {
         try {
