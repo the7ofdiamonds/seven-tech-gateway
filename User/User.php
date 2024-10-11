@@ -24,10 +24,10 @@ class User
     public $phone;
     public $url;
 
-    public function __construct($email)
+    public function __construct(string $username)
     {
         try {
-            $user_data = new WP_User($email);
+            $user_data = new WP_User(0, $username);
 
             if (empty($user_data->ID)) {
                 throw new Exception('User could not be found.', 404);

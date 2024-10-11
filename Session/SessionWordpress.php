@@ -38,7 +38,7 @@ class SessionWordpress
         }
     }
 
-    function create(string $verifier, Session $session): int
+    function create(Session $session): int
     {
         try {
             $userMeta = "add";
@@ -60,7 +60,7 @@ class SessionWordpress
                 'login' => $session->login
             );
 
-            $session_tokens[$verifier] = $session_token;
+            $session_tokens[$session->id] = $session_token;
 
             $serializedSessions = serialize($session_tokens);
 
@@ -78,7 +78,7 @@ class SessionWordpress
                 throw new Exception('Session could not be created at this time.', 400);
             }
 
-            return $sessionCreated;
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -86,18 +86,18 @@ class SessionWordpress
         }
     }
 
-    function find($id, $session_verifier): array
+    function find($user_id, $verifier): array
     {
-        $session = [];
+        $sessionArray = [];
 
-        $session_tokens = $this->get($id);
+        $session_tokens = $this->get($user_id);
 
         if (!is_array($session_tokens)) {
-            return $session;
+            return $sessionArray;
         }
 
         foreach ($session_tokens as $session_key => $session_value) {
-            if ((new Validator)->matches($session_key, $session_verifier)) {
+            if ((new Validator)->matches($session_key, $verifier)) {
                 $session = $session_value;
                 break;
             }
@@ -146,18 +146,18 @@ class SessionWordpress
         return false;
     }
 
-    function delete($id, $verifier): bool
+    function delete(Session $session): bool
     {
         try {
-            if (empty($id)) {
+            if (empty($session->user_id)) {
                 throw new Exception('ID is required to destroy session.', 400);
             }
 
-            if (empty($verifier)) {
+            if (empty($session->id)) {
                 throw new Exception('Verifier is required to destroy session.', 400);
             }
 
-            $session_tokens = $this->get($id);
+            $session_tokens = $this->get($session->user_id);
 
             if (!is_array($session_tokens)) {
                 return true;
@@ -165,14 +165,14 @@ class SessionWordpress
 
             if (is_array($session_tokens)) {
                 foreach ($session_tokens as $key => $value) {
-                    if ((new Validator)->matches($key, $verifier)) {
+                    if ((new Validator)->matches($key, $session->id)) {
                         unset($session_tokens[$key]);
                         break;
                     }
                 }
 
                 if (empty($session_tokens)) {
-                    $sessionsDeleted = delete_user_meta($id, 'session_tokens');
+                    $sessionsDeleted = delete_user_meta($session->user_id, 'session_tokens');
 
                     if ($sessionsDeleted == false) {
                         throw new Exception("Sessions could not be deleted.");
@@ -182,13 +182,13 @@ class SessionWordpress
                 }
             }
 
-            $sessionUpdated = update_user_meta($id, 'session_tokens', $session_tokens);
+            $sessionUpdated = update_user_meta($session->user_id, 'session_tokens', $session_tokens);
 
             if ($sessionUpdated instanceof int || $sessionUpdated == false) {
                 return false;
             }
 
-            $sessionFound = $this->find($id, $verifier);
+            $sessionFound = $this->find($session->user_id, $session->id);
 
             if (is_array($sessionFound)) {
                 return false;

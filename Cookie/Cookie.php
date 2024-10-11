@@ -136,7 +136,7 @@ class Cookie
 
         $verifier = (new Token)->hashToken($token);
 
-        $sessionVerified = (new Session)->findSession($verifier, $user->ID);
+        $sessionVerified = (new Session)->find($verifier, $user->ID);
 
         if (!$sessionVerified) {
             do_action('auth_cookie_bad_session_token', $cookie_elements);

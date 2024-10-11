@@ -32,6 +32,7 @@ class TokenFirebase
         }
     }
 
+    // get username
     function getEmailFromToken($accessToken)
     {
         $verifiedAccessToken = $this->firebaseAuth->getVerifiedToken($accessToken);
@@ -56,9 +57,8 @@ class TokenFirebase
         }
     }
 
-    function revokeAllRefreshTokens(WP_REST_Request $request)
+    function revokeAllRefreshTokens(string $accessToken)
     {
-        $accessToken = (new Token)->getAccessToken($request);
         $verifiedAccessToken = $this->firebaseAuth->getVerifiedToken($accessToken);
         $uid = $verifiedAccessToken->claims()->get('sub');
 

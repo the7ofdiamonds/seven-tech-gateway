@@ -25,7 +25,7 @@ class API_User
     function add(WP_REST_Request $request)
     {
         try {
-            $signupResponse = (new Add)->user($request['email'], $request['username'], $request['password'], $request['nicename'], $request['phone']);
+            $signupResponse = (new Add)->user($request['email'], $request['username'], $request['password'], $$request['confirm_password'], $request['nicename'], $request['phone']);
 
             return rest_ensure_response($signupResponse);
         } catch (DestructuredException $e) {

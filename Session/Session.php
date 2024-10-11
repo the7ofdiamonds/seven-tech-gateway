@@ -44,8 +44,8 @@ class Session
             $this->algorithm = $authenticated->algorithm;
             $this->access_token = $authenticated->access_token;
             $this->refresh_token = $authenticated->refresh_token;
-            $this->token = $this->getToken($this->refresh_token);
-            $this->id = $this->getId($this->token);
+            $this->token = $authenticated->token;
+            $this->id = $authenticated->verifier;
             $this->ip = $ip;
             $this->location = $location;
             $this->user_agent = $user_agent;
@@ -64,29 +64,39 @@ class Session
         }
     }
 
-    function getToken($refresh_token) : string {
-        return substr((new Token)->hashToken($refresh_token), 0, 43);
-    }
-
-    function getId($token) : string {
-        return (new Token)->hashToken($token);
-    }
-
-    function findSession($session_verifier, $id = '')
+    function create()
     {
         try {
-            if (empty($session_verifier)) {
+            $sessionCreated = false;
+
+            if ((new RedisSession)->isReady) {
+                $sessionCreated = (new SessionRedis)->create($this);
+            } else {
+                $sessionCreated = (new SessionWordpress)->create($this);
+            }
+
+            return $sessionCreated;
+        } catch (Exception $e) {
+            return (new DestructuredException($e))->rest_ensure_response_error();
+        }
+    }
+
+    function find($verifier, $user_id = '')
+    {
+        try {
+            
+            if (empty($verifier)) {
                 throw new Exception('Session Verifier is required to find session.', 404);
             }
 
-            $session = (new SessionWordpress)->find($id, $session_verifier);
+            $session = (new SessionWordpress)->find($user_id, $verifier);
 
             if (!$session && (new RedisSession)->isReady) {
-                if (strpos($session_verifier, 'sessions:') !== 0) {
-                    $session_verifier = "sessions:{$session_verifier}";
+                if (strpos($verifier, 'sessions:') !== 0) {
+                    $session_verifier = "sessions:{$verifier}";
                 }
 
-                $session = (new SessionRedis)->findSession($session_verifier);
+                $session = (new SessionRedis)->find($session_verifier);
             }
 
             return $session;
@@ -97,7 +107,7 @@ class Session
         }
     }
 
-    function getSessions($email)
+    function get($email)
     {
         try {
             $account = new Account($email);
@@ -111,7 +121,7 @@ class Session
             }
 
             if ((new RedisSession)->isReady) {
-                $sessionsRedis = (new SessionRedis)->getSessions($account->id);
+                $sessionsRedis = (new SessionRedis)->get($account->id);
 
                 if (is_array($sessionsRedis)) {
                     $sessions = array_merge($sessions, $sessionsRedis);
@@ -128,10 +138,10 @@ class Session
         }
     }
 
-    function updateSession($session_verifier, $expiration, $accessToken)
+    function update($session_verifier, $expiration, $accessToken)
     {
         try {
-            $updatedSession = (new SessionRedis)->updateSession($session_verifier, $expiration, $accessToken);
+            $updatedSession = (new SessionRedis)->update($session_verifier, $expiration, $accessToken);
             // Update session with new access token
             return $updatedSession;
         } catch (DestructuredException $e) {
@@ -141,23 +151,23 @@ class Session
         }
     }
 
-    function deleteSession($id, $verifier)
+    function delete(Session $session)
     {
         try {
             if ((new RedisSession)->isReady) {
-                $sessionRedis = (new SessionRedis)->findSession($verifier);
+                $sessionRedis = (new SessionRedis)->find($session->id);
 
                 if (is_array($sessionRedis)) {
-                    $sessionDeleted = (new SessionRedis)->deleteSession($verifier);
+                    $sessionDeleted = (new SessionRedis)->delete($session->id);
 
                     return $sessionDeleted;
                 }
             }
 
-            $sessionWordpress = (new SessionWordpress)->find($id, $verifier);
+            $sessionWordpress = (new SessionWordpress)->find($session->user_id, $session->id);
 
             if (is_array($sessionWordpress)) {
-                $sessionDeleted = (new SessionWordpress)->delete($id, $verifier);
+                $sessionDeleted = (new SessionWordpress)->delete($session);
 
                 return $sessionDeleted;
             }

@@ -72,7 +72,7 @@ class Account
 
     function find()
     {
-        try {error_log($this->email);
+        try {
             (new Validator)->isValidEmail($this->email);
 
             global $wpdb;
@@ -100,7 +100,7 @@ class Account
     public function activate(String $userActivationKey): bool
     {
         try {
-            
+
             if (empty($userActivationKey)) {
                 throw new Exception('User Activation Code is required.', 400);
             }

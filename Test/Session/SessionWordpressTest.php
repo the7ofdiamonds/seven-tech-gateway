@@ -14,7 +14,7 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 class SessionWordpressTest extends TestCase
 {
 
-    public function testGetSessions()
+    public function testGet()
     {
         try {
             $data = [];
@@ -33,23 +33,22 @@ class SessionWordpressTest extends TestCase
         }
     }
 
-    #[Depends('testGetSessions')]
-    public function testCreateSession(array $data)
+    #[Depends('testGet')]
+    public function testCreate(array $data)
     {
         try {
             $session = new Session();
-            $verifier = $session->getId(date("H:i:s"));
             $session->expiration = 123456;
             $session->ip = "123.456.7890";
             $session->user_agent = "user agent";
             $session->login = "login";
             $session->user_id = $data['user_id'];
 
-            $createdSession = (new SessionWordpress())->create($verifier, $session);
+            $createdSession = (new SessionWordpress())->create($session);
 
             $this->assertIsInt($createdSession);
 
-            $data['verifier'] = $verifier;
+            $data['verifier'] = $session->id;
 
             return $data;
         } catch (DestructuredException $e) {
@@ -57,8 +56,8 @@ class SessionWordpressTest extends TestCase
         }
     }
 
-    #[Depends('testCreateSession')]
-    public function testFindSession(array $data) {
+    #[Depends('testCreate')]
+    public function testFind(array $data) {
         try{
             $foundSession = (new SessionWordpress())->find($data['user_id'], $data['verifier']);
 
@@ -70,8 +69,8 @@ class SessionWordpressTest extends TestCase
         }
     }
 
-    #[Depends('testFindSession')]
-    public function testUpdateSession(array $data) {
+    #[Depends('testFind')]
+    public function testUpdate(array $data) {
         try{
             $key = 'expiration';
             $value = 1234567;
@@ -85,8 +84,8 @@ class SessionWordpressTest extends TestCase
         }
     }
 
-    #[Depends('testUpdateSession')]
-    public function testDeleteSession(array $data) {
+    #[Depends('testUpdate')]
+    public function testDelete(array $data) {
         try{
             $sessionDeleted = (new SessionWordpress())->delete($data['user_id'], $data['verifier']);
 

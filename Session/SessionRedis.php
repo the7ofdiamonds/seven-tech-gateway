@@ -10,10 +10,10 @@ use Exception;
 class SessionRedis
 {
 
-    function getSessions($user_id)
+    function get($user_id)
     {
         try {
-            $session = (new RedisSession)->connection->get($user_id, '$');
+            $session = (new RedisSession)->connection->get((string) $user_id, '$');
 
             $keys = (new RedisSession)->connection->keys("*");
 
@@ -28,31 +28,31 @@ class SessionRedis
             }
 
             if (empty($sessions)) {
-                $sessions = 0;
+                $sessions = [];
             }
 
             return $sessions;
         } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
+            return new DestructuredException($e);
         }
     }
 
-    function createSession(string $verifier, Session $session)
+    function create(Session $session)
     {
         try {
-            $savedSession = (new RedisSession)->connection->set("sessions:{$verifier}", '$', $session);
+            $savedSession = (new RedisSession)->connection->set("sessions:{$session->id}", '$', $session);
 
             if ($savedSession !== 'OK') {
                 throw new Exception('There was an error saving your session to redis database.', 500);
             }
 
-            return $savedSession;
+            return true;
         } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
+            return new DestructuredException($e);
         }
     }
 
-    function findSession($session_id)
+    function find($session_id)
     {
         try {
             if (empty($session_id)) {
@@ -62,16 +62,16 @@ class SessionRedis
             $session = (new RedisSession)->connection->get($session_id);
 
             if (empty($session)) {
-                $session = 0;
+                $session = [];
             }
 
             return $session;
         } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
+            return new DestructuredException($e);
         }
     }
 
-    function updateSession($session_id, $expiration, $accessToken)
+    function update($session_id, $expiration, $accessToken)
     {
         try {
             $updatedSession = array(
@@ -79,18 +79,30 @@ class SessionRedis
                 'access_token' => $accessToken,
             );
 
-            return (new RedisSession)->connection->set($session_id, '.', $updatedSession);
+            $sessionUpdated = (new RedisSession)->connection->set($session_id, '.', $updatedSession);
+
+            if ($sessionUpdated !== 'OK') {
+                throw new Exception('There was an error updating your session.', 500);
+            }
+
+            return true;
         } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
+            return new DestructuredException($e);
         }
     }
 
-    function deleteSession($session_id)
+    function delete($session_id)
     {
         try {
-            return (new RedisSession)->connection->del($session_id);
+            $sessionDeleted = (new RedisSession)->connection->del($session_id);
+
+            if (!is_int($sessionDeleted)) {
+                throw new Exception('There was an error updating your session.', 500);
+            }
+
+            return true;
         } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
+            return new DestructuredException($e);
         }
     }
 }
