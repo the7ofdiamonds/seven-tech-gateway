@@ -2,7 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Authentication;
 
-use SEVEN_TECH\Gateway\Database\DatabaseExists;
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
@@ -13,40 +13,34 @@ use WP_User;
 class Authentication
 {
     public $id;
-    public $email;
-    public $password;
-    public $userActivationKey;
-    public $confirmationCode;
-    public $phone;
-    public $provider_given_id;
+    public string $email;
+    public string $password;
+    public string $userActivationKey;
+    public string $confirmationCode;
+    public string $phone;
+    public string $providerGivenID;
+    public bool $isAuthenticated;
+    public bool $isAccountNonExpired;
+    public bool $isAccountNonLocked;
+    public bool $isCredentialsNonExpired;
+    public bool $isEnabled;
 
     public function __construct(String $email)
     {
         try {
-            (new DatabaseExists)->existsByEmail($email);
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL findUserByEmail('%s')", $email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (!isset($results[0])) {
-                throw new Exception('Authentication credentials could not be found.', 404);
-            }
-
-            $auth = $results[0];
-            $this->id = $auth->id;
-            $this->email = $auth->email;
-            $this->password = $auth->password;
-            $this->userActivationKey = $auth->user_activation_key;
-            $this->confirmationCode = $auth->confirmation_code;
-            $this->phone = $auth->phone;
-            $this->provider_given_id = $auth->provider_given_id;
+            $account = new Account($email);;
+            $this->id = $account->id;
+            $this->email = $account->email;
+            $this->password = $account->password;
+            $this->userActivationKey = $account->userActivationKey;
+            $this->confirmationCode = $account->confirmationCode;
+            $this->phone = $account->phone;
+            $this->providerGivenID = $account->providerGivenID;
+            $this->isAuthenticated = $account->isAuthenticated;
+            $this->isAccountNonExpired = $account->isAccountNonExpired;
+            $this->isAccountNonLocked = $account->isAccountNonLocked;
+            $this->isCredentialsNonExpired = $account->isCredentialsNonExpired;
+            $this->isEnabled = $account->isEnabled;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

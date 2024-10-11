@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Change;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailUser;
 
@@ -20,26 +21,25 @@ class Change {
     public $nicename;
     public $phone;
     public $url;
+    private $WPUser;
 
-    public function __construct($email)
+    public function __construct(string $email)
     {
         try {
-            $user_data = new WP_User($email);
+            $account = (new Account($email));
 
-            if (empty($user_data->ID)) {
-                throw new Exception('User could not be found.', 404);
-            }
+            $this->id = $account->id;
+            $this->email = $account->email;
+            $this->username = $account->username;
+            $this->firstname = $account->firstName;
+            $this->lastname = $account->lastName;
+            // $this->nickname = $account->nickName;
+            $this->nicename = $account->nicename;
+            $this->phone = $account->phone;
 
-            $this->id = $user_data->ID;
-            $this->email = $user_data->data->user_email;
-            $this->status = $user_data->data->user_status;
-            $this->username = $user_data->data->display_name;
-            $this->firstname = get_user_meta($this->id, 'first_name');
-            $this->lastname = get_user_meta($this->id, 'last_name');
-            $this->nickname = get_user_meta($this->id, 'nickname');
-            $this->nicename = $user_data->data->user_nicename;
-            $this->phone = get_user_meta($this->id, 'phone_number');
-            $this->url = $user_data->data->user_url;
+            $this->WPUser = new WP_User($this->id);
+            $this->status = $this->WPUser->user_status;
+            $this->url = $this->WPUser->user_url;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -50,36 +50,22 @@ class Change {
     function username(String $username)
     {
         try {
-            
-            if (empty($this->email)) {
-                throw new Exception('Email is required.', 400);
-            }
 
             if (empty($username)) {
                 throw new Exception('Username is required.', 400);
             }
 
-            global $wpdb;
+            $this->WPUser->display_name = $username;
 
-            $results = $wpdb->get_results(
-                "CALL changeUsername('$this->email', '$username')"
-            );
+            $updatedUser = wp_update_user($this->WPUser);
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if (is_wp_error($updatedUser)) {
+                throw new Exception($updatedUser->get_error_message());
             }
 
-            if (!isset($results[0])) {
-                throw new Exception('Username could not be updated at this time.', 500);
-            }
+            // (new EmailUser)->usernameChanged($this->email, $username);
 
-            if (!$results[0]->resultSet) {
-                throw new Exception('Account with this email could not be found.', 404);
-            }
-
-            (new EmailUser)->usernameChanged($this->email, $username);
-
-            return "Username has been changed to {$username} succesfully.";
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -91,26 +77,21 @@ class Change {
     {
         try {
 
-            if (empty($this->email)) {
-                throw new Exception('Email is required to change nicename.', 400);
-            }
-
             if (empty($nicename)) {
                 throw new Exception('Nicename is required to change nicename.', 400);
             }
 
-            $user = new WP_User($this->email);
-            $user->user_nicename = $nicename;
+            $this->WPUser->nicename = $nicename;
 
-            $updated = wp_update_user($user);
+            $updatedUser = wp_update_user($this->WPUser);
 
-            if (!is_int($updated)) {
-                throw new Exception("There has been an error updating User nice name.", 500);
+            if (is_wp_error($updatedUser)) {
+                throw new Exception($updatedUser->get_error_message());
             }
 
-            (new EmailUser)->nicenameChanged($this->email, $nicename);
+            // (new EmailUser)->nicenameChanged($this->email, $nicename);
 
-            return "User nicename has been changed to {$nicename} successfully";
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -122,35 +103,21 @@ class Change {
     {
         try {
 
-            if (empty($this->email)) {
-                throw new Exception('Email is required to change nick name.', 400);
-            }
-
             if (empty($nickname)) {
                 throw new Exception('Nick name is required to change nick name.', 400);
             }
 
-            global $wpdb;
+            $this->WPUser->nickname = $nickname;
 
-            $results = $wpdb->get_results(
-                "CALL changeNickName('$this->email', '$nickname')"
-            );
+            $updatedUser = wp_update_user($this->WPUser);
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if (is_wp_error($updatedUser)) {
+                throw new Exception($updatedUser->get_error_message());
             }
 
-            if (!isset($results[0])) {
-                throw new Exception('Nick name could not be changed at this time.', 500);
-            }
+            // (new EmailUser)->nicknameChanged($this->email, $nickname);
 
-            if (!$results[0]->resultSet) {
-                throw new Exception('Account with this email could not be found.', 404);
-            }
-
-            (new EmailUser)->nicknameChanged($this->email, $nickname);
-
-            return "Your nickname has been changed to {$nickname} succesfully.";
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -162,35 +129,21 @@ class Change {
     {
         try {
 
-            if (empty($this->email)) {
-                throw new Exception('Email is required to change first name.', 400);
-            }
-
             if (empty($firstname)) {
                 throw new Exception('First name is required to change first name.', 400);
             }
 
-            global $wpdb;
+            $this->WPUser->first_name = $firstname;
 
-            $results = $wpdb->get_results(
-                "CALL changeFirstName('$this->email', '$firstname')"
-            );
+            $updatedUser = wp_update_user($this->WPUser);
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if (is_wp_error($updatedUser)) {
+                throw new Exception($updatedUser->get_error_message());
             }
 
-            if (!isset($results[0])) {
-                throw new Exception('First name could not be changed at this time.', 500);
-            }
+            // (new EmailUser)->nameChanged($this->email, $firstname);
 
-            if (!$results[0]->resultSet) {
-                throw new Exception('Account with this email could not be found.', 404);
-            }
-
-            (new EmailUser)->nameChanged($this->email, $firstname);
-
-            return "Your first name has been changed to {$firstname} succesfully.";
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -202,70 +155,25 @@ class Change {
     {
         try {
 
-            if (empty($this->email)) {
-                throw new Exception('Email is required to change last name.', 400);
-            }
-
             if (empty($lastname)) {
-                throw new Exception('Last name is required to change last name.', 400);
+                throw new Exception('Last name is required.', 400);
             }
 
-            global $wpdb;
+            $this->WPUser->last_name = $lastname;
 
-            $results = $wpdb->get_results(
-                "CALL changeLastName('$this->email', '$lastname')"
-            );
+            $updatedUser = wp_update_user($this->WPUser);
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if (is_wp_error($updatedUser)) {
+                throw new Exception($updatedUser->get_error_message());
             }
 
-            if (!isset($results[0])) {
-                throw new Exception('Last name could not be changed at this time.', 500);
-            }
+            // (new EmailUser)->nameChanged($this->email);
 
-            if (!$results[0]->resultSet) {
-                throw new Exception('Account with this email could not be found.', 404);
-            }
-
-            (new EmailUser)->nameChanged($this->email);
-
-            return "Your last name has been changed to {$lastname} succesfully.";
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);
-        }
-    }
-
-    function name(String $firstName, String $lastName)
-    {
-        try {
-
-            if (empty($this->email)) {
-                throw new Exception('Email is required.', 400);
-            }
-
-            if (!empty($firstName)) {
-                $this->firstName($firstName);
-            }
-
-            if (!empty($lastName)) {
-                $this->lastName($lastName);
-            }
-
-            $responseNameChanged = [
-                'successMessage' => "Your name has been changed to {$firstName} {$lastName} succesfully.",
-                'firstName' => $firstName,
-                'lastName' => $lastName,
-                'statusCode' => 200
-            ];
-
-            return $responseNameChanged;
-        } catch (DestructuredException $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
-        } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
         }
     }
 
@@ -273,35 +181,21 @@ class Change {
     {
         try {
 
-            if (empty($this->email)) {
-                throw new Exception('Email is required to change phone number.', 400);
-            }
-
             if (empty($phone)) {
                 throw new Exception('Phone number is required to change phone number.', 400);
             }
 
-            global $wpdb;
+            $this->WPUser->phone = $phone;
 
-            $results = $wpdb->get_results(
-                "CALL changePhoneNumber('$this->email', '$phone')"
-            );
+            $updatedUser = wp_update_user($this->WPUser);
 
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            if (is_wp_error($updatedUser)) {
+                throw new Exception($updatedUser->get_error_message());
             }
 
-            if (!isset($results[0])) {
-                throw new Exception('Phone number could not be changed at this time.', 500);
-            }
+            // (new EmailUser)->phoneChanged($this->email, $phone);
 
-            if (!$results[0]->resultSet) {
-                throw new Exception('Account with this email could not be found.', 404);
-            }
-
-            (new EmailUser)->phoneChanged($this->email, $phone);
-
-            return "You phone number has been changed to {$phone} succesfully.";
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

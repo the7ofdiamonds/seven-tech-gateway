@@ -12,15 +12,18 @@ class Subscription {
     function subscribe(String $email, String $userActivationKey)
     {
         try {
-            (new Account($email))->activate($userActivationKey);
+            $account = new Account($email);
+            $account->activate($userActivationKey);
 
-            $unexpireAccount = (new Details($email))->unexpireAccount();
+            $unexpireAccount = (new Details($email))->unexpireAccount($account->id);
 
             if (!$unexpireAccount) {
                 throw new Exception('Account could not be unexpired at this time.', 500);
             }
+
             // send subscription email
-            return 'Subscribed successfully.';
+
+            return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
@@ -28,13 +31,16 @@ class Subscription {
 
     function unsubscribe(String $email) {
         try {
-            $expireAccount = (new Details($email))->expireAccount();
+            $account = new Account($email);
+            $expireAccount = (new Details($email))->expireAccount($account->id);
 
             if (!$expireAccount) {
                 throw new Exception('Account could not be unexpired at this time.', 500);
             }
+
             // send subscription email
-            return 'Unsubscribed successfully.';
+
+            return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

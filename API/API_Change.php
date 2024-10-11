@@ -51,9 +51,26 @@ class API_Change
                 throw new Exception('You do not have permission to perform this action', 403);
             }
 
-            $changeNameResponse = (new Change($request['email']))->name($request['first_name'], $request['last_name']);
+            $firstName = $request['first_name'];
+            $lastName = $request['last_name'];
+            
+            if (!empty($firstName)) {
+                (new Change($request['email']))->firstName($firstName);
+            }
 
-            return rest_ensure_response($changeNameResponse);
+            if (!empty($lastName)) {
+                (new Change($request['email']))->lastName($lastName);
+            }
+
+            $responseNameChanged = [
+                'successMessage' => "Your name has been changed to {$firstName} {$lastName} succesfully.",
+                'firstName' => $firstName,
+                'lastName' => $lastName,
+                'statusCode' => 200
+            ];
+
+
+            return rest_ensure_response($responseNameChanged);
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {

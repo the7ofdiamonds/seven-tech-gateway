@@ -102,7 +102,6 @@ class AuthenticationTest extends TestCase
     #[Depends('testUpdateConfirmationCode')]
     public function testVerifyCredentials(array $data) {
         try {
-            error_log($data['confirmationCode']);
             $credentialsVerified = (new Authentication($data['email']))->verifyCredentials($data['confirmationCode']);
 
             $this->assertTrue($credentialsVerified, "Credentials should be verified.");

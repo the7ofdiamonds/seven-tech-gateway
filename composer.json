@@ -50,7 +50,7 @@
         "test-password": "vendor/bin/phpunit ./Test/Password/PasswordTest.php",
         "test-session": "vendor/bin/phpunit ./Test/Session/SessionTest.php",
         "test-session-wordpress": "vendor/bin/phpunit ./Test/Session/SessionWordpressTest.php",
-        "test-subscription": "vendor/bin/phpunit ./Test/",
+        "test-subscription": "vendor/bin/phpunit ./Test/Subscription/SubscriptionTest.php",
         "test-user-add": "vendor/bin/phpunit ./Test/User/AddTest.php"
     }
 }

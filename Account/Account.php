@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\Account;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Validator\Validator;
@@ -34,43 +35,31 @@ class Account
     public bool $isCredentialsNonExpired;
     public bool $isEnabled;
 
-    public function __construct($email)
+    public function __construct(string $email)
     {
         try {
-            (new Validator)->isValidEmail($email);
+            (new DatabaseExists)->existsByEmail($email);
 
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                $wpdb->prepare("CALL findUserByEmail('%s')", $email)
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            if (!isset($results[0])) {
-                throw new Exception('Account could not be found.', 404);
-            }
-
-            $account = $results[0];
+            $this->email = $email;
+            $account = $this->find();
             $this->id = $account->id;
             $this->joined = $account->joined;
             $this->email =  $account->email ? : '';
-            $this->username = $account->username ? : '';
-            $this->password = $account->password ? : '';
-            $this->firstName = $account->first_name ? : '';
-            $this->lastName = $account->last_name ? : '';
-            $this->nicename = $account->nicename ? : '';
-            $this->phone = $account->phone ? : '';
-            $this->userActivationKey = $account->user_activation_key ? : '';
-            $this->confirmationCode = $account->confirmation_code ? : '';
-            $this->providerGivenID = $account->provider_given_id ? : '';
-            $this->isAuthenticated = $account->is_authenticated ? : false;
-            $this->isAccountNonExpired = $account->is_account_non_expired ? : false;
-            $this->isAccountNonLocked = $account->is_account_non_locked ? : false;
-            $this->isCredentialsNonExpired = $account->is_credentials_non_expired ? : false;
-            $this->isEnabled = $account->is_enabled ? : false;
+            $this->username = $account->username ?: '';
+            $this->password = $account->password ?: '';
+            $this->firstName = $account->first_name ?: '';
+            $this->lastName = $account->last_name ?: '';
+            $this->nicename = $account->nicename ?: '';
+            // $this->nickname = $account->nick
+            $this->phone = $account->phone ?: '';
+            $this->userActivationKey = $account->user_activation_key ?: '';
+            $this->confirmationCode = $account->confirmation_code ?: '';
+            $this->providerGivenID = $account->provider_given_id ?: '';
+            $this->isAuthenticated = $account->is_authenticated ?: false;
+            $this->isAccountNonExpired = $account->is_account_non_expired ?: false;
+            $this->isAccountNonLocked = $account->is_account_non_locked ?: false;
+            $this->isCredentialsNonExpired = $account->is_credentials_non_expired ?: false;
+            $this->isEnabled = $account->is_enabled ?: false;
             $this->roles = (new Roles)->unserializeRoles($account->roles);
             $this->level = (new Roles)->getRolesHighestLevel($this->roles);
             $this->profileImage = get_avatar_url($account->id);
@@ -81,14 +70,44 @@ class Account
         }
     }
 
-    public function activate(String $userActivationCode) : bool
+    function find()
+    {
+        try {error_log($this->email);
+            (new Validator)->isValidEmail($this->email);
+
+            global $wpdb;
+
+            $results = $wpdb->get_results(
+                $wpdb->prepare("CALL findUserByEmail('%s')", $this->email)
+            );
+
+            if ($wpdb->last_error) {
+                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
+            }
+
+            if (!isset($results[0])) {
+                throw new Exception('Account could not be found.', 404);
+            }
+
+           return $results[0];
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    public function activate(String $userActivationKey): bool
     {
         try {
-            if (empty($userActivationCode)) {
+            
+            if (empty($userActivationKey)) {
                 throw new Exception('User Activation Code is required.', 400);
             }
 
-            if ($userActivationCode !== $this->userActivationKey) {
+            $validuserActivationKey = (new Validator())->matches($userActivationKey, $this->userActivationKey);
+            
+            if (!$validuserActivationKey) {
                 throw new Exception('User Activation Code not valid.', 400);
             }
 

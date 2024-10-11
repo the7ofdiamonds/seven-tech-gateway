@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Test\Subscription;
 
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Subscription\Subscription;
@@ -11,44 +12,39 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class SubscriptionTest extends TestCase
 {
-    private String $email = "";
-
-    /**
-     * Data provider for SubscriptionTest
-     */
+    
     public Static function subscriptionDataProvider()
     {
-        return (new Spreadsheet((new DataProviders)->subscriptionPath, 'Subscription'))->getData();
+        $data = [];
+        $provider = (new Spreadsheet((new DataProviders)->subscriptionPath, 'Subscription'))->getData()[0];
+        $data['email'] = $provider[0];
+        $data['userActivationKey'] = $provider[1];
+
+        return $data;
     }
 
-    /** 
-     * @test
-     * @dataProvider subscriptionDataProvider
-     */
-    public function testSubscribe($email, $userActivationKey)
+    public function testSubscribe()
     {
         try {
-            $this->email = $email;
-            $subscribed = (new Subscription())->subscribe($email, $userActivationKey);
+            $data = $this->subscriptionDataProvider();
+
+            $subscribed = (new Subscription())->subscribe($data['email'], $data['userActivationKey']);
             
-            $this->assertTrue($subscribed, "Should be subscribed.");
+            $this->assertTrue($subscribed);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testUnsubscribe()
+    #[Depends('testSubscribe')]
+    public function testUnsubscribe(array $data)
     {
         try {
+            $unsubscribed = (new Subscription())->unsubscribe($data['email']);
 
-            if (empty($this->email)) {
-                $this->fail("Email is not set. Run the subscription test first.");
-            }
-
-            $unsubscribed = (new Subscription())->unsubscribe($this->email);
-
-            $this->assertTrue($unsubscribed, "Should be unsubscribed.");
+            $this->assertTrue($unsubscribed);
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }

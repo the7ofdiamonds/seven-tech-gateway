@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Test\Password;
 
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Password\Password;
@@ -11,63 +12,53 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class PasswordTest extends TestCase
 {
-    private String $email = "";
-    private String $confirmationCode = "";
-    private String $updatePassword = "";
-    private String $updateConfirmPassword = "";
 
-    /**
-     * Data provider for PasswordTest
-     */
     public static function passwordTestDataProvider()
     {
-        return (new Spreadsheet((new DataProviders)->passwordPath, 'Password'))->getData();
+        $data = [];
+        $provider = (new Spreadsheet((new DataProviders)->passwordPath, 'Password'))->getData()[0];
+        $data['email'] = $provider[0];
+        $data['password'] = $provider[1];
+        $data['newPassword'] = $provider[2];
+        $data['confirmPassword'] = $provider[3];
+        $data['confirmationCode'] = $provider[4];
+        $data['updatePassword'] = $provider[5];
+        $data['updateConfirmPassword'] = $provider[6];
+
+        return $data;
     }
 
-    /** 
-     * @test
-     * @dataProvider passwordTestDataProvider
-     */
-    public function testChange(
-        $email,
-        $password,
-        $newPassword,
-        $confirmPassword,
-        $confirmationCode,
-        $updatePassword,
-        $updateConfirmPassword
-    ) {
+    public function testChange() {
         try {
-            $this->email = $email;
-            $this->confirmationCode = $confirmationCode;
-            $this->updatePassword = $updatePassword;
-            $this->updateConfirmPassword = $updateConfirmPassword;
+            $data = $this->passwordTestDataProvider();
 
             $changed = (new Password())->change(
-                $email,
-                $password,
-                $newPassword,
-                $confirmPassword
+                $data['email'],
+                $data['password'],
+                $data['newPassword'],
+                $data['confirmPassword']
             );
             
-            $this->assertTrue($changed, "Password should be changed.");
+            $this->assertTrue($changed);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testUpdate()
+    #[Depends('testChange')]
+    public function testUpdate(array $data)
     {
         try {
             $updated = (new Password())->update(
-                $this->email,
-                $this->confirmationCode,
-                $this->updatePassword,
-                $this->updateConfirmPassword
+                $data['email'],
+                $data['confirmationCode'],
+                $data['updatePassword'],
+                $data['updateConfirmPassword']
             );
 
-            $this->assertTrue($updated, "Email should be updated.");
+            $this->assertTrue($updated);
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }

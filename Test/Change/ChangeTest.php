@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Test\Change;
 
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 use SEVEN_TECH\Gateway\Change\Change;
@@ -11,115 +12,97 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class ChangeTest extends TestCase
 {
-        private String $email;
-        private String $nicename;
-        private String $nickname;
-        private String $firstname;
-        private String $lastname;
-        private String $phone;
 
-    /**
-     * Data provider for ChangeTest
-     */
     public static function changeDataProvider()
     {
-        return (new Spreadsheet((new DataProviders)->changePath, 'Change'))->getData();
+        $data = [];
+        $provider = (new Spreadsheet((new DataProviders)->changePath, 'Change'))->getData()[0];
+        $data['email'] = $provider[0];
+        $data['username'] = $provider[1];
+        $data['nicename'] = $provider[2];
+        $data['nickname'] = $provider[3];
+        $data['firstname'] = $provider[4];
+        $data['lastname'] = $provider[5];
+        $data['phone'] = $provider[6];
+
+        return $data;
     }
 
-    /** 
-     * @test
-     * @dataProvider changeDataProvider
-     */
-    public function testUsername(
-        $email,
-        $username,
-        $nicename,
-        $nickname,
-        $firstname,
-        $lastname,
-        $phone
-    ) {
+    public function testUsername() {
         try {
-            $this->email = $email;
-        $this->nicename = $nicename;
-        $this->nickname = $nickname;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
-        $this->phone = $phone;
+            $data = $this->changeDataProvider();
 
-            $usernameChanged = (new Change($email))->username($username);
+            $usernameChanged = (new Change($data['email']))->username($data['username']);
 
-            $this->assertTrue($usernameChanged, "Username should be changed.");
+            $this->assertTrue($usernameChanged);
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testNicename()
+    #[Depends('testUsername')]
+    public function testNicename(array $data)
     {
         try {
-            $nicenameChanged = (new Change($this->email))->nicename($this->nicename);
+            $nicenameChanged = (new Change($data['email']))->nicename($data['nicename']);
 
             $this->assertTrue($nicenameChanged, "Nicename should be changed.");
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testNickname()
+    #[Depends('testNicename')]
+    public function testNickname(array $data)
     {
         try {
-            $nicknameChanged = (new Change($this->email))->nickname($this->nickname);
+            $nicknameChanged = (new Change($data['email']))->nickname($data['nickname']);
 
             $this->assertTrue($nicknameChanged, "Nickname should be changed.");
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testFirstName()
+    #[Depends('testNickname')]
+    public function testFirstName(array $data)
     {
         try {
-            $firstNameChanged = (new Change($this->email))->firstName($this->firstname);
+            $firstNameChanged = (new Change($data['email']))->firstName($data['firstname']);
 
             $this->assertTrue($firstNameChanged, "First name should be changed.");
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testLastName()
+    #[Depends('testFirstName')]
+    public function testLastName(array $data)
     {
         try {
-            $lastNameChanged = (new Change($this->email))->lastName($this->lastname);
+            $lastNameChanged = (new Change($data['email']))->lastName($data['lastname']);
 
             $this->assertTrue($lastNameChanged, "Last name should be changed.");
+
+            return $data;
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }
     }
 
-    /** @test */
-    public function testName()
+    #[Depends('testLastName')]
+    public function testPhone(array $data)
     {
         try {
-            $nameChanged = (new Change($this->email))->name($this->firstname, $this->lastname);
-
-            $this->assertTrue($nameChanged, "Name should be changed.");
-        } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
-        }
-    }
-
-    /** @test */
-    public function testPhone()
-    {
-        try {
-            $phoneNumberChanged = (new Change($this->email))->phone($this->phone);
+            $phoneNumberChanged = (new Change($data['email']))->phone($data['phone']);
 
             $this->assertTrue($phoneNumberChanged, "Phone number should be changed.");
         } catch (DestructuredException $e) {

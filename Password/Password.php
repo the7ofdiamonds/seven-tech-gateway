@@ -27,12 +27,12 @@ class Password
         $this->firebaseAuth = new FirebaseAuth;
     }
 
-    function passwordFrag($password)
+    function frag($password)
     {
         return substr($password, 8, 4);
     }
 
-    function hashPassword($password)
+    function hash($password)
     {
         $this->validator->isValidPassword($password);
 
@@ -41,7 +41,7 @@ class Password
         return $hashedPassword;
     }
 
-    function passwordMatchesHash($password, $hash)
+    function matchesHash($password, $hash)
     {
         $this->validator->isValidPassword($password);
 
@@ -54,19 +54,16 @@ class Password
         }
 
         if (!$password_check) {
-            throw new Exception('The password you entered for this username is not correct.', 400);
+            throw new Exception('The password you entered is not correct.', 400);
         }
 
         return $password_check;
     }
 
-    function change($email, $password, $newPassword, $confirmPassword)
+    function match(string $password, string $confirmPassword)
     {
         try {
-            $this->exists->existsByEmail($email);
-            $this->validator->isValidPassword($password);
-
-            if (empty($newPassword)) {
+            if (empty($password)) {
                 throw new Exception('Enter your new preferred password.', 400);
             }
 
@@ -74,18 +71,35 @@ class Password
                 throw new Exception('Enter your new preferred password twice.', 400);
             }
 
-            $matches = $this->validator->matches($newPassword, $confirmPassword);
+            $this->validator->isValidPassword($password);
+            $this->validator->isValidPassword($password);
+
+            $matches = $this->validator->matches($password, $confirmPassword);
 
             if (!$matches) {
                 throw new Exception('Enter your new preferred password exactly the same twice.', 400);
             }
 
-            $hashedPassword = $this->hashPassword($newPassword);
+            return $matches;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function change($email, $password, $newPassword, $confirmPassword)
+    {
+        try {
+            $auth = new Authentication($email);
+
+            $this->matchesHash($password, $auth->password);
+            $this->match($newPassword, $confirmPassword);
+
+            $hashedPassword = $this->hash($newPassword);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL changePassword('$email', '$password', '$hashedPassword')"
+                "CALL changePassword('$email', '$hashedPassword')"
             );
 
             if ($wpdb->last_error) {
@@ -98,15 +112,15 @@ class Password
                 throw new Exception('Password could not be updated at this time.', 400);
             }
 
+            $this->firebaseAuth->changeFirebasePassword($auth->providerGivenID, $newPassword);
 
-            $auth = new Authentication($email);
-            $this->firebaseAuth->changeFirebasePassword($auth->provider_given_id, $newPassword);
+            if (!$auth->isCredentialsNonExpired) {
+                (new Details($email))->unexpireCredentials($auth->id);
+            }
 
-            (new Details($email))->unexpireCredentials($auth->password);
+            // $this->email->passwordChanged($email);
 
-            $this->email->passwordChanged($email);
-
-            return "Your password has been changed successfully an email has been sent to {$email} check your inbox.";
+            return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
@@ -115,22 +129,17 @@ class Password
     function update($email, $confirmationCode, $password, $confirmPassword)
     {
         try {
-            $this->exists->existsByEmail($email);
-            $this->validator->isValidPassword($password);
-            $this->validator->isValidPassword($confirmPassword);
+            $auth = new Authentication($email);
+            $auth->verifyCredentials($confirmationCode);
 
-            $matches = $this->validator->matches($password, $confirmPassword);
+            $this->match($password, $confirmPassword);
 
-            if (!$matches) {
-                throw new Exception('Enter your new preferred password exactly the same twice.', 400);
-            }
-
-            $hashedPassword = $this->hashPassword($password);
+            $hashedPassword = $this->hash($password);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL updatePassword('$email', '$confirmationCode', '$hashedPassword')"
+                "CALL changePassword('$email', '$hashedPassword')"
             );
 
             if ($wpdb->last_error) {
@@ -143,13 +152,13 @@ class Password
                 throw new Exception('Password could not be updated at this time.', 400);
             }
 
-            $auth = new Authentication($email);
+            if (!$auth->isCredentialsNonExpired) {
+                (new Details($email))->unexpireCredentials($auth->id);
+            }
 
-            (new Details($email))->unexpireCredentials($auth->password);
+            // $this->email->passwordChanged($email);
 
-            $this->email->passwordChanged($email);
-
-            return 'Password updated succesfully.';
+            return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

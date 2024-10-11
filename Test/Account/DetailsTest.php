@@ -133,26 +133,26 @@ class DetailsTest extends TestCase
     }
 
     #[Depends('testEnableAccount')]
-    public function testExpireAccount(array $data)
-    {
-        try {
-            $accountExpired = (new Details())->expireAccount($data['id']);
-
-            $this->assertSame($accountExpired, true);
-
-            return $data;
-        } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
-        }
-    }
-
-    #[Depends('testExpireAccount')]
     public function testUnexpireAccount(array $data)
     {
         try {
             $accountUnexpired = (new Details())->unexpireAccount($data['id']);
 
             $this->assertTrue($accountUnexpired, true);
+            
+            return $data;
+        } catch (DestructuredException $e) {
+            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+        }
+    }
+
+    #[Depends('testUnexpireAccount')]
+    public function testExpireAccount(array $data)
+    {
+        try {
+            $accountExpired = (new Details())->expireAccount($data['id']);
+
+            $this->assertSame($accountExpired, true);
         } catch (DestructuredException $e) {
             $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
         }

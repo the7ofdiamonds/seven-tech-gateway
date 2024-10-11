@@ -2,7 +2,6 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
-use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Email\EmailPassword;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
@@ -42,13 +41,10 @@ class API_Password
     function changePassword(WP_REST_Request $request)
     {
         try {
-            $email = $request['email'];
-            $password = $request['password'];
-            $newPassword = $request['newPassword'];
-            $confirmPassword = $request['confirmPassword'];
+            $this->password->change($request['email'], $request['password'], $request['newPassword'], $request['confirmPassword']);
 
             $removeEmailResponse = [
-                'successMessage' => $this->password->change($email, $password, $newPassword, $confirmPassword),
+                'successMessage' => "Your password has been changed successfully an email has been sent to {$request['email']} check your inbox.",
                 'statusCode' => 200
             ];
 
@@ -63,28 +59,10 @@ class API_Password
     function updatePassword(WP_REST_Request $request)
     {
         try {
-            if (!isset($request['email'])) {
-                throw new Exception('An email is required.', 400);
-            }
-
-            if (!isset($request['confirmationCode'])) {
-                throw new Exception('A Confirmation Code is required to verify your email. Check your inbox.', 400);
-            }
-
-            $email = $request['email'];
-            $confirmationCode = $request['confirmationCode'];
-
-            $verified = (new Authentication($email))->verifyCredentials($confirmationCode);
-
-            if (!$verified) {
-                throw new Exception('Credentials are not valid password could not be updated at this time.', 403);
-            }
-
-            $password = $request['password']; 
-            $confirmPassword = $request['confirmPassword'];
+            $this->password->update($request['email'], $request['confirmationCode'], $request['password'], $request['confirmPassword']);
 
             $updatePasswordResponse = [
-                'successMessage' => $this->password->update($email, $confirmationCode, $password, $confirmPassword),
+                'successMessage' => 'Password updated succesfully.',
                 'statusCode' => 200
             ];
 
