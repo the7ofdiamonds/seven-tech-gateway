@@ -2,80 +2,111 @@
 
 namespace SEVEN_TECH\Gateway\Email;
 
+use Exception;
+
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Authentication\Authentication;
-use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 class EmailPassword
 {
-    private $exists;
     private $email;
 
     public function __construct()
     {
-        $this->exists = new DatabaseExists;
         $this->email = new Email;
     }
 
-    function recoverPassword($email)
+    function recover(Account $account, string $url)
     {
         try {
-            $this->exists->existsByEmail($email);
-
-            $account = new Account($email);
-
             $subject = "Password Recovery Instructions for {$this->email->site_name}";
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailPasswordRecovery.php';
 
-            $auth = new Authentication($email);
-
-            $auth->updateConfirmationCode();
-
-            $password_reset_link = home_url() . "/{$account->email}/{$auth->confirmation_code}";
+            $message = "Follow the link below to recover your password.";
+            
+            $button_name = 'RECOVER';
 
             $content = array(
-                "{NAME}" => "{$account->first_name} {$account->last_name}",
-                "{PASSWORD_RESET_LINK}" => $password_reset_link,
+                "{NAME}" => "{$account->firstName} {$account->lastName}",
+                "{MESSAGE}" => $message,
+                "{URL}" => $url,
+                "{BUTTON_NAME}" => $button_name,
                 "{SUPPORT_EMAIL}" => $this->email->support_email,
                 "{COMPANY_NAME}" => $this->email->company_name,
             );
 
-            $message = "An email has been sent to {$email} check your inbox for directions on how to reset your password. Confirmation Code: {$auth->confirmation_code}";
+            $emailSent = $this->email->sendEmail($account, $subject, $template, $content, $message);
 
-            $this->email->sendEmail($account, $subject, $template, $content, $message);
+            if (!$emailSent) {
+                throw new Exception("There was an error sending password recovery email.");
+            }
 
-            return "An email has been sent to {$email} check your inbox for directions on how to reset your password.";
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function passwordChanged($email)
+    function changed(Account $account)
     {
         try {
-            $this->exists->existsByEmail($email);
-
-            $account = new Account($email);
-
             $subject = "Password Changed at {$this->email->site_name}";
 
             $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
 
             $message = "Your password has been changed.";
-            $url = home_url() . "/login";
+
             $button_name = 'LOGIN';
 
             $content = array(
+                "{NAME}" => "{$account->firstName} {$account->lastName}",
                 "{MESSAGE}" => $message,
-                "{URL}" => $url,
-                "{BUTTON_NAME}" => $button_name
+                "{URL}" => home_url() . "/login",
+                "{BUTTON_NAME}" => $button_name,
+                "{SUPPORT_EMAIL}" => $this->email->support_email,
+                "{COMPANY_NAME}" => $this->email->company_name,
             );
 
-            $this->email->sendEmail($account, $subject, $template, $content, $message);
+            $emailSent = $this->email->sendEmail($account, $subject, $template, $content, $message);
 
-            return "Your password has been changed an email has been sent to {$email} check your inbox to confirm this action was completed.";
+            if (!$emailSent) {
+                throw new Exception("There was an error sending password recovery email.");
+            }
+
+            return true;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function update(Account $account, string $url)
+    {
+        try {
+            $subject = "Your password needs to be updated at {$this->email->site_name}";
+
+            $template = SEVEN_TECH_GATEWAY . 'Templates/TemplatesEmailBody.php';
+
+            $message = "Below is a link to update your password.";
+            
+            $button_name = 'UPDATE';
+
+            $content = array(
+                "{NAME}" => "{$account->firstName} {$account->lastName}",
+                "{MESSAGE}" => $message,
+                "{URL}" => $url,
+                "{BUTTON_NAME}" => $button_name,
+                "{SUPPORT_EMAIL}" => $this->email->support_email,
+                "{COMPANY_NAME}" => $this->email->company_name,
+            );
+
+            $emailSent = $this->email->sendEmail($account, $subject, $template, $content, $message);
+
+            if (!$emailSent) {
+                throw new Exception("There was an error sending password recovery email.");
+            }
+
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }

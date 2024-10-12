@@ -28,7 +28,24 @@ class PasswordTest extends TestCase
         return $data;
     }
 
-    public function testChange() {
+    public function testRecover()
+    {
+        try {
+            $data = $this->passwordTestDataProvider();
+
+            $changed = (new Password())->recover($data['email']);
+
+            $this->assertTrue($changed);
+
+            return $data;
+        } catch (DestructuredException $e) {
+            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+        }
+    }
+
+    #[Depends('testRecover')]
+    public function testChange()
+    {
         try {
             $data = $this->passwordTestDataProvider();
 
@@ -38,7 +55,7 @@ class PasswordTest extends TestCase
                 $data['newPassword'],
                 $data['confirmPassword']
             );
-            
+
             $this->assertTrue($changed);
 
             return $data;

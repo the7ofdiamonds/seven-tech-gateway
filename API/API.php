@@ -74,12 +74,6 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/change/name', array(
-      'methods' => 'POST',
-      'callback' => array($changeAPI, 'name'),
-      'permission_callback' => '__return_true',
-    ));
-
     register_rest_route('seven-tech/v1', '/change/nicename', array(
       'methods' => 'POST',
       'callback' => array($changeAPI, 'nicename'),
@@ -89,6 +83,12 @@ class API
     register_rest_route('seven-tech/v1', '/change/nickname', array(
       'methods' => 'POST',
       'callback' => array($changeAPI, 'nickname'),
+      'permission_callback' => '__return_true',
+    ));
+    
+    register_rest_route('seven-tech/v1', '/change/name', array(
+      'methods' => 'POST',
+      'callback' => array($changeAPI, 'name'),
       'permission_callback' => '__return_true',
     ));
 
@@ -124,7 +124,7 @@ class API
 
     register_rest_route('seven-tech/v1', '/password/update', array(
       'methods' => 'POST',
-      'callback' => array($passwordAPI, 'update'),
+      'callback' => array($passwordAPI, 'updated'),
       'permission_callback' => '__return_true',
     ));
 

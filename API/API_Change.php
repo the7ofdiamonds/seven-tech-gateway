@@ -53,7 +53,7 @@ class API_Change
 
             $firstName = $request['first_name'];
             $lastName = $request['last_name'];
-            
+
             if (!empty($firstName)) {
                 (new Change($request['email']))->firstName($firstName);
             }
@@ -78,7 +78,7 @@ class API_Change
         }
     }
 
-    function changeNicename(WP_REST_Request $request)
+    function nicename(WP_REST_Request $request)
     {
         try {
             $authorized = $this->authorization->isAuthorized($request);
@@ -101,7 +101,7 @@ class API_Change
         }
     }
 
-    function changeNickname(WP_REST_Request $request)
+    function nickname(WP_REST_Request $request)
     {
         try {
             $authorized = $this->authorization->isAuthorized($request);
@@ -124,7 +124,7 @@ class API_Change
         }
     }
 
-    function changePhone(WP_REST_Request $request)
+    function phone(WP_REST_Request $request)
     {
         try {
             $authorized = $this->authorization->isAuthorized($request);

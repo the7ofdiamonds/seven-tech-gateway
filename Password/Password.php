@@ -2,8 +2,8 @@
 
 namespace SEVEN_TECH\Gateway\Password;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
-use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\Email\EmailPassword;
@@ -15,24 +15,22 @@ use Exception;
 class Password
 {
     private $validator;
-    private $exists;
     private $email;
     private $firebaseAuth;
 
     public function __construct()
     {
         $this->validator = new Validator;
-        $this->exists = new DatabaseExists;
         $this->email = new EmailPassword;
         $this->firebaseAuth = new FirebaseAuth;
     }
 
-    function frag($password)
+    function frag(string $password): string
     {
         return substr($password, 8, 4);
     }
 
-    function hash($password)
+    function hash(string $password): string
     {
         $this->validator->isValidPassword($password);
 
@@ -41,7 +39,7 @@ class Password
         return $hashedPassword;
     }
 
-    function matchesHash($password, $hash)
+    function matchesHash(string $password, string $hash): bool
     {
         $this->validator->isValidPassword($password);
 
@@ -86,20 +84,34 @@ class Password
         }
     }
 
-    function change($email, $password, $newPassword, $confirmPassword)
+    function recover(string $email)
     {
         try {
+            $account = new Account($email);
+
             $auth = new Authentication($email);
 
-            $this->matchesHash($password, $auth->password);
-            $this->match($newPassword, $confirmPassword);
+            $password_recover_link = home_url() . "/password/recover/{$account->email}/{$auth->confirmationCode}";
 
-            $hashedPassword = $this->hash($newPassword);
+            // $this->email->recover($account, $password_recover_link);
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function persist(Account $account, $password, $confirmPassword): bool
+    {
+        try {
+            $this->match($password, $confirmPassword);
+
+            $hashedPassword = $this->hash($password);
 
             global $wpdb;
 
             $results = $wpdb->get_results(
-                "CALL changePassword('$email', '$hashedPassword')"
+                "CALL changePassword('$account->email', '$hashedPassword')"
             );
 
             if ($wpdb->last_error) {
@@ -112,13 +124,13 @@ class Password
                 throw new Exception('Password could not be updated at this time.', 400);
             }
 
-            $this->firebaseAuth->changeFirebasePassword($auth->providerGivenID, $newPassword);
+            $this->firebaseAuth->changeFirebasePassword($account->providerGivenID, $password);
 
-            if (!$auth->isCredentialsNonExpired) {
-                (new Details($email))->unexpireCredentials($auth->id);
+            if (!$account->isCredentialsNonExpired) {
+                (new Details($account->email))->unexpireCredentials($account->id);
             }
 
-            // $this->email->passwordChanged($email);
+            // $this->email->changed($account);
 
             return true;
         } catch (Exception $e) {
@@ -126,37 +138,45 @@ class Password
         }
     }
 
-    function update($email, $confirmationCode, $password, $confirmPassword)
+    function change(string $email, string $password, string $newPassword, string $confirmPassword)
     {
         try {
-            $auth = new Authentication($email);
+            $account = new Account($email);
+
+            $this->matchesHash($password, $account->password);
+
+            $this->persist($account, $newPassword, $confirmPassword);
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function update(string $email)
+    {
+        try {
+            $account = new Account($email);
+
+            $password_update_link = home_url() . "/password/update/{$account->email}/{$account->confirmationCode}";
+
+            // $this->email->update($account, $password_update_link);
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function updated(string $email, string $confirmationCode, string $password, string $confirmPassword)
+    {
+        try {
+            $account = new Account($email);
+
+            $auth = new Authentication($account->email);
             $auth->verifyCredentials($confirmationCode);
 
-            $this->match($password, $confirmPassword);
-
-            $hashedPassword = $this->hash($password);
-
-            global $wpdb;
-
-            $results = $wpdb->get_results(
-                "CALL changePassword('$email', '$hashedPassword')"
-            );
-
-            if ($wpdb->last_error) {
-                throw new Exception("Error executing stored procedure: " . $wpdb->last_error, 500);
-            }
-
-            $results = $results[0]->resultSet;
-
-            if (empty($results)) {
-                throw new Exception('Password could not be updated at this time.', 400);
-            }
-
-            if (!$auth->isCredentialsNonExpired) {
-                (new Details($email))->unexpireCredentials($auth->id);
-            }
-
-            // $this->email->passwordChanged($email);
+            $this->persist($account, $password, $confirmPassword);
 
             return true;
         } catch (Exception $e) {

@@ -14,9 +14,7 @@ use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 class Token
 {
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     function hashToken($token)
     {
@@ -98,13 +96,19 @@ class Token
 
     function getJWT($jwtToken)
     {
-        $parts = explode('.', $jwtToken);
+        try {
+            $parts = explode('.', $jwtToken);
+            error_log($jwtToken);
+            if (count($parts) !== 3) {
+                throw new Exception("Invalid JWT token format");
+            }
 
-        if (count($parts) !== 3) {
-            throw new Exception("Invalid JWT token format");
+            return $parts;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
         }
-
-        return $parts;
     }
 
     function getJWTHeader($jwtToken)
@@ -136,12 +140,18 @@ class Token
 
     function getJWTAlgorithm($jwtToken)
     {
-        $headerJson = $this->getJWTHeader($jwtToken);
+        try {
+            $headerJson = $this->getJWTHeader($jwtToken);
 
-        if (isset($headerJson['alg'])) {
+            if (!isset($headerJson['alg'])) {
+                throw new Exception("Algorithm not found in JWT header");
+            }
+
             return $headerJson['alg'];
-        } else {
-            throw new Exception("Algorithm not found in JWT header");
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
         }
     }
 

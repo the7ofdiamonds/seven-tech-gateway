@@ -100,7 +100,7 @@ class Email
         }
     }
 
-    function emailBody($template, $content)
+    function emailBody(string $template, array $content)
     {
         try {
             $header = $this->emailHeader();
@@ -166,7 +166,7 @@ class Email
         }
     }
 
-    public function sendEmail(Account $account, $subject, $template, $content, $message)
+    public function sendEmail(Account $account, string $subject, string $template, array $content, string $message) : bool
     {
         try {
             $to_email = $account->email;
@@ -196,7 +196,7 @@ class Email
                 throw new PHPMailerException("Message could not be sent. Mailer Error: {$this->mailer->ErrorInfo}", 500);
             }
 
-            return 'Message has been sent';
+            return true;
         } catch (PHPMailerException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
