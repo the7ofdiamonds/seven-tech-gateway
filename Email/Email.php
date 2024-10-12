@@ -166,9 +166,24 @@ class Email
         }
     }
 
-    public function sendEmail(Account $account, string $subject, string $template, array $content, string $message) : bool
+    public function sendEmail(Account $account, string $subject, string $template, array $content, string $message): bool
     {
         try {
+
+            if (
+                !$this->smtp_host ||
+                !$this->smtp_port ||
+                !$this->smtp_secure ||
+                !$this->smtp_auth ||
+                !$this->smtp_username ||
+                !$this->smtp_password ||
+                !$this->from_email ||
+                !$this->from_name
+            ) {
+                error_log("Some or all email host settings are not present.");
+                return false;
+            }
+
             $to_email = $account->email;
             $name =  "{$account->firstName} {$account->lastName}";
             $to_name = $name;

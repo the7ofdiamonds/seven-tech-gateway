@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 
-const logoutUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/authentication/logout" : "/wp-json/seven-tech/v1/authentication/logout";
-export const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/authentication/logout-all" : "/wp-json/seven-tech/v1/authentication/logout-all";
+const logoutUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/auth/logout" : "/wp-json/seven-tech/v1/auth/logout";
+export const logoutAllUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/auth/logout-all" : "/wp-json/seven-tech/v1/auth/logout-all";
 
 const initialState = {
     logoutLoading: false,

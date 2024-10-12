@@ -25,7 +25,7 @@ class Create
         $this->login = new Login;
     }
 
-    function account($email, $username, $password, $confirmPassword, $nicename, $nickname, $firstname, $lastname, $phone)
+    function account(string $email, string $username, string $password, string $confirmPassword, string $nicename, string $nickname, string $firstname, string $lastname, string $phone)
     {
         try {
 
@@ -42,7 +42,7 @@ class Create
             $authentication->addProviderGivenID($createdUser->providergivenID);
             $userActivationKey = $authentication->addActivationKey();
             $confirmationCode = $authentication->addConfirmationCode();
-error_log("Created User ID: {$createdUser->id}");
+
             $userData = new WP_User($createdUser->id);
             $userData->first_name = $firstname;
             $userData->last_name = $lastname;
@@ -50,8 +50,6 @@ error_log("Created User ID: {$createdUser->id}");
             $userData->nickname = $nickname;
             $userData->user_activation_key = $userActivationKey;
             $updatedUser = wp_insert_user($userData);
-
-            error_log("Updated User ID: {$updatedUser}");
 
             add_user_meta($updatedUser, 'phone_number', $phone);
 
@@ -63,9 +61,9 @@ error_log("Created User ID: {$createdUser->id}");
             (new Details($email))->addDetails($id, 'is_account_non_locked', 1);
             (new Details($email))->addDetails($id, 'is_credentials_non_expired', 1);            
             
-            // $this->email->accountCreated($email);
+            $this->email->accountCreated($email);
 
-            $auth = $this->login->signInWithEmailAndPassword($email, $password);
+            $auth = $this->login->withEmailAndPassword($email, $password);
   
             $signupResponse = array(
                 'successMessage' => 'You have been signed up successfully.',

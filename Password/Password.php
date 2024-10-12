@@ -93,7 +93,7 @@ class Password
 
             $password_recover_link = home_url() . "/password/recover/{$account->email}/{$auth->confirmationCode}";
 
-            // $this->email->recover($account, $password_recover_link);
+            $this->email->recover($account, $password_recover_link);
 
             return true;
         } catch (Exception $e) {
@@ -130,7 +130,7 @@ class Password
                 (new Details($account->email))->unexpireCredentials($account->id);
             }
 
-            // $this->email->changed($account);
+            $this->email->changed($account);
 
             return true;
         } catch (Exception $e) {
@@ -160,7 +160,7 @@ class Password
 
             $password_update_link = home_url() . "/password/update/{$account->email}/{$account->confirmationCode}";
 
-            // $this->email->update($account, $password_update_link);
+            $this->email->update($account, $password_update_link);
 
             return true;
         } catch (Exception $e) {

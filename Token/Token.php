@@ -98,7 +98,7 @@ class Token
     {
         try {
             $parts = explode('.', $jwtToken);
-            error_log($jwtToken);
+
             if (count($parts) !== 3) {
                 throw new Exception("Invalid JWT token format");
             }
