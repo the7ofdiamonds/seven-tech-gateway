@@ -14,9 +14,10 @@ use Exception;
 class Logout
 {
 
-    public function session(Session $session)
+    public function session(Authenticated $auth)
     {
         try {
+            $session = new Session($auth);
             $session_destroyed = (new Session)->delete($session);
 
             if (!$session_destroyed) {
@@ -28,9 +29,6 @@ class Logout
             if (is_user_logged_in()) {
                 throw new Exception('Account could not be logged out.', 400);
             }
-
-            // only if no other sessions
-            (new Details())->isNotAuthenticated($session->user_id);
 
             return true;
         } catch (DestructuredException $e) {
@@ -45,7 +43,7 @@ class Logout
         try {
             $wordpresSessions = (new SessionWordpress)->get($id);
 
-            if (is_array($wordpresSessions)) {
+            if (is_array($wordpresSessions) && !empty($wordpresSessions)) {
                 $session_tokens_deleted = delete_user_meta($id, 'session_tokens');
 
                 if (!$session_tokens_deleted) {

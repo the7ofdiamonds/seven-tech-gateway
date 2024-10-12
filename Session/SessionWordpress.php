@@ -3,7 +3,6 @@
 namespace SEVEN_TECH\Gateway\Session;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
@@ -11,46 +10,42 @@ use Exception;
 class SessionWordpress
 {
 
-    function get($id): array
+    function get(int $user_id): array
     {
         try {
-            if (empty($id)) {
+            $sessions = [];
+
+            if (empty($user_id)) {
                 throw new Exception('User ID is required.', 400);
             }
 
-            $session_tokens = get_user_meta($id, 'session_tokens', true);
+            $session_tokens = get_user_meta($user_id, 'session_tokens', true);
 
-            if (empty($session_tokens)) {
-                return [];
+            if (empty($session_tokens) || $session_tokens == null) {
+                return $sessions;
             }
 
             if (is_serialized($session_tokens)) {
-                $session_tokens = unserialize($session_tokens);
+                $sessions = unserialize($session_tokens);
 
-                if ($session_tokens === false) {
-                    throw new Exception('Failed to unserialize session tokens for user ID: ' . $id);
+                if ($sessions === false) {
+                    throw new Exception('Failed to unserialize session tokens for user ID: ' . $user_id);
                 }
             }
 
-            return $session_tokens;
+            return $sessions;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function create(Session $session): int
+    function create(Session $session): bool
     {
         try {
-            $userMeta = "add";
-
             $session_tokens = $this->get($session->user_id);
 
             if (!is_array($session_tokens) || $session_tokens == false || $session_tokens == '') {
                 $session_tokens = [];
-            }
-
-            if (!empty($session_tokens)) {
-                $userMeta = "update";
             }
 
             $session_token = array(
@@ -64,15 +59,7 @@ class SessionWordpress
 
             $serializedSessions = serialize($session_tokens);
 
-            $sessionCreated = false;
-
-            if ($userMeta === "update") {
-                $sessionCreated = update_user_meta($session->user_id, 'session_tokens', $serializedSessions);
-            }
-
-            if ($userMeta === "add") {
-                $sessionCreated = add_user_meta($session->user_id, 'session_tokens', $serializedSessions);
-            }
+            $sessionCreated = update_user_meta($session->user_id, 'session_tokens', $serializedSessions);
 
             if ($sessionCreated == false) {
                 throw new Exception('Session could not be created at this time.', 400);
@@ -86,64 +73,73 @@ class SessionWordpress
         }
     }
 
-    function find($user_id, $verifier): array
+    function find(int $user_id, string $verifier): array
     {
-        $sessionArray = [];
+        try {
+            $sessionArray = [];
 
-        $session_tokens = $this->get($user_id);
+            $session_tokens = $this->get($user_id);
 
-        if (!is_array($session_tokens)) {
-            return $sessionArray;
-        }
-
-        foreach ($session_tokens as $session_key => $session_value) {
-            if ((new Validator)->matches($session_key, $verifier)) {
-                $session = $session_value;
-                break;
+            if (!is_array($session_tokens) || empty($session_tokens)) {
+                return $sessionArray;
             }
-        }
 
-        return $session;
-    }
-
-    function update(
-        $id,
-        string $verifier,
-        string $key,
-        string $value
-    ): bool {
-        $session_tokens = $this->get($id);
-
-        if (!is_array($session_tokens)) {
-            throw new Exception("Sessions could not be found for updating.");
-        }
-
-        if (is_array($session_tokens)) {
-            foreach ($session_tokens as $session) {
-                if ((new Validator)->matches($session, $verifier)) {
-                    $session[$key] = $value;
+            foreach ($session_tokens as $session_key => $session_value) {
+                if ((new Validator)->matches($session_key, $verifier)) {
+                    $session = $session_value;
                     break;
                 }
             }
 
-            $sessionUpdated = update_user_meta($id, 'session_tokens', $session_tokens);
+            return $session;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
 
-            if ($sessionUpdated instanceof int || $sessionUpdated == false) {
-                return false;
+    function update(Session $session): bool
+    {
+        try {
+            $session_tokens = $this->get($session->user_id);
+
+            if (!is_array($session_tokens)) {
+                throw new Exception("Sessions could not be found for updating.");
             }
 
-            return $sessionUpdated;
-        }
+            if (is_array($session_tokens)) {
+                foreach ($session_tokens as $session) {
+                    if ((new Validator)->matches($session, $session->id)) {
+                        $session['expiration'] = $session->expiration;
+                        break;
+                    }
+                }
 
-        $sessionFound = $this->find($id, $verifier);
+                $sessionUpdated = update_user_meta($session->user_id, 'session_tokens', $session_tokens);
 
-        if (is_array($sessionFound)) {
-            if ($sessionFound[$key] == $value) {
-                return true;
+                if (empty($sessionUpdated)) {
+                    return true;
+                }
+
+                return $sessionUpdated;
             }
-        }
 
-        return false;
+            $sessionFound = $this->find($session->user_id, $session->id);
+
+            if (is_array($sessionFound)) {
+                error_log($sessionFound['expiration']);
+                if ($sessionFound['expiration'] == $session->expiration) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
     }
 
     function delete(Session $session): bool
@@ -184,7 +180,7 @@ class SessionWordpress
 
             $sessionUpdated = update_user_meta($session->user_id, 'session_tokens', $session_tokens);
 
-            if ($sessionUpdated instanceof int || $sessionUpdated == false) {
+            if (is_int($sessionUpdated) || $sessionUpdated == false) {
                 return false;
             }
 

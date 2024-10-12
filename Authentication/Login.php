@@ -9,7 +9,6 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Session\Session;
-use SEVEN_TECH\Gateway\Session\SessionCreate;
 
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 

@@ -5,27 +5,43 @@ namespace SEVEN_TECH\Gateway\Test\Session;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
+use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Session\SessionWordpress;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Session\Session;
+use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Test\Spreadsheet;
 use SEVEN_TECH\Gateway\Test\DataProviders;
 
 class SessionWordpressTest extends TestCase
 {
 
+    public static function sessionDataProvider()
+    {
+        $data = [];
+
+        // return (new Spreadsheet((new DataProviders)->authPath, 'Auth'))->getData();
+        $data['email'] = "testuser40@gmail.com";
+        $data['password'] = "Test1234$";
+        $signedInUser = (new FirebaseAuth)->signInWithEmailAndPassword($data['email'], $data['password']);
+        $data['user_id'] = 99;
+        $data['ip'] = "123.456.7890";
+        $data['user_agent'] = "user agent";
+        $data['login'] = "login";
+        $data['accessToken'] = $signedInUser->idToken();
+        $data['refreshToken'] = $signedInUser->refreshToken();
+
+        return $data;
+    }
+
     public function testGet()
     {
         try {
-            $data = [];
+            $data = $this->sessionDataProvider();
 
-            $user_id = 99;
-
-            $sessions = (new SessionWordpress())->get($user_id);
+            $sessions = (new SessionWordpress())->get($data['user_id']);
 
             $this->assertIsArray($sessions);
-
-            $data['user_id'] = $user_id;
 
             return $data;
         } catch (DestructuredException $e) {
@@ -37,16 +53,12 @@ class SessionWordpressTest extends TestCase
     public function testCreate(array $data)
     {
         try {
-            $session = new Session();
-            $session->expiration = 123456;
-            $session->ip = "123.456.7890";
-            $session->user_agent = "user agent";
-            $session->login = "login";
-            $session->user_id = $data['user_id'];
+            $auth = new Authenticated($data['accessToken'], $data['refreshToken']);
+            $session = new Session($auth, $data['ip'], $data['location'], $data['user_agent']);
 
             $createdSession = (new SessionWordpress())->create($session);
 
-            $this->assertIsInt($createdSession);
+            $this->assertTrue($createdSession);
 
             $data['verifier'] = $session->id;
 
@@ -57,8 +69,9 @@ class SessionWordpressTest extends TestCase
     }
 
     #[Depends('testCreate')]
-    public function testFind(array $data) {
-        try{
+    public function testFind(array $data)
+    {
+        try {
             $foundSession = (new SessionWordpress())->find($data['user_id'], $data['verifier']);
 
             $this->assertIsArray($foundSession);
@@ -70,12 +83,14 @@ class SessionWordpressTest extends TestCase
     }
 
     #[Depends('testFind')]
-    public function testUpdate(array $data) {
-        try{
-            $key = 'expiration';
-            $value = 1234567;
-            $sessionUpdate = (new SessionWordpress())->update($data['user_id'], $data['verifier'], $key, $value);
-            
+    public function testUpdate(array $data)
+    {
+        try {
+            $signedInUser = (new FirebaseAuth)->signInWithEmailAndPassword($data['email'], $data['password']);
+            $auth = new Authenticated($signedInUser->idToken(), $data['refreshToken']);
+            $session = new Session($auth, $data['ip'], $data['location'], $data['user_agent']);
+            $sessionUpdate = (new SessionWordpress())->update($session);
+
             $this->assertTrue($sessionUpdate);
 
             return $data;
@@ -85,9 +100,12 @@ class SessionWordpressTest extends TestCase
     }
 
     #[Depends('testUpdate')]
-    public function testDelete(array $data) {
-        try{
-            $sessionDeleted = (new SessionWordpress())->delete($data['user_id'], $data['verifier']);
+    public function testDelete(array $data)
+    {
+        try {
+            $auth = new Authenticated($data['accessToken'], $data['refreshToken']);
+            $session = new Session($auth, $data['ip'], $data['location'], $data['user_agent']);
+            $sessionDeleted = (new SessionWordpress())->delete($session);
 
             $this->assertTrue($sessionDeleted);
         } catch (DestructuredException $e) {

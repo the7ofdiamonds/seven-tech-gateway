@@ -5,9 +5,7 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Authentication\Login;
 use SEVEN_TECH\Gateway\Authentication\Logout;
-use SEVEN_TECH\Gateway\Cookie\Cookie;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
@@ -42,6 +40,10 @@ class API_Authentication
 
             $authenticatedAccount = $this->login->persist($authenticated);
 
+            if($authenticatedAccount !== true) {
+                throw new Exception("There was an error persisting your session please try again at another time.");
+            }
+
             $loginResponse = [
                 'successMessage' => 'You have been logged in successfully',
                 'username' => $authenticated->username,
@@ -69,9 +71,7 @@ class API_Authentication
 
             $auth = new Authenticated($accessToken, $refreshToken);
 
-            $session = new Session($auth);
-
-            $this->logout->session($session);
+            $this->logout->session($auth);
 
             $logoutResponse = [
                 'successMessage' => 'You have been logged out',

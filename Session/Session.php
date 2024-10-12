@@ -3,25 +3,24 @@
 namespace SEVEN_TECH\Gateway\Session;
 
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Services\Redis\RedisSession;
-use SEVEN_TECH\Gateway\Token\Token;
-use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
 class Session
 {
-    public $id;
-    public $user_id;
-    public $email;
-    public $username;
+    public string $id;
+    public int $user_id;
+    public string $email;
+    public string $username;
     public $passwordFrag;
     public $authorities;
     public $algorithm;
-    public $access_token;
-    public $refresh_token;
+    public string $access_token;
+    public string $refresh_token;
     public $token;
     public $ip;
     public $location;
@@ -35,7 +34,7 @@ class Session
 
     public function __construct(Authenticated $authenticated = null, $ip = '', $location = '', $user_agent = '')
     {
-        if ($authenticated != null && $ip != '' && $user_agent != '') {
+        if ($authenticated != null) {
             $this->user_id = $authenticated->id;
             $this->email = $authenticated->email;
             $this->username = $authenticated->username;
@@ -81,10 +80,10 @@ class Session
         }
     }
 
-    function find($verifier, $user_id = '')
+    function find(string $verifier, int $user_id = null)
     {
         try {
-            
+
             if (empty($verifier)) {
                 throw new Exception('Session Verifier is required to find session.', 404);
             }
@@ -107,7 +106,7 @@ class Session
         }
     }
 
-    function get($email)
+    function get(string $email)
     {
         try {
             $account = new Account($email);
@@ -128,6 +127,10 @@ class Session
                 }
             }
 
+            if (is_array($sessions) && !empty($sessions)) {
+                (new Details())->isNotAuthenticated($account->id);
+            }
+
             $accountSessions = array('id' => $account->id, 'provider_given_id' => $account->providerGivenID, 'sessions' => $sessions);
 
             return $accountSessions;
@@ -138,11 +141,17 @@ class Session
         }
     }
 
-    function update($session_verifier, $expiration, $accessToken)
+    function update(Session $session)
     {
         try {
-            $updatedSession = (new SessionRedis)->update($session_verifier, $expiration, $accessToken);
-            // Update session with new access token
+            $updatedSession = false;
+
+            if ((new RedisSession)->isReady) {
+                $updatedSession = (new SessionRedis)->update($session);
+            } else {
+                $updatedSession = (new SessionWordpress)->update($session);
+            }
+
             return $updatedSession;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -154,23 +163,15 @@ class Session
     function delete(Session $session)
     {
         try {
+            $sessionDeleted = false;
+
             if ((new RedisSession)->isReady) {
-                $sessionRedis = (new SessionRedis)->find($session->id);
-
-                if (is_array($sessionRedis)) {
-                    $sessionDeleted = (new SessionRedis)->delete($session->id);
-
-                    return $sessionDeleted;
-                }
-            }
-
-            $sessionWordpress = (new SessionWordpress)->find($session->user_id, $session->id);
-
-            if (is_array($sessionWordpress)) {
+                $sessionDeleted = (new SessionRedis)->delete($session->id);
+            } else {
                 $sessionDeleted = (new SessionWordpress)->delete($session);
-
-                return $sessionDeleted;
             }
+
+            return $sessionDeleted;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

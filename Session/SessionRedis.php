@@ -10,7 +10,7 @@ use Exception;
 class SessionRedis
 {
 
-    function get($user_id)
+    function get(int $user_id)
     {
         try {
             $session = (new RedisSession)->connection->get((string) $user_id, '$');
@@ -52,7 +52,7 @@ class SessionRedis
         }
     }
 
-    function find($session_id)
+    function find(string $session_id)
     {
         try {
             if (empty($session_id)) {
@@ -71,15 +71,15 @@ class SessionRedis
         }
     }
 
-    function update($session_id, $expiration, $accessToken)
+    function update(Session $session)
     {
         try {
             $updatedSession = array(
-                'expiration' => $expiration,
-                'access_token' => $accessToken,
+                'expiration' => $session->expiration,
+                'access_token' => $session->access_token,
             );
 
-            $sessionUpdated = (new RedisSession)->connection->set($session_id, '.', $updatedSession);
+            $sessionUpdated = (new RedisSession)->connection->set($session->id, '.', $updatedSession);
 
             if ($sessionUpdated !== 'OK') {
                 throw new Exception('There was an error updating your session.', 500);
@@ -91,13 +91,13 @@ class SessionRedis
         }
     }
 
-    function delete($session_id)
+    function delete(string $session_id)
     {
         try {
             $sessionDeleted = (new RedisSession)->connection->del($session_id);
 
             if (!is_int($sessionDeleted)) {
-                throw new Exception('There was an error updating your session.', 500);
+                throw new Exception('There was an error removing your session.', 500);
             }
 
             return true;

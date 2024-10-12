@@ -32,8 +32,7 @@ class LogoutTest extends TestCase
         try {
             $data = $this->logoutDataProvider();
             $auth = new Authenticated($data['accessToken'], $data['refreshToken']);
-$session = new Session($auth);
-            $loggedOut = (new Logout())->session($session);
+            $loggedOut = (new Logout())->session($auth);
 
             $this->assertTrue($loggedOut);
 

@@ -19,7 +19,7 @@ class API_Password
         $this->password = new Password;
     }
 
-    function recoverPassword(WP_REST_Request $request)
+    function forgot(WP_REST_Request $request)
     {
         try {
             $email = $request['email'];
@@ -38,7 +38,7 @@ class API_Password
         }
     }
 
-    function changePassword(WP_REST_Request $request)
+    function change(WP_REST_Request $request)
     {
         try {
             $this->password->change($request['email'], $request['password'], $request['newPassword'], $request['confirmPassword']);
@@ -56,7 +56,7 @@ class API_Password
         }
     }
 
-    function updatePassword(WP_REST_Request $request)
+    function update(WP_REST_Request $request)
     {
         try {
             $this->password->update($request['email'], $request['confirmationCode'], $request['password'], $request['confirmPassword']);
