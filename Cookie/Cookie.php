@@ -5,6 +5,8 @@ namespace SEVEN_TECH\Gateway\Cookie;
 use SEVEN_TECH\Gateway\Session\Session;
 use SEVEN_TECH\Gateway\Token\Token;
 
+use Exception;
+
 class Cookie
 {
     public int $user_id;
@@ -53,53 +55,32 @@ class Cookie
         $cookie_elements = wp_parse_auth_cookie($logged_in_cookie, 'logged_in');
 
         if (!$cookie_elements) {
+            do_action('auth_cookie_malformed', $logged_in_cookie, 'logged_in');
+            error_log('auth_cookie_malformed');
             return false;
         }
 
         $username   = $cookie_elements['username'];
-        $expiration = $cookie_elements['expiration'];
-        $token      = $cookie_elements['token'];
 
         if ($user_id == false || empty($user_id)) {
-            $current_user = get_user_by('login', $username);
+            $user = get_user_by('login', $username);
 
-            $user_id = $current_user->ID;
+            $user_id = $user->ID;
         }
 
-        $validCookie = $this->isValid($logged_in_cookie, $user_id, $expiration, 'logged_in', $token);
+        $vaildCookie = $this->auth_cookie_valid($cookie_elements, $user);
 
-        if (!$validCookie) {
-            return false;
+        if (!$vaildCookie) {
+            throw new Exception("Unable to determine current user.");
         }
+
+        wp_set_current_user($user_id);
 
         return $user_id;
     }
 
     function auth_cookie_valid($cookie_elements, $user)
     {
-        wp_set_current_user($user->ID);
-    }
-
-    function hash($username, $pass_frag, $expiration, $token, $scheme)
-    {
-        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
-
-        $algo = function_exists('hash') ? 'sha256' : 'sha1';
-        $hash = hash_hmac($algo, $username . '|' . $expiration . '|' . $token, $key);
-
-        return $hash;
-    }
-
-    function isValid(string $cookie, int $user_id, int $expiration, string $scheme, string $token)
-    {
-        $cookie_elements = wp_parse_auth_cookie($cookie, $scheme);
-
-        if (!$cookie_elements) {
-            do_action('auth_cookie_malformed', $cookie, $scheme);
-            error_log('auth_cookie_malformed');
-            return false;
-        }
-
         $username   = $cookie_elements['username'];
         $hmac       = $cookie_elements['hmac'];
         $token      = $cookie_elements['token'];
@@ -125,6 +106,7 @@ class Cookie
         }
 
         $pass_frag = substr($user->user_pass, 8, 4);
+        $scheme = "";
 
         $hash = $this->hash($username, $pass_frag, $expiration, $token, $scheme);
 
@@ -146,11 +128,20 @@ class Cookie
 
         if ($expiration < time()) {
             $GLOBALS['login_grace_period'] = 1;
+            return false;
         }
 
-        do_action('auth_cookie_valid', $cookie_elements, $user);
+        return true;
+    }
 
-        return $cookie;
+    function hash($username, $pass_frag, $expiration, $token, $scheme)
+    {
+        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
+
+        $algo = function_exists('hash') ? 'sha256' : 'sha1';
+        $hash = hash_hmac($algo, $username . '|' . $expiration . '|' . $token, $key);
+
+        return $hash;
     }
 
     function generate($user_id, $expiration, $scheme, $token)
@@ -163,7 +154,7 @@ class Cookie
 
         $pass_frag = substr($user->user_pass, 8, 4);
 
-        $hash = $this->hash($user->user_email, $pass_frag, $expiration, $token, $scheme);
+        $hash = $this->hash($user->user_login, $pass_frag, $expiration, $token, $scheme);
 
         $cookie = $user->user_login . '|' . $expiration . '|' . $token . '|' . $hash;
 

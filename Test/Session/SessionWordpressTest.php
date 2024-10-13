@@ -16,6 +16,13 @@ use SEVEN_TECH\Gateway\Test\DataProviders;
 class SessionWordpressTest extends TestCase
 {
 
+    // public function setUp(): void {
+    //     parent::setUp();
+    //     if (!defined('GOOGLE_SERVICE_ACCOUNT')) {
+    //         define('GOOGLE_SERVICE_ACCOUNT', '../Configuration/serviceAccount.json');
+    //     }
+    // }
+
     public static function sessionDataProvider()
     {
         $data = [];
@@ -24,12 +31,13 @@ class SessionWordpressTest extends TestCase
         $data['email'] = "testuser40@gmail.com";
         $data['password'] = "Test1234$";
         $signedInUser = (new FirebaseAuth)->signInWithEmailAndPassword($data['email'], $data['password']);
-        $data['user_id'] = 99;
+        $data['user_id'] = 1;
         $data['ip'] = "123.456.7890";
         $data['user_agent'] = "user agent";
         $data['login'] = "login";
         $data['accessToken'] = $signedInUser->idToken();
         $data['refreshToken'] = $signedInUser->refreshToken();
+        $data['verifier'] = "70b9e5f8d15811ba59022f9575e8656a12423132fead4eda34b57933fd2b88f6";
 
         return $data;
     }
@@ -60,7 +68,7 @@ class SessionWordpressTest extends TestCase
 
             $this->assertTrue($createdSession);
 
-            $data['verifier'] = $session->id;
+            // $data['verifier'] = $session->id;
 
             return $data;
         } catch (DestructuredException $e) {

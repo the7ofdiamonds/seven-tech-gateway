@@ -33,6 +33,10 @@ class SessionWordpress
                 }
             }
 
+            if (is_array($session_tokens)) {
+                $sessions = $session_tokens;
+            }
+
             return $sessions;
         } catch (Exception $e) {
             throw new DestructuredException($e);
@@ -79,7 +83,7 @@ class SessionWordpress
             $sessionArray = [];
 
             $session_tokens = $this->get($user_id);
-
+// error_log(print_r($session_tokens, true));
             if (!is_array($session_tokens) || empty($session_tokens)) {
                 return $sessionArray;
             }
