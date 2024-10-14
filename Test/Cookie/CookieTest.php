@@ -28,14 +28,14 @@ class CookieTest extends TestCase
         return $data;
     }
 
-    function testConstructor(array $data) {
-        $cookie = new Cookie($data);
+    // function testConstructor(array $data) {
+    //     $cookie = new Cookie($data);
 
-        $this->assertNotNull($cookie->username);
-        $this->assertNotNull($cookie->hmac);
-        $this->assertNotNull($cookie->token);
-        $this->assertNotNull($cookie->expired);
-        $this->assertNotNull($cookie->expiration);
-        $this->assertNotNull($cookie->logged_in_cookie);
-    }
+    //     $this->assertNotNull($cookie->username);
+    //     $this->assertNotNull($cookie->hmac);
+    //     $this->assertNotNull($cookie->token);
+    //     $this->assertNotNull($cookie->expired);
+    //     $this->assertNotNull($cookie->expiration);
+    //     $this->assertNotNull($cookie->logged_in_cookie);
+    // }
 }

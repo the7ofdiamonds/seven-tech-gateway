@@ -9,46 +9,16 @@ use Exception;
 
 class Cookie
 {
-    public int $user_id;
-    public string $verifier = '';
-    public bool $isUser;
-    public string $scheme = 'auth';
-    public string $username = '';
-    public string $email;
-    public string $hmac;
-    public string $token;
-    public string $expired;
-    public string $expiration;
-    public string $logged_in_cookie;
-
-    public function __construct(array $cookie = null)
-    {
-        if (is_array($cookie)) {
-            foreach ($cookie as $key => $value) {
-                if (strpos($key, 'wordpress_logged_in_') == 0) {
-                    $this->logged_in_cookie = $value;
-
-                    $cookie_elements = wp_parse_auth_cookie($value, 'logged_in');
-
-                    if (is_array($cookie_elements)) {
-                        $this->username = $cookie_elements['username'];
-                        $this->hmac = $cookie_elements['hmac'];
-                        $this->token = $cookie_elements['token'];
-                        $this->expired = $cookie_elements['expiration'];
-                        $this->expiration = $cookie_elements['expiration'];
-                    }
-                }
-            }
-        }
-    }
 
     function determine_current_user($user_id)
     {
         $logged_in_cookie = '';
 
         foreach ($_COOKIE as $key => $value) {
-            if (strpos($key, 'wordpress_logged_in_') == 0) {
+
+            if (strpos($key, 'wordpress_logged_in_') !== false) {
                 $logged_in_cookie = $value;
+                break;
             }
         }
 
@@ -60,13 +30,7 @@ class Cookie
             return false;
         }
 
-        $username   = $cookie_elements['username'];
-
-        if ($user_id == false || empty($user_id)) {
-            $user = get_user_by('login', $username);
-
-            $user_id = $user->ID;
-        }
+        $user = get_user_by('ID', $user_id);
 
         $vaildCookie = $this->auth_cookie_valid($cookie_elements, $user);
 
@@ -79,7 +43,7 @@ class Cookie
         return $user_id;
     }
 
-    function auth_cookie_valid($cookie_elements, $user)
+    function auth_cookie_valid($cookie_elements)
     {
         $username   = $cookie_elements['username'];
         $hmac       = $cookie_elements['hmac'];
@@ -106,10 +70,13 @@ class Cookie
         }
 
         $pass_frag = substr($user->user_pass, 8, 4);
-        $scheme = "";
+        $scheme = "secure_auth";
 
-        $hash = $this->hash($username, $pass_frag, $expiration, $token, $scheme);
-
+        $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
+        $algo = function_exists('hash') ? 'sha256' : 'sha1';
+        $hash = hash_hmac($algo, $username . '|' . $expiration . '|' . $token, $key);
+        error_log($hmac);
+        error_log($hash);
         if (!hash_equals($hash, $hmac)) {
             do_action('auth_cookie_bad_hash', $cookie_elements);
             error_log('auth_cookie_bad_hash');
@@ -137,7 +104,6 @@ class Cookie
     function hash($username, $pass_frag, $expiration, $token, $scheme)
     {
         $key = wp_hash($username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme);
-
         $algo = function_exists('hash') ? 'sha256' : 'sha1';
         $hash = hash_hmac($algo, $username . '|' . $expiration . '|' . $token, $key);
 

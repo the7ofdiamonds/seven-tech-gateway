@@ -59,12 +59,12 @@ class Login
         }
     }
 
-    function persist(Authenticated $authenticated)
+    function persist(Authenticated $authenticated, $location)
     {
         try {
             wp_set_current_user($authenticated->id);
 
-            $session = new Session($authenticated, $_SERVER['REMOTE_ADDR'], $authenticated->location, $_SERVER['HTTP_USER_AGENT']);
+            $session = new Session($authenticated, $_SERVER['REMOTE_ADDR'], $location, $_SERVER['HTTP_USER_AGENT']);
 
             (new Cookie())->set($session);
 

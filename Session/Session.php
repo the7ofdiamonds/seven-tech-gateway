@@ -7,48 +7,58 @@ use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Services\Redis\RedisSession;
+use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
 
 class Session
 {
+    public string $access_token;
+    public string $refresh_token;
     public string $id;
     public int $user_id;
     public string $email;
     public string $username;
-    public $passwordFrag;
     public $authorities;
     public $algorithm;
-    public string $access_token;
-    public string $refresh_token;
-    public $token;
     public $ip;
     public $location;
     public $user_agent;
     public $login;
-    public $secure;
+
     public $expiration;
     public $expire;
-    public $admin_cookie_name;
+
     public $scheme;
+    public $token;
+    public $secure;
+    public $admin_cookie_name;
 
     public function __construct(Authenticated $authenticated = null, $ip = '', $location = '', $user_agent = '')
     {
         if ($authenticated != null) {
-            $this->user_id = $authenticated->id;
-            $this->email = $authenticated->email;
-            $this->username = $authenticated->username;
-            $this->passwordFrag = $authenticated->passwordFrag;
-            $this->authorities = $authenticated->roles;
-            $this->algorithm = $authenticated->algorithm;
             $this->access_token = $authenticated->access_token;
             $this->refresh_token = $authenticated->refresh_token;
-            $this->token = $authenticated->token;
-            $this->id = $authenticated->verifier;
+
+            $this->token = $this->getToken($this->refresh_token);
+
+            $this->id = $this->getID($this->token);
+
+            $this->email = $authenticated->email;
+
+            $this->username = $authenticated->username;
+
+            $this->authorities = $authenticated->roles;
+            $this->algorithm = $authenticated->algorithm;
+
             $this->ip = $ip;
             $this->location = $location;
             $this->user_agent = $user_agent;
+
             $this->login = $authenticated->auth_time;
+
+            $this->user_id = $authenticated->id;
+
             $this->secure = is_ssl();
             $this->expiration = $authenticated->expiration;
             $this->expire = $this->expiration;
@@ -61,6 +71,14 @@ class Session
                 $this->scheme           = 'auth';
             }
         }
+    }
+
+    function getToken(string $refresh_token) : string {
+        return substr((new Token)->hashToken($refresh_token), 0, 43);
+    }
+
+    function getID(string $token) : string {
+        return (new Token)->hashToken($token);
     }
 
     function create()

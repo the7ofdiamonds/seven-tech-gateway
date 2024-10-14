@@ -33,12 +33,13 @@ class API_Authentication
             if (isset($request['email']) && isset($request['password'])) {
                 $authenticated = $this->login->withEmailAndPassword($request['email'], $request['password']);
             } else {
+                // Needs a way to get the location
                 $accessToken = $this->token->getAccessToken($request);
                 $refreshToken = $this->token->getRefreshToken($request);
                 $authenticated = $this->login->withTokens($accessToken, $refreshToken);
             }
 
-            $authenticatedAccount = $this->login->persist($authenticated);
+            $authenticatedAccount = $this->login->persist($authenticated, $request['location']);
 
             if($authenticatedAccount !== true) {
                 throw new Exception("There was an error persisting your session please try again at another time.");

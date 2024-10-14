@@ -135,7 +135,7 @@ class SEVEN_TECH
             $router->load_page();
             $router->react_rewrite_rules();
             new Shortcodes;
-            $this->override_auth_cookie();
+            // $this->override_auth_cookie();
         });
 
         add_action('customize_register', function ($wp_customize) {
@@ -154,10 +154,9 @@ class SEVEN_TECH
         $this->pages = new Pages;
         $this->cookie = new Cookie;
 
-        add_action('auth_cookie_valid', [$this->cookie, 'auth_cookie_valid'], 10, 2);
-
         add_action('after_setup_theme', [$this, 'hide_admin_bar']);
 
+        add_action('auth_cookie_valid', [$this->cookie, 'auth_cookie_valid'], 10);
         add_filter('determine_current_user', [$this->cookie, 'determine_current_user'], 10, 1);
     }
 
@@ -181,11 +180,11 @@ class SEVEN_TECH
         flush_rewrite_rules();
     }
 
-    function override_auth_cookie()
-    {
-        remove_filter('auth_cookie', 'validate_auth_cookie', 10);
-        add_filter('auth_cookie', [$this->cookie, 'isValid'], 10, 5);
-    }
+    // function override_auth_cookie()
+    // {
+    //     remove_filter('auth_cookie', 'validate_auth_cookie', 10);
+    //     add_filter('auth_cookie', [$this->cookie, 'isValid'], 10, 5);
+    // }
 }
 
 $seven_tech = new SEVEN_TECH();
