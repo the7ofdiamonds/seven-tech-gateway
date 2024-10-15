@@ -18,7 +18,8 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 
-import { getLocation } from '../../utils/location';
+import { getLocation } from '../../utils/Location';
+import { isValidEmail, isValidPassword } from '../../utils/Validation';
 
 import StatusBarComponent from './StatusBarComponent';
 
@@ -82,7 +83,7 @@ function LoginComponent() {
       dispatch(updateAccessToken(accessToken));
       dispatch(updateRefreshToken(refreshToken));
     }
-  }, [id, email, username, profileImage, accessToken, refreshToken]);
+  }, [dispatch, id, email, username, profileImage, accessToken, refreshToken]);
 
   useEffect(() => {
     if (loginErrorMessage) {
@@ -111,17 +112,17 @@ function LoginComponent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const emailIsValid = isValidEmail(identity);
+    const emailIsValid = isValidEmail(identity);
 
-    // if (!emailIsValid) {
-    //   throw Error('Email entered is not valid.');
-    // }
+    if (!emailIsValid) {
+      throw Error('Email entered is not valid.');
+    }
 
-    // const passwordIsValid = isValidPassword(password);
+    const passwordIsValid = isValidPassword(password);
 
-    // if (!passwordIsValid) {
-    //   throw Error('Password entered is not valid.');
-    // }
+    if (!passwordIsValid) {
+      throw Error('Password entered is not valid.');
+    }
 
     dispatch(
       login({

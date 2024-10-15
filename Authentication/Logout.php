@@ -33,8 +33,6 @@ class Logout
             return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
         }
     }
 
@@ -71,8 +69,6 @@ class Logout
 
             return true;
         } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
-        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }

@@ -31,9 +31,9 @@ class Session
 
     public $scheme;
     public $token;
-    public $secure;
     public $admin_cookie_name;
-
+    public $secure;
+    
     public function __construct(Authenticated $authenticated = null, $ip = '', $location = '', $user_agent = '')
     {
         if ($authenticated != null) {
@@ -59,9 +59,10 @@ class Session
 
             $this->user_id = $authenticated->id;
 
-            $this->secure = is_ssl();
             $this->expiration = $authenticated->expiration;
             $this->expire = $this->expiration;
+
+            $this->secure = is_ssl();
 
             if ($this->secure) {
                 $this->admin_cookie_name = SECURE_AUTH_COOKIE;

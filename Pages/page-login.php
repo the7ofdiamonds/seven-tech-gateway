@@ -1,15 +1,16 @@
 <?php
 
-if (is_user_logged_in()) {
-    header('Location: /logout');
+use SEVEN_TECH\Gateway\Cookie\Cookie;
+
+$cookie = new Cookie();
+
+if (is_int($cookie->determine_current_user())) {
+    header('Location: /dashboard');
 }
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// global $current_user;
-
-// error_log(print_r($current_user, true));
 
 get_header();
 

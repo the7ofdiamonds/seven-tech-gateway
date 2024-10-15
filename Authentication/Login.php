@@ -10,10 +10,6 @@ use SEVEN_TECH\Gateway\Password\Password;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Session\Session;
 
-use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
-
-use Exception;
-
 class Login
 {
     private $firebaseAuth;
@@ -41,8 +37,6 @@ class Login
             return new Authenticated($signedInUser->idToken(), $signedInUser->refreshToken());
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
         }
     }
 
@@ -50,33 +44,22 @@ class Login
     {
         try {
             return new Authenticated($accessToken, $refreshToken);
-        } catch (FailedToVerifyToken $e) {
-            throw new DestructuredException($e);
         } catch (DestructuredException $e) {
-            throw new DestructuredException($e);
-        } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function persist(Authenticated $authenticated, $location)
+    function persist(Authenticated $authenticated, $location) : bool
     {
         try {
-            wp_set_current_user($authenticated->id);
-
             $session = new Session($authenticated, $_SERVER['REMOTE_ADDR'], $location, $_SERVER['HTTP_USER_AGENT']);
 
-            (new Cookie())->set($session);
+            $cookie = new Cookie();
+            $cookie->set($session);
 
-            if (!is_user_logged_in()) {
-                throw new Exception('You could not be logged in.', 403);
-            }
-
-            return $session->create();
+            return true;
         } catch (DestructuredException $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
-        } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
+            throw new DestructuredException($e);
         }
     }
 }

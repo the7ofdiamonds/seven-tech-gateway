@@ -1,9 +1,14 @@
 <?php
+
+use SEVEN_TECH\Gateway\Cookie\Cookie;
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!is_user_logged_in()) {
+$cookie = new Cookie();
+
+if (!$cookie->determine_current_user()) {
     $fullUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
     header("Location: /login?redirectTo=" . $fullUrl);

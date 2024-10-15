@@ -39,6 +39,7 @@ use SEVEN_TECH\Gateway\Admin\AdminSessionManagement;
 use SEVEN_TECH\Gateway\Admin\AdminUserManagement;
 
 use SEVEN_TECH\Gateway\API\API;
+use SEVEN_TECH\Gateway\Cookie\Cookie;
 
 use SEVEN_TECH\Gateway\CSS\CSS;
 use SEVEN_TECH\Gateway\CSS\Customizer\Customizer;
@@ -46,22 +47,13 @@ use SEVEN_TECH\Gateway\CSS\Customizer\BorderRadius;
 use SEVEN_TECH\Gateway\CSS\Customizer\Color;
 use SEVEN_TECH\Gateway\CSS\Customizer\Shadow;
 
-use SEVEN_TECH\Gateway\Cookie\Cookie;
-
 use SEVEN_TECH\Gateway\Database\Database;
-
 use SEVEN_TECH\Gateway\JS\JS;
-
 use SEVEN_TECH\Gateway\Pages\Pages;
-
 use SEVEN_TECH\Gateway\Post_Types\Post_Types;
-
 use SEVEN_TECH\Gateway\Router\Router;
-
 use SEVEN_TECH\Gateway\Shortcodes\Shortcodes;
-
 use SEVEN_TECH\Gateway\Taxonomies\Taxonomies;
-
 use SEVEN_TECH\Gateway\Templates\Templates;
 
 use Dotenv\Dotenv;
@@ -135,7 +127,6 @@ class SEVEN_TECH
             $router->load_page();
             $router->react_rewrite_rules();
             new Shortcodes;
-            // $this->override_auth_cookie();
         });
 
         add_action('customize_register', function ($wp_customize) {
@@ -154,10 +145,11 @@ class SEVEN_TECH
         $this->pages = new Pages;
         $this->cookie = new Cookie;
 
+        remove_filter('determine_current_user', 'wp_validate_auth_cookie');
+
         add_action('after_setup_theme', [$this, 'hide_admin_bar']);
 
-        add_action('auth_cookie_valid', [$this->cookie, 'auth_cookie_valid'], 10);
-        add_filter('determine_current_user', [$this->cookie, 'determine_current_user'], 10, 1);
+        add_filter('determine_current_user', [$this->cookie, 'determine_current_user'], 10);
     }
 
     function activate()
@@ -179,12 +171,6 @@ class SEVEN_TECH
     {
         flush_rewrite_rules();
     }
-
-    // function override_auth_cookie()
-    // {
-    //     remove_filter('auth_cookie', 'validate_auth_cookie', 10);
-    //     add_filter('auth_cookie', [$this->cookie, 'isValid'], 10, 5);
-    // }
 }
 
 $seven_tech = new SEVEN_TECH();

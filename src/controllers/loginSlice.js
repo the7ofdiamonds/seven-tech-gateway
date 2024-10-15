@@ -122,12 +122,12 @@ export const loginSlice = createSlice({
                 state.loginSuccessMessage = action.payload.successMessage;
                 state.loginErrorMessage = action.payload.errorMessage;
                 state.loginStatusCode = action.payload.statusCode;
-                state.id = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.id : '';
-                state.email = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.email : '';
-                state.username = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.username : '';
-                state.profileImage = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.profile_image : '';
-                state.refreshToken = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.refresh_token : '';
-                state.accessToken = action.payload.statusCode == 200 ? action.payload.authenticatedAccount.access_token : '';
+                state.id = action.payload.statusCode == 200 ? action.payload.id : '';
+                state.email = action.payload.statusCode == 200 ? action.payload.email : '';
+                state.username = action.payload.statusCode == 200 ? action.payload.username : '';
+                state.profileImage = action.payload.statusCode == 200 ? action.payload.profile_image : '';
+                state.refreshToken = action.payload.statusCode == 200 ? action.payload.refresh_token : '';
+                state.accessToken = action.payload.statusCode == 200 ? action.payload.access_token : '';
             })
             .addCase(
                 login.pending, (state) => {

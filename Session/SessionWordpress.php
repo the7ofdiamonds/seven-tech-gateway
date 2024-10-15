@@ -83,10 +83,12 @@ class SessionWordpress
             $sessionArray = [];
 
             $session_tokens = $this->get($user_id);
-// error_log(print_r($session_tokens, true));
+
             if (!is_array($session_tokens) || empty($session_tokens)) {
                 return $sessionArray;
             }
+
+            $session = [];
 
             foreach ($session_tokens as $session_key => $session_value) {
                 if ((new Validator)->matches($session_key, $verifier)) {

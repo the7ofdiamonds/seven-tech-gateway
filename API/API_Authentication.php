@@ -41,7 +41,7 @@ class API_Authentication
 
             $authenticatedAccount = $this->login->persist($authenticated, $request['location']);
 
-            if($authenticatedAccount !== true) {
+            if(!$authenticatedAccount) {
                 throw new Exception("There was an error persisting your session please try again at another time.");
             }
 

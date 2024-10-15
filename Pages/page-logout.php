@@ -1,6 +1,10 @@
 <?php 
 
-if (!is_user_logged_in()) {
+use SEVEN_TECH\Gateway\Cookie\Cookie;
+
+$cookie = new Cookie();
+
+if (!$cookie->determine_current_user()) {
     header('Location: /login');
 }
 
