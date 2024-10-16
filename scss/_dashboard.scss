@@ -16,16 +16,6 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-
-      button {
-        &.settings-button {
-          background-color: transparent;
-          padding: 0.25rem;
-          i {
-            color: black;
-          }
-        }
-      }
     }
   }
 }

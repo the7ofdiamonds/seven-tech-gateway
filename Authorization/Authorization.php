@@ -2,53 +2,48 @@
 
 namespace SEVEN_TECH\Gateway\Authorization;
 
-use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
-use SEVEN_TECH\Gateway\Token\TokenFirebase;
 
 use WP_REST_Request;
 
 class Authorization
 {
-    private $tokenFirebase;
 
-    public function __construct()
-    {
-        $this->tokenFirebase = new TokenFirebase;
-    }
-
-    public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = '')
+    public function isAuthorized(WP_REST_Request $request, $resourceLevel = '', $resourceRoles = null)
     {
         try {
             $accessToken = (new Token)->getAccessToken($request);
-            $email = $this->tokenFirebase->getEmailFromToken($accessToken);
-            $account = new Account($email);
-            $accountRoles = $account->roles;
+            $refreshToken = (new Token)->getRefreshToken($request);
 
-            if ($account->email == $request['email']) {
-                return $account;
+            $auth = new Authenticated($accessToken, $refreshToken);
+
+            if (($auth->auth_time + 300) > time()) {
+                return false;
             }
 
-            if ($account->isAccountNonExpired == false) {
-                $account->level = 0;
+            $accountRoles = $auth->roles;
+
+            if ($auth->isAccountNonExpired == false) {
+                $auth->level = 0;
             }
 
-            if ($account->level == $resourceLevel) {
-                return $account;
+            if ($resourceLevel !== '' && $auth->level < $resourceLevel) {
+                return false;
             }
 
-            if (is_array($accountRoles) && is_array($resourceRoles)) {
-                foreach ($accountRoles as $accountRole) {
-                    foreach ($resourceRoles as $resourceRole) {
-                        if ($accountRole == $resourceRole) {
-                            return $account;
-                        }
-                    }
-                }
-            }
+            // if (is_array($accountRoles) && is_array($resourceRoles)) {
+            //     foreach ($accountRoles as $accountRole) {
+            //         foreach ($resourceRoles as $resourceRole) {
+            //             if ($accountRole == $resourceRole) {
+            //                 return true;
+            //             }
+            //         }
+            //     }
+            // }
 
-            return false;
+            return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }

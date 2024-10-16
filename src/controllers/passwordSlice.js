@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import { isValidEmail, isValidConfirmationCode, isValidPassword } from '../utils/Validation';
 
-const sendForgotPasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/forgot-password" : "/wp-json/seven-tech/v1/users/forgot-password";
-const sendChangePasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/change-password" : "/wp-json/seven-tech/v1/users/change-password";
-const sendUpdatePasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/update-password" : "/wp-json/seven-tech/v1/users/update-password";
-const changePasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/change-password" : "/wp-json/seven-tech/v1/users/change-password";
-const updatePasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/update-password" : "/wp-json/seven-tech/v1/users/update-password";
+const sendForgotPasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/forgot-password" : "/wp-json/seven-tech/v1/password/forgot";
+const sendChangePasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/change-password" : "/wp-json/seven-tech/v1/password/change-password";
+const sendUpdatePasswordEmailUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/update-password" : "/wp-json/seven-tech/v1/password/update-password";
+const changePasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/change-password" : "/wp-json/seven-tech/v1/password/change";
+const updatePasswordUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/update-password" : "/wp-json/seven-tech/v1/password/update";
 
 const initialState = {
     passwordLoading: false,
@@ -110,8 +110,9 @@ export const sendUpdatePasswordEmail = createAsyncThunk('password/sendUpdatePass
 export const changePassword = createAsyncThunk('password/changePassword', async ({ password, confirmPassword }) => {
     try {
         const accessToken = localStorage.getItem('access_token');
+        const refreshToken = localStorage.getItem('refresh_token');
 
-        if (!accessToken) {
+        if (accessToken == null) {
             throw new Error("An access token is required to change your name.");
         }
 
@@ -135,6 +136,7 @@ export const changePassword = createAsyncThunk('password/changePassword', async 
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + accessToken,
+                'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({

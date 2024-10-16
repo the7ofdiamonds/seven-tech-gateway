@@ -68,9 +68,10 @@ function Dashboard() {
 
         <h2 className="display-name">{usersDisplayName}</h2>
 
-        <div className="options">
+        <div className="action options">
           <button className="settings-button" onClick={handleShowSettings}>
             <i class="fa-solid fa-gears"></i>
+            <h3>Settings</h3>
           </button>
         </div>
       </div>

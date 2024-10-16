@@ -84,6 +84,27 @@ class Token
         }
     }
 
+    function getTokens(WP_REST_Request $request)
+    {
+        try {
+            $accessToken = $this->getAccessToken($request);
+            $refreshToken = $this->getRefreshToken($request);
+
+            return [
+                'access_token' => $accessToken,
+                'Refresh-Token' => $refreshToken
+            ];
+        } catch (FailedToVerifyToken $e) {
+            throw new DestructuredException($e);
+        } catch (RevokedIdToken $e) {
+            throw new DestructuredException($e);
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function base64UrlDecode($input)
     {
         $remainder = strlen($input) % 4;
@@ -100,7 +121,7 @@ class Token
             $parts = explode('.', $jwtToken);
 
             if (count($parts) !== 3) {
-                throw new Exception("Invalid JWT token format");
+                throw new Exception("Invalid JWT token format", 403);
             }
 
             return $parts;

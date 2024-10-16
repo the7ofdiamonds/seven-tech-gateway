@@ -2,8 +2,11 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Authentication\Authenticated;
+use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Password\Password;
+use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
 
@@ -13,10 +16,12 @@ use WP_REST_Response;
 class API_Password
 {
     private $password;
+    private $token;
 
     public function __construct()
     {
         $this->password = new Password;
+        $this->token = new Token();
     }
 
     function forgot(WP_REST_Request $request)
@@ -48,15 +53,23 @@ class API_Password
     function change(WP_REST_Request $request)
     {
         try {
+            $authorized = (new Authorization)->isAuthorized($request);
 
-            if (empty($request['email'])) {
+            if (!$authorized) {
+                throw new Exception("Please login to change your password.", 403);
+            }
+
+            $tokens = (new Token)->getTokens($request);
+            $auth = new Authenticated($tokens['access_token'], $tokens['Refresh-Token']);
+
+            if (empty($auth->email)) {
                 throw new Exception('An email is required to change password.', 400);
             }
 
-            $this->password->change($request['email'], $request['password'], $request['newPassword'], $request['confirmPassword']);
+            $this->password->change($auth->email, $request['password'], $request['confirmPassword']);
 
             $changePasswordResponse = [
-                'successMessage' => "Your password has been changed successfully an email has been sent to {$request['email']} check your inbox.",
+                'successMessage' => "Your password has been changed successfully an email has been sent to {$auth->email} check your inbox.",
                 'statusCode' => 200
             ];
 

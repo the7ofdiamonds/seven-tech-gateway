@@ -130,7 +130,7 @@ class Password
                 (new Details($account->email))->unexpireCredentials($account->id);
             }
 
-            $this->email->changed($account);
+            // $this->email->changed($account);
 
             return true;
         } catch (Exception $e) {
@@ -138,14 +138,12 @@ class Password
         }
     }
 
-    function change(string $email, string $password, string $newPassword, string $confirmPassword)
+    function change(string $email, string $password, string $confirmPassword)
     {
         try {
             $account = new Account($email);
 
-            $this->matchesHash($password, $account->password);
-
-            $this->persist($account, $newPassword, $confirmPassword);
+            $this->persist($account, $password, $confirmPassword);
 
             return true;
         } catch (Exception $e) {

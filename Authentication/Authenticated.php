@@ -22,7 +22,8 @@ class Authenticated
     public $expiration;
     public $roles;
     public $level;
-
+    public $isAccountNonExpired;
+    
     public $issuer;
 
     public function __construct($access_token, $refresh_token)
@@ -39,7 +40,7 @@ class Authenticated
         $user = null;
 
         if ($this->issuer == "" || $this->issuer == "orb-gateway") {
-            $user = (new User($accessTokenBody['sub']));
+            $user = new User($accessTokenBody['sub']);
             $this->username = $accessTokenBody['sub'];
         } else {
             $user = (new FirebaseAuth)->getUserByID($accessTokenBody['sub']);
@@ -56,15 +57,20 @@ class Authenticated
         $this->profile_image = $user->photoUrl ? $user->photoUrl : $account->profileImage;
         $this->roles = $account->roles;
         $this->level = $account->level;
+        $this->isAccountNonExpired = $account->isAccountNonExpired;
     }
 
-    function validAccessToken() : bool {
-        (new Details())->isAuthenticated($this->id);
+    function validAccessToken(): bool
+    {
+        if ($this->expiration < time() || $this->id == null) {
+            return false;
+        }
 
         return true;
     }
 
-    function validRefreshToken() : bool {
+    function validRefreshToken(): bool
+    {
         return true;
     }
 }

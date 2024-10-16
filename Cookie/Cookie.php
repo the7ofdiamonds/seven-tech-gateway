@@ -20,9 +20,13 @@ class Cookie
             }
         }
 
+        if (empty($logged_in_cookie)) {
+            return 0;
+        }
+
         $user_id = $this->auth_cookie_valid($logged_in_cookie);
 
-        if(!is_int($user_id)) {
+        if (!is_int($user_id)) {
             wp_set_current_user(0);
         }
 

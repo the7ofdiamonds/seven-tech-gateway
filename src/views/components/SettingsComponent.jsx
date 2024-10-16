@@ -74,7 +74,7 @@ function SettingsComponent() {
 
   useEffect(() => {
     dispatch(getUser(email));
-  }, []);
+  }, [dispatch, email]);
 
   useEffect(() => {
     if (username) {
@@ -408,7 +408,6 @@ function SettingsComponent() {
   return (
     <>
       <main className="settings">
-        <h2>Settings</h2>
 
         <span className="change-password">
           <input
