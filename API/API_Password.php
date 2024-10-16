@@ -16,12 +16,10 @@ use WP_REST_Response;
 class API_Password
 {
     private $password;
-    private $token;
 
     public function __construct()
     {
         $this->password = new Password;
-        $this->token = new Token();
     }
 
     function forgot(WP_REST_Request $request)

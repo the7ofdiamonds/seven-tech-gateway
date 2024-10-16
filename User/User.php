@@ -22,6 +22,7 @@ class User
     public $nicename;
     public $roles;
     public $phone;
+    public $profileImage;
     public $url;
 
     public function __construct(string $username)

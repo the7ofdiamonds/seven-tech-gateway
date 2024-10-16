@@ -1,16 +1,11 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import { isValidUsername, isValidPhone, isValidName, isValidEmail } from '../utils/Validation';
 
-const getUserUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/get' : "/wp-json/seven-tech/v1/user/get";
-
-const changeUsernameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-username' : "/wp-json/seven-tech/v1/change/username";
-const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-name' : "/wp-json/seven-tech/v1/change/name";
-const changeNicknameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nickname' : "/wp-json/seven-tech/v1/change/nickname";
-const changeNicenameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nicename' : "/wp-json/seven-tech/v1/change/nicename";
-const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-phone' : "/wp-json/seven-tech/v1/change/phone";
-
-const addUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/add-role' : "/wp-json/seven-tech/v1/user/roles/add";
-const removeUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/remove-role' : "/wp-json/seven-tech/v1/user/roles/remove";
+const changeUsernameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/username' : "/wp-json/seven-tech/v1/change/username";
+const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/name' : "/wp-json/seven-tech/v1/change/name";
+const changeNicknameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/nickname' : "/wp-json/seven-tech/v1/change/nickname";
+const changeNicenameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/nicename' : "/wp-json/seven-tech/v1/change/nicename";
+const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/phone' : "/wp-json/seven-tech/v1/change/phone";
 
 const initialState = {
     userLoading: false,
@@ -41,38 +36,7 @@ export const updateChangeErrorMessage = () => {
     };
 };
 
-export const getUser = createAsyncThunk('user/getUser', async () => {
-    try {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (accessToken == '') {
-            throw Error("An access token is required to get user data.")
-        }
-
-        if (refreshToken == '') {
-            throw Error("A refresh token is required to get user data.")
-        }
-
-        const response = await fetch(`${getUserUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const changeUsername = createAsyncThunk('user/changeUsername', async (username) => {
+export const changeUsername = createAsyncThunk('change/changeUsername', async (username) => {
     try {
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
@@ -102,7 +66,7 @@ export const changeUsername = createAsyncThunk('user/changeUsername', async (use
     }
 });
 
-export const changeName = createAsyncThunk('user/changeName', async ({ firstName, lastName }) => {
+export const changeName = createAsyncThunk('change/changeName', async ({ firstName, lastName }) => {
     try {
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
@@ -133,7 +97,7 @@ export const changeName = createAsyncThunk('user/changeName', async ({ firstName
     }
 });
 
-export const changeNickname = createAsyncThunk('user/changeNickname', async (nickname) => {
+export const changeNickname = createAsyncThunk('change/changeNickname', async (nickname) => {
     try {
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
@@ -163,7 +127,7 @@ export const changeNickname = createAsyncThunk('user/changeNickname', async (nic
     }
 });
 
-export const changeNicename = createAsyncThunk('user/changeNicename', async (nicename) => {
+export const changeNicename = createAsyncThunk('change/changeNicename', async (nicename) => {
     try {
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
@@ -193,75 +157,7 @@ export const changeNicename = createAsyncThunk('user/changeNicename', async (nic
     }
 });
 
-export const addUserRole = createAsyncThunk('user/addUserRole', async ({ name, display_name }) => {
-    try {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        const response = await fetch(`${addUserRoleUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: name,
-                display_name: display_name
-            })
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const removeUserRole = createAsyncThunk('user/removeUserRole', async ({ name, display_name }) => {
-    try {
-        const email = localStorage.getItem('email');
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (accessToken == '') {
-            throw Error("An access token is required to remove user role.")
-        }
-
-        if (refreshToken == '') {
-            throw Error("An refresh token is required to remove user role.")
-        }
-
-        if (!isValidEmail(email)) {
-            throw new Error("The email provided is not valid.");
-        }
-
-        const response = await fetch(`${removeUserRoleUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                name: name,
-                display_name: display_name
-            })
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const changePhone = createAsyncThunk('user/changePhone', async (phone) => {
+export const changePhone = createAsyncThunk('change/changePhone', async (phone) => {
     try {
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
@@ -291,8 +187,8 @@ export const changePhone = createAsyncThunk('user/changePhone', async (phone) =>
     }
 });
 
-export const userSlice = createSlice({
-    name: 'user',
+export const changeSlice = createSlice({
+    name: 'change',
     initialState,
     reducers: {
         updateChangeSuccessMessage: (state, action) => {
@@ -305,21 +201,6 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(
-                getUser.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.username = action.payload.username;
-                    state.firstname = action.payload.firstname;
-                    state.lastname = action.payload.lastname;
-                    state.nickname = action.payload.nickname;
-                    state.nicename = action.payload.nicename;
-                    state.roles = action.payload.roles;
-                    state.phone = action.payload.phone;
-                })
             .addCase(
                 changeUsername.fulfilled, (state, action) => {
                     state.userLoading = false;
@@ -358,24 +239,6 @@ export const userSlice = createSlice({
                     state.nicename = action.payload.nicename;
                 })
             .addCase(
-                addUserRole.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.roles = action.payload.roles;
-                })
-            .addCase(
-                removeUserRole.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.roles = action.payload.roles;
-                })
-            .addCase(
                 changePhone.fulfilled, (state, action) => {
                     state.userLoading = false;
                     state.userError = '';
@@ -385,13 +248,10 @@ export const userSlice = createSlice({
                     state.phone = action.payload.phone;
                 })
             .addMatcher(isAnyOf(
-                getUser.pending,
                 changeUsername.pending,
                 changeName.pending,
                 changeNickname.pending,
                 changeNicename.pending,
-                addUserRole.pending,
-                removeUserRole.pending,
                 changePhone.pending
             ), (state) => {
                 state.userLoading = true;
@@ -401,13 +261,10 @@ export const userSlice = createSlice({
                 state.userStatusCode = '';
             })
             .addMatcher(isAnyOf(
-                getUser.rejected,
                 changeUsername.rejected,
                 changeName.rejected,
                 changeNickname.rejected,
                 changeNicename.rejected,
-                addUserRole.rejected,
-                removeUserRole.rejected,
                 changePhone.rejected
             ), (state, action) => {
                 state.userLoading = false;
@@ -418,5 +275,4 @@ export const userSlice = createSlice({
     }
 })
 
-export default userSlice;
-
+export default changeSlice;

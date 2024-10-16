@@ -4,9 +4,9 @@ namespace SEVEN_TECH\Gateway\Password;
 
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Email\EmailPassword;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Account\Details;
-use SEVEN_TECH\Gateway\Email\EmailPassword;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Validator\Validator;
 

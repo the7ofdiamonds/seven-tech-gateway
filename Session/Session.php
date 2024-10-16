@@ -33,7 +33,7 @@ class Session
     public $token;
     public $admin_cookie_name;
     public $secure;
-    
+
     public function __construct(Authenticated $authenticated = null, $ip = '', $location = '', $user_agent = '')
     {
         if ($authenticated != null) {
@@ -185,7 +185,7 @@ class Session
             $sessionDeleted = false;
 
             if ((new RedisSession)->isReady) {
-                $sessionDeleted = (new SessionRedis)->delete($session->id);
+                $sessionDeleted = (new SessionRedis)->delete("sessions:{$session->id}");
             } else {
                 $sessionDeleted = (new SessionWordpress)->delete($session);
             }

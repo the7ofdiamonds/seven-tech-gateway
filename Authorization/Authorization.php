@@ -8,6 +8,9 @@ use SEVEN_TECH\Gateway\Token\Token;
 
 use WP_REST_Request;
 
+use DateTime;
+use DateInterval;
+
 class Authorization
 {
 
@@ -18,8 +21,14 @@ class Authorization
             $refreshToken = (new Token)->getRefreshToken($request);
 
             $auth = new Authenticated($accessToken, $refreshToken);
+            $expiration = $auth->auth_time + 300;
+            $time = time();
 
-            if (($auth->auth_time + 300) > time()) {
+            error_log("Expiration: {$this->getDate($expiration)}");
+            error_log("Current Time: {$this->getDate($time)}");
+
+            if ($expiration < $time) {
+                error_log("Need new token.");
                 return false;
             }
 
@@ -30,6 +39,7 @@ class Authorization
             }
 
             if ($resourceLevel !== '' && $auth->level < $resourceLevel) {
+                error_log("Need another resource level.");
                 return false;
             }
 
@@ -47,5 +57,13 @@ class Authorization
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         }
+    }
+
+    function getDate(int $seconds) : string
+    {
+        $date = new DateTime("@0");
+        $date->add(new DateInterval("PT{$seconds}S"));
+
+        return $date->format('Y-m-d H:i:s');
     }
 }

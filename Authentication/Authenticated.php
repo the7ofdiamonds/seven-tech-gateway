@@ -3,7 +3,6 @@
 namespace SEVEN_TECH\Gateway\Authentication;
 
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Token\Token;
 use SEVEN_TECH\Gateway\User\User;
@@ -23,7 +22,7 @@ class Authenticated
     public $roles;
     public $level;
     public $isAccountNonExpired;
-    
+
     public $issuer;
 
     public function __construct($access_token, $refresh_token)
@@ -42,9 +41,11 @@ class Authenticated
         if ($this->issuer == "" || $this->issuer == "orb-gateway") {
             $user = new User($accessTokenBody['sub']);
             $this->username = $accessTokenBody['sub'];
+            $this->profile_image = null;
         } else {
             $user = (new FirebaseAuth)->getUserByID($accessTokenBody['sub']);
             $this->username = $user->displayName;
+            $this->profile_image = $user->photoUrl;
         }
 
         $this->auth_time = $accessTokenBody['iat'];
@@ -54,7 +55,6 @@ class Authenticated
 
         $account = new Account($this->email);
         $this->id = $account->id;
-        $this->profile_image = $user->photoUrl ? $user->photoUrl : $account->profileImage;
         $this->roles = $account->roles;
         $this->level = $account->level;
         $this->isAccountNonExpired = $account->isAccountNonExpired;

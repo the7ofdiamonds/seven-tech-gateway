@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { changeSlice } from '../controllers/changeSlice.js';
 import { emailSlice } from '../controllers/emailSlice.js';
 import { loginSlice } from '../controllers/loginSlice.js';
 import { logoutSlice } from '../controllers/logoutSlice.js';
@@ -11,6 +12,7 @@ import { roleSlice } from '../controllers/roleSlice.js';
 
 const store = configureStore({
     reducer: {
+        change: changeSlice.reducer,
         login: loginSlice.reducer,
         logout: logoutSlice.reducer,
         account: accountSlice.reducer,

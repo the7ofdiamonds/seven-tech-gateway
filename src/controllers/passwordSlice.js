@@ -112,10 +112,6 @@ export const changePassword = createAsyncThunk('password/changePassword', async 
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
 
-        if (accessToken == null) {
-            throw new Error("An access token is required to change your name.");
-        }
-
         if (!password) {
             throw new Error("Enter your new preferred password.");
         }

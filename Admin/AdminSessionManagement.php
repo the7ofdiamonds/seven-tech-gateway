@@ -51,7 +51,7 @@ class AdminSessionManagement
             $id = $_POST['id'];
             $verifier = $_POST['verifier'];
 
-            $session = (new Session)->findSession($verifier, $id);
+            $session = (new Session)->find($verifier, $id);
 
             wp_send_json_success($session);
         } catch (DestructuredException $e) {
@@ -64,7 +64,7 @@ class AdminSessionManagement
         try {
             $email = $_POST['email'];
 
-            $sessions = (new Session)->getSessions($email);
+            $sessions = (new Session)->get($email);
 
             wp_send_json_success($sessions);
         } catch (DestructuredException $e) {
@@ -78,7 +78,7 @@ class AdminSessionManagement
             $verifier = $_POST['verifier'];
             $id = $_POST['id'];
 
-            $removedSession = (new Session)->deleteSession($id, $verifier);
+            $removedSession = (new Session)->delete($id, $verifier);
 
             wp_send_json_success($removedSession);
         } catch (DestructuredException $e) {

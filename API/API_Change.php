@@ -2,9 +2,11 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Change\Change;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
 
@@ -28,8 +30,17 @@ class API_Change
                 throw new Exception('You do not have permission to perform this action', 403);
             }
 
+            $tokens = (new Token)->getTokens($request);
+            $auth = new Authenticated($tokens['access_token'], $tokens['Refresh-Token']);
+
+            if (empty($auth->email)) {
+                throw new Exception('An email is required to change password.', 400);
+            }
+
+            (new Change($auth->email))->username($request['username']);
+
             $updateUsernameResponse = [
-                'successMessage' => (new Change($request['email']))->username($request['username']),
+                'successMessage' => "Your username has been changed to {$request['username']}.",
                 'username' => $request['username'],
                 'statusCode' => 200
             ];
@@ -51,15 +62,22 @@ class API_Change
                 throw new Exception('You do not have permission to perform this action', 403);
             }
 
+            $tokens = (new Token)->getTokens($request);
+            $auth = new Authenticated($tokens['access_token'], $tokens['Refresh-Token']);
+
+            if (empty($auth->email)) {
+                throw new Exception('An email is required to change password.', 400);
+            }
+
             $firstName = $request['first_name'];
             $lastName = $request['last_name'];
 
             if (!empty($firstName)) {
-                (new Change($request['email']))->firstName($firstName);
+                (new Change($auth->email))->firstName($firstName);
             }
 
             if (!empty($lastName)) {
-                (new Change($request['email']))->lastName($lastName);
+                (new Change($auth->email))->lastName($lastName);
             }
 
             $responseNameChanged = [
@@ -87,8 +105,17 @@ class API_Change
                 throw new Exception('You do not have permission to perform this action', 403);
             }
 
+            $tokens = (new Token)->getTokens($request);
+            $auth = new Authenticated($tokens['access_token'], $tokens['Refresh-Token']);
+
+            if (empty($auth->email)) {
+                throw new Exception('An email is required to change password.', 400);
+            }
+
+            (new Change($auth->email))->nicename($request['nicename']);
+
             $changeNickNameResponse = [
-                'successMessage' => (new Change($request['email']))->nicename($request['nicename']),
+                'successMessage' => "Your nicename has been changed to {$request['nicename']}.",
                 'nicename' => $request['nicename'],
                 'statusCode' => 200
             ];
@@ -110,8 +137,17 @@ class API_Change
                 throw new Exception('You do not have permission to perform this action', 403);
             }
 
+            $tokens = (new Token)->getTokens($request);
+            $auth = new Authenticated($tokens['access_token'], $tokens['Refresh-Token']);
+
+            if (empty($auth->email)) {
+                throw new Exception('An email is required to change password.', 400);
+            }
+
+            (new Change($auth->email))->nickname($request['nickname']);
+
             $changeNickNameResponse = [
-                'successMessage' => (new Change($request['email']))->nickname($request['nickName']),
+                'successMessage' => "Your nickname has been been changed to {$request['nickName']}.",
                 'nickname' => $request['nickName'],
                 'statusCode' => 200
             ];
@@ -133,8 +169,17 @@ class API_Change
                 throw new Exception('You do not have permission to perform this action', 403);
             }
 
+            $tokens = (new Token)->getTokens($request);
+            $auth = new Authenticated($tokens['access_token'], $tokens['Refresh-Token']);
+
+            if (empty($auth->email)) {
+                throw new Exception('An email is required to change password.', 400);
+            }
+
+            (new Change($auth->email))->phone('+' . $request['phone']);
+
             $changePhoneResponse = [
-                'successMessage' => (new Change($request['email']))->phone('+' . $request['phone']),
+                'successMessage' => "Your phone number has been changed to {$request['phone']}.",
                 'phone' => '+' . $request['phone'],
                 'statusCode' => 200
             ];

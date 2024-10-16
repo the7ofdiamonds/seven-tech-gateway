@@ -4,14 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changePassword } from '../../controllers/passwordSlice';
 import {
   getUser,
+  addUserRole,
+  removeUserRole,
+} from '../../controllers/userSlice';
+import {
   changeUsername,
   changeName,
   changeNickname,
   changeNicename,
-  changePhone,
-  addUserRole,
-  removeUserRole,
-} from '../../controllers/userSlice';
+  changePhone
+} from '../../controllers/changeSlice';
 import { getAvailableRoles } from '../../controllers/roleSlice';
 import { logout, logoutAll, logoutAllUrl } from '../../controllers/logoutSlice';
 import { lockAccount } from '../../controllers/accountSlice';
