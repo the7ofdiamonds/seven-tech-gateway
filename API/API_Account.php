@@ -5,13 +5,13 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\Create;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
-use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
 
 use WP_REST_Request;
+use WP_REST_Response;
 
 class API_Account
 {
@@ -58,7 +58,15 @@ class API_Account
 
             $lockedAccount = (new Account($auth->email))->lock();
 
-            return rest_ensure_response($lockedAccount);
+            $lockedAccountResponse = [
+                'successMessage' => $lockedAccount,
+                'statusCode' => 200
+            ];
+
+            $response = new WP_REST_Response($lockedAccountResponse);
+            $response->set_status(200);
+
+            return rest_ensure_response($response);
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
@@ -71,36 +79,15 @@ class API_Account
         try {
             $unlockedAccount = (new Account($request['email']))->unlock($request['confirmationCode']);
 
-            return rest_ensure_response($unlockedAccount);
-        } catch (DestructuredException $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
-        } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
-        }
-    }
+            $unlockAccountResponse = [
+                'successMessage' => $unlockedAccount,
+                'statusCode' => 200
+            ];
 
-    function disable(WP_REST_Request $request)
-    {
-        try {
-            // Automatic and admin only
-            (new Authorization())->isAuthorized($request, '', []);
-            $disabledAccount = (new Account($request['email']))->disable();
+            $response = new WP_REST_Response($unlockAccountResponse);
+            $response->set_status(200);
 
-            return rest_ensure_response($disabledAccount);
-        } catch (DestructuredException $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
-        } catch (Exception $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
-        }
-    }
-
-    function enable(WP_REST_Request $request)
-    {
-        try {
-            // Admin only
-            $enabledAccount = (new Account($request['email']))->enable();
-
-            return rest_ensure_response($enabledAccount);
+            return rest_ensure_response($response);
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {

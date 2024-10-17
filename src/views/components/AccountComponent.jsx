@@ -51,6 +51,14 @@ function AccountComponent() {
     }
   }, [dispatch, accountStatusCode, message]);
 
+  useEffect(() => {
+    if (accountStatusCode == 200) {
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 5000);
+    }
+  }, [accountStatusCode]);
+
   const [showStatusBar, setShowStatusBar] = useState('');
   const [messageType, setMessageType] = useState('');
   const [message, setMessage] = useState('');

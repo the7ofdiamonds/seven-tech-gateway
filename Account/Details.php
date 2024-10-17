@@ -24,10 +24,15 @@ class Details
         }
     }
 
-    function isAuthenticated($id)
+    function isAuthenticated(Account $account)
     {
         try {
-            $isAuthenticated = update_user_meta($id, 'is_authenticated', 1);
+
+            if ($account->isAuthenticated) {
+                return true;
+            }
+
+            $isAuthenticated = update_user_meta($account->id, 'is_authenticated', 1);
 
             if (!$isAuthenticated) {
                 throw new Exception('Account could not be authenticated.', 500);
@@ -39,10 +44,15 @@ class Details
         }
     }
 
-    function isNotAuthenticated($id)
+    function isNotAuthenticated(Account $account)
     {
         try {
-            $isNotAuthenticated = update_user_meta($id, 'is_authenticated', 0);
+
+            if (!$account->isAuthenticated) {
+                return true;
+            }
+
+            $isNotAuthenticated = update_user_meta($account->id, 'is_authenticated', 0);
 
             if (!$isNotAuthenticated) {
                 throw new Exception('Account could not be authenticated.', 500);
@@ -54,10 +64,15 @@ class Details
         }
     }
 
-    function expireCredentials($id)
+    function expireCredentials(Account $account)
     {
         try {
-            $credentialsExpired = update_user_meta($id, 'is_credentials_non_expired', 0);
+
+            if (!$account->isCredentialsNonExpired) {
+                return true;
+            }
+
+            $credentialsExpired = update_user_meta($account->id, 'is_credentials_non_expired', 0);
 
             if (!$credentialsExpired) {
                 throw new Exception('Account credentials could not be expired.', 500);
@@ -69,10 +84,15 @@ class Details
         }
     }
 
-    function unexpireCredentials($id)
+    function unexpireCredentials(Account $account)
     {
         try {
-            $credentialsUnexpired = update_user_meta($id, 'is_credentials_non_expired', 1);
+
+            if ($account->isCredentialsNonExpired) {
+                return true;
+            }
+
+            $credentialsUnexpired = update_user_meta($account->id, 'is_credentials_non_expired', 1);
 
             if (!$credentialsUnexpired) {
                 throw new Exception('Account credentials could not be unexpired.', 500);
@@ -84,10 +104,15 @@ class Details
         }
     }
 
-    function lockAccount($id)
+    function lockAccount(Account $account)
     {
         try {
-            $accountLocked = update_user_meta($id, 'is_account_non_locked', 0);
+
+            if (!$account->isAccountNonLocked) {
+                return true;
+            }
+
+            $accountLocked = update_user_meta($account->id, 'is_account_non_locked', 0);
 
             if (!$accountLocked) {
                 throw new Exception('Account could not be locked.', 500);
@@ -99,10 +124,15 @@ class Details
         }
     }
 
-    function unlockAccount($id)
+    function unlockAccount(Account $account)
     {
         try {
-            $accountUnlocked = update_user_meta($id, 'is_account_non_locked', 1);
+
+            if ($account->isAccountNonLocked) {
+                return true;
+            }
+
+            $accountUnlocked = update_user_meta($account->id, 'is_account_non_locked', 1);
 
             if (!$accountUnlocked) {
                 throw new Exception('Account could not be unlocked.', 500);
@@ -114,10 +144,15 @@ class Details
         }
     }
 
-    function disableAccount($id)
+    function disableAccount(Account $account)
     {
         try {
-            $accountDisabled = update_user_meta($id, 'is_enabled', 0);
+
+            if (!$account->isEnabled) {
+                return true;
+            }
+
+            $accountDisabled = update_user_meta($account->id, 'is_enabled', 0);
 
             if (!$accountDisabled) {
                 throw new Exception('Account could not be disabled.', 500);
@@ -129,10 +164,15 @@ class Details
         }
     }
 
-    function enableAccount($id)
+    function enableAccount(Account $account)
     {
         try {
-            $accountEnabled = update_user_meta($id, 'is_enabled', 1);
+
+            if ($account->isEnabled) {
+                return true;
+            }
+
+            $accountEnabled = update_user_meta($account->id, 'is_enabled', 1);
 
             if (!$accountEnabled) {
                 throw new Exception('Account could not be enabled.', 500);
@@ -144,10 +184,15 @@ class Details
         }
     }
 
-    function expireAccount($id)
+    function expireAccount(Account $account)
     {
         try {
-            $accountExpired = update_user_meta($id, 'is_account_non_expired', 0);
+
+            if (!$account->isAccountNonExpired) {
+                return true;
+            }
+
+            $accountExpired = update_user_meta($account->id, 'is_account_non_expired', 0);
 
             if (!$accountExpired) {
                 throw new Exception('Account could not be expired.', 500);
@@ -159,10 +204,15 @@ class Details
         }
     }
 
-    function unexpireAccount($id)
+    function unexpireAccount(Account $account)
     {
         try {
-            $accountUnexpired = update_user_meta($id, 'is_account_non_expired', 1);
+
+            if ($account->isAccountNonExpired) {
+                return true;
+            }
+
+            $accountUnexpired = update_user_meta($account->id, 'is_account_non_expired', 1);
 
             if (!$accountUnexpired) {
                 throw new Exception('Account could not be unexpired.', 500);

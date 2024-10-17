@@ -34,15 +34,15 @@ function App() {
               <Route path="/forgot" element={<Forgot />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route
-                path="/password-recovery/:emailEncoded/:confirmationCode"
+                path="/password/recovery/:emailEncoded/:confirmationCode"
                 element={<PasswordRecovery />}
               />
               <Route
-                path="/account-recovery/:emailEncoded/:confirmationCode"
+                path="/account/recovery/:emailEncoded/:confirmationCode"
                 element={<AccountRecovery />}
               />
               <Route
-                path="/verify-email/:emailEncoded/:confirmationCode"
+                path="/email/verify/:emailEncoded/:confirmationCode"
                 element={<VerifyEmail />}
               />
             </Routes>

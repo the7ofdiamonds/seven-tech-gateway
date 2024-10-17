@@ -4,6 +4,7 @@ namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\Create;
+use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 
 class AdminAccountManagement
@@ -14,7 +15,7 @@ class AdminAccountManagement
     private $menu_slug;
     public $page_url;
     private $create;
-
+// Create a way to check token for admin role
     public function __construct()
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
@@ -92,9 +93,8 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $password = $_POST['password'];
 
-            $lockedAccount = (new Account($email))->lock($password);
+            $lockedAccount = (new Account($email))->lock();
 
             wp_send_json_success($lockedAccount);
         } catch (DestructuredException $e) {
@@ -122,7 +122,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $disabledAccount = (new Account($email))->disable($password);
+            $disabledAccount = (new Details($email))->disableAccount($password);
 
             wp_send_json_success($disabledAccount);
         } catch (DestructuredException $e) {
@@ -136,7 +136,7 @@ class AdminAccountManagement
             $email = $_POST['email'];
             $userActivationCode = $_POST['userActivationCode'];
 
-            $enabledAccount = (new Account($email))->enable($userActivationCode);
+            $enabledAccount = (new Details($email))->enableAccount($userActivationCode);
 
             wp_send_json_success($enabledAccount);
         } catch (DestructuredException $e) {

@@ -67,31 +67,24 @@ class Pages
         $this->pages = [
             [
                 'url' => 'password-recovery',
-                'regex' => '#^\/password-recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
+                'regex' => '#^\/password\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
                 'file_name' => 'PasswordRecovery',
                 'title' => 'PASSWORD RECOVERY',
                 'name' => 'password-recovery'
             ],
             [
                 'url' => 'account-recovery',
-                'regex' => '#^\/account-recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
+                'regex' => '#^\/account\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
                 'file_name' => 'AccountRecovery',
                 'title' => 'ACCOUNT RECOVERY',
                 'name' => 'account-recovery'
             ],
             [
                 'url' => 'verify-email',
-                'regex' => '#^\/verify-email\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
+                'regex' => '#^\/email\/verify\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
                 'file_name' => 'VerifyEmail',
                 'title' => 'VERIFY EMAIL',
                 'name' => 'verify-email'
-            ],
-            [
-                'url' => 'remove-account',
-                'regex' => '#^\/remove-account\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
-                'file_name' => 'RemoveAccount',
-                'title' => 'REMOVE ACCOUNT',
-                'name' => 'remove-account'
             ]
         ];
 

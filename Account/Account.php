@@ -6,6 +6,7 @@ use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
+use SEVEN_TECH\Gateway\Authentication\Logout;
 use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
 
@@ -44,7 +45,7 @@ class Account
             $account = $this->find();
             $this->id = $account->id;
             $this->joined = $account->joined;
-            $this->email =  $account->email ? : '';
+            $this->email =  $account->email ?: '';
             $this->username = $account->username ?: '';
             $this->password = $account->password ?: '';
             $this->firstName = $account->first_name ?: '';
@@ -89,7 +90,7 @@ class Account
                 throw new Exception('Account could not be found.', 404);
             }
 
-           return $results[0];
+            return $results[0];
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
@@ -102,13 +103,19 @@ class Account
         try {
 
             if (empty($userActivationKey)) {
-                throw new Exception('User Activation Code is required.', 400);
+                throw new Exception('User Activation Key is required.', 400);
             }
 
             $validuserActivationKey = (new Validator())->matches($userActivationKey, $this->userActivationKey);
-            
+
             if (!$validuserActivationKey) {
-                throw new Exception('User Activation Code not valid.', 400);
+                throw new Exception('User Activation Key not valid.', 400);
+            }
+
+            $accountActivated = $this->activated();
+
+            if (!$accountActivated) {
+                throw new Exception('Account could not be activated.', 500);
             }
 
             (new Authentication($this->email))->updateActivationKey();
@@ -119,14 +126,44 @@ class Account
         }
     }
 
+    public function activated()
+    {
+        try {
+
+            if (!$this->isAuthenticated) {
+                (new Details())->isAuthenticated($this);
+            }
+
+            if (!$this->isAccountNonLocked) {
+                (new Details())->unlockAccount($this);
+            }
+
+            if (!$this->isCredentialsNonExpired) {
+                (new Details())->unexpireCredentials($this);
+            }
+
+            if (!$this->isEnabled) {
+                (new Details())->enableAccount($this);
+            }
+
+            return true;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     public function lock()
     {
         try {
-            $accountLocked = (new Details())->lockAccount($this->id);
+            $accountLocked = (new Details())->lockAccount($this);
 
             if (!$accountLocked) {
                 throw new Exception('Account could not be locked at this time.', 500);
             }
+
+            (new Logout)->all($this->id);
 
             // (new EmailAccount)->accountLocked($this->email);
 
@@ -141,7 +178,7 @@ class Account
         try {
             (new Authentication($this->email))->verifyCredentials($confirmationCode);
 
-            $accountUnlocked = (new Details())->unlockAccount($this->id);
+            $accountUnlocked = (new Details())->unlockAccount($this);
 
             if (!$accountUnlocked) {
                 throw new Exception('Account could not be unlocked at this time.', 500);
@@ -150,40 +187,6 @@ class Account
             // (new EmailAccount)->accountUnlocked($this->email);
 
             return 'Account has been unlocked succesfully.';
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function disable()
-    {
-        try {
-            $accountDisable = (new Details())->disableAccount($this->id);
-
-            if (!$accountDisable) {
-                throw new Exception('Account could not be disabled at this time.', 500);
-            }
-
-            // (new EmailAccount)->accountDisabled($this->email);
-
-            return 'Account disabled succesfully.';
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function enable()
-    {
-        try {
-            $accountEnabled = (new Details())->enableAccount($this->id);
-
-            if (!$accountEnabled) {
-                throw new Exception('Account could not be enabled at this time123.', 500);
-            }
-
-            // (new EmailAccount)->accountEnabled($this->email);
-
-            return 'Account enabled succesfully.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
