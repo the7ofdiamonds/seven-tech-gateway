@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import LoginComponent from './Login';
-import SettingsComponent from './components/SettingsComponent';
+
+import AccountComponent from './components/AccountComponent';
+import ChangeComponent from './components/ChangeComponent';
+import AuthComponent from './components/AuthComponent';
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -76,7 +79,11 @@ function Dashboard() {
         </div>
       </div>
 
-      {showSettings && <SettingsComponent />}
+      {showSettings && <ChangeComponent />}
+
+      {<AuthComponent />}
+
+      {<AccountComponent />}
 
       {showLogin && (
         <div className="modal-overlay">

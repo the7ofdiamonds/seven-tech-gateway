@@ -28,16 +28,16 @@ class API_Roles
         }
     }
 
-    public function getAvailableRoles(WP_REST_Request $request)
-    {
-        try {
-            $authorized = $this->authorization->isAuthorized($request);
+    // public function getAvailableRoles(WP_REST_Request $request)
+    // {
+    //     try {
+    //         $authorized = $this->authorization->isAuthorized($request);
 
-            $availableRoles = (new Roles)->getAvailableRoles($authorized->level);
+    //         $availableRoles = (new Roles)->getAvailableRoles($authorized->level);
 
-            return rest_ensure_response($availableRoles);
-        } catch (DestructuredException $e) {
-            return (new DestructuredException($e))->rest_ensure_response_error();
-        }
-    }
+    //         return rest_ensure_response($availableRoles);
+    //     } catch (DestructuredException $e) {
+    //         return (new DestructuredException($e))->rest_ensure_response_error();
+    //     }
+    // }
 }

@@ -16,7 +16,6 @@ const Forgot = lazy(() => import('./views/Forgot.jsx'));
 const Dashboard = lazy(() => import('./views/Dashboard.jsx'));
 const AccountRecovery = lazy(() => import('./views/AccountRecovery.jsx'));
 const PasswordRecovery = lazy(() => import('./views/PasswordRecovery.jsx'));
-const RemoveAccount = lazy(() => import('./views/RemoveAccount.jsx'));
 const VerifyEmail = lazy(() => import('./views/VerifyEmail.jsx'));
 
 function App() {
@@ -45,10 +44,6 @@ function App() {
               <Route
                 path="/verify-email/:emailEncoded/:confirmationCode"
                 element={<VerifyEmail />}
-              />
-              <Route
-                path="/remove-account/:emailEncoded/:confirmationCode"
-                element={<RemoveAccount />}
               />
             </Routes>
           </Suspense>

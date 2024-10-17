@@ -119,18 +119,16 @@ class Account
         }
     }
 
-    public function lock($confirmationCode)
+    public function lock()
     {
         try {
-            (new Authentication($this->email))->verifyCredentials($confirmationCode);
-
             $accountLocked = (new Details())->lockAccount($this->id);
 
             if (!$accountLocked) {
                 throw new Exception('Account could not be locked at this time.', 500);
             }
 
-            (new EmailAccount)->accountLocked($this->email);
+            // (new EmailAccount)->accountLocked($this->email);
 
             return 'Account has been locked successfully.';
         } catch (Exception $e) {
@@ -149,7 +147,7 @@ class Account
                 throw new Exception('Account could not be unlocked at this time.', 500);
             }
 
-            (new EmailAccount)->accountUnlocked($this->email);
+            // (new EmailAccount)->accountUnlocked($this->email);
 
             return 'Account has been unlocked succesfully.';
         } catch (Exception $e) {
@@ -157,18 +155,16 @@ class Account
         }
     }
 
-    function disable($confirmationCode)
+    function disable()
     {
         try {
-            (new Authentication($this->email))->verifyCredentials($confirmationCode);
-
             $accountDisable = (new Details())->disableAccount($this->id);
 
             if (!$accountDisable) {
                 throw new Exception('Account could not be disabled at this time.', 500);
             }
 
-            (new EmailAccount)->accountDisabled($this->email);
+            // (new EmailAccount)->accountDisabled($this->email);
 
             return 'Account disabled succesfully.';
         } catch (Exception $e) {
@@ -176,18 +172,16 @@ class Account
         }
     }
 
-    function enable($confirmationCode)
+    function enable()
     {
         try {
-            (new Authentication($this->email))->verifyCredentials($confirmationCode);
-
             $accountEnabled = (new Details())->enableAccount($this->id);
 
             if (!$accountEnabled) {
                 throw new Exception('Account could not be enabled at this time123.', 500);
             }
 
-            (new EmailAccount)->accountEnabled($this->email);
+            // (new EmailAccount)->accountEnabled($this->email);
 
             return 'Account enabled succesfully.';
         } catch (Exception $e) {

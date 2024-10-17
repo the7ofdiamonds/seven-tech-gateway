@@ -23,7 +23,6 @@
       "src/views/Dashboard.jsx",
       "src/views/AccountRecovery.jsx",
       "src/views/PasswordRecovery.jsx",
-      "src/views/RemoveAccount.jsx",
       "src/views/VerifyEmail.jsx"
     ],
     "file": "index.js",
@@ -105,15 +104,6 @@
     ],
     "isDynamicEntry": true,
     "src": "src/views/PasswordRecovery.jsx"
-  },
-  "src/views/RemoveAccount.jsx": {
-    "file": "RemoveAccount.js",
-    "imports": [
-      "src/index.jsx",
-      "_StatusBarComponent.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/views/RemoveAccount.jsx"
   },
   "src/views/Schedule.jsx": {
     "file": "Schedule.js",

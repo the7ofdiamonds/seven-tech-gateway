@@ -4,7 +4,10 @@ namespace SEVEN_TECH\Gateway\API;
 
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\Create;
+use SEVEN_TECH\Gateway\Authentication\Authenticated;
+use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
+use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
 
@@ -12,6 +15,12 @@ use WP_REST_Request;
 
 class API_Account
 {
+    public $token;
+
+    public function __construct()
+    {
+        $this->token = new Token;
+    }
 
     function register(WP_REST_Request $request)
     {
@@ -42,7 +51,12 @@ class API_Account
     function lock(WP_REST_Request $request)
     {
         try {
-            $lockedAccount = (new Account($request['email']))->lock($request['confirmationCode']);
+            $accessToken = $this->token->getAccessToken($request);
+            $refreshToken = $this->token->getRefreshToken($request);
+
+            $auth = new Authenticated($accessToken, $refreshToken);
+
+            $lockedAccount = (new Account($auth->email))->lock();
 
             return rest_ensure_response($lockedAccount);
         } catch (DestructuredException $e) {
@@ -65,9 +79,12 @@ class API_Account
         }
     }
 
-    function disable(WP_REST_Request $request) {
+    function disable(WP_REST_Request $request)
+    {
         try {
-            $disabledAccount = (new Account($request['email']))->disable($request['confirmationCode']);
+            // Automatic and admin only
+            (new Authorization())->isAuthorized($request, '', []);
+            $disabledAccount = (new Account($request['email']))->disable();
 
             return rest_ensure_response($disabledAccount);
         } catch (DestructuredException $e) {
@@ -80,7 +97,8 @@ class API_Account
     function enable(WP_REST_Request $request)
     {
         try {
-            $enabledAccount = (new Account($request['email']))->enable($request['confirmationCode']);
+            // Admin only
+            $enabledAccount = (new Account($request['email']))->enable();
 
             return rest_ensure_response($enabledAccount);
         } catch (DestructuredException $e) {

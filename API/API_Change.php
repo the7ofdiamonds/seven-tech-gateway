@@ -176,7 +176,7 @@ class API_Change
                 throw new Exception('An email is required to change password.', 400);
             }
 
-            (new Change($auth->email))->phone('+' . $request['phone']);
+            (new Change($auth->email))->phone("+{$request['phone']}");
 
             $changePhoneResponse = [
                 'successMessage' => "Your phone number has been changed to {$request['phone']}.",

@@ -177,7 +177,7 @@ class Change {
         }
     }
 
-    function phone($phone)
+    function phone(string $phone)
     {
         try {
 

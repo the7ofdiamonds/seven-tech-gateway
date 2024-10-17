@@ -1,4 +1,4 @@
-.settings {
+.change {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -12,11 +12,7 @@
   .change-username,
   .change-nickname,
   .change-nicename,
-  .add-role,
-  .remove-role,
-  .change-phone,
-  .logout,
-  .lock-account {
+  .change-phone {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -31,8 +27,6 @@
   .change-username,
   .change-nickname,
   .change-nicename,
-  .add-role,
-  .remove-role,
   .change-phone {
     justify-content: center;
 
@@ -41,11 +35,5 @@
       justify-content: center;
       width: 100%;
     }
-  }
-
-  .forgot-password,
-  .logout,
-  .remove-account {
-    justify-content: center;
   }
 }
