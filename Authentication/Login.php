@@ -29,7 +29,7 @@ class Login
             }
 
             if (!$account->isAuthenticated) {
-                (new Details())->isAuthenticated($account->id);
+                (new Details())->isAuthenticated($account);
             }
 
             $signedInUser = $this->firebaseAuth->signInWithEmailAndPassword($email, $password);

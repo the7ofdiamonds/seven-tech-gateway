@@ -147,7 +147,7 @@ class Session
             }
 
             if (is_array($sessions) && !empty($sessions)) {
-                (new Details())->isNotAuthenticated($account->id);
+                (new Details())->isNotAuthenticated($account);
             }
 
             $accountSessions = array('id' => $account->id, 'provider_given_id' => $account->providerGivenID, 'sessions' => $sessions);

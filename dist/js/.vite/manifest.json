@@ -21,9 +21,9 @@
       "src/views/Signup.jsx",
       "src/views/Forgot.jsx",
       "src/views/Dashboard.jsx",
+      "src/views/AccountActivation.jsx",
       "src/views/AccountRecovery.jsx",
-      "src/views/PasswordRecovery.jsx",
-      "src/views/VerifyEmail.jsx"
+      "src/views/PasswordRecovery.jsx"
     ],
     "file": "index.js",
     "isEntry": true,
@@ -37,6 +37,15 @@
     ],
     "isDynamicEntry": true,
     "src": "src/views/About.jsx"
+  },
+  "src/views/AccountActivation.jsx": {
+    "file": "AccountActivation.js",
+    "imports": [
+      "src/index.jsx",
+      "_StatusBarComponent.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/views/AccountActivation.jsx"
   },
   "src/views/AccountRecovery.jsx": {
     "file": "AccountRecovery.js",

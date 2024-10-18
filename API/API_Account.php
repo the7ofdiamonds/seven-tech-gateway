@@ -38,7 +38,10 @@ class API_Account
     function activate(WP_REST_Request $request)
     {
         try {
-            $accountActivated = (new Account($request['email']))->activate($request['userActivationCode']);
+            error_log("Email: {$request['email']}");
+            error_log("User Activation Key: {$request['user_activation_key']}");
+
+            $accountActivated = (new Account($request['email']))->activate($request['user_activation_key']);
 
             return rest_ensure_response($accountActivated);
         } catch (DestructuredException $e) {

@@ -66,11 +66,11 @@ class Pages
 
         $this->pages = [
             [
-                'url' => 'password-recovery',
-                'regex' => '#^\/password\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
-                'file_name' => 'PasswordRecovery',
-                'title' => 'PASSWORD RECOVERY',
-                'name' => 'password-recovery'
+                'url' => 'account-activation',
+                'regex' => '#^\/account\/activation\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
+                'file_name' => 'AccountActivation',
+                'title' => 'Account Activation',
+                'name' => 'account-activation'
             ],
             [
                 'url' => 'account-recovery',
@@ -80,11 +80,11 @@ class Pages
                 'name' => 'account-recovery'
             ],
             [
-                'url' => 'verify-email',
-                'regex' => '#^\/email\/verify\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
-                'file_name' => 'VerifyEmail',
-                'title' => 'VERIFY EMAIL',
-                'name' => 'verify-email'
+                'url' => 'password-recovery',
+                'regex' => '#^\/password\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
+                'file_name' => 'PasswordRecovery',
+                'title' => 'PASSWORD RECOVERY',
+                'name' => 'password-recovery'
             ]
         ];
 

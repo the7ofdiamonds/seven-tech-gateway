@@ -127,7 +127,7 @@ class Password
             $this->firebaseAuth->changeFirebasePassword($account->providerGivenID, $password);
 
             if (!$account->isCredentialsNonExpired) {
-                (new Details($account->email))->unexpireCredentials($account->id);
+                (new Details($account->email))->unexpireCredentials($account);
             }
 
             // $this->email->changed($account);

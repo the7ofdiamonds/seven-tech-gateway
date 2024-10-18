@@ -147,8 +147,6 @@ class AdminAccountManagement
     function deleteAccount()
     {
         try {
-            error_log($_POST['email']);
-
             $email = $_POST['email'];
             $deletedAccount = (new Admin())->deleteAccount($email);
 

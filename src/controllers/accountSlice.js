@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidEmail, isValidPassword, isValidConfirmationCode } from '../utils/Validation';
+import { isValidEmail, isValidConfirmationCode } from '../utils/Validation';
 
-const lockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/lock-account" : "/wp-json/seven-tech/v1/account/lock";
-const unlockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/unlock-account" : "/wp-json/seven-tech/v1/account/unlock";
+const activateAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/account/activate' : "/wp-json/seven-tech/v1/account/activate";
+const lockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/account/lock" : "/wp-json/seven-tech/v1/account/lock";
+const unlockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/account/unlock" : "/wp-json/seven-tech/v1/account/unlock";
 
 const initialState = {
     accountLoading: false,
@@ -32,6 +33,29 @@ export const updateAccountErrorMessage = () => {
         payload: ''
     };
 };
+
+export const activateAccount = createAsyncThunk('account/activateAccount', async ({ email, confirmationCode }) => {
+    try {
+
+        const response = await fetch(`${activateAccountUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_activation_key: confirmationCode,
+                email: email
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+});
 
 export const lockAccount = createAsyncThunk('account/lockAccount', async () => {
     try {

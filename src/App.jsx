@@ -14,9 +14,9 @@ const LogOut = lazy(() => import('./views/Logout.jsx'));
 const SignUp = lazy(() => import('./views/Signup.jsx'));
 const Forgot = lazy(() => import('./views/Forgot.jsx'));
 const Dashboard = lazy(() => import('./views/Dashboard.jsx'));
+const AccountActivation = lazy(() => import('./views/AccountActivation.jsx'));
 const AccountRecovery = lazy(() => import('./views/AccountRecovery.jsx'));
 const PasswordRecovery = lazy(() => import('./views/PasswordRecovery.jsx'));
-const VerifyEmail = lazy(() => import('./views/VerifyEmail.jsx'));
 
 function App() {
   return (
@@ -34,16 +34,16 @@ function App() {
               <Route path="/forgot" element={<Forgot />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route
-                path="/password/recovery/:emailEncoded/:confirmationCode"
-                element={<PasswordRecovery />}
-              />
-              <Route
                 path="/account/recovery/:emailEncoded/:confirmationCode"
                 element={<AccountRecovery />}
               />
               <Route
-                path="/email/verify/:emailEncoded/:confirmationCode"
-                element={<VerifyEmail />}
+                path="/account/activation/:emailEncoded/:confirmationCode"
+                element={<AccountActivation />}
+              />
+               <Route
+                path="/password/recovery/:emailEncoded/:confirmationCode"
+                element={<PasswordRecovery />}
               />
             </Routes>
           </Suspense>

@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { changeSlice } from '../controllers/changeSlice.js';
-import { emailSlice } from '../controllers/emailSlice.js';
 import { loginSlice } from '../controllers/loginSlice.js';
 import { logoutSlice } from '../controllers/logoutSlice.js';
 import { userSlice } from '../controllers/userSlice.js';
@@ -16,7 +15,6 @@ const store = configureStore({
         login: loginSlice.reducer,
         logout: logoutSlice.reducer,
         account: accountSlice.reducer,
-        email: emailSlice.reducer,
         user: userSlice.reducer,
         password: passwordSlice.reducer,
         signup: signupSlice.reducer,

@@ -3,13 +3,11 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\ENV\ENV;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Services\Google\Google;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
-use SEVEN_TECH\Gateway\Validator\Validator;
 
 use Exception;
 
@@ -95,7 +93,7 @@ class Admin
             wp_send_json_success($credentialsPresent);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
-        } 
+        }
     }
 
     public function uploadGoogleServiceAccountFile()
@@ -108,7 +106,7 @@ class Admin
             wp_send_json_success($uploadedGoogleServiceAccountFile);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
-        } 
+        }
     }
 
     public function uploadENVFile()
@@ -121,44 +119,6 @@ class Admin
             wp_send_json_success($uploadedENVFile);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
-        } 
-    }
-
-    function disable()
-    {
-        try {
-            $email = "";
-            $account = new Account($email);
-            $accountDisable = (new Details())->disableAccount($account->id);
-
-            if (!$accountDisable) {
-                throw new Exception('Account could not be disabled at this time.', 500);
-            }
-
-            // (new EmailAccount)->accountDisabled($this->email);
-
-            return 'Account disabled succesfully.';
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function enable()
-    {
-        try {
-            $email = "";
-            $account = new Account($email);
-            $accountEnabled = (new Details())->enableAccount($account->id);
-
-            if (!$accountEnabled) {
-                throw new Exception('Account could not be enabled at this time123.', 500);
-            }
-
-            // (new EmailAccount)->accountEnabled($this->email);
-
-            return 'Account enabled succesfully.';
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
         }
     }
 
