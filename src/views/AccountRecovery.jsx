@@ -2,25 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { unlockAccount } from '../controllers/accountSlice';
+import { recoverAccount } from '../controllers/accountSlice';
 
 import { isValidEmail } from '../utils/Validation';
 
 import StatusBarComponent from './components/StatusBarComponent';
 
 function AccountRecovery() {
-  const { emailEncoded, confirmationCode } = useParams();
+  const { emailEncoded, userActivationKey } = useParams();
 
   const email = emailEncoded.replace(/%40/g, '@');
 
   const dispatch = useDispatch();
 
-  const { accountSuccessMessage, accountErrorMessage } =
+  const { accountSuccessMessage, accountErrorMessage, accountStatusCode } =
     useSelector((state) => state.account);
 
-  const [message, setMessage] = useState(
-    'Check your email for the confirmation code and link.'
-  );
+  const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
   useEffect(() => {
@@ -38,6 +36,14 @@ function AccountRecovery() {
   }, [accountSuccessMessage]);
 
   useEffect(() => {
+    if (accountStatusCode == 200) {
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 5000);
+    }
+  }, [accountStatusCode]);
+
+  useEffect(() => {
     if (accountErrorMessage) {
       setMessage(accountErrorMessage);
       setMessageType('error');
@@ -45,13 +51,10 @@ function AccountRecovery() {
   }, [accountErrorMessage]);
 
   useEffect(() => {
-    if (
-      (email != '' || email != undefined) &&
-      (confirmationCode != '' || confirmationCode != undefined)
-    ) {
-      dispatch(unlockAccount({ email, confirmationCode }));
+    if (isValidEmail(email)) {
+      dispatch(recoverAccount({ email, userActivationKey }));
     }
-  }, [email, confirmationCode]);
+  }, [dispatch, email, userActivationKey]);
 
   return (
     <>

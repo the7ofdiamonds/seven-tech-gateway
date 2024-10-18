@@ -50,6 +50,12 @@ class API
       'permission_callback' => '__return_true',
     ));
 
+    register_rest_route('seven-tech/v1', '/account/recovery', array(
+      'methods' => 'POST',
+      'callback' => array($accountAPI, 'recover'),
+      'permission_callback' => '__return_true',
+    ));
+
     register_rest_route('seven-tech/v1', '/auth/login', array(
       'methods' => 'POST',
       'callback' => array($authAPI, 'login'),

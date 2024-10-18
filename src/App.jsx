@@ -34,11 +34,11 @@ function App() {
               <Route path="/forgot" element={<Forgot />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route
-                path="/account/recovery/:emailEncoded/:confirmationCode"
+                path="/account/recovery/:emailEncoded/:userActivationKey"
                 element={<AccountRecovery />}
               />
               <Route
-                path="/account/activation/:emailEncoded/:confirmationCode"
+                path="/account/activation/:emailEncoded/:userActivationKey"
                 element={<AccountActivation />}
               />
                <Route

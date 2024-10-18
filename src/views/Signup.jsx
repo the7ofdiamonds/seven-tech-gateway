@@ -86,10 +86,7 @@ function SignUpComponent() {
   }, [signupErrorMessage]);
 
   useEffect(() => {
-    if (
-      signupSuccessMessage != '' ||
-      loginSuccessMessage != ''
-    ) {
+    if (signupSuccessMessage != '' || loginSuccessMessage != '') {
       setShowStatusBar('modal-overlay');
     }
   }, [signupSuccessMessage, loginSuccessMessage]);
@@ -101,20 +98,20 @@ function SignUpComponent() {
     }
   }, [dispatch, accessToken, refreshToken]);
 
-  useEffect(() => {
-    if (accessToken && refreshToken && loginStatusCode == 200) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectTo = urlParams.get('redirectTo');
+  // useEffect(() => {
+  //   if (accessToken && refreshToken && loginStatusCode == 200) {
+  //     const urlParams = new URLSearchParams(window.location.search);
+  //     const redirectTo = urlParams.get('redirectTo');
 
-      setTimeout(() => {
-        if (redirectTo == null) {
-          window.location.href = '/dashboard';
-        } else {
-          window.location.href = redirectTo;
-        }
-      }, 7000);
-    }
-  }, [dispatch, accessToken, refreshToken, loginStatusCode]);
+  //     setTimeout(() => {
+  //       if (redirectTo == null) {
+  //         window.location.href = '/dashboard';
+  //       } else {
+  //         window.location.href = redirectTo;
+  //       }
+  //     }, 7000);
+  //   }
+  // }, [dispatch, accessToken, refreshToken, loginStatusCode]);
 
   const credentials = {
     username: username,

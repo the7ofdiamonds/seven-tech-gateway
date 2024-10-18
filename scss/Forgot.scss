@@ -1,0 +1,9 @@
+@use '_main.scss';
+@use '_options.scss';
+
+.forgot {  
+  &.card {
+    padding: 0.5rem;
+    min-width: 17.5rem;
+  }
+}

@@ -141,6 +141,23 @@ class Authentication
         }
     }
 
+    function verifyAccount(String $userActivationKey): bool
+    {
+        try {
+            $matches = (new Validator)->matches($userActivationKey, $this->userActivationKey);
+
+            if (!$matches) {
+                throw new Exception("User Activation Key provided does not match our records.", 403);
+            }
+
+            return $matches;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function verifyCredentials(String $confirmation_code): bool
     {
         try {

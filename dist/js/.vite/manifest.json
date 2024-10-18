@@ -132,14 +132,5 @@
     ],
     "isDynamicEntry": true,
     "src": "src/views/Signup.jsx"
-  },
-  "src/views/VerifyEmail.jsx": {
-    "file": "VerifyEmail.js",
-    "imports": [
-      "src/index.jsx",
-      "_StatusBarComponent.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/views/VerifyEmail.jsx"
   }
 }

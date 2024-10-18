@@ -1,0 +1,11 @@
+@use '_form.scss';
+
+main.signup {
+  min-height: 100vh;
+  justify-content: center;
+
+  .signup.card {
+    padding: 0.5rem;
+    min-width: 17.5rem;
+  }
+}

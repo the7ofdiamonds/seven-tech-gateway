@@ -173,10 +173,10 @@ class Account
         }
     }
 
-    function unlock($confirmationCode)
+    function unlock($userConfirmationKey)
     {
         try {
-            (new Authentication($this->email))->verifyCredentials($confirmationCode);
+            (new Authentication($this->email))->verifyAccount($userConfirmationKey);
 
             $accountUnlocked = (new Details())->unlockAccount($this);
 
@@ -184,9 +184,32 @@ class Account
                 throw new Exception('Account could not be unlocked at this time.', 500);
             }
 
+            (new Authentication($this->email))->updateActivationKey();
+
             // (new EmailAccount)->accountUnlocked($this->email);
 
             return 'Account has been unlocked succesfully.';
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function recover($userConfirmationKey)
+    {
+        try {
+            (new Authentication($this->email))->verifyAccount($userConfirmationKey);
+
+            $accountRecovered = $this->activated();
+
+            if (!$accountRecovered) {
+                throw new Exception('Account could not be recovered at this time.', 500);
+            }
+
+            (new Authentication($this->email))->updateActivationKey();
+
+            // (new EmailAccount)->accountUnlocked($this->email);
+
+            return 'Account has been succesfully reactivated.';
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

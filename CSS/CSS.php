@@ -36,7 +36,7 @@ class CSS
     function load_index_css()
     {
         try {
-            $filename = 'index.css';
+            $filename = 'Index.css';
             $indexPath = $this->cssFolderPath . $filename;
             $indexPathURL = $this->cssFolderPathURL . $filename;
 
@@ -64,7 +64,6 @@ class CSS
             $this->load_index_css();
 
             if (!empty($section)) {
-
                 $filename = $section . '.css';
                 $cssFilePath = $this->cssFolderPath . $filename;
                 $cssFilePathURL = $this->cssFolderPathURL . $filename;
@@ -89,6 +88,7 @@ class CSS
 
     function load_pages_css($page)
     {
+
         try {
             if (!empty($page)) {
                 $this->load_customization_css();

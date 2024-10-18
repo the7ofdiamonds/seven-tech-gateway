@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidEmail, isValidConfirmationCode } from '../utils/Validation';
 
 const activateAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/account/activate' : "/wp-json/seven-tech/v1/account/activate";
 const lockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/account/lock" : "/wp-json/seven-tech/v1/account/lock";
 const unlockAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/account/unlock" : "/wp-json/seven-tech/v1/account/unlock";
+const recoverAccountUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + "/account/recovery" : "/wp-json/seven-tech/v1/account/recovery";
 
 const initialState = {
     accountLoading: false,
@@ -34,16 +34,15 @@ export const updateAccountErrorMessage = () => {
     };
 };
 
-export const activateAccount = createAsyncThunk('account/activateAccount', async ({ email, confirmationCode }) => {
+export const activateAccount = createAsyncThunk('account/activateAccount', async ({ email, userActivationKey }) => {
     try {
-
         const response = await fetch(`${activateAccountUrl}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                user_activation_key: confirmationCode,
+                user_activation_key: userActivationKey,
                 email: email
             })
         });
@@ -80,17 +79,8 @@ export const lockAccount = createAsyncThunk('account/lockAccount', async () => {
     }
 });
 
-export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ email, confirmationCode }) => {
+export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ email, userActivationKey }) => {
     try {
-
-        if (isValidConfirmationCode(confirmationCode) != true) {
-            throw new Error("Confirmation Code is not valid.");
-        }
-
-        if (isValidEmail(email) == false) {
-            throw new Error("Email is not valid.");
-        }
-
         const response = await fetch(`${unlockAccountUrl}`, {
             method: 'POST',
             headers: {
@@ -98,7 +88,29 @@ export const unlockAccount = createAsyncThunk('account/unlockAccount', async ({ 
             },
             body: JSON.stringify({
                 email: email,
-                confirmationCode: confirmationCode
+                user_activation_key: userActivationKey,
+            })
+        });
+
+        const responseData = await response.json();
+
+        return responseData;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+});
+
+export const recoverAccount = createAsyncThunk('account/recoverAccount', async ({ email, userActivationKey }) => {
+    try {
+        const response = await fetch(`${recoverAccountUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                user_activation_key: userActivationKey,
             })
         });
 
@@ -126,8 +138,10 @@ export const accountSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addMatcher(isAnyOf(
+                activateAccount.fulfilled,
                 lockAccount.fulfilled,
-                unlockAccount.fulfilled
+                unlockAccount.fulfilled,
+                recoverAccount.fulfilled
             ), (state, action) => {
                 state.accountLoading = false;
                 state.accountError = '';
@@ -136,8 +150,10 @@ export const accountSlice = createSlice({
                 state.accountStatusCode = action.payload.statusCode;
             })
             .addMatcher(isAnyOf(
+                activateAccount.pending,
                 lockAccount.pending,
-                unlockAccount.pending
+                unlockAccount.pending,
+                recoverAccount.pending
             ), (state) => {
                 state.accountLoading = true;
                 state.accountError = '';
@@ -146,8 +162,10 @@ export const accountSlice = createSlice({
                 state.accountStatusCode = '';
             })
             .addMatcher(isAnyOf(
+                activateAccount.rejected,
                 lockAccount.rejected,
-                unlockAccount.rejected
+                unlockAccount.rejected,
+                recoverAccount.rejected
             ), (state, action) => {
                 state.accountLoading = false;
                 state.accountError = action.error;

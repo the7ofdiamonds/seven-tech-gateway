@@ -18,13 +18,6 @@ class Pages
 
         $this->custom_pages = [
             [
-                'url' => 'forgot',
-                'regex' => '#^/forgot#',
-                'file_name' => 'Forgot',
-                'title' => 'FORGOT',
-                'page_name' => 'forgot'
-            ],
-            [
                 'url' => 'login',
                 'regex' => '#^/login#',
                 'file_name' => 'Login',
@@ -66,21 +59,28 @@ class Pages
 
         $this->pages = [
             [
-                'url' => 'account-activation',
+                'url' => 'forgot',
+                'regex' => '#^/forgot#',
+                'file_name' => 'Forgot',
+                'title' => 'FORGOT',
+                'page_name' => 'forgot'
+            ],
+            [
+                'url' => 'account/activation',
                 'regex' => '#^\/account\/activation\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
                 'file_name' => 'AccountActivation',
                 'title' => 'Account Activation',
                 'name' => 'account-activation'
             ],
             [
-                'url' => 'account-recovery',
+                'url' => 'account/recovery',
                 'regex' => '#^\/account\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
                 'file_name' => 'AccountRecovery',
                 'title' => 'ACCOUNT RECOVERY',
                 'name' => 'account-recovery'
             ],
             [
-                'url' => 'password-recovery',
+                'url' => 'password/recovery',
                 'regex' => '#^\/password\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)/$#',
                 'file_name' => 'PasswordRecovery',
                 'title' => 'PASSWORD RECOVERY',

@@ -9,23 +9,19 @@ import StatusBarComponent from './components/StatusBarComponent';
 import { isValidEmail } from '../utils/Validation';
 
 function AccountActivation() {
-  const { emailEncoded, confirmationCode } = useParams();
+  const { emailEncoded, userActivationKey } = useParams();
 
   const email = emailEncoded.replace(/%40/g, '@');
 
   const dispatch = useDispatch();
 
-  const { accountSuccessMessage, accountErrorMessage } = useSelector(
-    (state) => state.account
-  );
+  const { accountSuccessMessage, accountErrorMessage, accountStatusCode } =
+    useSelector((state) => state.account);
 
-  const [message, setMessage] = useState(
-    'Check your email for the confirmation code and link.'
-  );
+  const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
   useEffect(() => {
-    console.log(email);
     if (isValidEmail(email) != true) {
       setMessageType('error');
       setMessage('Email is not valid.');
@@ -40,6 +36,14 @@ function AccountActivation() {
   }, [accountSuccessMessage]);
 
   useEffect(() => {
+    if (accountStatusCode == 200) {
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 5000);
+    }
+  }, [accountStatusCode]);
+
+  useEffect(() => {
     if (accountErrorMessage) {
       setMessage(accountErrorMessage);
       setMessageType('error');
@@ -47,8 +51,10 @@ function AccountActivation() {
   }, [accountErrorMessage]);
 
   useEffect(() => {
-    dispatch(activateAccount({ email, confirmationCode }));
-  }, [email, confirmationCode]);
+    if (isValidEmail(email)) {
+      dispatch(activateAccount({ email, userActivationKey }));
+    }
+  }, [dispatch, email, userActivationKey]);
 
   return (
     <>

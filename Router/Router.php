@@ -174,13 +174,13 @@ class Router
 
     function react_rewrite_rules()
     {
-        add_rewrite_rule('^forgot/?', 'index.php?', 'top');
+        add_rewrite_rule('^forgot?', 'index.php?', 'top');
         add_rewrite_rule('^account\/activation\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)?$', 'index.php?', 'top');
         add_rewrite_rule('^account\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)?$', 'index.php?', 'top');
         add_rewrite_rule('^password\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)?$', 'index.php?', 'top');
-        add_rewrite_rule('^login/?', 'index.php?', 'top');
-        add_rewrite_rule('^logout/?', 'index.php?', 'top');
-        add_rewrite_rule('^signup/?', 'index.php?', 'top');
-        add_rewrite_rule('^dashboard/?', 'index.php?', 'top');
+        add_rewrite_rule('^login?', 'index.php?', 'top');
+        add_rewrite_rule('^logout?', 'index.php?', 'top');
+        add_rewrite_rule('^signup?', 'index.php?', 'top');
+        add_rewrite_rule('^dashboard?', 'index.php?', 'top');
     }
 }

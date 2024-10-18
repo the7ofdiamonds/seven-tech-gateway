@@ -28,7 +28,6 @@ class Create
     function account(string $email, string $username, string $password, string $confirmPassword, string $nicename, string $nickname, string $firstname, string $lastname, string $phone)
     {
         try {
-
             $createdUser = $this->add->user(
                 $email,
                 $username,
