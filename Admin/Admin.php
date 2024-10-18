@@ -3,6 +3,7 @@
 namespace SEVEN_TECH\Gateway\Admin;
 
 use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Authentication\Logout;
 use SEVEN_TECH\Gateway\ENV\ENV;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
@@ -127,12 +128,20 @@ class Admin
         try {
             $account = new Account($email);
 
-            if ($account->isAccountNonLocked || $account->isAccountNonLocked == null) {
+            if ($account->isAccountNonLocked) {
                 throw new Exception('Account must first be locked.', 400);
             }
 
-            if ($account->isEnabled || $account->isEnabled == null) {
-                throw new Exception('Account must first be disabled.', 400);
+            if ($account->isAccountNonExpired) {
+                throw new Exception('Account must be unsubscribed.', 400);
+            }
+
+            if ($account->isCredentialsNonExpired) {
+                throw new Exception('Account credentials must be expired.', 400);
+            }
+
+            if ($account->isEnabled) {
+                throw new Exception('Account must be disabled.', 400);
             }
 
             global $wpdb;
@@ -150,6 +159,8 @@ class Admin
             }
 
             (new FirebaseAuth)->deleteUser($account->providerGivenID);
+
+            (new Logout())->all($account);
 
             // (new EmailAccount)->accountDeleted($email);
 

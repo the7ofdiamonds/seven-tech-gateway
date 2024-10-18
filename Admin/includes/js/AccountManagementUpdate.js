@@ -72,6 +72,28 @@ jQuery(document).ready(function ($) {
         });
     });
 
+    $('#password #expire_btn').on('click', function (event) {
+        event.preventDefault();
+
+        const email = $('#find_account input[name="email"]#email').val();
+
+        $.ajax({
+            type: 'POST',
+            url: 'admin-ajax.php',
+            data: {
+                action: 'expireCredentials',
+                email: email
+            },
+            success: function (response) {
+                displayMessage('success', response.data);
+            },
+            error: function (xhr, status, error) {
+                const errorMessage = `${error}: ${xhr.responseJSON.data}`;
+                displayMessage(status, errorMessage);
+            }
+        });
+    });
+
     $('#password #unexpire_btn').on('click', function (event) {
         event.preventDefault();
 
@@ -82,7 +104,7 @@ jQuery(document).ready(function ($) {
             type: 'POST',
             url: 'admin-ajax.php',
             data: {
-                action: 'unlockAccount',
+                action: 'unexpireCredentials',
                 email: email,
                 userActivationCode: userActivationCode
             },
@@ -192,26 +214,26 @@ jQuery(document).ready(function ($) {
         });
     });
 
-    // $('#account_management').on('change', function () {
-    //     var unlocked = $('#lock_account h4#locked').text();
-    //     console.log(unlocked);
+    $('#account_management').on('change', function () {
+        var unlocked = $('#lock_account h4#locked').text();
+        console.log(unlocked);
 
-    //     if (unlocked) {
-    //         $('#account_management #lock_account #lock_btn').css('display', 'block');
-    //     } else {
-    //         $('#account_management #lock_account #unlock_btn').css('display', 'block');
-    //     }
+        if (unlocked) {
+            $('#account_management #lock_account #lock_btn').css('display', 'block');
+        } else {
+            $('#account_management #lock_account #unlock_btn').css('display', 'block');
+        }
 
-    //     var enabled = $('#account_management #enabled').text();
-    //     console.log(enabled);
-    //     if (enabled) {
-    //         $('#account_management #enable_account #disable_btn').css('display', 'block');
-    //     } else {
-    //         $('#account_management #enable_account #enable_btn').css('display', 'block');
-    //     }
+        var enabled = $('#account_management #enabled').text();
+        console.log(enabled);
+        if (enabled) {
+            $('#account_management #enable_account #disable_btn').css('display', 'block');
+        } else {
+            $('#account_management #enable_account #enable_btn').css('display', 'block');
+        }
 
-    //     if (unlocked == false && enabled == false) {
-    //         $('#account_management #delete_account').css('display', 'flex');
-    //     }
-    // });
+        if (unlocked == false && enabled == false) {
+            $('#account_management #delete_account').css('display', 'flex');
+        }
+    });
 });

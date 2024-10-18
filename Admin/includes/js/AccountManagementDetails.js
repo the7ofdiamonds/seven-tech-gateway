@@ -52,7 +52,7 @@ jQuery(document).ready(function ($) {
 
                 $('#sessions').empty();
 
-                if (sessionKeys.length > 0) {
+                if (Array.isArray(sessionKeys) && sessionKeys.length > 0) {
                     $('#sessions').css('display', 'flex');
 
                     sessionKeys.forEach(function (token) {

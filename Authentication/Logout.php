@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\Authentication;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Account\Details;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Services\Redis\RedisSession;
@@ -36,13 +37,13 @@ class Logout
         }
     }
 
-    public function all($id)
+    public function all(Account $account)
     {
         try {
-            $wordpresSessions = (new SessionWordpress)->get($id);
+            $wordpresSessions = (new SessionWordpress)->get($account->id);
 
             if (is_array($wordpresSessions) && !empty($wordpresSessions)) {
-                $session_tokens_deleted = delete_user_meta($id, 'session_tokens');
+                $session_tokens_deleted = delete_user_meta($account->id, 'session_tokens');
 
                 if (!$session_tokens_deleted) {
                     throw new Exception('There was an error deleting sessions.', 500);
@@ -50,7 +51,7 @@ class Logout
             }
 
             if ((new RedisSession)->isReady) {
-                $redisSessions = (new SessionRedis)->get($id);
+                $redisSessions = (new SessionRedis)->get($account->id);
 
                 if (is_array($redisSessions)) {
                     foreach ($redisSessions as $key => $value) {
@@ -65,7 +66,7 @@ class Logout
                 throw new Exception('Account could not be logged out.', 400);
             }
 
-            (new Details())->isNotAuthenticated($id);
+            (new Details())->isNotAuthenticated($account);
 
             return true;
         } catch (DestructuredException $e) {

@@ -56,11 +56,11 @@ class Account
             $this->userActivationKey = $account->user_activation_key ?: '';
             $this->confirmationCode = $account->confirmation_code ?: '';
             $this->providerGivenID = $account->provider_given_id ?: '';
-            $this->isAuthenticated = $account->is_authenticated ?: false;
-            $this->isAccountNonExpired = $account->is_account_non_expired ?: false;
-            $this->isAccountNonLocked = $account->is_account_non_locked ?: false;
-            $this->isCredentialsNonExpired = $account->is_credentials_non_expired ?: false;
-            $this->isEnabled = $account->is_enabled ?: false;
+            $this->isAuthenticated = (int) $account->is_authenticated == 1;
+            $this->isAccountNonExpired = (int) $account->is_account_non_expired == 1;
+            $this->isAccountNonLocked = (int) $account->is_account_non_locked == 1;
+            $this->isCredentialsNonExpired = (int) $account->is_credentials_non_expired == 1;
+            $this->isEnabled = (int) $account->is_enabled == 1;
             $this->roles = (new Roles)->unserializeRoles($account->roles);
             $this->level = (new Roles)->getRolesHighestLevel($this->roles);
             $this->profileImage = get_avatar_url($account->id);
@@ -163,7 +163,7 @@ class Account
                 throw new Exception('Account could not be locked at this time.', 500);
             }
 
-            (new Logout)->all($this->id);
+            (new Logout)->all($this);
 
             // (new EmailAccount)->accountLocked($this->email);
 

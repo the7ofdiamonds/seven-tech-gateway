@@ -2,6 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
+use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Authentication\Login;
 use SEVEN_TECH\Gateway\Authentication\Logout;
@@ -9,7 +10,6 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
-
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -94,8 +94,9 @@ class API_Authentication
             $accessToken = $this->token->getAccessToken($request);
             $refreshToken = $this->token->getRefreshToken($request);
             $auth = new Authenticated($accessToken, $refreshToken);
+            $account = new Account($auth->email);
 
-            $this->logout->all($auth->id);
+            $this->logout->all($account);
 
             $logoutAllResponse = [
                 'successMessage' => 'You have been logged out of all accounts successfully',

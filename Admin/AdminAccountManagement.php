@@ -15,7 +15,7 @@ class AdminAccountManagement
     private $menu_slug;
     public $page_url;
     private $create;
-// Create a way to check token for admin role
+    // Create a way to check token for admin role
     public function __construct()
     {
         $this->parent_slug = (new Admin)->get_parent_slug();
@@ -26,9 +26,13 @@ class AdminAccountManagement
         $this->create = new Create;
 
         add_action('wp_ajax_createAccount', [$this, 'createAccount']);
+        add_action('wp_ajax_isAuthenticated', [$this, 'isAuthenticated']);
+        add_action('wp_ajax_isNotAuthenticated', [$this, 'isNotAuthenticated']);
         add_action('wp_ajax_findAccount', [$this, 'findAccount']);
         add_action('wp_ajax_lockAccount', [$this, 'lockAccount']);
         add_action('wp_ajax_unlockAccount', [$this, 'unlockAccount']);
+        add_action('wp_ajax_expireCredentials', [$this, 'expireCredentials']);
+        add_action('wp_ajax_unexpireCredentials', [$this, 'unexpireCredentials']);
         add_action('wp_ajax_enableAccount', [$this, 'enableAccount']);
         add_action('wp_ajax_disableAccount', [$this, 'disableAccount']);
         add_action('wp_ajax_deleteAccount', [$this, 'deleteAccount']);
@@ -80,10 +84,35 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-
             $account = (new Account($email));
 
             wp_send_json_success($account);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    public function isAuthenticated()
+    {
+        try {
+            $email = $_POST['email'];
+            $account = new Account($email);
+            $isAuthenticated = (new Details())->isAuthenticated($account);
+
+            wp_send_json_success($isAuthenticated);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function isNotAuthenticated()
+    {
+        try {
+            $email = $_POST['email'];
+            $account = new Account($email);
+            $isNotAuthenticated = (new Details())->isNotAuthenticated($account);
+
+            wp_send_json_success($isNotAuthenticated);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
@@ -93,8 +122,8 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-
-            $lockedAccount = (new Account($email))->lock();
+            $account = new Account($email);
+            $lockedAccount = (new Details())->lockAccount($account);
 
             wp_send_json_success($lockedAccount);
         } catch (DestructuredException $e) {
@@ -106,11 +135,36 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $userActivationCode = $_POST['userActivationCode'];
-
-            $unlockedAccount = (new Account($email))->unlock($userActivationCode);
+            $account = new Account($email);
+            $unlockedAccount = (new Details())->unlockAccount($account);
 
             wp_send_json_success($unlockedAccount);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    public function expireCredentials()
+    {
+        try {
+            $email = $_POST['email'];
+            $account = new Account($email);
+            $expireCredentials = (new Details())->expireCredentials($account);
+
+            wp_send_json_success($expireCredentials);
+        } catch (DestructuredException $e) {
+            wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
+        }
+    }
+
+    function unexpireCredentials()
+    {
+        try {
+            $email = $_POST['email'];
+            $account = new Account($email);
+            $unexpireCredentials = (new Details())->unexpireCredentials($account);
+
+            wp_send_json_success($unexpireCredentials);
         } catch (DestructuredException $e) {
             wp_send_json_error($e->getErrorMessage(), $e->getStatusCode());
         }
@@ -120,9 +174,8 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $password = $_POST['password'];
-
-            $disabledAccount = (new Details($email))->disableAccount($password);
+            $account = new Account($email);
+            $disabledAccount = (new Details())->disableAccount($account);
 
             wp_send_json_success($disabledAccount);
         } catch (DestructuredException $e) {
@@ -134,9 +187,8 @@ class AdminAccountManagement
     {
         try {
             $email = $_POST['email'];
-            $userActivationCode = $_POST['userActivationCode'];
-
-            $enabledAccount = (new Details($email))->enableAccount($userActivationCode);
+            $account = new Account($email);
+            $enabledAccount = (new Details())->enableAccount($account);
 
             wp_send_json_success($enabledAccount);
         } catch (DestructuredException $e) {
