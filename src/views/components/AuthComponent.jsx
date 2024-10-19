@@ -58,25 +58,22 @@ function AuthComponent() {
   };
 
   const handleLogoutAll = () => {
-    if (logoutAllUrl != null) {
-      dispatch(logoutAll()).then(() => {
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 5000);
-      });
-    }
+    dispatch(logoutAll()).then(() => {
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 5000);
+    });
   };
 
   return (
     <>
       <main className="auth">
-
         <span className="logout">
-          <button onClick={handleLogout}>
+          <button onClick={handleLogout} id="logout_btn">
             <h3>LOG OUT</h3>
           </button>
 
-          <button onClick={handleLogoutAll}>
+          <button onClick={handleLogoutAll} id="logout_all_btn">
             <h3>LOG OUT ALL</h3>
           </button>
         </span>

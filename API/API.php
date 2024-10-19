@@ -38,18 +38,6 @@ class API
       'permission_callback' => '__return_true',
     ));
 
-    register_rest_route('seven-tech/v1', '/account/disable', array(
-      'methods' => 'POST',
-      'callback' => array($accountAPI, 'disable'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/account/enable', array(
-      'methods' => 'POST',
-      'callback' => array($accountAPI, 'enable'),
-      'permission_callback' => '__return_true',
-    ));
-
     register_rest_route('seven-tech/v1', '/account/recovery', array(
       'methods' => 'POST',
       'callback' => array($accountAPI, 'recover'),

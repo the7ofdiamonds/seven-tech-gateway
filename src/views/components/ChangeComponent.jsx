@@ -213,7 +213,7 @@ function ChangeComponent() {
           />
 
           <div className="action">
-            <button onClick={handleChangeUsername}>
+            <button onClick={handleChangeUsername} id="change_username_btn">
               <h3>Change Username</h3>
             </button>
           </div>
@@ -239,7 +239,7 @@ function ChangeComponent() {
           />
 
           <div className="action">
-            <button onClick={handleChangeName}>
+            <button onClick={handleChangeName} id="change_name_btn">
               <h3>Change Name</h3>
             </button>
           </div>
@@ -256,7 +256,7 @@ function ChangeComponent() {
           />
 
           <div className="action">
-            <button onClick={handleChangeNickname}>
+            <button onClick={handleChangeNickname} id="change_nickname_btn">
               <h3>Change Nickname</h3>
             </button>
           </div>
@@ -273,7 +273,7 @@ function ChangeComponent() {
           />
 
           <div className="action">
-            <button onClick={handleChangeNicename}>
+            <button onClick={handleChangeNicename} id="change_nicename_btn">
               <h3>Change Nicename</h3>
             </button>
           </div>
@@ -290,7 +290,7 @@ function ChangeComponent() {
           />
 
           <div className="action">
-            <button onClick={handleChangePhone}>
+            <button onClick={handleChangePhone} id="change_phone_btn">
               <h3>Change Phone</h3>
             </button>
           </div>

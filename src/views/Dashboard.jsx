@@ -6,6 +6,7 @@ import LoginComponent from './Login';
 import AccountComponent from './components/AccountComponent';
 import ChangeComponent from './components/ChangeComponent';
 import AuthComponent from './components/AuthComponent';
+import PasswordComponent from './components/PasswordComponent';
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -19,7 +20,6 @@ function Dashboard() {
     : localStorage.getItem('display_name');
 
   const { changeStatusCode } = useSelector((state) => state.user);
-  const { emailStatusCode } = useSelector((state) => state.email);
   const { passwordStatusCode } = useSelector((state) => state.password);
   const { loginStatusCode } = useSelector((state) => state.login);
   const { accountStatusCode } = useSelector((state) => state.account);
@@ -36,19 +36,12 @@ function Dashboard() {
   useEffect(() => {
     if (
       changeStatusCode == 403 ||
-      emailStatusCode == 403 ||
       passwordStatusCode == 403 ||
       accountStatusCode == 403
     ) {
       setShowLogin(true);
     }
-  }, [
-    dispatch,
-    changeStatusCode,
-    emailStatusCode,
-    passwordStatusCode,
-    accountStatusCode,
-  ]);
+  }, [dispatch, changeStatusCode, passwordStatusCode, accountStatusCode]);
 
   const handleShowSettings = () => {
     if (showSettings == false) {
@@ -72,15 +65,20 @@ function Dashboard() {
         <h2 className="display-name">{usersDisplayName}</h2>
 
         <div className="action options">
-          <button className="settings-button" onClick={handleShowSettings}>
+          <button
+            className="settings-button"
+            onClick={handleShowSettings}
+            id="settings_btn">
             <i class="fa-solid fa-gears"></i>
-            <h3>Settings</h3>
+            <h3>SETTINGS</h3>
           </button>
         </div>
       </div>
 
       {showSettings && <ChangeComponent />}
 
+      {<PasswordComponent />}
+      
       {<AuthComponent />}
 
       {<AccountComponent />}

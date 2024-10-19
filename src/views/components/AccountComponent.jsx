@@ -77,7 +77,7 @@ function AccountComponent() {
       <main className="account">
 
         <span className="lock-account">
-          <button onClick={handleLockAccount}>
+          <button onClick={handleLockAccount} id="lock_account_btn">
             <h3>LOCK ACCOUNT</h3>
           </button>
         </span>

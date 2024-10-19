@@ -93,7 +93,7 @@ class Password
 
             $password_recover_link = home_url() . "/password/recover/{$account->email}/{$auth->confirmationCode}";
 
-            $this->email->recover($account, $password_recover_link);
+            // $this->email->recover($account, $password_recover_link);
 
             return true;
         } catch (Exception $e) {

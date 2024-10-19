@@ -257,7 +257,7 @@ function SignUpComponent() {
               </tbody>
               <tfoot>
                 <td>
-                  <button type="submit" onClick={handleSubmit}>
+                  <button type="submit" onClick={handleSubmit} id="signup_btn">
                     <h3>SIGN UP</h3>
                   </button>
                 </td>

@@ -171,8 +171,8 @@ function LoginComponent() {
             <input
               className="input-email"
               type="text"
-              name="identity"
-              placeholder="Username or Email"
+              name="email"
+              placeholder="Email"
               value={identity}
               onChange={handleIdentityChange}
               required
@@ -188,7 +188,7 @@ function LoginComponent() {
               required
             />
 
-            <button type="submit">
+            <button id="login_btn" type="submit">
               <h3>LOGIN</h3>
             </button>
           </form>
