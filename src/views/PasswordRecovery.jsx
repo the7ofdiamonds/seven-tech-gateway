@@ -127,7 +127,7 @@ function PasswordRecovery() {
                   <td>
                     <input
                       type="password"
-                      name="confirmPassword"
+                      name="confirm-password"
                       placeholder="Confirm Password"
                       onChange={handleChangeConfirmPassword}
                       required
@@ -138,7 +138,7 @@ function PasswordRecovery() {
               <tfoot>
                 <tr>
                   <td>
-                    <button type="submit" onClick={handleSubmit}>
+                    <button type="submit" onClick={handleSubmit} id="confirm_password_btn">
                       <h3>CONFIRM</h3>
                     </button>
                   </td>

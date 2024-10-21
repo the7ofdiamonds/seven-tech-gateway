@@ -23,25 +23,31 @@ class Templates
     function get_front_page_template($frontpage_template, $sections)
     {
         if (is_front_page()) {
+            $frontpage_template = $this->pluginDir . 'Pages/page.php';
 
-            foreach ($sections as $section) {
-                $frontpage_css = $this->pluginDir . 'dist/css/' . $section . '.css';
+            if (file_exists($frontpage_template)) {
 
-                if (file_exists($frontpage_css)) {
-                    add_action('wp_head', function () use ($section) {
-                        $this->css->load_front_page_css($section);
-                    });
+                foreach ($sections as $section) {
+                    $frontpage_css = $this->pluginDir . 'dist/css/' . $section . '.css';
+
+                    if (file_exists($frontpage_css)) {
+                        
+                        add_action('wp_head', function () use ($section) {
+                            $this->css->load_front_page_css($section);
+                        });
+                    }
+
+                    $frontpage_js = $this->pluginDir . 'dist/js/' . $section . '.js';
+
+                    if (file_exists($frontpage_js)) {
+
+                        add_action('wp_footer', function () use ($section) {
+                            $this->js->load_front_page_react($section);
+                        });
+                    }
+
+                    return $frontpage_template;
                 }
-
-                $frontpage_js = $this->pluginDir . 'dist/js/' . $section . '.js';
-
-                if (file_exists($frontpage_js)) {
-                    add_action('wp_footer', function () use ($section) {
-                        $this->js->load_front_page_react($section);
-                    });
-                }
-
-                return $frontpage_template;
             }
 
             return $frontpage_template;
@@ -106,7 +112,7 @@ class Templates
     {
         $filename = $page['file_name'];
         $filename_css = $this->pluginDir . 'dist/css/' . $filename . '.css';
-        $filename_js = $this->pluginDir . 'dist/js/' . $filename .'.js';
+        $filename_js = $this->pluginDir . 'dist/js/' . $filename . '.js';
 
         if (file_exists($filename_css)) {
             add_action('wp_head', function () use ($filename) {

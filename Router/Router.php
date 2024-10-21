@@ -15,7 +15,6 @@ class Router
     private $custom_pages;
     private $protected_pages;
     private $pages;
-    private $pages_list;
     private $post_types_list;
     private $taxonomies_list;
     private $templates;
@@ -30,7 +29,6 @@ class Router
         $this->custom_pages = $pages->custom_pages;
         $this->protected_pages = $pages->protected_pages;
         $this->pages = $pages->pages;
-        $this->pages_list = $pages->pages_list;
 
         $this->post_types_list = $posttypes->post_types_list;
         $this->taxonomies_list = $taxonomies->taxonomies_list;
@@ -174,13 +172,13 @@ class Router
 
     function react_rewrite_rules()
     {
-        add_rewrite_rule('^forgot?', 'index.php?', 'top');
         add_rewrite_rule('^account\/activation\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)?$', 'index.php?', 'top');
         add_rewrite_rule('^account\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)?$', 'index.php?', 'top');
-        add_rewrite_rule('^password\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)?$', 'index.php?', 'top');
+        add_rewrite_rule('^dashboard?', 'index.php?', 'top');
+        add_rewrite_rule('^forgot?', 'index.php?', 'top');
         add_rewrite_rule('^login?', 'index.php?', 'top');
         add_rewrite_rule('^logout?', 'index.php?', 'top');
+        add_rewrite_rule('^password\/recovery\/([a-z0-9.%]+)\/([a-zA-Z0-9-]+)?$', 'index.php?', 'top');
         add_rewrite_rule('^signup?', 'index.php?', 'top');
-        add_rewrite_rule('^dashboard?', 'index.php?', 'top');
     }
 }

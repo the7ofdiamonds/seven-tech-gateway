@@ -21,7 +21,7 @@ function NavigationLoginComponent(props) {
         {page === 'login' ? (
           ''
         ) : (
-          <button onClick={handleLogin}>
+          <button onClick={handleLogin} id="login_btn">
             <h3>LOGIN</h3>
           </button>
         )}
@@ -29,7 +29,7 @@ function NavigationLoginComponent(props) {
         {page === 'signup' ? (
           ''
         ) : (
-          <button onClick={handleSignUp}>
+          <button onClick={handleSignUp} id="signup_btn">
             <h3>SIGN UP</h3>
           </button>
         )}
@@ -37,7 +37,7 @@ function NavigationLoginComponent(props) {
         {page === 'forgot' ? (
           ''
         ) : (
-          <button onClick={handleForgot}>
+          <button onClick={handleForgot} id="forgot_btn">
             <h3>FORGOT</h3>
           </button>
         )}
