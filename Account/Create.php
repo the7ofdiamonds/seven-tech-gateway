@@ -8,9 +8,10 @@ use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\User\Add;
 
-use Exception;
 use WP_Error;
 use WP_User;
+
+use Exception;
 
 class Create
 {

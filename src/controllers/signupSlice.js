@@ -9,10 +9,8 @@ const initialState = {
     signupSuccessMessage: '',
     signupErrorMessage: '',
     signupStatusCode: '',
-    loginSuccessMessage: '',
     accessToken: '',
-    refreshToken: '',
-    loginStatusCode: ''
+    refreshToken: ''
 };
 
 export const signup = createAsyncThunk('signup/signup', async (credentials) => {
@@ -87,11 +85,9 @@ export const signupSlice = createSlice({
                 state.signupSuccessMessage = action.payload.successMessage;
                 state.signupErrorMessage = action.payload.errorMessage;
                 state.signupStatusCode = action.payload.statusCode;
-                state.loginSuccessMessage = action.payload.login.successMessage;
-                state.refreshToken = action.payload.login.refreshToken;
-                state.accessToken = action.payload.login.accessToken;
-                state.email = action.payload.login.email;
-                state.loginStatusCode = action.payload.login.statusCode;
+                state.username = action.payload.username;
+                state.refreshToken = action.payload.refreshToken;
+                state.accessToken = action.payload.accessToken;
             })
             .addMatcher(isAnyOf(
                 signup.pending,

@@ -7,7 +7,7 @@ import { updatePassword } from '../controllers/passwordSlice';
 import {
   isValidConfirmationCode,
   isValidEmail,
-  isValidPassword
+  isValidPassword,
 } from '../utils/Validation';
 
 import StatusBarComponent from './components/StatusBarComponent';
@@ -19,11 +19,8 @@ function PasswordRecovery() {
 
   const dispatch = useDispatch();
 
-  const {
-    passwordSuccessMessage,
-    passwordErrorMessage,
-    passwordStatusCode
-  } = useSelector((state) => state.password);
+  const { passwordSuccessMessage, passwordErrorMessage, passwordStatusCode } =
+    useSelector((state) => state.password);
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -70,13 +67,13 @@ function PasswordRecovery() {
   }, [passwordErrorMessage]);
 
   useEffect(() => {
-    if (message != '') {
+    if (message != '' && passwordStatusCode == 200) {
       setShowStatusBar('modal-overlay');
       setTimeout(() => {
         setShowStatusBar('');
       }, 5000);
     }
-  }, [message]);
+  }, [message, passwordStatusCode]);
 
   const handleChangePassword = (e) => {
     if (e.target.name == 'password') {
@@ -85,23 +82,17 @@ function PasswordRecovery() {
   };
 
   const handleChangeConfirmPassword = (e) => {
-    if (e.target.name == 'confirmPassword') {
+    if (e.target.name == 'confirm-password') {
       setConfirmPassword(e.target.value);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      isValidEmail(email) &&
-      isValidConfirmationCode(confirmationCode) &&
-      isValidPassword(password) &&
-      password === confirmPassword
-    ) {
-      dispatch(
-        updatePassword({ email, password, confirmPassword, confirmationCode })
-      );
-    }
+
+    dispatch(
+      updatePassword({ email, password, confirmPassword, confirmationCode })
+    );
   };
 
   return (
@@ -138,21 +129,24 @@ function PasswordRecovery() {
               <tfoot>
                 <tr>
                   <td>
-                    <button type="submit" onClick={handleSubmit} id="confirm_password_btn">
+                    <button
+                      type="submit"
+                      onClick={handleSubmit}
+                      id="confirm_password_btn">
                       <h3>CONFIRM</h3>
                     </button>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                  <span className={showStatusbar}>
-                    {message != '' && (
-                      <StatusBarComponent
-                        messageType={messageType}
-                        message={message}
-                      />
-                    )}
-                  </span>
+                    <span className={showStatusbar}>
+                      {message != '' && (
+                        <StatusBarComponent
+                          messageType={messageType}
+                          message={message}
+                        />
+                      )}
+                    </span>
                   </td>
                 </tr>
               </tfoot>

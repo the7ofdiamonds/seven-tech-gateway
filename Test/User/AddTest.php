@@ -1,4 +1,5 @@
 <?php
+
 namespace SEVEN_TECH\Gateway\Test\User;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,7 +15,7 @@ class AddTest extends TestCase
 
     public Static function addDataProvider()
     {
-        return (new Spreadsheet((new DataProviders)->accountPath, 'User'))->getData();
+        return (new Spreadsheet((new DataProviders)->accountPath, 'Create'))->getData();
     }
 
     #[DataProvider('addDataProvider')]
@@ -31,7 +32,7 @@ class AddTest extends TestCase
             $this->assertNotNull($userAdded->id);
             $this->assertNotNull($userAdded->providergivenID);
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while adding a new user: " . $e->getErrorMessage());
         }
     }
 }

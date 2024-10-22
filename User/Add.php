@@ -35,25 +35,25 @@ class Add
             
             $emailExists = $this->databaseExists->existsByEmail($email);
 
-            if ($emailExists == 'TRUE') {
+            if ($emailExists) {
                 throw new Exception('This email is currently in use check your inbox.', 400);
             }
 
             $usernameExists = $this->databaseExists->existsByUsername($username);
 
-            if ($usernameExists == 'TRUE') {
+            if ($usernameExists) {
                 throw new Exception('This username is in use at this time.', 400);
             }
 
             $nicenameExists = $this->databaseExists->existsByNicename($nicename);
 
-            if ($nicenameExists == 'TRUE') {
+            if ($nicenameExists) {
                 throw new Exception('This nicename is in use at this time.', 400);
             }
 
             $phoneExists = $this->databaseExists->existsByPhone($phone);
 
-            if ($phoneExists == 'TRUE') {
+            if ($phoneExists) {
                 throw new Exception('This phone number is in use at this time.', 400);
             }
 

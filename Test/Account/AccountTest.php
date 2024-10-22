@@ -25,7 +25,7 @@ class AccountTest extends TestCase
 
             $this->assertSame($email, $account->email);
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while testing account constructor: " . $e->getErrorMessage());
         }
     }
 
@@ -52,7 +52,7 @@ class AccountTest extends TestCase
 
             $this->assertTrue($lockResult, "Account should be locked.");
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while locking account: " . $e->getErrorMessage());
         }
     }
 
@@ -61,37 +61,24 @@ class AccountTest extends TestCase
     {
         try {
             $account = new Account($email);
-            $unlockResult = $account->unlock($account->confirmationCode);
+            $unlockResult = $account->unlock($account->userActivationKey);
 
             $this->assertTrue($unlockResult, "Account should be unlocked.");
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while unlocking account: " . $e->getErrorMessage());
         }
     }
 
     #[DataProvider('accountDataProvider')]
-    public function testDisable($email)
+    public function testRecover($email)
     {
         try {
             $account = new Account($email);
-            $disableResult = $account->disable($account->confirmationCode);
+            $recoverResult = $account->recover($account->userActivationKey);
 
-            $this->assertTrue($disableResult, "Account should be disabled.");
+            $this->assertTrue($recoverResult, "Account should be recovered.");
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
-        }
-    }
-
-    #[DataProvider('accountDataProvider')]
-    public function testEnable($email)
-    {
-        try {
-            $account = new Account($email);
-            $enableResult = $account->enable($account->confirmationCode);
-
-            $this->assertTrue($enableResult, "Account should be enabled.");
-        } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown during account recovery: " . $e->getErrorMessage());
         }
     }
 }

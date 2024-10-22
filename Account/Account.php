@@ -26,6 +26,7 @@ class Account
     public String $confirmationCode;
     public String $firstName;
     public String $lastName;
+    public String $nickname;
     public String $nicename;
     public String $phone = "";
     public String $bio;
@@ -45,17 +46,17 @@ class Account
             $account = $this->find();
             $this->id = $account->id;
             $this->joined = $account->joined;
-            $this->email =  $account->email ?: '';
-            $this->username = $account->username ?: '';
-            $this->password = $account->password ?: '';
-            $this->firstName = $account->first_name ?: '';
-            $this->lastName = $account->last_name ?: '';
-            $this->nicename = $account->nicename ?: '';
-            // $this->nickname = $account->nick
-            $this->phone = $account->phone ?: '';
-            $this->userActivationKey = $account->user_activation_key ?: '';
-            $this->confirmationCode = $account->confirmation_code ?: '';
-            $this->providerGivenID = $account->provider_given_id ?: '';
+            $this->email =  $account->email;
+            $this->username = $account->username;
+            $this->password = $account->password;
+            $this->firstName = $account->first_name;
+            $this->lastName = $account->last_name;
+            $this->nicename = $account->nicename;
+            $this->nickname = $account->nickname;
+            $this->phone = $account->phone;
+            $this->userActivationKey = $account->user_activation_key;
+            $this->confirmationCode = $account->confirmation_code;
+            $this->providerGivenID = $account->provider_given_id;
             $this->isAuthenticated = (int) $account->is_authenticated == 1;
             $this->isAccountNonExpired = (int) $account->is_account_non_expired == 1;
             $this->isAccountNonLocked = (int) $account->is_account_non_locked == 1;
@@ -167,7 +168,7 @@ class Account
 
             // (new EmailAccount)->accountLocked($this->email);
 
-            return 'Account has been locked successfully.';
+            return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
@@ -188,16 +189,16 @@ class Account
 
             // (new EmailAccount)->accountUnlocked($this->email);
 
-            return 'Account has been unlocked succesfully.';
+            return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }
     }
 
-    function recover($userConfirmationKey)
+    function recover($userActivationKey)
     {
         try {
-            (new Authentication($this->email))->verifyAccount($userConfirmationKey);
+            (new Authentication($this->email))->verifyAccount($userActivationKey);
 
             $accountRecovered = $this->activated();
 
@@ -209,7 +210,7 @@ class Account
 
             // (new EmailAccount)->accountUnlocked($this->email);
 
-            return 'Account has been succesfully reactivated.';
+            return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
         }

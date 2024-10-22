@@ -38,7 +38,7 @@ class ChangeTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while changing username: " . $e->getErrorMessage());
         }
     }
 
@@ -52,7 +52,7 @@ class ChangeTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while changing nicename: " . $e->getErrorMessage());
         }
     }
 
@@ -66,7 +66,7 @@ class ChangeTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while changing nick name: " . $e->getErrorMessage());
         }
     }
 
@@ -80,7 +80,7 @@ class ChangeTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while changing first name: " . $e->getErrorMessage());
         }
     }
 
@@ -94,7 +94,7 @@ class ChangeTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while changing last name: " . $e->getErrorMessage());
         }
     }
 
@@ -106,7 +106,7 @@ class ChangeTest extends TestCase
 
             $this->assertTrue($phoneNumberChanged, "Phone number should be changed.");
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while changing phone number: " . $e->getErrorMessage());
         }
     }
 }

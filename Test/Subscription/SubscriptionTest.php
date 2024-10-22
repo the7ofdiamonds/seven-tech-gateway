@@ -34,7 +34,7 @@ class SubscriptionTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while subscribing: " . $e->getErrorMessage());
         }
     }
 
@@ -46,7 +46,7 @@ class SubscriptionTest extends TestCase
 
             $this->assertTrue($unsubscribed);
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while unsubscribing: " . $e->getErrorMessage());
         }
     }
 }

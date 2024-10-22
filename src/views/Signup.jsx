@@ -35,8 +35,6 @@ function SignUpComponent() {
     signupStatusCode,
     signupSuccessMessage,
     signupErrorMessage,
-    loginSuccessMessage,
-    loginStatusCode,
     accessToken,
     refreshToken,
   } = useSelector((state) => state.signup);
@@ -58,25 +56,16 @@ function SignUpComponent() {
   }, [password, confirmPassword]);
 
   useEffect(() => {
-    if (signupStatusCode == 201 && signupSuccessMessage) {
-      setMessageType('success');
-      setMessage(signupSuccessMessage);
-    }
-  }, [signupSuccessMessage]);
-
-  useEffect(() => {
     if (
-      loginStatusCode == 201 &&
-      loginSuccessMessage &&
+      signupStatusCode == 200 &&
+      signupSuccessMessage &&
       accessToken &&
       refreshToken
     ) {
-      setTimeout(() => {
-        setMessageType('success');
-        setMessage(loginSuccessMessage);
-      }, 3000);
+      setMessageType('success');
+      setMessage(signupSuccessMessage);
     }
-  }, [loginStatusCode, loginSuccessMessage, accessToken, refreshToken]);
+  }, [signupStatusCode, signupSuccessMessage, accessToken, refreshToken]);
 
   useEffect(() => {
     if (signupErrorMessage) {
@@ -86,10 +75,10 @@ function SignUpComponent() {
   }, [signupErrorMessage]);
 
   useEffect(() => {
-    if (signupSuccessMessage != '' || loginSuccessMessage != '') {
+    if (signupSuccessMessage != '') {
       setShowStatusBar('modal-overlay');
     }
-  }, [signupSuccessMessage, loginSuccessMessage]);
+  }, [signupSuccessMessage]);
 
   useEffect(() => {
     if (accessToken && refreshToken) {
@@ -98,20 +87,20 @@ function SignUpComponent() {
     }
   }, [dispatch, accessToken, refreshToken]);
 
-  // useEffect(() => {
-  //   if (accessToken && refreshToken && loginStatusCode == 200) {
-  //     const urlParams = new URLSearchParams(window.location.search);
-  //     const redirectTo = urlParams.get('redirectTo');
+  useEffect(() => {
+    if (accessToken && refreshToken && signupStatusCode == 200) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirectTo');
 
-  //     setTimeout(() => {
-  //       if (redirectTo == null) {
-  //         window.location.href = '/dashboard';
-  //       } else {
-  //         window.location.href = redirectTo;
-  //       }
-  //     }, 7000);
-  //   }
-  // }, [dispatch, accessToken, refreshToken, loginStatusCode]);
+      setTimeout(() => {
+        if (redirectTo == null) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = redirectTo;
+        }
+      }, 7000);
+    }
+  }, [dispatch, accessToken, refreshToken, signupStatusCode]);
 
   const credentials = {
     username: username,

@@ -29,7 +29,7 @@ class API_Account
             (new Create)->account($request['email'], $request['username'], $request['password'], $request['confirmPassword'], $request['nicename'], $request['nickname'], $request['firstname'], $request['lastname'], $request['phone']);
 
             $auth = (new Login)->withEmailAndPassword($request['email'], $request['password']);
-  
+
             $registeredAccountResponse = array(
                 'successMessage' => 'You have been signed up successfully.',
                 'username' => $auth->username,
@@ -42,7 +42,7 @@ class API_Account
             $response->set_status(200);
 
             return rest_ensure_response($response);
-                } catch (DestructuredException $e) {
+        } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
@@ -63,7 +63,7 @@ class API_Account
             $response->set_status(200);
 
             return rest_ensure_response($response);
-                } catch (DestructuredException $e) {
+        } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
@@ -78,10 +78,10 @@ class API_Account
 
             $auth = new Authenticated($accessToken, $refreshToken);
 
-            $lockedAccount = (new Account($auth->email))->lock();
+            (new Account($auth->email))->lock();
 
             $lockedAccountResponse = [
-                'successMessage' => $lockedAccount,
+                'successMessage' => 'Account has been locked successfully.',
                 'statusCode' => 200
             ];
 
@@ -99,10 +99,10 @@ class API_Account
     function unlock(WP_REST_Request $request)
     {
         try {
-            $unlockedAccount = (new Account($request['email']))->unlock($request['user_activation_key']);
+            (new Account($request['email']))->unlock($request['user_activation_key']);
 
             $unlockAccountResponse = [
-                'successMessage' => $unlockedAccount,
+                'successMessage' => 'Account has been unlocked succesfully.',
                 'statusCode' => 200
             ];
 
@@ -120,10 +120,10 @@ class API_Account
     function recover(WP_REST_Request $request)
     {
         try {
-            $recoverAccount = (new Account($request['email']))->recover($request['user_activation_key']);
+            (new Account($request['email']))->recover($request['user_activation_key']);
 
             $recoverAccountResponse = [
-                'successMessage' => $recoverAccount,
+                'successMessage' => 'Account has been succesfully reactivated.',
                 'statusCode' => 200
             ];
 

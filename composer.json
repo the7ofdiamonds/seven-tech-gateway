@@ -47,6 +47,7 @@
         "test-admin": "vendor/bin/phpunit ./Test/Admin/AdminTest.php",
         "test-auth": "vendor/bin/phpunit ./Test/Authentication/AuthenticationTest.php",
         "test-change": "vendor/bin/phpunit ./Test/Change/ChangeTest.php",
+        "test-database-exists": "vendor/bin/phpunit ./Test/Database/DatabaseExistsTest.php",
         "test-password": "vendor/bin/phpunit ./Test/Password/PasswordTest.php",
         "test-session": "vendor/bin/phpunit ./Test/Session/SessionTest.php",
         "test-session-wordpress": "vendor/bin/phpunit ./Test/Session/SessionWordpressTest.php",

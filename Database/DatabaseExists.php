@@ -16,7 +16,7 @@ class DatabaseExists
         $this->validator = new Validator;
     }
 
-    function existsByEmail($email)
+    function existsByEmail($email) : bool
     {
         try {
             $this->validator->isValidEmail($email);
@@ -43,7 +43,7 @@ class DatabaseExists
         }
     }
 
-    function existsByUsername($username)
+    function existsByUsername($username)  : bool
     {
         try {
             $this->validator->isValidUsername($username);
@@ -70,7 +70,7 @@ class DatabaseExists
         }
     }
 
-    function existsByNicename($nicename)
+    function existsByNicename($nicename) : bool
     {
         try {
             $this->validator->isValidNicename($nicename);
@@ -97,7 +97,7 @@ class DatabaseExists
         }
     }
 
-    function existsByPhone($phone)
+    function existsByPhone($phone) : bool
     {
         try {
             $this->validator->isValidPhone($phone);

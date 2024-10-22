@@ -39,7 +39,7 @@ class PasswordTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while testing password recovery: " . $e->getErrorMessage());
         }
     }
 
@@ -60,7 +60,7 @@ class PasswordTest extends TestCase
 
             return $data;
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while testing password change: " . $e->getErrorMessage());
         }
     }
 
@@ -77,7 +77,7 @@ class PasswordTest extends TestCase
 
             $this->assertTrue($updated);
         } catch (DestructuredException $e) {
-            $this->fail("Exception thrown during activation: " . $e->getErrorMessage());
+            $this->fail("Exception thrown while testing password update: " . $e->getErrorMessage());
         }
     }
 }
