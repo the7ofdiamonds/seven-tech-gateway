@@ -15,6 +15,9 @@ VIEW `user_details_view` AS
             WHEN (`m`.`meta_key` = 'phone_number') THEN `m`.`meta_value`
         END)) AS `phone`,
         MAX((CASE
+            WHEN (`m`.`meta_key` = 'nickname') THEN `m`.`meta_value`
+        END)) AS `nickname`,
+        MAX((CASE
             WHEN (`m`.`meta_key` = 'first_name') THEN `m`.`meta_value`
         END)) AS `first_name`,
         MAX((CASE

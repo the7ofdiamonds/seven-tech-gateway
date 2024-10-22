@@ -4,8 +4,8 @@ CREATE DEFINER=`root`@`%` PROCEDURE `existsByEmail`(
 BEGIN
     SELECT
         CASE
-            WHEN COUNT(*) > 0 THEN 'TRUE'
-            ELSE 'FALSE'
+            WHEN COUNT(*) > 0 THEN 1
+            ELSE 0
         END AS resultSet
     FROM
         wordpress.wp_users AS u
