@@ -10,6 +10,6 @@ class Shortcodes
     }
 
     function seven_tech_gateway_nav(){
-       include SEVEN_TECH . 'includes/react.php';
+       include SEVEN_TECH_GATEWAY . 'includes/react.php';
     }  
 }

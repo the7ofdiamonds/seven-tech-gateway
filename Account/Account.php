@@ -121,6 +121,49 @@ class Account
 
             (new Authentication($this->email))->updateActivationKey();
 
+            (new EmailAccount)->accountActivate($this->email);
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+
+    public function lock()
+    {
+        try {
+            $accountLocked = (new Details())->lockAccount($this);
+
+            if (!$accountLocked) {
+                throw new Exception('Account could not be locked at this time.', 500);
+            }
+
+            (new Logout)->all($this);
+
+            (new EmailAccount)->accountLocked($this->email);
+
+            return true;
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
+    function unlock($userConfirmationKey)
+    {
+        try {
+            (new Authentication($this->email))->verifyAccount($userConfirmationKey);
+
+            $accountUnlocked = (new Details())->unlockAccount($this);
+
+            if (!$accountUnlocked) {
+                throw new Exception('Account could not be unlocked at this time.', 500);
+            }
+
+            (new Authentication($this->email))->updateActivationKey();
+
+            (new EmailAccount)->accountUnlocked($this->id);
+
             return true;
         } catch (Exception $e) {
             throw new DestructuredException($e);
@@ -155,46 +198,6 @@ class Account
         }
     }
 
-    public function lock()
-    {
-        try {
-            $accountLocked = (new Details())->lockAccount($this);
-
-            if (!$accountLocked) {
-                throw new Exception('Account could not be locked at this time.', 500);
-            }
-
-            (new Logout)->all($this);
-
-            // (new EmailAccount)->accountLocked($this->email);
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
-    function unlock($userConfirmationKey)
-    {
-        try {
-            (new Authentication($this->email))->verifyAccount($userConfirmationKey);
-
-            $accountUnlocked = (new Details())->unlockAccount($this);
-
-            if (!$accountUnlocked) {
-                throw new Exception('Account could not be unlocked at this time.', 500);
-            }
-
-            (new Authentication($this->email))->updateActivationKey();
-
-            // (new EmailAccount)->accountUnlocked($this->email);
-
-            return true;
-        } catch (Exception $e) {
-            throw new DestructuredException($e);
-        }
-    }
-
     function recover($userActivationKey)
     {
         try {
@@ -208,7 +211,7 @@ class Account
 
             (new Authentication($this->email))->updateActivationKey();
 
-            // (new EmailAccount)->accountUnlocked($this->email);
+            (new EmailAccount)->accountRecover($this->id);
 
             return true;
         } catch (Exception $e) {

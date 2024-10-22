@@ -31,7 +31,7 @@ class API_Account
             $auth = (new Login)->withEmailAndPassword($request['email'], $request['password']);
 
             $registeredAccountResponse = array(
-                'successMessage' => 'You have been signed up successfully.',
+                'successMessage' => "Your has been created successfully an email has been sent to {$request['email']} check your inbox to confirm.",
                 'username' => $auth->username,
                 'refreshToken' => $auth->refresh_token,
                 'accessToken' => $auth->access_token,

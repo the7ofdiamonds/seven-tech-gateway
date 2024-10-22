@@ -26,7 +26,7 @@ class Create
         $this->login = new Login;
     }
 
-    function account(string $email, string $username, string $password, string $confirmPassword, string $nicename, string $nickname, string $firstname, string $lastname, string $phone)
+    function account(string $email, string $username, string $password, string $confirmPassword, string $nicename, string $nickname, string $firstname, string $lastname, string $phone) : bool
     {
         try {
             $createdUser = $this->add->user(
@@ -41,7 +41,6 @@ class Create
             $authentication = new Authentication($email);
             $authentication->addProviderGivenID($createdUser->providergivenID);
             $userActivationKey = $authentication->addActivationKey();
-            $confirmationCode = $authentication->addConfirmationCode();
 
             $userData = new WP_User($createdUser->id);
             $userData->first_name = $firstname;
@@ -61,21 +60,9 @@ class Create
             (new Details($email))->addDetails($id, 'is_account_non_locked', 1);
             (new Details($email))->addDetails($id, 'is_credentials_non_expired', 1);            
             
-            $this->email->accountCreated($email);
+            $this->email->accountCreated($id);
 
-            $auth = $this->login->withEmailAndPassword($email, $password);
-  
-            $signupResponse = array(
-                'successMessage' => 'You have been signed up successfully.',
-                'id' => $id,
-                'userActivationCode' => $userActivationKey,
-                'confirmationCode' => $confirmationCode,
-                'refreshToken' => $auth->refresh_token,
-                'accessToken' => $auth->access_token,
-                'statusCode' => 200,
-            );
-
-            return $signupResponse;
+            return true;
         } catch (WP_Error $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {
