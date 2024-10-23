@@ -6,14 +6,8 @@
         {
             "name": "Jamel C. Lyons",
             "email": "jclyonsenterprises@gmail.com",
-            "homepage": "https://the7ofdiamonds.tech/founders/jamelclyons",
+            "homepage": "https://www.linkedin.com/in/jamelclyons/",
             "role": "Developer"
-        },
-        {
-            "name": "THE7OFDIAMONDS.TECH",
-            "email": "jclyonsenterprises@gmail.com",
-            "homepage": "https://the7ofdiamonds.tech",
-            "role": "Maintainer"
         }
     ],
     "minimum-stability": "dev",
@@ -37,12 +31,11 @@
         "predis/predis": "^2.2",
         "mkorkmaz/redislabs-rejson": "^2.3",
         "phpoffice/phpspreadsheet": "^3.3",
-        "jamelclyons/seven-tech-communications": "*"
+        "the7ofdiamonds/seven-tech-communications": "dev-main"
     },
     "autoload": {
         "psr-4": {
-            "SEVEN_TECH\\Gateway\\": "",
-            "PHPMailer\\PHPMailer\\": "phpmailer"
+            "SEVEN_TECH\\Gateway\\": ""
         }
     },
     "require-dev": {

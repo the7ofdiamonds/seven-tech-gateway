@@ -3,7 +3,7 @@
 namespace SEVEN_TECH\Gateway\Roles;
 
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\EmailRole;
+// use SEVEN_TECH\Gateway\Email\EmailRole;
 
 use Exception;
 
@@ -12,11 +12,11 @@ use WP_User;
 
 class Roles
 {
-    private $email;
+    // private $email;
 
     public function __construct()
     {
-        $this->email = new EmailRole;
+        // $this->email = new EmailRole;
     }
 
     public function roleExists($roleName)
@@ -161,7 +161,7 @@ class Roles
                 throw new Exception("There has been an error adding user role.", 500);
             }
 
-            $this->email->roleAdded($user->user_email, $roleName);
+            // $this->email->roleAdded($user->user_email, $roleName);
 
             return $updated;
         } catch (WP_Error $e) {
@@ -205,7 +205,7 @@ class Roles
                 return "There has been an error removing user role.";
             }
 
-            $this->email->roleRemoved($user->user_email, $roleName);
+            // $this->email->roleRemoved($user->user_email, $roleName);
 
             return "User role {$roleName} has been removed successfully";
         } catch (DestructuredException $e) {

@@ -4,7 +4,8 @@ namespace SEVEN_TECH\Gateway\Change;
 
 use SEVEN_TECH\Gateway\Account\Account;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\EmailUser;
+
+use SEVEN_TECH\Communications\Email\Gateway\Change as GatewayChange;
 
 use Exception;
 
@@ -33,7 +34,7 @@ class Change {
             $this->username = $account->username;
             $this->firstname = $account->firstName;
             $this->lastname = $account->lastName;
-            // $this->nickname = $account->nickName;
+            $this->nickname = $account->nickname;
             $this->nicename = $account->nicename;
             $this->phone = $account->phone;
 
@@ -63,7 +64,9 @@ class Change {
                 throw new Exception($updatedUser->get_error_message());
             }
 
-            // (new EmailUser)->usernameChanged($this->email, $username);
+            if (class_exists(GatewayChange::class, true)) {
+                (new GatewayChange())->sendUsernameChangedEmail($this->id, $username);
+            }
 
             return true;
         } catch (DestructuredException $e) {
@@ -89,7 +92,9 @@ class Change {
                 throw new Exception($updatedUser->get_error_message());
             }
 
-            // (new EmailUser)->nicenameChanged($this->email, $nicename);
+            if (class_exists(GatewayChange::class, true)) {
+                (new GatewayChange())->sendNicenameChangedEmail($this->id, $nicename);
+            }
 
             return true;
         } catch (DestructuredException $e) {
@@ -115,7 +120,9 @@ class Change {
                 throw new Exception($updatedUser->get_error_message());
             }
 
-            // (new EmailUser)->nicknameChanged($this->email, $nickname);
+            if (class_exists(GatewayChange::class, true)) {
+                (new GatewayChange())->sendNicknameChangedEmail($this->id, $nickname);
+            }
 
             return true;
         } catch (DestructuredException $e) {
@@ -141,8 +148,6 @@ class Change {
                 throw new Exception($updatedUser->get_error_message());
             }
 
-            // (new EmailUser)->nameChanged($this->email, $firstname);
-
             return true;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
@@ -166,8 +171,6 @@ class Change {
             if (is_wp_error($updatedUser)) {
                 throw new Exception($updatedUser->get_error_message());
             }
-
-            // (new EmailUser)->nameChanged($this->email);
 
             return true;
         } catch (DestructuredException $e) {
@@ -193,7 +196,9 @@ class Change {
                 throw new Exception($updatedUser->get_error_message());
             }
 
-            // (new EmailUser)->phoneChanged($this->email, $phone);
+            if (class_exists(GatewayChange::class, true)) {
+                (new GatewayChange())->sendPhoneChangedEmail($this->id, $phone);
+            }
 
             return true;
         } catch (DestructuredException $e) {

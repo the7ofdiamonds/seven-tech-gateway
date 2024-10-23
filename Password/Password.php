@@ -3,25 +3,24 @@
 namespace SEVEN_TECH\Gateway\Password;
 
 use SEVEN_TECH\Gateway\Account\Account;
-use SEVEN_TECH\Gateway\Authentication\Authentication;
-use SEVEN_TECH\Gateway\Email\EmailPassword;
-use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Account\Details;
+use SEVEN_TECH\Gateway\Authentication\Authentication;
+use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
 use SEVEN_TECH\Gateway\Validator\Validator;
+
+use SEVEN_TECH\Communications\Email\Gateway\Password as GatewayPassword;
 
 use Exception;
 
 class Password
 {
     private $validator;
-    private $email;
     private $firebaseAuth;
 
     public function __construct()
     {
         $this->validator = new Validator;
-        $this->email = new EmailPassword;
         $this->firebaseAuth = new FirebaseAuth;
     }
 
@@ -93,7 +92,9 @@ class Password
 
             $password_recover_link = home_url() . "/password/recover/{$account->email}/{$auth->confirmationCode}";
 
-            // $this->email->recover($account, $password_recover_link);
+            if (class_exists(GatewayPassword::class, true)) {
+                (new GatewayPassword())->sendRecoverEmail($account->id, $password_recover_link);
+            }
 
             return true;
         } catch (Exception $e) {
@@ -130,7 +131,9 @@ class Password
                 (new Details($account->email))->unexpireCredentials($account);
             }
 
-            // $this->email->changed($account);
+            if (class_exists(GatewayPassword::class, true)) {
+                (new GatewayPassword())->sendChangedEmail($account->id);
+            }
 
             return true;
         } catch (Exception $e) {
@@ -158,7 +161,9 @@ class Password
 
             $password_update_link = home_url() . "/password/update/{$account->email}/{$account->confirmationCode}";
 
-            $this->email->update($account, $password_update_link);
+            if (class_exists(GatewayPassword::class, true)) {
+                (new GatewayPassword())->sendUpdateEmail($account->id, $password_update_link);
+            }
 
             return true;
         } catch (Exception $e) {

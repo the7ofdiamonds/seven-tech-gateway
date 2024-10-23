@@ -5,8 +5,9 @@ namespace SEVEN_TECH\Gateway\Account;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Authentication\Login;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\User\Add;
+
+use SEVEN_TECH\Communications\Email\Gateway\Account;
 
 use WP_Error;
 use WP_User;
@@ -16,13 +17,11 @@ use Exception;
 class Create
 {
     private $add;
-    private $email;
     private $login;
 
     public function __construct()
     {
         $this->add = new Add();
-        $this->email = new EmailAccount;
         $this->login = new Login;
     }
 
@@ -60,7 +59,9 @@ class Create
             (new Details($email))->addDetails($id, 'is_account_non_locked', 1);
             (new Details($email))->addDetails($id, 'is_credentials_non_expired', 1);            
             
-            $this->email->accountCreated($id);
+            if (class_exists(Account::class, true)) {
+                (new Account())->sendSignUpEmail($id);
+            }
 
             return true;
         } catch (WP_Error $e) {

@@ -5,10 +5,11 @@ namespace SEVEN_TECH\Gateway\Account;
 use SEVEN_TECH\Gateway\Authentication\Authentication;
 use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Email\EmailAccount;
 use SEVEN_TECH\Gateway\Authentication\Logout;
 use SEVEN_TECH\Gateway\Validator\Validator;
 use SEVEN_TECH\Gateway\Roles\Roles;
+
+use SEVEN_TECH\Communications\Email\Gateway\Account as GatewayAccount;
 
 use Exception;
 
@@ -121,7 +122,9 @@ class Account
 
             (new Authentication($this->email))->updateActivationKey();
 
-            (new EmailAccount)->accountActivate($this->email);
+            if (class_exists(GatewayAccount::class, true)) {
+                (new GatewayAccount())->sendSignUpEmail($this->id);
+            }
 
             return true;
         } catch (Exception $e) {
@@ -141,7 +144,9 @@ class Account
 
             (new Logout)->all($this);
 
-            (new EmailAccount)->accountLocked($this->email);
+            if (class_exists(GatewayAccount::class, true)) {
+                (new GatewayAccount())->sendAccountLockedEmail($this->id);
+            }
 
             return true;
         } catch (Exception $e) {
@@ -162,7 +167,9 @@ class Account
 
             (new Authentication($this->email))->updateActivationKey();
 
-            (new EmailAccount)->accountUnlocked($this->id);
+            if (class_exists(GatewayAccount::class, true)) {
+                (new GatewayAccount())->sendAccountUnlockedEmail($this->id);
+            }
 
             return true;
         } catch (Exception $e) {
@@ -211,7 +218,9 @@ class Account
 
             (new Authentication($this->email))->updateActivationKey();
 
-            (new EmailAccount)->accountRecover($this->id);
+            if (class_exists(GatewayAccount::class, true)) {
+                (new GatewayAccount())->sendAccountRecoveredEmail($this->id);
+            }
 
             return true;
         } catch (Exception $e) {

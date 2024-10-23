@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c819d10e48f754b81fab218a1cfa11ce",
+    "content-hash": "65f7b339a92d122afc799af129fc2b05",
     "packages": [
         {
             "name": "beste/clock",
@@ -890,16 +890,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v4.28.2",
+            "version": "v4.28.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "96021a9a8a5aa7770427b1e7ef1b2e543792684e"
+                "reference": "c5c311e0f3d89928251ac5a2f0e3db283612c100"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/96021a9a8a5aa7770427b1e7ef1b2e543792684e",
-                "reference": "96021a9a8a5aa7770427b1e7ef1b2e543792684e",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/c5c311e0f3d89928251ac5a2f0e3db283612c100",
+                "reference": "c5c311e0f3d89928251ac5a2f0e3db283612c100",
                 "shasum": ""
             },
             "require": {
@@ -928,9 +928,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.28.2"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.28.3"
             },
-            "time": "2024-09-18T20:56:15+00:00"
+            "time": "2024-10-22T22:27:17+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -1362,39 +1362,6 @@
                 }
             ],
             "time": "2024-07-18T11:15:46+00:00"
-        },
-        {
-            "name": "jamelclyons/seven-tech-communications",
-            "version": "dev-production",
-            "dist": {
-                "type": "path",
-                "url": "../seven-tech-communications",
-                "reference": "b2b4b4a5c0d3cc03461158eb59fae7b296b8c7be"
-            },
-            "require": {
-                "ext-pdo": "*",
-                "ext-pdo_pgsql": "*",
-                "mpdf/mpdf": "^8.2",
-                "phpmailer/phpmailer": "^6.8",
-                "symfony/dotenv": "^6.3",
-                "vlucas/phpdotenv": "^5.5"
-            },
-            "type": "project",
-            "autoload": {
-                "psr-4": {
-                    "SEVEN_TECH\\Communications\\": "",
-                    "PHPMailer\\PHPMailer\\": "phpmailer"
-                }
-            },
-            "authors": [
-                {
-                    "name": "THE7OFDIAMONDS.TECH"
-                }
-            ],
-            "description": "API to email server",
-            "transport-options": {
-                "relative": true
-            }
         },
         {
             "name": "kreait/firebase-php",
@@ -3982,6 +3949,39 @@
             "time": "2024-09-09T11:45:10+00:00"
         },
         {
+            "name": "the7ofdiamonds/seven-tech-communications",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../seven-tech-communications",
+                "reference": "3b7e770845b92f9a9df20ba3eaed2ea0c595d5e7"
+            },
+            "require": {
+                "ext-pdo": "*",
+                "ext-pdo_pgsql": "*",
+                "mpdf/mpdf": "^8.2",
+                "phpmailer/phpmailer": "^6.8",
+                "symfony/dotenv": "^6.3",
+                "vlucas/phpdotenv": "^5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SEVEN_TECH\\Communications\\": "",
+                    "PHPMailer\\PHPMailer\\": "phpmailer"
+                }
+            },
+            "authors": [
+                {
+                    "name": "THE7OFDIAMONDS.TECH"
+                }
+            ],
+            "description": "API to email server",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v5.6.1",
             "source": {
@@ -5642,7 +5642,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "the7ofdiamonds/seven-tech-communications": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -5650,6 +5652,6 @@
         "ext-pdo": "*",
         "ext-pdo_pgsql": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

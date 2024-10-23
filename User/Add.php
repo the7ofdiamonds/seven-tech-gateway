@@ -6,7 +6,6 @@ use SEVEN_TECH\Gateway\Database\DatabaseExists;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Model\Response\ResponseCreateUser;
 use SEVEN_TECH\Gateway\Services\Google\Firebase\FirebaseAuth;
-use SEVEN_TECH\Gateway\Email\EmailUser;
 
 use Exception;
 
@@ -16,13 +15,11 @@ class Add
 {
     private $databaseExists;
     private $firebaseAuth;
-    private $email;
 
     public function __construct()
     {
         $this->databaseExists = new DatabaseExists;
         $this->firebaseAuth = new FirebaseAuth;
-        $this->email = new EmailUser;
     }
 
     public function user($email, $username, $password, $confirmPassword, $nicename, $phone)
