@@ -11,19 +11,19 @@ use WP_User;
 
 class User
 {
-    public $id;
-    public $email;
-    public $join_date;
-    public $status;
-    public $username;
-    public $firstname;
-    public $lastname;
-    public $nickname;
-    public $nicename;
-    public $roles;
-    public $phone;
-    public $profileImage;
-    public $url;
+    public int $id;
+    public string $email;
+    public string $join_date;
+    public string $status;
+    public string $username;
+    public string $firstname;
+    public string $lastname;
+    public string $nickname;
+    public string $nicename;
+    public array $roles;
+    public string $phone;
+    public string $profileImage;
+    public string $url;
 
     public function __construct(string $username)
     {
@@ -39,12 +39,12 @@ class User
             $this->join_date = $user_data->data->user_registered;
             $this->status = $user_data->data->user_status;
             $this->username = $user_data->data->display_name;
-            $this->firstname = get_user_meta($this->id, 'first_name');
-            $this->lastname = get_user_meta($this->id, 'last_name');
-            $this->nickname = get_user_meta($this->id, 'nickname');
+            $this->firstname = get_user_meta($this->id, 'first_name', true);
+            $this->lastname = get_user_meta($this->id, 'last_name', true);
+            $this->nickname = get_user_meta($this->id, 'nickname', true);
             $this->nicename = $user_data->data->user_nicename;
             $this->roles = $this->getUserRoles($user_data->roles);
-            $this->phone = get_user_meta($this->id, 'phone_number');
+            $this->phone = get_user_meta($this->id, 'phone_number', true);
             $this->url = $user_data->data->user_url;
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);

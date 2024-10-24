@@ -3954,7 +3954,7 @@
             "dist": {
                 "type": "path",
                 "url": "../seven-tech-communications",
-                "reference": "3b7e770845b92f9a9df20ba3eaed2ea0c595d5e7"
+                "reference": "d36dd484b31369efa1c2da962eb388040bd3e66a"
             },
             "require": {
                 "ext-pdo": "*",
@@ -3973,7 +3973,10 @@
             },
             "authors": [
                 {
-                    "name": "THE7OFDIAMONDS.TECH"
+                    "name": "Jamel C. Lyons",
+                    "email": "jclyonsenterprises@gmail.com",
+                    "homepage": "https://www.linkedin.com/in/jamelclyons/",
+                    "role": "Developer"
                 }
             ],
             "description": "API to email server",
@@ -5652,6 +5655,6 @@
         "ext-pdo": "*",
         "ext-pdo_pgsql": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

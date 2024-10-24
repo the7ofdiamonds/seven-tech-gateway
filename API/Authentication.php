@@ -13,7 +13,7 @@ use Exception;
 use WP_REST_Request;
 use WP_REST_Response;
 
-class API_Authentication
+class Authentication
 {
     private $login;
     private $logout;

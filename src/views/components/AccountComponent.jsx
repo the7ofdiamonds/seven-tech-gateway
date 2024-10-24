@@ -18,6 +18,16 @@ function AccountComponent() {
     email,
   } = useSelector((state) => state.account);
 
+  const { loginStatusCode } = useSelector((state) => state.login);
+
+  const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    if (loginStatusCode == 200) {
+      setShowLogin(false);
+    }
+  }, [loginStatusCode]);
+
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
@@ -43,7 +53,7 @@ function AccountComponent() {
   }, [dispatch, accountErrorMessage]);
 
   useEffect(() => {
-    if ((accountStatusCode != 403) && message != '') {
+    if (accountStatusCode != 403 && message != '') {
       setShowStatusBar('modal-overlay');
       setTimeout(() => {
         setShowStatusBar('');
@@ -56,6 +66,12 @@ function AccountComponent() {
       setTimeout(() => {
         window.location.href = '/';
       }, 5000);
+    }
+  }, [accountStatusCode]);
+
+  useEffect(() => {
+    if (accountStatusCode == 403) {
+      setShowLogin(true);
     }
   }, [accountStatusCode]);
 
@@ -75,7 +91,6 @@ function AccountComponent() {
   return (
     <>
       <main className="account">
-
         <span className="lock-account">
           <button onClick={handleLockAccount} id="lock_account_btn">
             <h3>LOCK ACCOUNT</h3>
@@ -88,6 +103,14 @@ function AccountComponent() {
           )}
         </span>
       </main>
+
+      {showLogin && (
+        <div className="modal-overlay">
+          <main className="login">
+            <LoginComponent />
+          </main>
+        </div>
+      )}
     </>
   );
 }

@@ -1,13 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidUsername, isValidPhone, isValidName, isValidEmail } from '../utils/Validation';
+import { isValidEmail } from '../utils/Validation';
 
 const getUserUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/get' : "/wp-json/seven-tech/v1/user/get";
-
-const changeUsernameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-username' : "/wp-json/seven-tech/v1/change/username";
-const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-name' : "/wp-json/seven-tech/v1/change/name";
-const changeNicknameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nickname' : "/wp-json/seven-tech/v1/change/nickname";
-const changeNicenameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-nicename' : "/wp-json/seven-tech/v1/change/nicename";
-const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change-phone' : "/wp-json/seven-tech/v1/change/phone";
 
 const addUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/add-role' : "/wp-json/seven-tech/v1/user/roles/add";
 const removeUserRoleUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/remove-role' : "/wp-json/seven-tech/v1/user/roles/remove";
@@ -61,127 +55,6 @@ export const getUser = createAsyncThunk('user/getUser', async () => {
                 'Refresh-Token': refreshToken,
                 'Content-Type': 'application/json'
             }
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const changeUsername = createAsyncThunk('user/changeUsername', async (username) => {
-    try {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (!isValidUsername(username)) {
-            throw Error("Username is not valid.")
-        }
-
-        const response = await fetch(`${changeUsernameUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: username
-            })
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const changeName = createAsyncThunk('user/changeName', async ({ firstName, lastName }) => {
-    try {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (firstName == '' && lastName == '') {
-            throw new Error("A first or last name is required to be changed.");
-        }
-
-        const response = await fetch(changeNameUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                first_name: firstName,
-                last_name: lastName
-            })
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const changeNickname = createAsyncThunk('user/changeNickname', async (nickname) => {
-    try {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (!isValidName(nickname)) {
-            throw Error("Nick name is not valid.")
-        }
-
-        const response = await fetch(`${changeNicknameUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                nickname: nickname
-            })
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
-export const changeNicename = createAsyncThunk('user/changeNicename', async (nicename) => {
-    try {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (!isValidName(nicename)) {
-            throw Error("Nice name is not valid.")
-        }
-
-        const response = await fetch(`${changeNicenameUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                nicename: nicename
-            })
         });
 
         const responseData = await response.json();
@@ -261,36 +134,6 @@ export const removeUserRole = createAsyncThunk('user/removeUserRole', async ({ n
     }
 });
 
-export const changePhone = createAsyncThunk('user/changePhone', async (phone) => {
-    try {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = localStorage.getItem('refresh_token');
-
-        if (!isValidPhone(phone)) {
-            throw Error("There was an error changing your phone number.")
-        }
-
-        const response = await fetch(`${changePhoneUrl}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                phone: phone
-            })
-        });
-
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-});
-
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -321,43 +164,6 @@ export const userSlice = createSlice({
                     state.phone = action.payload.phone;
                 })
             .addCase(
-                changeUsername.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.username = action.payload.username;
-                })
-            .addCase(
-                changeName.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.firstname = action.payload.firstname;
-                    state.lastname = action.payload.lastname;
-                })
-            .addCase(
-                changeNickname.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.nickname = action.payload.nickname;
-                })
-            .addCase(
-                changeNicename.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.nicename = action.payload.nicename;
-                })
-            .addCase(
                 addUserRole.fulfilled, (state, action) => {
                     state.userLoading = false;
                     state.userError = '';
@@ -375,24 +181,10 @@ export const userSlice = createSlice({
                     state.userStatusCode = action.payload.statusCode;
                     state.roles = action.payload.roles;
                 })
-            .addCase(
-                changePhone.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
-                    state.phone = action.payload.phone;
-                })
             .addMatcher(isAnyOf(
                 getUser.pending,
-                changeUsername.pending,
-                changeName.pending,
-                changeNickname.pending,
-                changeNicename.pending,
                 addUserRole.pending,
-                removeUserRole.pending,
-                changePhone.pending
+                removeUserRole.pending
             ), (state) => {
                 state.userLoading = true;
                 state.userError = null;
@@ -402,13 +194,8 @@ export const userSlice = createSlice({
             })
             .addMatcher(isAnyOf(
                 getUser.rejected,
-                changeUsername.rejected,
-                changeName.rejected,
-                changeNickname.rejected,
-                changeNicename.rejected,
                 addUserRole.rejected,
-                removeUserRole.rejected,
-                changePhone.rejected
+                removeUserRole.rejected
             ), (state, action) => {
                 state.userLoading = false;
                 state.userError = action.error;

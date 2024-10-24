@@ -7,14 +7,14 @@ use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Gateway\Token\Token;
-use SEVEN_TECH\Gateway\User\User;
+use SEVEN_TECH\Gateway\User\User as UserClass;
 use SEVEN_TECH\Gateway\User\Add;
 
 use Exception;
 
 use WP_REST_Request;
 
-class API_User
+class User
 {
     private $authorization;
 
@@ -46,7 +46,7 @@ class API_User
                 throw new Exception('An username is required to change password.', 400);
             }
 
-            return rest_ensure_response((new User($auth->username)));
+            return rest_ensure_response((new UserClass($auth->username)));
         } catch (DestructuredException $e) {
             return (new DestructuredException($e))->rest_ensure_response_error();
         } catch (Exception $e) {

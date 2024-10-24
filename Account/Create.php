@@ -3,11 +3,11 @@
 namespace SEVEN_TECH\Gateway\Account;
 
 use SEVEN_TECH\Gateway\Authentication\Authentication;
-use SEVEN_TECH\Gateway\Authentication\Login;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\User\Add;
 
 use SEVEN_TECH\Communications\Email\Gateway\Account;
+use SEVEN_TECH\Communications\Exception\DestructuredException as CommunicationsException;
 
 use WP_Error;
 use WP_User;
@@ -16,19 +16,11 @@ use Exception;
 
 class Create
 {
-    private $add;
-    private $login;
 
-    public function __construct()
-    {
-        $this->add = new Add();
-        $this->login = new Login;
-    }
-
-    function account(string $email, string $username, string $password, string $confirmPassword, string $nicename, string $nickname, string $firstname, string $lastname, string $phone) : bool
+    function account(string $email, string $username, string $password, string $confirmPassword, string $nicename, string $nickname, string $firstname, string $lastname, string $phone): bool
     {
         try {
-            $createdUser = $this->add->user(
+            $createdUser = (new Add())->user(
                 $email,
                 $username,
                 $password,
@@ -57,16 +49,22 @@ class Create
             (new Details($email))->addDetails($id, 'is_authenticated', 1);
             (new Details($email))->addDetails($id, 'is_account_non_expired', 0);
             (new Details($email))->addDetails($id, 'is_account_non_locked', 1);
-            (new Details($email))->addDetails($id, 'is_credentials_non_expired', 1);            
-            
+            (new Details($email))->addDetails($id, 'is_credentials_non_expired', 1);
+
             if (class_exists(Account::class, true)) {
-                (new Account())->sendSignUpEmail($id);
+                $emailSent = (new Account())->sendSignUpEmail($id);
+
+                if (!$emailSent) {
+                    throw new Exception("Unable to send email.");
+                }
             }
 
             return true;
-        } catch (WP_Error $e) {
+        } catch (CommunicationsException $e) {
             throw new DestructuredException($e);
         } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (WP_Error $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);

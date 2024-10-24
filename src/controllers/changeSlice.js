@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { isValidUsername, isValidPhone, isValidName, isValidEmail } from '../utils/Validation';
+import { isValidUsername, isValidPhone, isValidName } from '../utils/Validation';
 
 const changeUsernameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/username' : "/wp-json/seven-tech/v1/change/username";
 const changeNameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/name' : "/wp-json/seven-tech/v1/change/name";
@@ -9,11 +9,11 @@ const changeNicenameUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VIT
 const changePhoneUrl = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL + '/change/phone' : "/wp-json/seven-tech/v1/change/phone";
 
 const initialState = {
-    userLoading: false,
-    userError: '',
-    userSuccessMessage: '',
-    userErrorMessage: '',
-    userStatusCode: '',
+    changeLoading: false,
+    changeError: '',
+    changeSuccessMessage: '',
+    changeErrorMessage: '',
+    changeStatusCode: '',
     username: '',
     firstname: '',
     lastname: '',
@@ -25,14 +25,14 @@ const initialState = {
 
 export const updateChangeSuccessMessage = () => {
     return {
-        type: 'user/updateChangeSuccessMessage',
+        type: 'change/updateChangeSuccessMessage',
         payload: ''
     };
 };
 
 export const updateChangeErrorMessage = () => {
     return {
-        type: 'user/updateChangeErrorMessage',
+        type: 'change/updateChangeErrorMessage',
         payload: ''
     };
 };
@@ -67,27 +67,30 @@ export const changeUsername = createAsyncThunk('change/changeUsername', async (u
     }
 });
 
-export const changeName = createAsyncThunk('change/changeName', async ({ firstName, lastName }) => {
+export const changeName = createAsyncThunk('change/changeName', async (fullName) => {
     try {
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
 
-        if (firstName == '' && lastName == '') {
+        const headers = new Headers();
+        headers.append("Authorization", "Bearer " + accessToken);
+        headers.append("Refresh-Token", refreshToken);
+        headers.append("Content-Type", "application/json");
+
+        if (fullName.first_name == '' && fullName.last_name == '') {
             throw new Error("A first or last name is required to be changed.");
         }
 
-        const response = await fetch(changeNameUrl, {
+        const request = new Request(changeNameUrl, {
             method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + accessToken,
-                'Refresh-Token': refreshToken,
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify({
-                first_name: firstName,
-                last_name: lastName
+                first_name: fullName.first_name,
+                last_name: fullName.last_name
             })
         });
+
+        const response = await fetch(request);
 
         const responseData = await response.json();
 
@@ -193,59 +196,59 @@ export const changeSlice = createSlice({
     initialState,
     reducers: {
         updateChangeSuccessMessage: (state, action) => {
-            state.userSuccessMessage = action.payload;
+            state.changeSuccessMessage = action.payload;
         },
         updateChangeErrorMessage: (state, action) => {
-            state.userError = action.payload;
-            state.userErrorMessage = action.payload;
+            state.changeError = action.payload;
+            state.changeErrorMessage = action.payload;
         }
     },
     extraReducers: (builder) => {
         builder
             .addCase(
                 changeUsername.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
+                    state.changeLoading = false;
+                    state.changeError = '';
+                    state.changeSuccessMessage = action.payload.successMessage;
+                    state.changeErrorMessage = action.payload.errorMessage;
+                    state.changeStatusCode = action.payload.statusCode;
                     state.username = action.payload.username;
                 })
             .addCase(
                 changeName.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
+                    state.changeLoading = false;
+                    state.changeError = '';
+                    state.changeSuccessMessage = action.payload.successMessage;
+                    state.changeErrorMessage = action.payload.errorMessage;
+                    state.changeStatusCode = action.payload.statusCode;
                     state.firstname = action.payload.firstname;
                     state.lastname = action.payload.lastname;
                 })
             .addCase(
                 changeNickname.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
+                    state.changeLoading = false;
+                    state.changeError = '';
+                    state.changeSuccessMessage = action.payload.successMessage;
+                    state.changeErrorMessage = action.payload.errorMessage;
+                    state.changeStatusCode = action.payload.statusCode;
                     state.nickname = action.payload.nickname;
                 })
             .addCase(
                 changeNicename.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
+                    state.changeLoading = false;
+                    state.changeError = '';
+                    state.changeSuccessMessage = action.payload.successMessage;
+                    state.changeErrorMessage = action.payload.errorMessage;
+                    state.changeStatusCode = action.payload.statusCode;
                     state.nicename = action.payload.nicename;
                 })
             .addCase(
                 changePhone.fulfilled, (state, action) => {
-                    state.userLoading = false;
-                    state.userError = '';
-                    state.userSuccessMessage = action.payload.successMessage;
-                    state.userErrorMessage = action.payload.errorMessage;
-                    state.userStatusCode = action.payload.statusCode;
+                    state.changeLoading = false;
+                    state.changeError = '';
+                    state.changeSuccessMessage = action.payload.successMessage;
+                    state.changeErrorMessage = action.payload.errorMessage;
+                    state.changeStatusCode = action.payload.statusCode;
                     state.phone = action.payload.phone;
                 })
             .addMatcher(isAnyOf(
@@ -255,11 +258,11 @@ export const changeSlice = createSlice({
                 changeNicename.pending,
                 changePhone.pending
             ), (state) => {
-                state.userLoading = true;
-                state.userError = null;
-                state.userSuccessMessage = '';
-                state.userErrorMessage = '';
-                state.userStatusCode = '';
+                state.changeLoading = true;
+                state.changeError = null;
+                state.changeSuccessMessage = '';
+                state.changeErrorMessage = '';
+                state.changeStatusCode = '';
             })
             .addMatcher(isAnyOf(
                 changeUsername.rejected,
@@ -268,10 +271,10 @@ export const changeSlice = createSlice({
                 changeNicename.rejected,
                 changePhone.rejected
             ), (state, action) => {
-                state.userLoading = false;
-                state.userError = action.error;
-                state.userErrorMessage = action.error.message;
-                state.userStatusCode = action.error.code;
+                state.changeLoading = false;
+                state.changeError = action.error;
+                state.changeErrorMessage = action.error.message;
+                state.changeStatusCode = action.error.code;
             });
     }
 })

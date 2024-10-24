@@ -12,26 +12,27 @@ use SEVEN_TECH\Gateway\Roles\Roles;
 use SEVEN_TECH\Communications\Email\Gateway\Account as GatewayAccount;
 
 use Exception;
+use TypeError;
 
 class Account
 {
     public int $id;
     public String $joined;
-    public String $userActivationKey;
+    public ?String $userActivationKey = "";
     public String $email;
     public String $username;
     public String $password;
     public array $roles;
     public String $level;
-    public String $profileImage;
-    public String $confirmationCode;
+    public ?String $profileImage;
+    public ?String $confirmationCode = "";
     public String $firstName;
     public String $lastName;
     public String $nickname;
     public String $nicename;
-    public String $phone = "";
+    public ?String $phone = "";
     public String $bio;
-    public String $providerGivenID;
+    public ?String $providerGivenID = "";
     public bool $isAuthenticated;
     public bool $isAccountNonExpired;
     public bool $isAccountNonLocked;
@@ -66,6 +67,8 @@ class Account
             $this->roles = (new Roles)->unserializeRoles($account->roles);
             $this->level = (new Roles)->getRolesHighestLevel($this->roles);
             $this->profileImage = get_avatar_url($account->id);
+        } catch (TypeError $e) {
+            throw new DestructuredException($e);
         } catch (DestructuredException $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {

@@ -180,6 +180,30 @@ class Change {
         }
     }
 
+    function name(String $firstname, String $lastname)
+    {
+        try {
+
+            if (!empty($firstname)) {
+                $this->firstName($firstname);
+            }
+
+            if (!empty($lastname)) {
+                $this->lastName($lastname);
+            }
+
+            if (class_exists(GatewayChange::class, true)) {
+                (new GatewayChange())->sendNameChangedEmail($this->id);
+            }
+
+            return true;
+        } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (Exception $e) {
+            throw new DestructuredException($e);
+        }
+    }
+
     function phone(string $phone)
     {
         try {

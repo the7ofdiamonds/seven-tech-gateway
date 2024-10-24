@@ -9,16 +9,17 @@ use SEVEN_TECH\Gateway\Validator\Validator;
 use Exception;
 use WP_Error;
 use WP_User;
+use TypeError;
 
 class Authentication
 {
     public $id;
     public string $email;
     public string $password;
-    public string $userActivationKey;
-    public string $confirmationCode;
-    public string $phone;
-    public string $providerGivenID;
+    public ?string $userActivationKey;
+    public ?string $confirmationCode;
+    public ?string $phone;
+    public ?string $providerGivenID;
     public bool $isAuthenticated;
     public bool $isAccountNonExpired;
     public bool $isAccountNonLocked;
@@ -42,6 +43,8 @@ class Authentication
             $this->isCredentialsNonExpired = $account->isCredentialsNonExpired;
             $this->isEnabled = $account->isEnabled;
         } catch (DestructuredException $e) {
+            throw new DestructuredException($e);
+        } catch (TypeError $e) {
             throw new DestructuredException($e);
         } catch (Exception $e) {
             throw new DestructuredException($e);

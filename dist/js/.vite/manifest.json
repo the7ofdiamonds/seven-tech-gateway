@@ -1,4 +1,11 @@
 {
+  "_LoginComponent.js": {
+    "file": "LoginComponent.js",
+    "imports": [
+      "src/index.jsx",
+      "_StatusBarComponent.js"
+    ]
+  },
   "_NavigationLoginComponent.js": {
     "file": "NavigationLoginComponent.js",
     "imports": [
@@ -60,9 +67,8 @@
     "file": "Dashboard.js",
     "imports": [
       "src/index.jsx",
-      "src/views/Login.jsx",
       "_StatusBarComponent.js",
-      "_NavigationLoginComponent.js"
+      "_LoginComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Dashboard.jsx"
@@ -90,8 +96,9 @@
     "file": "Login.js",
     "imports": [
       "src/index.jsx",
-      "_StatusBarComponent.js",
-      "_NavigationLoginComponent.js"
+      "_LoginComponent.js",
+      "_NavigationLoginComponent.js",
+      "_StatusBarComponent.js"
     ],
     "isDynamicEntry": true,
     "src": "src/views/Login.jsx"

@@ -75,10 +75,10 @@ function SignUpComponent() {
   }, [signupErrorMessage]);
 
   useEffect(() => {
-    if (signupSuccessMessage != '') {
+    if (signupSuccessMessage != '' && signupStatusCode == 200) {
       setShowStatusBar('modal-overlay');
     }
-  }, [signupSuccessMessage]);
+  }, [signupSuccessMessage, signupStatusCode]);
 
   useEffect(() => {
     if (accessToken && refreshToken) {

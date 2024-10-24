@@ -6,13 +6,12 @@ class API
 {
   public function __construct()
   {
-    $accountAPI = new API_Account();
-    $authAPI = new API_Authentication();
-    $changeAPI = new API_Change();
-    $emailAPI = new API_Email();
-    $passwordAPI = new API_Password();
-    $rolesAPI = new API_Roles();
-    $userAPI = new API_User();
+    $accountAPI = new Account();
+    $authAPI = new Authentication();
+    $changeAPI = new Change();
+    $passwordAPI = new Password();
+    $rolesAPI = new Roles();
+    $userAPI = new User();
 
     register_rest_route('seven-tech/v1', '/account/create', array(
       'methods' => 'POST',
@@ -89,18 +88,6 @@ class API
     register_rest_route('seven-tech/v1', '/change/phone', array(
       'methods' => 'POST',
       'callback' => array($changeAPI, 'phone'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/email/add', array(
-      'methods' => 'POST',
-      'callback' => array($emailAPI, 'add'),
-      'permission_callback' => '__return_true',
-    ));
-
-    register_rest_route('seven-tech/v1', '/email/remove', array(
-      'methods' => 'POST',
-      'callback' => array($emailAPI, 'remove'),
       'permission_callback' => '__return_true',
     ));
 

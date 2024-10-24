@@ -7,10 +7,13 @@ import {
   changeName,
   changeNickname,
   changeNicename,
-  changePhone
+  changePhone,
 } from '../../controllers/changeSlice';
 
 import StatusBarComponent from './StatusBarComponent';
+import LoginComponent from './LoginComponent';
+
+import { isValidUsername, isValidPhone, isValidName } from '../../utils/Validation';
 
 function ChangeComponent() {
   const dispatch = useDispatch();
@@ -28,6 +31,29 @@ function ChangeComponent() {
     nicename,
     phone,
   } = useSelector((state) => state.user);
+
+  const {
+    changeLoading,
+    changeError,
+    changeSuccessMessage,
+    changeErrorMessage,
+    changeStatusCode
+  } = useSelector((state) => state.change);
+
+  const { loginStatusCode } = useSelector((state) => state.login);
+
+  const [usernameChange, setUsernameChange] = useState(username);
+  const [firstnameChange, setFirstNameChange] = useState(firstname);
+  const [lastnameChange, setLastNameChange] = useState(lastname);
+  const [nicknameChange, setNicknameChange] = useState(nickname);
+  const [nicenameChange, setNicenameChange] = useState(nicename);
+  const [phoneChange, setPhoneChange] = useState(phone);
+
+  const [showStatusBar, setShowStatusBar] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [message, setMessage] = useState('');
+
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     dispatch(getUser());
@@ -57,53 +83,48 @@ function ChangeComponent() {
     if (phone) {
       setPhoneChange(phone);
     }
-  }, [username, firstName, lastname, nickname, nicename, phone]);
+  }, [username, firstname, lastname, nickname, nicename, phone]);
 
   useEffect(() => {
-    if (userLoading) {
+    if (changeLoading) {
       setMessage('');
     }
-  }, [dispatch, userLoading]);
+  }, [changeLoading]);
 
   useEffect(() => {
-    if (userSuccessMessage) {
+    if (changeSuccessMessage) {
       setMessageType('success');
-      setMessage(userSuccessMessage);
+      setMessage(changeSuccessMessage);
     }
-  }, [dispatch, userSuccessMessage]);
+  }, [changeSuccessMessage]);
 
   useEffect(() => {
-    if (userErrorMessage && userStatusCode != 403) {
+    if (changeErrorMessage) {
       setMessageType('error');
-      setMessage(userErrorMessage);
+      setMessage(changeErrorMessage);
     }
-  }, [dispatch, userErrorMessage]);
+  }, [changeErrorMessage]);
 
   useEffect(() => {
-    if (userStatusCode != 403 &&
-      message != ''
-    ) {
+    if (changeStatusCode) {
       setShowStatusBar('modal-overlay');
       setTimeout(() => {
         setShowStatusBar('');
       }, 3000);
     }
-  }, [
-    dispatch,
-    userStatusCode,
-    message
-  ]);
+  }, [changeStatusCode]);
 
-  const [usernameChange, setUsernameChange] = useState(username);
-  const [firstName, setFirstNameChange] = useState(firstname);
-  const [lastName, setLastNameChange] = useState(lastname);
-  const [nicknameChange, setNicknameChange] = useState(nickname);
-  const [nicenameChange, setNicenameChange] = useState(nicename);
-  const [phoneChange, setPhoneChange] = useState(phone);
+  useEffect(() => {
+    if (changeStatusCode == 403) {
+      setShowLogin(true);
+    }
+  }, [changeStatusCode]);
 
-  const [showStatusBar, setShowStatusBar] = useState('');
-  const [messageType, setMessageType] = useState('');
-  const [message, setMessage] = useState('');
+  useEffect(() => {
+    if (loginStatusCode == 200) {
+      setShowLogin(false);
+    }
+  }, [loginStatusCode]);
 
   const updateUsername = (e) => {
     e.preventDefault();
@@ -116,8 +137,56 @@ function ChangeComponent() {
   const handleChangeUsername = (e) => {
     e.preventDefault();
 
-    if (usernameChange != '') {
+    if (isValidUsername(usernameChange)) {
       dispatch(changeUsername(usernameChange));
+    }
+  };
+
+  const updateNicename = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'nicename') {
+      setNicenameChange(e.target.value);
+    }
+  };
+
+  const handleChangeNicename = (e) => {
+    e.preventDefault();
+
+    if (isValidUsername(nicenameChange)) {
+      dispatch(changeNicename(nicenameChange));
+    }
+  };
+
+  const updatePhone = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'phone') {
+      setPhoneChange(e.target.value);
+    }
+  };
+
+  const handleChangePhone = (e) => {
+    e.preventDefault();
+
+    if (isValidPhone(phoneChange)) {
+      dispatch(changePhone(phoneChange));
+    }
+  };
+
+  const updateNickname = (e) => {
+    e.preventDefault();
+
+    if (e.target.name == 'nickname') {
+      setNicknameChange(e.target.value);
+    }
+  };
+
+  const handleChangeNickname = (e) => {
+    e.preventDefault();
+
+    if (isValidName(nicknameChange)) {
+      dispatch(changeNickname(nicknameChange));
     }
   };
 
@@ -140,68 +209,19 @@ function ChangeComponent() {
   const handleChangeName = (e) => {
     e.preventDefault();
 
-    if (firstName !== '' || lastName !== '') {
-      dispatch(changeName({ firstName, lastName })).then((response) => {
-        if (response.payload.statusCode == 201) {
-          dispatch(updateAccountFirstName(response.payload.firstname));
-          dispatch(updateAccountLastName(response.payload.lastname));
-        }
-      });
-    }
-  };
+    if (isValidName(firstnameChange) && isValidName(lastnameChange)) {
+      var fullName = {
+        first_name: firstnameChange,
+        last_name: lastnameChange
+      };
 
-  const updateNickname = (e) => {
-    e.preventDefault();
-
-    if (e.target.name == 'nickname') {
-      setNicknameChange(e.target.value);
-    }
-  };
-
-  const handleChangeNickname = (e) => {
-    e.preventDefault();
-
-    if (nicknameChange != '') {
-      dispatch(changeNickname(nicknameChange));
-    }
-  };
-
-  const updateNicename = (e) => {
-    e.preventDefault();
-
-    if (e.target.name == 'nicename') {
-      setNicenameChange(e.target.value);
-    }
-  };
-
-  const handleChangeNicename = (e) => {
-    e.preventDefault();
-
-    if (nicenameChange != '') {
-      dispatch(changeNicename(nicenameChange));
-    }
-  };
-
-  const updatePhone = (e) => {
-    e.preventDefault();
-
-    if (e.target.name == 'phone') {
-      setPhoneChange(e.target.value);
-    }
-  };
-
-  const handleChangePhone = (e) => {
-    e.preventDefault();
-
-    if (phoneChange != '') {
-      dispatch(changePhone(phoneChange));
+      dispatch(changeName(fullName));
     }
   };
 
   return (
     <>
       <main className="change">
-
         <span className="change-username">
           <input
             className="input-username"
@@ -225,7 +245,7 @@ function ChangeComponent() {
             type="text"
             name="firstname"
             placeholder="First Name"
-            value={firstName}
+            value={firstnameChange}
             onChange={updateFirstName}
           />
 
@@ -234,7 +254,7 @@ function ChangeComponent() {
             type="text"
             name="lastname"
             placeholder="Last Name"
-            value={lastName}
+            value={lastnameChange}
             onChange={updateLastName}
           />
 
@@ -302,6 +322,14 @@ function ChangeComponent() {
           )}
         </span>
       </main>
+
+      {showLogin && (
+        <div className="modal-overlay">
+          <main className="login">
+            <LoginComponent />
+          </main>
+        </div>
+      )}
     </>
   );
 }

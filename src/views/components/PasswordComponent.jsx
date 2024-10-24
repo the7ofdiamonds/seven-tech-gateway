@@ -13,6 +13,22 @@ function PasswordComponent() {
   const { passwordSuccessMessage, passwordErrorMessage, passwordStatusCode } =
     useSelector((state) => state.password);
 
+  const { loginStatusCode } = useSelector((state) => state.login);
+
+  const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    if (loginStatusCode == 200) {
+      setShowLogin(false);
+    }
+  }, [loginStatusCode]);
+
+  useEffect(() => {
+    if (passwordStatusCode == 403) {
+      setShowLogin(true);
+    }
+  }, [passwordStatusCode]);
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showStatusbar, setShowStatusBar] = useState(false);
@@ -71,13 +87,9 @@ function PasswordComponent() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      isValidPassword(password) &&
-      password === confirmPassword
-    ) {
-      dispatch(
-        changePassword({ password, confirmPassword })
-      );
+
+    if (isValidPassword(password) && password === confirmPassword) {
+      dispatch(changePassword({ password, confirmPassword }));
     }
   };
 
@@ -114,7 +126,10 @@ function PasswordComponent() {
             <tfoot>
               <tr>
                 <td>
-                  <button type="submit" onClick={handleSubmit} id="change_password_btn">
+                  <button
+                    type="submit"
+                    onClick={handleSubmit}
+                    id="change_password_btn">
                     <h3>CONFIRM</h3>
                   </button>
                 </td>
@@ -135,6 +150,14 @@ function PasswordComponent() {
           </table>
         </form>
       </main>
+
+      {showLogin && (
+        <div className="modal-overlay">
+          <main className="login">
+            <LoginComponent />
+          </main>
+        </div>
+      )}
     </>
   );
 }

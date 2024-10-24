@@ -2,21 +2,29 @@
 
 namespace SEVEN_TECH\Gateway\Exception;
 
+use SEVEN_TECH\Communications\Exception\DestructuredException as CommunicationsException;
+
 use Exception;
 use WP_Error;
+use TypeError;
 
 class DestructuredException extends Exception
 {
     private $exception;
 
-    public function __construct(Exception | WP_Error $e)
+    public function __construct(Exception | WP_Error | TypeError | CommunicationsException $e)
     {
         $this->exception = $e;
     }
 
     function getErrorMessage()
     {
+
         if ($this->exception instanceof DestructuredException) {
+            return $this->exception->getErrorMessage();
+        }
+
+        if ($this->exception instanceof CommunicationsException) {
             return $this->exception->getErrorMessage();
         }
 
@@ -25,7 +33,12 @@ class DestructuredException extends Exception
 
     function getStatusCode()
     {
+        
         if ($this->exception instanceof DestructuredException) {
+            return $this->exception->getStatusCode();
+        }
+
+        if ($this->exception instanceof CommunicationsException) {
             return $this->exception->getStatusCode();
         }
 

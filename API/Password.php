@@ -5,7 +5,7 @@ namespace SEVEN_TECH\Gateway\API;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Password\Password;
+use SEVEN_TECH\Gateway\Password\Password as PasswordClass;
 use SEVEN_TECH\Gateway\Token\Token;
 
 use Exception;
@@ -13,13 +13,13 @@ use Exception;
 use WP_REST_Request;
 use WP_REST_Response;
 
-class API_Password
+class Password
 {
     private $password;
 
     public function __construct()
     {
-        $this->password = new Password;
+        $this->password = new PasswordClass;
     }
 
     function forgot(WP_REST_Request $request)

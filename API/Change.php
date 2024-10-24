@@ -4,7 +4,7 @@ namespace SEVEN_TECH\Gateway\API;
 
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Authorization\Authorization;
-use SEVEN_TECH\Gateway\Change\Change;
+use SEVEN_TECH\Gateway\Change\Change as ChangeClass;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
 use SEVEN_TECH\Gateway\Token\Token;
 
@@ -12,7 +12,7 @@ use Exception;
 
 use WP_REST_Request;
 
-class API_Change
+class Change
 {
     private $authorization;
 
@@ -37,7 +37,7 @@ class API_Change
                 throw new Exception('An email is required to change password.', 400);
             }
 
-            (new Change($auth->email))->username($request['username']);
+            (new ChangeClass($auth->email))->username($request['username']);
 
             $updateUsernameResponse = [
                 'successMessage' => "Your username has been changed to {$request['username']}.",
@@ -72,13 +72,7 @@ class API_Change
             $firstName = $request['first_name'];
             $lastName = $request['last_name'];
 
-            if (!empty($firstName)) {
-                (new Change($auth->email))->firstName($firstName);
-            }
-
-            if (!empty($lastName)) {
-                (new Change($auth->email))->lastName($lastName);
-            }
+            (new ChangeClass($auth->email))->name($firstName, $lastName);
 
             $responseNameChanged = [
                 'successMessage' => "Your name has been changed to {$firstName} {$lastName} succesfully.",
@@ -112,7 +106,7 @@ class API_Change
                 throw new Exception('An email is required to change password.', 400);
             }
 
-            (new Change($auth->email))->nicename($request['nicename']);
+            (new ChangeClass($auth->email))->nicename($request['nicename']);
 
             $changeNickNameResponse = [
                 'successMessage' => "Your nicename has been changed to {$request['nicename']}.",
@@ -144,11 +138,11 @@ class API_Change
                 throw new Exception('An email is required to change password.', 400);
             }
 
-            (new Change($auth->email))->nickname($request['nickname']);
+            (new ChangeClass($auth->email))->nickname($request['nickname']);
 
             $changeNickNameResponse = [
-                'successMessage' => "Your nickname has been been changed to {$request['nickName']}.",
-                'nickname' => $request['nickName'],
+                'successMessage' => "Your nickname has been been changed to {$request['nickname']}.",
+                'nickname' => $request['nickname'],
                 'statusCode' => 200
             ];
 
@@ -176,7 +170,7 @@ class API_Change
                 throw new Exception('An email is required to change password.', 400);
             }
 
-            (new Change($auth->email))->phone("+{$request['phone']}");
+            (new ChangeClass($auth->email))->phone("+{$request['phone']}");
 
             $changePhoneResponse = [
                 'successMessage' => "Your phone number has been changed to {$request['phone']}.",

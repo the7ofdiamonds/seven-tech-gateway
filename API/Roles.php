@@ -4,11 +4,11 @@ namespace SEVEN_TECH\Gateway\API;
 
 use SEVEN_TECH\Gateway\Authorization\Authorization;
 use SEVEN_TECH\Gateway\Exception\DestructuredException;
-use SEVEN_TECH\Gateway\Roles\Roles;
+use SEVEN_TECH\Gateway\Roles\Roles as RolesClass;
 
 use WP_REST_Request;
 
-class API_Roles
+class Roles
 {
     private $authorization;
 
@@ -20,7 +20,7 @@ class API_Roles
     public function getRoles(WP_REST_Request $request)
     {
         try {
-            $roles = (new Roles)->getRoles();
+            $roles = (new RolesClass)->getRoles();
 
             return rest_ensure_response($roles);
         } catch (DestructuredException $e) {

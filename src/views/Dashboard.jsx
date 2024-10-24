@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import LoginComponent from './Login';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import AccountComponent from './components/AccountComponent';
 import ChangeComponent from './components/ChangeComponent';
@@ -9,7 +7,6 @@ import AuthComponent from './components/AuthComponent';
 import PasswordComponent from './components/PasswordComponent';
 
 function Dashboard() {
-  const dispatch = useDispatch();
   const { profileImage, displayName } = useSelector((state) => state.login);
 
   const profileImg = profileImage
@@ -19,29 +16,7 @@ function Dashboard() {
     ? displayName
     : localStorage.getItem('display_name');
 
-  const { changeStatusCode } = useSelector((state) => state.user);
-  const { passwordStatusCode } = useSelector((state) => state.password);
-  const { loginStatusCode } = useSelector((state) => state.login);
-  const { accountStatusCode } = useSelector((state) => state.account);
-
   const [showSettings, setShowSettings] = useState('');
-  const [showLogin, setShowLogin] = useState(false);
-
-  useEffect(() => {
-    if (loginStatusCode == 200) {
-      setShowLogin(false);
-    }
-  }, [loginStatusCode]);
-
-  useEffect(() => {
-    if (
-      changeStatusCode == 403 ||
-      passwordStatusCode == 403 ||
-      accountStatusCode == 403
-    ) {
-      setShowLogin(true);
-    }
-  }, [dispatch, changeStatusCode, passwordStatusCode, accountStatusCode]);
 
   const handleShowSettings = () => {
     if (showSettings == false) {
@@ -82,14 +57,6 @@ function Dashboard() {
       {<AuthComponent />}
 
       {<AccountComponent />}
-
-      {showLogin && (
-        <div className="modal-overlay">
-          <main className="login">
-            <LoginComponent />
-          </main>
-        </div>
-      )}
     </>
   );
 }

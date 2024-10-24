@@ -2,7 +2,7 @@
 
 namespace SEVEN_TECH\Gateway\API;
 
-use SEVEN_TECH\Gateway\Account\Account;
+use SEVEN_TECH\Gateway\Account\Account as AccountClass;
 use SEVEN_TECH\Gateway\Account\Create;
 use SEVEN_TECH\Gateway\Authentication\Authenticated;
 use SEVEN_TECH\Gateway\Authentication\Login;
@@ -14,7 +14,7 @@ use Exception;
 use WP_REST_Request;
 use WP_REST_Response;
 
-class API_Account
+class Account
 {
     public $token;
 
@@ -52,7 +52,7 @@ class API_Account
     function activate(WP_REST_Request $request)
     {
         try {
-            (new Account($request['email']))->activate($request['user_activation_key']);
+            (new AccountClass($request['email']))->activate($request['user_activation_key']);
 
             $accountActivatedResponse = [
                 'successMessage' => 'Your account has been activated.',
@@ -78,7 +78,7 @@ class API_Account
 
             $auth = new Authenticated($accessToken, $refreshToken);
 
-            (new Account($auth->email))->lock();
+            (new AccountClass($auth->email))->lock();
 
             $lockedAccountResponse = [
                 'successMessage' => 'Account has been locked successfully.',
@@ -99,7 +99,7 @@ class API_Account
     function unlock(WP_REST_Request $request)
     {
         try {
-            (new Account($request['email']))->unlock($request['user_activation_key']);
+            (new AccountClass($request['email']))->unlock($request['user_activation_key']);
 
             $unlockAccountResponse = [
                 'successMessage' => 'Account has been unlocked succesfully.',
@@ -120,7 +120,7 @@ class API_Account
     function recover(WP_REST_Request $request)
     {
         try {
-            (new Account($request['email']))->recover($request['user_activation_key']);
+            (new AccountClass($request['email']))->recover($request['user_activation_key']);
 
             $recoverAccountResponse = [
                 'successMessage' => 'Account has been succesfully reactivated.',
